@@ -1,0 +1,3 @@
+/src/scanner.flex.cpp
+/src/yacc.tab.cpp
+/src/yacc.tab.h
