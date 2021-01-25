@@ -21,8 +21,8 @@
  */
 
 %{
-
-
+#include "yacc.tab.h"
+  extern void preprocessor_directive (const char*);
 %}
 
 %option noyywrap
