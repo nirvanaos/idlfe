@@ -1,0 +1,3 @@
+[submodule "src/simplecpp"]
+	path = src/simplecpp
+	url = https://github.com/danmar/simplecpp.git

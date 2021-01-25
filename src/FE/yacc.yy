@@ -20,6 +20,9 @@
  *                 mico@informatik.uni-frankfurt.de
  */
 
+%{
+#include "lexer.h"
+%}
 
 %token T_AMPERSAND
 %token T_ANY
