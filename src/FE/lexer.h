@@ -4,11 +4,11 @@
 #include <FlexLexer.h>
 #include <iostream>
 
-extern yyFlexLexer lexer;
+extern FlexLexer* lexer;
 
 inline int yylex ()
 {
-	return lexer.yylex ();
+	return lexer->yylex ();
 }
 
 inline void yyerror (const char* msg)
