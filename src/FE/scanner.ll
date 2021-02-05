@@ -22,10 +22,11 @@
 
 %{
 #include "yacc.tab.h"
-  extern void preprocessor_directive (const char*);
+#include "ParserControl.h"
 %}
 
 %option noyywrap
+%option yylineno
 
 /*--------------------------------------------------------------------------*/
 
@@ -70,7 +71,7 @@ CORBA_Identifier	[a-zA-Z_][a-zA-Z0-9_]*
                           return T_PRAGMA;
                         }
 "#"[^\n]*\n             {
-                            preprocessor_directive( yytext );
+                            static_cast <ParserControl*> (this)->preprocessor_directive (yytext);
                         }
 "{"			return T_LEFT_CURLY_BRACKET;
 "}"			return T_RIGHT_CURLY_BRACKET;
