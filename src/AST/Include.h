@@ -10,7 +10,7 @@ class Include :
 	public Item
 {
 public:
-	Include (const char* name) :
+	Include (const std::string& name) :
 		Item (Kind::INCLUDE),
 		name_ (name)
 	{}

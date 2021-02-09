@@ -22,7 +22,7 @@ public:
 	}
 
 protected:
-	AST (const char* file) :
+	AST (const std::string& file) :
 		file_ (file)
 	{}
 

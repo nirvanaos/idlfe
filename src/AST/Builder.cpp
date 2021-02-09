@@ -8,9 +8,16 @@ using namespace std;
 
 namespace AST {
 
-void Builder::throw_syntax_error (const std::string& file, unsigned line, const std::string& err) const
+Builder::Symbol::Symbol (const Ptr <NamedItem>& item, const Location& loc) :
+	item_ (item),
+	location_ (loc)
+{}
+
+void Builder::message (const Location& l, MessageType mt, const std::string& err)
 {
-	throw runtime_error (err);
+	static const char* const msg_types [3] = { "error", "warning", "message" };
+
+	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << " : " << err << endl;
 }
 
 void Builder::file (const char* name)
@@ -24,22 +31,27 @@ void Builder::file (const char* name)
 	}
 }
 
-void Builder::begin_module (const char* name, unsigned line)
+void Builder::module_begin (const string& name, unsigned line)
 {
-	Ptr <ModuleNS> ns = make_item <ModuleNS> (name);
-	auto ins = namespace_stack_.back ()->emplace (Symbol (ns, Location (*cur_file_, line)));
-	if (!ins.second && ins.first->item ()->kind () != Item::Kind::MODULE)
-		throw_syntax_error (*cur_file_, line, ns->name () + " is already defined at " + ins.first->location ().stringize () + ".");
-	namespace_stack_.push_back (&ns->symbols);
-	if (is_main_file ()) {
-		Ptr <Module> mod = make_item <Module> (name);
-		module_stack_.back ()->append (mod);
-		module_stack_.push_back (mod);
+	Ptr <ModuleNS> ns = make_item <ModuleNS> (ref (name));
+	Location l (*cur_file_, line);
+	auto ins = namespace_stack_.back ()->emplace (Symbol (ns, l));
+	if (!ins.second && ins.first->item ()->kind () != Item::Kind::MODULE) {
+		message (l, MessageType::ERROR, ns->name () + " is already defined.");
+		message (ins.first->location (), MessageType::MESSAGE, "See previous definition.");
+	} else {
+		namespace_stack_.push_back (&ns->symbols);
+		if (is_main_file ()) {
+			Ptr <Module> mod = make_item <Module> (ref (name));
+			module_stack_.back ()->append (mod);
+			module_stack_.push_back (mod);
+		}
 	}
 }
 
-void Builder::end ()
+void Builder::module_end ()
 {
+	namespace_stack_.pop_back ();
 }
 
 }

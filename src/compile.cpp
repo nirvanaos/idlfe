@@ -1,8 +1,7 @@
 #include "compile.h"
 #include "Options.h"
 #include "simplecpp/simplecpp.h"
-#include "FE/lexer.h"
-#include "FE/yacc.tab.h"
+#include "FE/Driver.h"
 #include <fstream>
 #include <sstream>
 
@@ -64,17 +63,11 @@ int compile (const string& file)
 	}
 
 	{
-		yyFlexLexer flex (preprocessed, cout);
-		lexer = &flex;
-		int err = yyparse ();
+		Driver driver (file, preprocessed);
+		int err = driver.parse ();
     if (err)
       return err;
 	}
 
 	return 0;
-}
-
-void preprocessor_directive (const char*)
-{
-
 }

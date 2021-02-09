@@ -21,8 +21,19 @@
  */
 
 %{
-#include "lexer.h"
+#include "Driver.h"
 %}
+
+%require "3.2"
+%language "c++"
+%define api.value.type variant
+%define api.token.constructor
+
+%code requires {
+	class Driver;
+}
+
+%param {Driver& drv}
 
 %token T_AMPERSAND
 %token T_ANY
@@ -31,7 +42,7 @@
 %token T_BOOLEAN
 %token T_CASE
 %token T_CHAR
-%token T_CHARACTER_LITERAL
+%token <std::string> T_CHARACTER_LITERAL
 %token T_CIRCUMFLEX
 %token T_COLON
 %token T_COMMA
@@ -44,14 +55,14 @@
 %token T_EXCEPTION
 %token T_FALSE
 %token T_FIXED
-%token T_FIXED_PT_LITERAL
+%token <std::string> T_FIXED_PT_LITERAL
 %token T_FLOAT
-%token T_FLOATING_PT_LITERAL
+%token <std::string> T_FLOATING_PT_LITERAL
 %token T_GREATER_THAN_SIGN
-%token T_IDENTIFIER
+%token <std::string> T_IDENTIFIER
 %token T_IN
 %token T_INOUT
-%token T_INTEGER_LITERAL
+%token <std::string> T_INTEGER_LITERAL
 %token T_INTERFACE
 %token T_LEFT_CURLY_BRACKET
 %token T_LEFT_PARANTHESIS
@@ -79,8 +90,8 @@
 %token T_SHORT
 %token T_SOLIDUS
 %token T_STRING
-%token T_STRING_LITERAL
-%token T_PRAGMA
+%token <std::string> T_STRING_LITERAL
+%token <std::string> T_PRAGMA
 %token T_STRUCT
 %token T_SWITCH
 %token T_TILDE
@@ -132,8 +143,8 @@ definition
 
 /*3*/
 module
-	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET
-                   definitions T_RIGHT_CURLY_BRACKET
+	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET { drv.module_begin ($2, @2); }
+definitions T_RIGHT_CURLY_BRACKET { drv.module_end (); }
 	;
 
 /*4*/
@@ -799,3 +810,13 @@ principal_type
 	;
 
 %%
+
+namespace yy {
+
+// Report an error to the user.
+void parser::error (const location& l, const std::string& msg)
+{
+	drv.parser_error (l, msg);
+}
+
+}

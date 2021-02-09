@@ -10,7 +10,7 @@ class NamedItem :
 	public Item
 {
 public:
-	NamedItem (Kind kind, const char* name) :
+	NamedItem (Kind kind, const std::string& name) :
 		Item (kind),
 		name_ (name)
 	{}

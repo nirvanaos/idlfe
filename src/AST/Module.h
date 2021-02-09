@@ -11,7 +11,7 @@ class Module :
 	public Container
 {
 public:
-	Module (const char* name) :
+	Module (const std::string& name) :
 		NamedItem (Kind::MODULE, name)
 	{}
 };
