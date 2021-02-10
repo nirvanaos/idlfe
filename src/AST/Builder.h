@@ -3,6 +3,8 @@
 
 #include "AST.h"
 #include "Module.h"
+#include "Interface.h"
+#include "ScopedName.h"
 #include <set>
 #include <ostream>
 
@@ -26,12 +28,18 @@ public:
 		message (Location (*cur_file_, line), MessageType::ERROR, msg);
 	}
 
-	void file (const char* name);
+	void file (const std::string& name);
 
 	void module_begin (const std::string& name, unsigned line);
 	void module_end ();
 
-private:
+	void native (const std::string& name, unsigned line);
+
+	void interface_decl (const std::string& name, unsigned line, InterfaceDecl::Kind ik = InterfaceDecl::Kind::UNCONSTRAINED);
+	void interface_begin (const std::string& name, unsigned line, InterfaceDecl::Kind ik = InterfaceDecl::Kind::UNCONSTRAINED);
+	void interface_base (const ScopedName& name, unsigned line);
+	void interface_end ();
+
 	bool is_main_file () const
 	{
 		return cur_file_ == &AST::file ();
@@ -69,6 +77,7 @@ private:
 
 	void message (const Location& l, MessageType mt, const std::string& err);
 
+private:
 	class Symbol
 	{
 	public:
@@ -105,6 +114,8 @@ private:
 
 		Symbols symbols;
 	};
+
+	void error_name_collision (const Location& loc, const std::string& name, const Location& prev_loc);
 
 private:
 	std::ostream err_out_;

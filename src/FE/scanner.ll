@@ -68,10 +68,10 @@ CORBA_Identifier	[a-zA-Z_][a-zA-Z0-9_]*
 [\n]			;
 "//"[^\n]*		;
 "#pragma"[^\n]*\n       {
-                          return yy::parser::make_T_PRAGMA (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+                          static_cast <Driver*> (this)->pragma (YYText (), lineno ());
                         }
 "#"[^\n]*\n             {
-                            static_cast <Driver*> (this)->preprocessor_directive (YYText (), YYLeng ());
+                          static_cast <Driver*> (this)->preprocessor_directive (YYText (), lineno ());
                         }
 "{"			return yy::parser::make_T_LEFT_CURLY_BRACKET (yy::parser::location_type (nullptr, lineno ()));
 "}"			return yy::parser::make_T_RIGHT_CURLY_BRACKET (yy::parser::location_type (nullptr, lineno ()));
@@ -123,6 +123,7 @@ in			return yy::parser::make_T_IN (yy::parser::location_type (nullptr, lineno ()
 out			return yy::parser::make_T_OUT (yy::parser::location_type (nullptr, lineno ()));
 interface		return yy::parser::make_T_INTERFACE (yy::parser::location_type (nullptr, lineno ()));
 abstract		return yy::parser::make_T_ABSTRACT (yy::parser::location_type (nullptr, lineno ()));
+local		return yy::parser::make_T_LOCAL (yy::parser::location_type (nullptr, lineno ()));
 valuetype		return yy::parser::make_T_VALUETYPE (yy::parser::location_type (nullptr, lineno ()));
 truncatable		return yy::parser::make_T_TRUNCATABLE (yy::parser::location_type (nullptr, lineno ()));
 supports		return yy::parser::make_T_SUPPORTS (yy::parser::location_type (nullptr, lineno ()));

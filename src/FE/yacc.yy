@@ -31,6 +31,7 @@
 
 %code requires {
 	class Driver;
+#include "../AST/ScopedName.h"
 }
 
 %param {Driver& drv}
@@ -106,6 +107,7 @@
 %token T_WSTRING
 %token T_UNKNOWN
 %token T_ABSTRACT
+%token T_LOCAL
 %token T_VALUETYPE
 %token T_TRUNCATABLE
 %token T_SUPPORTS
@@ -116,6 +118,7 @@
 %token T_NATIVE
 %token T_VALUEBASE
 
+%nterm <AST::ScopedName> scoped_name;
 
 %%
 
@@ -143,7 +146,7 @@ definition
 
 /*3*/
 module
-	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET { drv.module_begin ($2, @2); }
+	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET { drv.module_begin ($2, @1); }
 definitions T_RIGHT_CURLY_BRACKET { drv.module_end (); }
 	;
 
@@ -156,22 +159,25 @@ interface
 /*5*/
 interface_dcl
 	: interface_header T_LEFT_CURLY_BRACKET interface_body
-                                         T_RIGHT_CURLY_BRACKET
+	T_RIGHT_CURLY_BRACKET { drv.interface_end (); }
 	;
 
 /*6*/
 forward_dcl
-	: T_INTERFACE T_IDENTIFIER
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER
+	: T_INTERFACE T_IDENTIFIER { drv.interface_decl ($2, @1); }
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, Driver::InterfaceKind::ABSTRACT); }
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, Driver::InterfaceKind::LOCAL); }
 	;
 
 /*7*/
 interface_header
-	: T_INTERFACE T_IDENTIFIER
-	| T_INTERFACE T_IDENTIFIER interface_inheritance_spec
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER interface_inheritance_spec
-	; 
+	: T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1); }
+	| T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1); } interface_inheritance_spec
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::ABSTRACT); }
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::ABSTRACT); } interface_inheritance_spec
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::LOCAL); }
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::LOCAL); } interface_inheritance_spec
+	;
 
 /*8*/
 interface_body
@@ -199,7 +205,8 @@ interface_inheritance_spec
 	;
 
 interface_names
-	: scoped_names
+	: scoped_name { drv.interface_base ($1, @1); }
+	| scoped_name T_COMMA scoped_names
 	;
 
 scoped_names
@@ -208,15 +215,17 @@ scoped_names
 	;
 
 /*11*/
+/* Unused
 interface_name
 	: scoped_name
 	;
+*/
 
 /*12*/
 scoped_name
-	: T_IDENTIFIER
-        | T_SCOPE T_IDENTIFIER
-	| scoped_name T_SCOPE T_IDENTIFIER
+	: T_IDENTIFIER { $$ = AST::ScopedName (false, $1); }
+	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (true, $2); }
+	| scoped_name T_SCOPE T_IDENTIFIER { $$ = $1; $$.push_back ($3); }
 	;
 
 /*13*/
@@ -434,7 +443,7 @@ type_dcl
 	| struct_type
 	| union_type
 	| enum_type
-	| T_NATIVE simple_declarator
+	| T_NATIVE T_IDENTIFIER { drv.native ($2, @1); }
 	;
 
 /*44*/
@@ -631,7 +640,6 @@ switch_body
 case	
 	: case_label case
 	| case_label element_spec T_SEMICOLON
-	| case_label T_PRAGMA element_spec T_SEMICOLON   /* New */
 	;
 
 /*76*/

@@ -23,7 +23,9 @@ public:
 		builder_.parser_error (l.begin.line, msg);
 	}
 
-	void preprocessor_directive (const char*, size_t);
+	void preprocessor_directive (const char*, unsigned line);
+
+	void pragma (const char*, unsigned line);
 
 	void module_begin (const std::string& id, const yy::parser::location_type& l)
 	{
@@ -33,6 +35,33 @@ public:
 	void module_end ()
 	{
 		builder_.module_end ();
+	}
+
+	void native (const std::string& id, const yy::parser::location_type& l)
+	{
+		builder_.native (id, l.begin.line);
+	}
+
+	typedef AST::InterfaceDecl::Kind InterfaceKind;
+
+	void interface_decl (const std::string& id, const yy::parser::location_type& l, InterfaceKind ik = InterfaceKind::UNCONSTRAINED)
+	{
+		builder_.interface_decl (id, l.begin.line, ik);
+	}
+
+	void interface_begin (const std::string& id, const yy::parser::location_type& l, InterfaceKind ik = InterfaceKind::UNCONSTRAINED)
+	{
+		builder_.interface_begin (id, l.begin.line, ik);
+	}
+
+	void interface_base (const AST::ScopedName& id, const yy::parser::location_type& l)
+	{
+		builder_.interface_base (id, l.begin.line);
+	}
+
+	void interface_end ()
+	{
+		builder_.interface_end ();
 	}
 
 private:
@@ -45,11 +74,4 @@ inline yy::parser::symbol_type yylex (Driver& drv)
 	return drv.yylex ();
 }
 
-/*
-
-inline void yyerror (const char* msg)
-{
-	std::cerr << msg << std::endl;
-}
-*/
 #endif

@@ -18,7 +18,10 @@ public:
 	enum class Kind
 	{
 		INCLUDE,
-		MODULE
+		MODULE,
+		NATIVE,
+		INTERFACE_DECL,
+		INTERFACE
 	};
 
 	Item (Kind kind) :
@@ -87,8 +90,21 @@ public:
 			p_->_add_ref ();
 	}
 
+	Ptr (const Ptr <T>& src) :
+		p_ (src.p_)
+	{
+		if (p_)
+			p_->_add_ref ();
+	}
+
 	template <class T1>
 	Ptr (Ptr <T1>&& src) :
+		p_ (src.p_)
+	{
+		src.p_ = nullptr;
+	}
+
+	Ptr (Ptr <T>&& src) :
 		p_ (src.p_)
 	{
 		src.p_ = nullptr;
@@ -112,8 +128,30 @@ public:
 		return *this;
 	}
 
+	Ptr& operator = (const Ptr <T>& src)
+	{
+		if (p_ != src.p_) {
+			if (p_)
+				p_->_remove_ref ();
+			if (p_ = src.p_)
+				p_->_add_ref ();
+		}
+		return *this;
+	}
+
 	template <class T1>
 	Ptr& operator = (Ptr <T1>&& src)
+	{
+		if (p_ != src.p_) {
+			if (p_)
+				p_->_remove_ref ();
+			p_ = src.p_;
+			src.p_ = nullptr;
+		}
+		return *this;
+	}
+
+	Ptr& operator = (Ptr <T>&& src)
 	{
 		if (p_ != src.p_) {
 			if (p_)
@@ -129,7 +167,7 @@ public:
 		return p_;
 	}
 
-	operator T* () const
+	T* get () const
 	{
 		return p_;
 	}
