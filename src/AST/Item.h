@@ -21,7 +21,8 @@ public:
 		MODULE,
 		NATIVE,
 		INTERFACE_DECL,
-		INTERFACE
+		INTERFACE,
+		OPERATION
 	};
 
 	Item (Kind kind) :

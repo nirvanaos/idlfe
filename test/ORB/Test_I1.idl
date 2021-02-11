@@ -1,0 +1,21 @@
+// Test_I1.idl File from ORB test set.
+module Test {
+
+typedef sequence <long> SeqLong;
+
+exception MyException
+{
+	string param;
+};
+
+interface I1
+{
+	long op1 (in long p1);
+	void throw_no_implement ();
+	I1 object_op (in I1 in_obj, out I1 out_obj, inout I1 inout_obj);
+	string string_op (in string in_s, out string out_s, inout string inout_s);
+	SeqLong seq_op (in SeqLong in_s, out SeqLong out_s, inout SeqLong inout_s);
+	any any_op (in any in_any, out any out_any, inout any inout_any);
+};
+
+};

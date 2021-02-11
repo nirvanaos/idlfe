@@ -5,7 +5,7 @@
 #include "Module.h"
 #include "Interface.h"
 #include "ScopedName.h"
-#include <set>
+#include "Symbol.h"
 #include <ostream>
 
 namespace AST {
@@ -16,11 +16,10 @@ public:
 	Builder (const std::string& file, std::ostream& err_out) :
 		err_out_ (err_out.rdbuf ()),
 		AST (file),
-		cur_file_ (&AST::file ()),
-		cur_type_ (nullptr)
+		cur_file_ (&AST::file ())
 	{
-		namespace_stack_.push_back (&global_namespace_);
-		module_stack_.push_back (this);
+		scope_stack_.push_back (&global_namespace_);
+		container_stack_.push_back (this);
 	}
 
 	void parser_error (unsigned line, const std::string& msg)
@@ -30,15 +29,15 @@ public:
 
 	void file (const std::string& name);
 
-	void module_begin (const std::string& name, unsigned line);
-	void module_end ();
-
 	void native (const std::string& name, unsigned line);
+
+	void scope_end ();
+
+	void module_begin (const std::string& name, unsigned line);
 
 	void interface_decl (const std::string& name, unsigned line, InterfaceDecl::Kind ik = InterfaceDecl::Kind::UNCONSTRAINED);
 	void interface_begin (const std::string& name, unsigned line, InterfaceDecl::Kind ik = InterfaceDecl::Kind::UNCONSTRAINED);
 	void interface_base (const ScopedName& name, unsigned line);
-	void interface_end ();
 
 	bool is_main_file () const
 	{
@@ -52,79 +51,80 @@ public:
 		MESSAGE
 	};
 
-	class Location
-	{
-	public:
-		Location (const std::string& file, unsigned line) :
-			file_ (file),
-			line_ (line)
-		{}
-
-		const std::string& file () const
-		{
-			return file_;
-		}
-
-		unsigned line () const
-		{
-			return line_;
-		}
-
-	private:
-		const std::string& file_;
-		unsigned line_;
-	};
-
 	void message (const Location& l, MessageType mt, const std::string& err);
 
 private:
-	class Symbol
+
+	struct Scope :
+		public NamedItem,
+		public Symbols
 	{
-	public:
-		Symbol (const Ptr <NamedItem>& item, const Location& loc);
-
-		bool operator < (const Symbol& rhs) const
-		{
-			return item_->name () < rhs.item_->name ();
-		}
-
-		const Ptr <NamedItem>& item () const
-		{
-			return item_;
-		}
-
-		const Location& location () const
-		{
-			return location_;
-		}
-
-	private:
-		Ptr <NamedItem> item_;
-		Location location_;
+		Scope (Item::Kind kind, const std::string& name) :
+			NamedItem (kind, name)
+		{}
 	};
 
-	typedef std::set <Symbol> Symbols;
-
-	struct ModuleNS :
-		public NamedItem
+	struct ModuleScope :
+		public Scope
 	{
-		ModuleNS (const std::string& name) :
-			NamedItem (Kind::MODULE, name)
+		ModuleScope (const std::string& name) :
+			Scope (Kind::MODULE, name)
+		{}
+	};
+
+	struct InterfaceScope;
+
+	struct InterfaceBase
+	{
+		const Symbol& itf;
+		Location base_declaration_loc;
+
+		InterfaceBase (const Symbol& _itf, const Location& loc) :
+			itf (_itf),
+			base_declaration_loc (loc)
 		{}
 
-		Symbols symbols;
+		bool operator < (const InterfaceBase& rhs) const
+		{
+			return &itf < &rhs.itf;
+		}
 	};
 
+	typedef std::set <InterfaceBase> InterfaceBases;
+
+	struct InterfaceScope :
+		public Scope
+	{
+		InterfaceScope (const std::string& name, Interface::Kind ik) :
+			Scope (Kind::INTERFACE, name),
+			interface_kind (ik)
+		{}
+
+		Interface::Kind interface_kind;
+		InterfaceBases bases;
+		Symbols all_operations;
+	};
+
+	static bool is_scope (Item::Kind ik)
+	{
+		return Item::Kind::MODULE == ik || Item::Kind::INTERFACE == ik;
+	}
+
 	void error_name_collision (const Location& loc, const std::string& name, const Location& prev_loc);
+	void error_interface_kind (const Location& loc, const std::string& name, Interface::Kind new_kind, Interface::Kind prev_kind, const Location& prev_loc);
+
+	const Symbol* lookup (const ScopedName& scoped_name) const;
+	const Symbol* lookup (const ScopedName& scoped_name, const Location& loc);
 
 private:
 	std::ostream err_out_;
 	std::set <std::string> included_files_;
 	const std::string* cur_file_;
 	Symbols global_namespace_;
-	std::vector <Symbols*> namespace_stack_;
-	std::vector <Container*> module_stack_;
-	NamedItem* cur_type_;
+	typedef std::vector <Symbols*> ScopeStack;
+	ScopeStack scope_stack_;
+	typedef std::vector <Container*> ContainerStack;
+	ContainerStack container_stack_;
 };
 
 }

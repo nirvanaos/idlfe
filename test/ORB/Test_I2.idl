@@ -1,0 +1,8 @@
+module Test {
+
+interface I2
+{
+	long op2 (in long p1);
+};
+
+};

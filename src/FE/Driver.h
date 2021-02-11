@@ -34,7 +34,7 @@ public:
 
 	void module_end ()
 	{
-		builder_.module_end ();
+		builder_.scope_end ();
 	}
 
 	void native (const std::string& id, const yy::parser::location_type& l)
@@ -61,7 +61,7 @@ public:
 
 	void interface_end ()
 	{
-		builder_.interface_end ();
+		builder_.scope_end ();
 	}
 
 private:

@@ -3,6 +3,7 @@
 
 #include "NamedItem.h"
 #include "Container.h"
+#include "ScopedName.h"
 
 namespace AST {
 
@@ -39,8 +40,19 @@ private:
 	Kind kind_;
 };
 
+class Interface;
+
+struct InterfaceBase
+{
+	ScopedName name;
+	Ptr <Interface> itf;
+};
+
+typedef std::vector <InterfaceBase> InterfaceBases;
+
 class Interface :
 	public InterfaceDecl,
+	public InterfaceBases,
 	public Container
 {
 public:

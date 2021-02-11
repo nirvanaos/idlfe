@@ -26,8 +26,8 @@ void Driver::preprocessor_directive (const char* const dir, unsigned line)
 					++s;
 				if (*s == '\"') {
 					const char* end = s + strlen (s);
-					while (isspace (*(end - 1)))
-						--end;
+					while (isspace (*(--end)))
+						;
 					if (*end == '\"')
 						builder_.file (string (s + 1, end - s - 1));
 					else

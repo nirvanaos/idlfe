@@ -205,8 +205,8 @@ interface_inheritance_spec
 	;
 
 interface_names
-	: scoped_name { drv.interface_base ($1, @1); }
-	| scoped_name T_COMMA scoped_names
+	: interface_name
+	| interface_name T_COMMA interface_names
 	;
 
 scoped_names
@@ -215,11 +215,9 @@ scoped_names
 	;
 
 /*11*/
-/* Unused
 interface_name
-	: scoped_name
+	: scoped_name { drv.interface_base ($1, @1); }
 	;
-*/
 
 /*12*/
 scoped_name
