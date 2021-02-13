@@ -165,18 +165,18 @@ interface_dcl
 /*6*/
 forward_dcl
 	: T_INTERFACE T_IDENTIFIER { drv.interface_decl ($2, @1); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, Driver::InterfaceKind::ABSTRACT); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, Driver::InterfaceKind::LOCAL); }
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, AST::InterfaceKind::ABSTRACT); }
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, AST::InterfaceKind::LOCAL); }
 	;
 
 /*7*/
 interface_header
 	: T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1); }
 	| T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1); } interface_inheritance_spec
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::ABSTRACT); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::ABSTRACT); } interface_inheritance_spec
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::LOCAL); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, Driver::InterfaceKind::LOCAL); } interface_inheritance_spec
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::ABSTRACT); }
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::LOCAL); }
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	;
 
 /*8*/

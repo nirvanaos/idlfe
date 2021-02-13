@@ -1,4 +1,4 @@
-#include "Symbol.h"
+#include "Symbols.h"
 #include <algorithm>
 
 using namespace std;
@@ -15,9 +15,14 @@ bool ci_less (const string& l, const string& r)
 	return lexicographical_compare (l.begin (), l.end (), r.begin (), r.end (), ci_compare);
 }
 
-Symbol::Symbol (const Ptr <NamedItem>& item, const Location& loc) :
-	item_ (item),
-	location_ (loc)
-{}
+std::pair <Symbols::iterator, bool> Symbols::insert (NamedItem* item)
+{
+	return Base::insert (item);
+}
+
+const Symbols::iterator Symbols::find (const std::string& name) const
+{
+	return Base::find (name);
+}
 
 }

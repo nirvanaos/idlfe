@@ -9,8 +9,8 @@ class Operation :
 	public NamedItem
 {
 public:
-	Operation (const std::string& name) :
-		NamedItem (Item::Kind::OPERATION, name)
+	Operation (const Location& loc, const ItemScope* parent, const std::string& name) :
+		NamedItem (loc, Item::Kind::OPERATION, parent, name)
 	{}
 
 };

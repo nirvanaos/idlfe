@@ -42,14 +42,12 @@ public:
 		builder_.native (id, l.begin.line);
 	}
 
-	typedef AST::InterfaceDecl::Kind InterfaceKind;
-
-	void interface_decl (const std::string& id, const yy::parser::location_type& l, InterfaceKind ik = InterfaceKind::UNCONSTRAINED)
+	void interface_decl (const std::string& id, const yy::parser::location_type& l, AST::InterfaceKind ik = AST::InterfaceKind::UNCONSTRAINED)
 	{
 		builder_.interface_decl (id, l.begin.line, ik);
 	}
 
-	void interface_begin (const std::string& id, const yy::parser::location_type& l, InterfaceKind ik = InterfaceKind::UNCONSTRAINED)
+	void interface_begin (const std::string& id, const yy::parser::location_type& l, AST::InterfaceKind ik = AST::InterfaceKind::UNCONSTRAINED)
 	{
 		builder_.interface_begin (id, l.begin.line, ik);
 	}

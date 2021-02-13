@@ -9,8 +9,8 @@ class Native :
 	public NamedItem
 {
 public:
-	Native (const std::string& name) :
-		NamedItem (Kind::NATIVE, name)
+	Native (const Location& loc, const ItemScope* parent, const std::string& name) :
+		NamedItem (loc, Kind::NATIVE, parent, name)
 	{}
 };
 

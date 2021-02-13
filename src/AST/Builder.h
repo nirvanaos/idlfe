@@ -2,24 +2,25 @@
 #define NIDL_AST_BUILDER_H_
 
 #include "AST.h"
-#include "Module.h"
 #include "Interface.h"
 #include "ScopedName.h"
-#include "Symbol.h"
 #include <ostream>
+#include <map>
 
 namespace AST {
 
-class Builder : public AST
+class Builder
 {
 public:
 	Builder (const std::string& file, std::ostream& err_out) :
+		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
-		AST (file),
-		cur_file_ (&AST::file ())
+		tree_ (Ptr <AST>::make <AST> (file)),
+		is_main_file_ (true)
 	{
-		scope_stack_.push_back (&global_namespace_);
-		container_stack_.push_back (this);
+		cur_file_ = &tree_->file ();
+		scope_stack_.push_back (tree_);
+		container_stack_.push_back (tree_);
 	}
 
 	void parser_error (unsigned line, const std::string& msg)
@@ -35,13 +36,13 @@ public:
 
 	void module_begin (const std::string& name, unsigned line);
 
-	void interface_decl (const std::string& name, unsigned line, InterfaceDecl::Kind ik = InterfaceDecl::Kind::UNCONSTRAINED);
-	void interface_begin (const std::string& name, unsigned line, InterfaceDecl::Kind ik = InterfaceDecl::Kind::UNCONSTRAINED);
+	void interface_decl (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
+	void interface_begin (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_base (const ScopedName& name, unsigned line);
 
 	bool is_main_file () const
 	{
-		return cur_file_ == &AST::file ();
+		return is_main_file_;
 	}
 
 	enum class MessageType
@@ -54,56 +55,8 @@ public:
 	void message (const Location& l, MessageType mt, const std::string& err);
 
 private:
-
-	struct Scope :
-		public NamedItem,
-		public Symbols
-	{
-		Scope (Item::Kind kind, const std::string& name) :
-			NamedItem (kind, name)
-		{}
-	};
-
-	struct ModuleScope :
-		public Scope
-	{
-		ModuleScope (const std::string& name) :
-			Scope (Kind::MODULE, name)
-		{}
-	};
-
-	struct InterfaceScope;
-
-	struct InterfaceBase
-	{
-		const Symbol& itf;
-		Location base_declaration_loc;
-
-		InterfaceBase (const Symbol& _itf, const Location& loc) :
-			itf (_itf),
-			base_declaration_loc (loc)
-		{}
-
-		bool operator < (const InterfaceBase& rhs) const
-		{
-			return &itf < &rhs.itf;
-		}
-	};
-
-	typedef std::set <InterfaceBase> InterfaceBases;
-
-	struct InterfaceScope :
-		public Scope
-	{
-		InterfaceScope (const std::string& name, Interface::Kind ik) :
-			Scope (Kind::INTERFACE, name),
-			interface_kind (ik)
-		{}
-
-		Interface::Kind interface_kind;
-		InterfaceBases bases;
-		Symbols all_operations;
-	};
+	bool scope_begin ();
+	void scope_push (ItemContainer* scope);
 
 	static bool is_scope (Item::Kind ik)
 	{
@@ -111,20 +64,39 @@ private:
 	}
 
 	void error_name_collision (const Location& loc, const std::string& name, const Location& prev_loc);
-	void error_interface_kind (const Location& loc, const std::string& name, Interface::Kind new_kind, Interface::Kind prev_kind, const Location& prev_loc);
+	void error_interface_kind (const Location& loc, const std::string& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 
-	const Symbol* lookup (const ScopedName& scoped_name) const;
-	const Symbol* lookup (const ScopedName& scoped_name, const Location& loc);
+	NamedItem* lookup (const ScopedName& scoped_name) const;
+	NamedItem* lookup (const ScopedName& scoped_name, const Location& loc);
+
+	const ItemScope* cur_scope () const;
 
 private:
+	unsigned err_cnt_;
 	std::ostream err_out_;
-	std::set <std::string> included_files_;
+	Ptr <AST> tree_;
 	const std::string* cur_file_;
-	Symbols global_namespace_;
+	bool is_main_file_;
 	typedef std::vector <Symbols*> ScopeStack;
 	ScopeStack scope_stack_;
 	typedef std::vector <Container*> ContainerStack;
 	ContainerStack container_stack_;
+
+	typedef std::map <const Item*, Location> Bases;
+
+	struct InterfaceData
+	{
+		Bases bases;
+		std::set <const Item*> all_bases;
+		Symbols all_operations;
+
+		void clear ()
+		{
+			bases.clear ();
+			all_bases.clear ();
+			all_operations.clear ();
+		}
+	} interface_data_;
 };
 
 }

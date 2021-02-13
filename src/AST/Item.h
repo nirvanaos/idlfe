@@ -1,27 +1,24 @@
 #ifndef NIDL_AST_ITEM_H_
 #define NIDL_AST_ITEM_H_
 
-#include <assert.h>
 #include <utility>
-#include <vector>
 
 namespace AST {
 
 template <class T> class Ptr;
-
-template <class T, class ... Args>
-Ptr <T> make_item (Args ... args);
 
 class Item
 {
 public:
 	enum class Kind
 	{
+		AST,
 		INCLUDE,
 		MODULE,
+		MODULE_ITEMS,
 		NATIVE,
-		INTERFACE_DECL,
 		INTERFACE,
+		INTERFACE_DECL,
 		OPERATION
 	};
 
@@ -30,18 +27,11 @@ public:
 		ref_cnt_ (1)
 	{}
 
-	Item (const Item& src) :
-		kind_ (src.kind_),
-		ref_cnt_ (1)
-	{}
+	Item (const Item& src) = delete;
 
 	virtual ~Item () {}
 
-	Item& operator = (const Item& src)
-	{
-		assert (kind_ == src.kind_);
-		return *this;
-	}
+	Item& operator = (const Item& src) = delete;
 
 	Kind kind () const
 	{
@@ -50,7 +40,6 @@ public:
 
 private:
 	template <class T> friend class Ptr;
-	template <class T, class ... Args> friend Ptr <T> make_item (Args...);
 
 	void* operator new (size_t cb)
 	{
@@ -77,11 +66,16 @@ template <class T>
 class Ptr
 {
 	template <class T1> friend class Ptr;
-	template <class T1, class ... Args> friend Ptr <T1> make_item (Args...);
 public:
 	Ptr () :
 		p_ (nullptr)
 	{}
+
+	template <class T1, class ... Args>
+	static Ptr make (Args ... args)
+	{
+		return Ptr (new T1 (std::forward <Args> (args)...), Make ());
+	}
 
 	template <class T1>
 	Ptr (const Ptr <T1>& src) :
@@ -90,8 +84,8 @@ public:
 		if (p_)
 			p_->_add_ref ();
 	}
-
-	Ptr (const Ptr <T>& src) :
+	
+	Ptr (const Ptr& src) :
 		p_ (src.p_)
 	{
 		if (p_)
@@ -105,10 +99,25 @@ public:
 		src.p_ = nullptr;
 	}
 
-	Ptr (Ptr <T>&& src) :
+	Ptr (Ptr&& src) :
 		p_ (src.p_)
 	{
 		src.p_ = nullptr;
+	}
+
+	template <class T1>
+	Ptr (T1* p) :
+		p_ (p)
+	{
+		if (p_)
+			p_->_add_ref ();
+	}
+
+	Ptr (T* p) :
+		p_ (p)
+	{
+		if (p_)
+			p_->_add_ref ();
 	}
 
 	~Ptr ()
@@ -163,18 +172,46 @@ public:
 		return *this;
 	}
 
+	template <class T1>
+	Ptr& operator = (T1* p)
+	{
+		if (p_ != p) {
+			if (p_)
+				p_->_remove_ref ();
+			p_ = p;
+		}
+		return *this;
+	}
+
+	Ptr& operator = (T* p)
+	{
+		if (p_ != p) {
+			if (p_)
+				p_->_remove_ref ();
+			p_ = p;
+		}
+		return *this;
+	}
+
 	T* operator -> () const
 	{
 		return p_;
 	}
 
-	T* get () const
+	operator T* () const
 	{
 		return p_;
 	}
 
+	T& operator * () const
+	{
+		return *p_;
+	}
+
 private:
-	Ptr (T* p) :
+	struct Make {};
+
+	Ptr (T* p, const Make&) :
 		p_ (p)
 	{}
 
@@ -182,10 +219,10 @@ private:
 	T* p_;
 };
 
-template <class T, class ... Args>
-inline Ptr <T> make_item (Args ... args)
+template <class T1, class T>
+T1* scast (const Ptr <T>& ptr)
 {
-	return Ptr <T> (new T (std::forward <Args> (args)...));
+	return static_cast <T1*> ((T*)ptr);
 }
 
 }

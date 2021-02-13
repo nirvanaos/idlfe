@@ -1,33 +1,35 @@
 #ifndef NIDL_AST_AST_H_
 #define NIDL_AST_AST_H_
 
+#include "Item.h"
+#include "Symbols.h"
 #include "Container.h"
-#include <string>
 
 namespace AST {
 
 class AST :
+	public Item,
+	public Symbols,
 	public Container
 {
 public:
-	AST (const AST&) = default;
-	AST (AST&&) = default;
-
-	AST& operator = (const AST&) = default;
-	AST& operator = (AST&&) = default;
+	AST (const std::string& file) :
+		Item (Item::Kind::AST)
+	{
+		main_file_ = &*files_.insert (file).first;
+		
+	}
 
 	const std::string& file () const
 	{
-		return file_;
+		return *main_file_;
 	}
 
-protected:
-	AST (const std::string& file) :
-		file_ (file)
-	{}
+	const std::string& add_file (const std::string& name);
 
 private:
-	const std::string file_;
+	std::set <std::string> files_;
+	const std::string* main_file_;
 };
 
 }

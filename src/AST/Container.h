@@ -6,22 +6,14 @@
 
 namespace AST {
 
-class Container
+class Container :
+	public std::vector <Ptr <Item>>
 {
+	typedef std::vector <Ptr <Item>> Base;
 public:
-	void append (Ptr <Item> item)
-	{
-		items_.push_back (item);
-	}
-
-	Item* back () const
-	{
-		return items_.back ().get ();
-	}
-
-private:
-	std::vector <Ptr <Item> > items_;
+	void append (Item* item);
 };
+
 
 }
 
