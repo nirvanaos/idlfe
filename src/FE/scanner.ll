@@ -149,7 +149,6 @@ raises			return yy::parser::make_T_RAISES (yy::parser::location_type (nullptr, l
 context			return yy::parser::make_T_CONTEXT (yy::parser::location_type (nullptr, lineno ()));
 
 Object                  return yy::parser::make_T_OBJECT (yy::parser::location_type (nullptr, lineno ()));
-Principal               return yy::parser::make_T_PRINCIPAL (yy::parser::location_type (nullptr, lineno ()));
 
 
 {CORBA_Identifier}	return yy::parser::make_T_IDENTIFIER (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));

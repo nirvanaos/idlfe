@@ -77,7 +77,6 @@
 %token T_OUT
 %token T_PERCENT_SIGN
 %token T_PLUS_SIGN
-%token T_PRINCIPAL
 %token T_RAISES
 %token T_READONLY
 %token T_RIGHT_CURLY_BRACKET
@@ -468,7 +467,6 @@ base_type_spec
 	| any_type
 	| object_type
 	| value_base_type
-	| principal_type  /*New*/
 	;
 
 /*47*/
@@ -808,11 +806,6 @@ fixed_pt_const_type
 /*98*/
 value_base_type
 	: T_VALUEBASE
-	;
-
-/* New production for Principal */
-principal_type
-	: T_PRINCIPAL
 	;
 
 %%

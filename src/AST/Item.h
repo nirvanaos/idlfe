@@ -19,7 +19,8 @@ public:
 		NATIVE,
 		INTERFACE,
 		INTERFACE_DECL,
-		OPERATION
+		OPERATION,
+		TYPEDEF
 	};
 
 	Item (Kind kind) :

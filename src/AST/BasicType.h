@@ -1,0 +1,27 @@
+#ifndef NIDL_AST_BASICTYPE_H_
+#define NIDL_AST_BASICTYPE_H_
+
+namespace AST {
+
+enum class BasicType
+{
+	CHAR,
+	WCHAR,
+	OCTET,
+	SHORT,
+	USHORT,
+	LONG,
+	LONGLONG,
+	ULONG,
+	ULONGLONG,
+	BOOLEAN,
+	FLOAT,
+	DOUBLE,
+	LONGDOUBLE,
+	OBJECT,
+	ANY
+};
+
+}
+
+#endif
