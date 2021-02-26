@@ -19,8 +19,11 @@ public:
 		NATIVE,
 		INTERFACE,
 		INTERFACE_DECL,
+		TYPEDEF,
+		STRUCT,
+		UNION,
 		OPERATION,
-		TYPEDEF
+		CONSTANT
 	};
 
 	Item (Kind kind) :
@@ -37,6 +40,11 @@ public:
 	Kind kind () const
 	{
 		return kind_;
+	}
+
+	bool is_type () const
+	{
+		return Kind::INTERFACE <= kind_ && kind_ <= Kind::UNION;
 	}
 
 private:

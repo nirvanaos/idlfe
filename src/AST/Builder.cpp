@@ -40,7 +40,7 @@ void Builder::error_name_collision (const Location& loc, const std::string& name
 }
 
 inline
-NamedItem* Builder::lookup (const ScopedName& scoped_name) const
+const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name) const
 {
 	auto name = scoped_name.begin ();
 	Symbols::const_iterator f;
@@ -72,12 +72,12 @@ NamedItem* Builder::lookup (const ScopedName& scoped_name) const
 			return nullptr;
 	}
 
-	return *f;
+	return &*f;
 }
 
-NamedItem* Builder::lookup (const ScopedName& scoped_name, const Location& loc)
+const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name, const Location& loc)
 {
-	NamedItem* item = lookup (scoped_name);
+	const Ptr <NamedItem>* item = lookup (scoped_name);
 	if (!item)
 		message (loc, MessageType::ERROR, string ("Symbol not found: ") + scoped_name.stringize ());
 	return item;
@@ -211,8 +211,9 @@ void Builder::interface_base (const ScopedName& name, unsigned line)
 		assert (this_itf->kind () == Item::Kind::INTERFACE);
 
 		Location loc (*cur_file_, line);
-		const NamedItem* base = lookup (name, loc);
-		if (base) {
+		const Ptr <NamedItem>* pbase = lookup (name, loc);
+		if (pbase) {
+			const NamedItem* base = *pbase;
 			const char* err = nullptr;
 			if (base->kind () != Item::Kind::INTERFACE)
 				if (base->kind () == Item::Kind::INTERFACE_DECL)

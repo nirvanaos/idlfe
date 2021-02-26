@@ -4,6 +4,7 @@
 #include "AST.h"
 #include "Interface.h"
 #include "ScopedName.h"
+#include "Variant.h"
 #include <ostream>
 #include <map>
 
@@ -54,6 +55,13 @@ public:
 
 	void message (const Location& l, MessageType mt, const std::string& err);
 
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name, unsigned line)
+	{
+		return lookup (scoped_name, Location (*cur_file_, line));
+	}
+
+	const Ptr <NamedItem>* struct_begin (const std::string& name, unsigned line);
+
 private:
 	bool scope_begin ();
 	void scope_push (ItemContainer* scope);
@@ -66,8 +74,8 @@ private:
 	void error_name_collision (const Location& loc, const std::string& name, const Location& prev_loc);
 	void error_interface_kind (const Location& loc, const std::string& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 
-	NamedItem* lookup (const ScopedName& scoped_name) const;
-	NamedItem* lookup (const ScopedName& scoped_name, const Location& loc);
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name) const;
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name, const Location& loc);
 
 	const ItemScope* cur_scope () const;
 

@@ -19,6 +19,7 @@ enum class BasicType
 	DOUBLE,
 	LONGDOUBLE,
 	OBJECT,
+	VALUE_BASE,
 	ANY
 };
 

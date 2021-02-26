@@ -32,6 +32,7 @@
 %code requires {
 	class Driver;
 #include "../AST/ScopedName.h"
+#include "../AST/Type.h"
 }
 
 %param {Driver& drv}
@@ -44,6 +45,7 @@
 %token T_CASE
 %token T_CHAR
 %token <std::string> T_CHARACTER_LITERAL
+%token <std::string> T_WCHARACTER_LITERAL
 %token T_CIRCUMFLEX
 %token T_COLON
 %token T_COMMA
@@ -91,6 +93,7 @@
 %token T_SOLIDUS
 %token T_STRING
 %token <std::string> T_STRING_LITERAL
+%token <std::string> T_WSTRING_LITERAL
 %token <std::string> T_PRAGMA
 %token T_STRUCT
 %token T_SWITCH
@@ -118,6 +121,16 @@
 %token T_VALUEBASE
 
 %nterm <AST::ScopedName> scoped_name;
+%nterm <AST::BasicType> base_type_spec;
+%nterm <AST::BasicType> floating_pt_type;
+%nterm <AST::BasicType> integer_type;
+%nterm <AST::BasicType> signed_int;
+%nterm <AST::BasicType> unsigned_int;
+%nterm <AST::Type> string_type;
+%nterm <AST::Type> wide_string_type;
+%nterm <AST::Type> simple_type_spec;
+%nterm <AST::Type> param_type_spec;
+%nterm <AST::Type> op_type_spec;
 
 %%
 
@@ -446,27 +459,27 @@ type_dcl
 /*44*/
 type_spec
 	: simple_type_spec
-	| constr_type_spec 
+// Temporary disabled	| constr_type_spec
 	;
 
 /*45*/
 simple_type_spec
-	: base_type_spec
-	| template_type_spec
-	| scoped_name
+	: base_type_spec { $$ = $1; }
+// Temporary disabled		| template_type_spec
+	| scoped_name { $$ = drv.lookup ($1, @1); }
 	;
 
 /*46*/
 base_type_spec
-	: floating_pt_type
-	| integer_type
-	| char_type
-	| wide_char_type
-	| boolean_type
-	| octet_type
-	| any_type
-	| object_type
-	| value_base_type
+	: floating_pt_type { $$ = $1; }
+	| integer_type { $$ = $1; }
+	| char_type { $$ = AST::BasicType::CHAR; }
+	| wide_char_type { $$ = AST::BasicType::WCHAR; }
+	| boolean_type { $$ = AST::BasicType::BOOLEAN; }
+	| octet_type { $$ = AST::BasicType::OCTET; }
+	| any_type { $$ = AST::BasicType::ANY; }
+	| object_type { $$ = AST::BasicType::OBJECT; }
+	| value_base_type { $$ = AST::BasicType::VALUE_BASE; }
 	;
 
 /*47*/
@@ -508,22 +521,22 @@ complex_declarator
 
 /*53*/
 floating_pt_type
-	: T_FLOAT
-	| T_DOUBLE
-	| T_LONG T_DOUBLE
+	: T_FLOAT { $$ = AST::BasicType::FLOAT; }
+	| T_DOUBLE { $$ = AST::BasicType::DOUBLE; }
+	| T_LONG T_DOUBLE { $$ = AST::BasicType::LONGDOUBLE; }
 	;
 
 /*54*/
 integer_type
-	: signed_int
-	| unsigned_int
+	: signed_int { $$ = $1; }
+	| unsigned_int { $$ = $1; }
 	;
 
 /*55*/
 signed_int
-	: signed_long_int
-	| signed_short_int
-	| signed_longlong_int
+	: signed_long_int { $$ = AST::BasicType::LONG; }
+	| signed_short_int { $$ = AST::BasicType::SHORT; }
+	| signed_longlong_int { $$ = AST::BasicType::LONGLONG; }
 	;
 
 /*56*/
@@ -543,9 +556,9 @@ signed_longlong_int
 
 /*59*/
 unsigned_int
-	: unsigned_long_int
-	| unsigned_short_int
-	| unsigned_longlong_int
+	: unsigned_long_int { $$ = AST::BasicType::ULONG; }
+	| unsigned_short_int { $$ = AST::BasicType::USHORT; }
+	| unsigned_longlong_int { $$ = AST::BasicType::ULONGLONG; }
 	;
 
 /*60*/
@@ -674,14 +687,14 @@ sequence_type
 
 /*81*/
 string_type
-	: T_STRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN
-	| T_STRING
+	: T_STRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_string (); }
+	| T_STRING { $$ = AST::Type::make_string (); }
 	;
 
 /*82*/
 wide_string_type
-	: T_WSTRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN
-	| T_WSTRING
+	: T_WSTRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_wstring (); }
+	| T_WSTRING { $$ = AST::Type::make_wstring (); }
 	;
 
 /*83*/
@@ -735,8 +748,8 @@ op_attribute
 
 /*89*/
 op_type_spec	
-	: param_type_spec
-	| T_VOID
+	: param_type_spec { $$ = $1; }
+	| T_VOID { $$ = AST::BasicType::VOID; }
 	;
 
 /*90*/
@@ -786,10 +799,10 @@ T_string_literal
 
 /*95*/
 param_type_spec
-	: base_type_spec
-	| string_type
-	| wide_string_type
-	| scoped_name
+	: base_type_spec { $$ = $1; }
+	| string_type { $$ = $1; }
+	| wide_string_type { $$ = $1; }
+	| scoped_name { $$ = $1; }
 	;
 
 /*96*/

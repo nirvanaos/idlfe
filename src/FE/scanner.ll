@@ -33,22 +33,24 @@
 Digits                  [0-9]+
 Oct_Digit               [0-7]
 Hex_Digit               [a-fA-F0-9]
-Int_Literal		[1-9][0-9]*
-Oct_Literal		0{Oct_Digit}*
-Hex_Literal		(0x|0X){Hex_Digit}*
+Int_Literal             [1-9][0-9]*
+Oct_Literal             0{Oct_Digit}*
+Hex_Literal             (0x|0X){Hex_Digit}*
 Esc_Sequence1           "\\"[ntvbrfa\\\?\'\"]
 Esc_Sequence2           "\\"{Oct_Digit}{1,3}
 Esc_Sequence3           "\\"(x|X){Hex_Digit}{1,2}
 Esc_Sequence            ({Esc_Sequence1}|{Esc_Sequence2}|{Esc_Sequence3})
 Char                    ([^\n\t\"\'\\]|{Esc_Sequence})
 Char_Literal            "'"({Char}|\")"'"
-String_Literal		\"({Char}|"'")*\"
-Float_Literal1		{Digits}"."{Digits}?(e|E)("+"|"-")?{Digits}  
-Float_Literal2		{Digits}(e|E)("+"|"-")?{Digits}
+WChar_Literal           "L"Char_Literal
+String_Literal          \"({Char}|"'")*\"
+WString_Literal         "L"String_Literal
+Float_Literal1          {Digits}"."{Digits}?(e|E)("+"|"-")?{Digits}  
+Float_Literal2          {Digits}(e|E)("+"|"-")?{Digits}
 Float_Literal3          {Digits}"."{Digits}
 Float_Literal4          {Digits}"."
-Float_Literal5		"."{Digits} 
-Float_Literal6		"."{Digits}(e|E)("+"|"-")?{Digits}  
+Float_Literal5          "."{Digits} 
+Float_Literal6          "."{Digits}(e|E)("+"|"-")?{Digits}  
 Fixed_Literal1          {Digits}(d|D)
 Fixed_Literal2          {Digits}"."(d|D)
 Fixed_Literal3          "."{Digits}(d|D)
@@ -166,7 +168,9 @@ Object                  return yy::parser::make_T_OBJECT (yy::parser::location_t
 {Oct_Literal}		return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
 {Hex_Literal}		return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
 {Char_Literal}		return yy::parser::make_T_CHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{WChar_Literal}		return yy::parser::make_T_WCHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
 {String_Literal}	return yy::parser::make_T_STRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{WString_Literal}		return yy::parser::make_T_WSTRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
 .                       {
                           return yy::parser::make_T_UNKNOWN (yy::parser::location_type (nullptr, lineno ()));
                         }

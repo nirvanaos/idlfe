@@ -62,6 +62,11 @@ public:
 		builder_.scope_end ();
 	}
 
+	const AST::Ptr <AST::NamedItem>* lookup (const AST::ScopedName& id, const yy::parser::location_type& l)
+	{
+		return builder_.lookup (id, l.begin.line);
+	}
+
 private:
 	AST::Builder builder_;
 	yy::parser parser_;
