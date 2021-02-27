@@ -8,9 +8,9 @@ namespace AST {
 class Sequence
 {
 public:
-	Sequence (const Type& type) :
+	Sequence (const Type& type, Dim size = 0) :
 		type_ (type),
-		size_ (0)
+		size_ (size)
 	{}
 
 private:

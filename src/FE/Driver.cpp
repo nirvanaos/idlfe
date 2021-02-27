@@ -5,7 +5,7 @@ using namespace std;
 
 Driver::Driver (const std::string& file, std::istream& yyin) :
 	yyFlexLexer (yyin, cout),
-	builder_ (file, cout),
+	AST::Builder (file, cout),
 	parser_ (*this)
 {}
 
@@ -30,19 +30,15 @@ void Driver::preprocessor_directive (const char* const dir, unsigned line)
 					while (isspace (*(--end)))
 						;
 					if (*end == '\"')
-						builder_.file (string (s + 1, end - s - 1));
+						file (string (s + 1, end - s - 1));
 					else
-						builder_.parser_error (line, string ("Invalid file name: ") + string (s, end - s));
+						parser_error (line, string ("Invalid file name: ") + string (s, end - s));
 				}
 				yylineno = l;
 			}
 			return;
 		}
 	}
-	builder_.parser_error (line, string ("Invalid preprocessor directive: ") + dir);
+	parser_error (line, string ("Invalid preprocessor directive: ") + dir);
 }
 
-void Driver::pragma (const char* s, unsigned line)
-{
-	assert (false); // TODO: Implement
-}

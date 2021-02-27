@@ -20,6 +20,11 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 		throw runtime_error ("Too many errors, compilation aborted.");
 }
 
+void Builder::pragma (const char* s, unsigned line)
+{
+	assert (false); // TODO: Implement
+}
+
 void Builder::file (const std::string& name)
 {
 	if (tree_->file () == name) {
@@ -111,6 +116,12 @@ bool Builder::scope_begin ()
 	}
 }
 
+unsigned Builder::positive_int (const Variant& v, unsigned line)
+{
+	message (Location (file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
+	return 1;
+}
+
 void Builder::module_begin (const string& name, unsigned line)
 {
 	if (scope_begin ()) {
@@ -140,7 +151,6 @@ void Builder::scope_end ()
 		assert (container_stack_.size () > 1);
 		container_stack_.pop_back ();
 	}
-	interface_data_.clear ();
 }
 
 void Builder::native (const std::string& name, unsigned line)

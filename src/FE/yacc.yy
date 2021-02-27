@@ -24,7 +24,7 @@
 #include "Driver.h"
 %}
 
-%require "3.2"
+%require "3.7.1"
 %language "c++"
 %define api.value.type variant
 %define api.token.constructor
@@ -32,7 +32,7 @@
 %code requires {
 	class Driver;
 #include "../AST/ScopedName.h"
-#include "../AST/Type.h"
+#include "../AST/Variant.h"
 }
 
 %param {Driver& drv}
@@ -125,6 +125,9 @@
 %token T_NATIVE
 %token T_VALUEBASE
 
+%nterm <AST::Variant> T_string_literal;
+%nterm <AST::Variant> T_wstring_literal;
+
 %nterm <AST::ScopedName> scoped_name;
 %nterm <AST::BasicType> base_type_spec;
 %nterm <AST::BasicType> floating_pt_type;
@@ -136,6 +139,20 @@
 %nterm <AST::Type> simple_type_spec;
 %nterm <AST::Type> param_type_spec;
 %nterm <AST::Type> op_type_spec;
+%nterm <AST::Type> template_type_spec;
+%nterm <AST::Type> sequence_type;
+
+%nterm <AST::Variant> const_exp;
+%nterm <AST::Variant> or_expr;
+%nterm <AST::Variant> xor_expr;
+%nterm <AST::Variant> and_expr;
+%nterm <AST::Variant> shift_expr;
+%nterm <AST::Variant> add_expr;
+%nterm <AST::Variant> mult_expr;
+%nterm <AST::Variant> unary_expr;
+%nterm <AST::Variant> primary_expr;
+%nterm <AST::Variant> literal;
+%nterm <unsigned> positive_int_const;
 
 %%
 
@@ -181,19 +198,19 @@ interface_dcl
 
 /*6*/
 forward_dcl
-	: T_INTERFACE T_IDENTIFIER { drv.interface_decl ($2, @1); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, AST::InterfaceKind::ABSTRACT); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1, AST::InterfaceKind::LOCAL); }
+	: T_INTERFACE T_IDENTIFIER { drv.interface_decl ($2, @1.begin.line); }
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
 	;
 
 /*7*/
 interface_header
-	: T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1); }
-	| T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1); } interface_inheritance_spec
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::ABSTRACT); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::LOCAL); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
+	: T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1.begin.line); }
+	| T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1.begin.line); } interface_inheritance_spec
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
+	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	;
 
 /*8*/
@@ -233,7 +250,7 @@ scoped_names
 
 /*11*/
 interface_name
-	: scoped_name { drv.interface_base ($1, @1); }
+	: scoped_name { drv.interface_base ($1, @1.begin.line); }
 	;
 
 /*12*/
@@ -381,76 +398,76 @@ const_exp
 /*30*/
 or_expr
 	: xor_expr
-	| or_expr T_VERTICAL_LINE xor_expr
+	| or_expr T_VERTICAL_LINE xor_expr { $$ = drv.eval ().expr_or ($1, $3, @2.begin.line); }
 	;
 
 /*31*/
 xor_expr
 	: and_expr
-	| xor_expr T_CIRCUMFLEX and_expr
+	| xor_expr T_CIRCUMFLEX and_expr { $$ = drv.eval ().expr_xor ($1, $3, @2.begin.line); }
 	;
 
 /*32*/
 and_expr
 	: shift_expr
-	| and_expr T_AMPERSAND shift_expr
+	| and_expr T_AMPERSAND shift_expr { $$ = drv.eval ().expr_and ($1, $3, @2.begin.line); }
 	;
 
 /*33*/
 shift_expr
 	: add_expr
-	| shift_expr T_SHIFTRIGHT add_expr
-	| shift_expr T_SHIFTLEFT add_expr
+	| shift_expr T_SHIFTRIGHT add_expr { $$ = drv.eval ().expr_shift_right ($1, $3, @2.begin.line); }
+	| shift_expr T_SHIFTLEFT add_expr { $$ = drv.eval ().expr_shift_left ($1, $3, @2.begin.line); }
 	;
 
 /*34*/
 add_expr
 	: mult_expr
-	| add_expr T_PLUS_SIGN mult_expr
-	| add_expr T_MINUS_SIGN mult_expr
+	| add_expr T_PLUS_SIGN mult_expr { $$ = drv.eval ().expr_add ($1, $3, @2.begin.line); }
+	| add_expr T_MINUS_SIGN mult_expr { $$ = drv.eval ().expr_sub ($1, $3, @2.begin.line); }
 	;
 
 /*35*/
 mult_expr
 	: unary_expr
-	| mult_expr T_ASTERISK unary_expr
-	| mult_expr T_SOLIDUS unary_expr
-	| mult_expr T_PERCENT_SIGN unary_expr
+	| mult_expr T_ASTERISK unary_expr { $$ = drv.eval ().expr_mul ($1, $3, @2.begin.line); }
+	| mult_expr T_SOLIDUS unary_expr { $$ = drv.eval ().expr_div ($1, $3, @2.begin.line); }
+	| mult_expr T_PERCENT_SIGN unary_expr { $$ = drv.eval ().expr_rem ($1, $3, @2.begin.line); }
 	;
 
 /*36*/
 /*37*/
 unary_expr
-	: T_MINUS_SIGN primary_expr
-	| T_PLUS_SIGN primary_expr
-	| T_TILDE primary_expr
+	: T_MINUS_SIGN primary_expr { $$ = drv.eval ().expr_minus ($2, @1.begin.line); }
+	| T_PLUS_SIGN primary_expr { $$ = drv.eval ().expr_plus ($2, @1.begin.line); }
+	| T_TILDE primary_expr { $$ = drv.eval ().expr_tilde ($2, @1.begin.line); }
 	| primary_expr
 	;
 
 /*38*/
 primary_expr
-	: scoped_name
-	| literal
-	| T_LEFT_PARANTHESIS const_exp T_RIGHT_PARANTHESIS
+	: scoped_name { $$ = drv.eval ().constant (drv.lookup ($1, @1.begin.line), @1.begin.line); }
+	| literal { $$ = $1; }
+	| T_LEFT_PARANTHESIS const_exp T_RIGHT_PARANTHESIS { $$ = $2; }
 	;
 
 /*39*/
 /*40*/
 literal
-	: T_INTEGER_LITERAL
-	| T_string_literal
-	| T_wstring_literal
-	| T_CHARACTER_LITERAL
-	| T_WCHARACTER_LITERAL
-	| T_FIXED_PT_LITERAL
-	| T_FLOATING_PT_LITERAL
-	| T_TRUE  /*boolean_literal*/
-	| T_FALSE /*boolean_literal*/
+	: T_INTEGER_LITERAL { $$ = drv.eval ().literal_int ($1, @1.begin.line); }
+	| T_string_literal { $$ = $1; }
+	| T_wstring_literal { $$ = $1; }
+	| T_CHARACTER_LITERAL { $$ = drv.eval ().literal_char ($1, @1.begin.line); }
+	| T_WCHARACTER_LITERAL { $$ = drv.eval ().literal_wchar ($1, @1.begin.line); }
+	| T_FIXED_PT_LITERAL { $$ = drv.eval ().literal_fixed ($1, @1.begin.line); }
+	| T_FLOATING_PT_LITERAL { $$ = drv.eval ().literal_float ($1, @1.begin.line); }
+	| T_TRUE { $$ = drv.eval ().literal_boolean (true, @1.begin.line); }
+	| T_FALSE { $$ = drv.eval ().literal_boolean (false, @1.begin.line); }
 	;
 
 /*41*/
-positive_int_const
-	: const_exp
+	positive_int_const
+		: { drv.set_eval <AST::EvalLong> (); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); }
 	;
 
 /*42*/
@@ -460,20 +477,20 @@ type_dcl
 	| struct_type
 	| union_type
 	| enum_type
-	| T_NATIVE T_IDENTIFIER { drv.native ($2, @1); }
+	| T_NATIVE T_IDENTIFIER { drv.native ($2, @1.begin.line); }
 	;
 
 /*44*/
 type_spec
 	: simple_type_spec
-// Temporary disabled	| constr_type_spec
+	| constr_type_spec
 	;
 
 /*45*/
 simple_type_spec
 	: base_type_spec { $$ = $1; }
-// Temporary disabled		| template_type_spec
-	| scoped_name { $$ = drv.lookup ($1, @1); }
+  | template_type_spec { $$ = $1; }
+	| scoped_name { $$ = drv.lookup ($1, @1.begin.line); }
 	;
 
 /*46*/
@@ -688,8 +705,8 @@ enumerator
 /*80*/
 sequence_type
 	: T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_COMMA
-                        positive_int_const T_GREATER_THAN_SIGN
-	| T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_GREATER_THAN_SIGN
+	positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3, $5); }
+	| T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3); }
 	;
 
 /*81*/
@@ -800,13 +817,13 @@ string_literals
 	;
 
 T_string_literal
-	: T_STRING_LITERAL
-	| T_STRING_LITERAL T_string_literal
+	: T_STRING_LITERAL { $$ = drv.eval ().literal_string ($1, @1.begin.line);  }
+	| T_STRING_LITERAL T_string_literal { $$ = drv.eval ().literal_string ($1, @1.begin.line, &$2); }
 	;
 
 T_wstring_literal
-	: T_STRING_LITERAL
-	| T_STRING_LITERAL T_wstring_literal
+	: T_STRING_LITERAL { $$ = drv.eval ().literal_wstring ($1, @1.begin.line); }
+	| T_STRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1.begin.line, &$2); }
 	;
 
 /*95*/
@@ -814,7 +831,7 @@ param_type_spec
 	: base_type_spec { $$ = $1; }
 	| string_type { $$ = $1; }
 	| wide_string_type { $$ = $1; }
-	| scoped_name { $$ = drv.lookup ($1, @1); }
+	| scoped_name { $$ = drv.lookup ($1, @1.begin.line); }
 	;
 
 /*96*/

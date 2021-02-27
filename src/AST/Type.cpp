@@ -9,20 +9,19 @@ using namespace std;
 namespace AST {
 
 Type::Type (BasicType bt) :
-	kind_ (Kind::BASIC_TYPE)
-{
-	type_.basic_type = bt;
-}
+	kind_ (Kind::BASIC_TYPE),
+	type_ (bt)
+{}
 
 Type::Type (const Ptr <NamedItem>* named) :
-	kind_ (Kind::NAMED_TYPE)
+	kind_ (Kind::NAMED_TYPE),
+	type_ (named)
 {
 	if (named) {
 		const NamedItem* p = *named;
 		if (!p->is_type ())
 			throw runtime_error (string ("Type name ") + p->name () + " is invalid.");
 	}
-	type_.named_type = named;
 }
 
 Type::Type (unsigned digits, unsigned scale) :
@@ -103,6 +102,11 @@ const Type& Type::dereference () const noexcept
 			break;
 	}
 	return *t;
+}
+
+Type Type::make_sequence (const Type& type, Dim size)
+{
+	return Type (new Sequence (type, size));
 }
 
 }

@@ -20,9 +20,10 @@ public:
 	virtual Variant literal_wchar (const std::string& s, unsigned line);
 	virtual Variant literal_int (const std::string& s, unsigned line);
 	virtual Variant literal_float (const std::string& s, unsigned line);
-	virtual Variant literal_string (const std::string& s, unsigned line);
-	virtual Variant literal_wstring (const std::string& s, unsigned line);
+	virtual Variant literal_string (const std::string& s, unsigned line, const Variant* append = nullptr);
+	virtual Variant literal_wstring (const std::string& s, unsigned line, const Variant* append = nullptr);
 	virtual Variant literal_fixed (const std::string& s, unsigned line);
+	virtual Variant literal_boolean (bool v, unsigned line);
 
 	virtual Variant constant (const Ptr <NamedItem>* constant, unsigned line);
 
@@ -40,8 +41,6 @@ public:
 	virtual Variant expr_minus (const Variant& v, unsigned line);
 	virtual Variant expr_plus (const Variant& v, unsigned line);
 	virtual Variant expr_tilde (const Variant& v, unsigned line);
-
-	unsigned positive_int (const Variant& v, unsigned line) const;
 
 protected:
 	[[noreturn]] static void invalid_escape_seq ();
@@ -62,6 +61,10 @@ protected:
 class EvalLong : public Eval
 {
 public:
+	EvalLong (Builder& builder) :
+		Eval (builder)
+	{}
+
 	virtual Variant literal_char (const std::string& s, unsigned line);
 	virtual Variant literal_wchar (const std::string& s, unsigned line);
 	virtual Variant literal_int (const std::string& s, unsigned line);
@@ -71,12 +74,20 @@ public:
 class EvalLongLong : public EvalLong
 {
 public:
+	EvalLongLong (Builder& builder) :
+		EvalLong (builder)
+	{}
+
 };
 
 /// Double evaluator
 class EvalDouble : public Eval
 {
 public:
+	EvalDouble (Builder& builder) :
+		Eval (builder)
+	{}
+
 	virtual Variant literal_float (const std::string& s, unsigned line);
 };
 
@@ -88,7 +99,11 @@ typedef EvalDouble EvalLongDouble;
 class EvalString : public Eval
 {
 public:
-	virtual Variant literal_string (const std::string& s, unsigned line);
+	EvalString (Builder& builder) :
+		Eval (builder)
+	{}
+
+	virtual Variant literal_string (const std::string& s, unsigned line, const Variant* append);
 };
 
 /// Wide string evaluator
@@ -96,7 +111,11 @@ public:
 class EvalWString : public Eval
 {
 public:
-	virtual Variant literal_wstring (const std::string& s, unsigned line);
+	EvalWString (Builder& builder) :
+		Eval (builder)
+	{}
+
+	virtual Variant literal_wstring (const std::string& s, unsigned line, const Variant* append);
 };
 
 /// Fixed evaluator
@@ -104,6 +123,10 @@ public:
 class EvalFixed : public Eval
 {
 public:
+	EvalFixed (Builder& builder) :
+		Eval (builder)
+	{}
+
 	virtual Variant literal_fixed (const std::string& s, unsigned line);
 
 private:

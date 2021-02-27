@@ -63,6 +63,12 @@ void Variant::copy (const Variant& src)
 	}
 }
 
+Variant::Variant (bool v) :
+	Type (BasicType::BOOLEAN)
+{
+	val_.ui = v;
+}
+
 Variant::Variant (char v) :
 	Type (BasicType::CHAR)
 {

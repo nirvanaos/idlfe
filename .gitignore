@@ -1,3 +1,4 @@
 /src/FE/scanner.flex.cpp
 /src/FE/yacc.tab.cpp
 /src/FE/yacc.tab.h
+/src/FE/yacc.tab.cc

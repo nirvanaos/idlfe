@@ -4,12 +4,14 @@
 #include "AST.h"
 #include "Interface.h"
 #include "ScopedName.h"
-#include "Variant.h"
+#include "Eval.h"
 #include <ostream>
 #include <map>
 
 namespace AST {
 
+/// Abstract Syntax Tree builder.
+/// This class does not depend on any Flex/Bison or other parser/scanner declarations.
 class Builder
 {
 public:
@@ -31,6 +33,8 @@ public:
 
 	void file (const std::string& name);
 
+	void pragma (const char*, unsigned line);
+
 	const std::string& file () const
 	{
 		return *cur_file_;
@@ -38,13 +42,22 @@ public:
 
 	void native (const std::string& name, unsigned line);
 
-	void scope_end ();
-
 	void module_begin (const std::string& name, unsigned line);
+
+	void module_end ()
+	{
+		scope_end ();
+	}
 
 	void interface_decl (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_begin (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_base (const ScopedName& name, unsigned line);
+
+	void interface_end ()
+	{
+		scope_end ();
+		interface_data_.clear ();
+	}
 
 	bool is_main_file () const
 	{
@@ -65,7 +78,19 @@ public:
 		return lookup (scoped_name, Location (*cur_file_, line));
 	}
 
-	const Ptr <NamedItem>* struct_begin (const std::string& name, unsigned line);
+	template <class Ev>
+	void set_eval ()
+	{
+		eval_ = std::make_unique <Ev> (*this);
+	}
+
+	Eval& eval () const
+	{
+		assert (eval_);
+		return *eval_.get ();
+	}
+
+	unsigned positive_int (const Variant& v, unsigned line);
 
 	Type fixed (unsigned digits, unsigned scale, unsigned line)
 	{
@@ -76,9 +101,12 @@ public:
 			return Type::make_fixed (digits, scale);
 	}
 
+	const Ptr <NamedItem>* struct_begin (const std::string& name, unsigned line);
+
 private:
 	bool scope_begin ();
 	void scope_push (ItemContainer* scope);
+	void scope_end ();
 
 	static bool is_scope (Item::Kind ik)
 	{
@@ -103,6 +131,7 @@ private:
 	ScopeStack scope_stack_;
 	typedef std::vector <Container*> ContainerStack;
 	ContainerStack container_stack_;
+	std::unique_ptr <Eval> eval_;
 
 	typedef std::map <const Item*, Location> Bases;
 

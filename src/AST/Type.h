@@ -7,10 +7,10 @@
 
 namespace AST {
 
+typedef uint32_t Dim;
+
 class Sequence;
 class Array;
-
-typedef uint32_t Dim;
 
 class Type
 {
@@ -47,18 +47,6 @@ public:
 
 	Type (Type&& src) noexcept;
 
-	Type (Sequence* seq) :
-		kind_ (Kind::SEQUENCE)
-	{
-		type_.sequence = seq;
-	}
-
-	Type (Array* arr) :
-		kind_ (Kind::ARRAY)
-	{
-		type_.array = arr;
-	}
-
 	static Type make_string (Dim size = 0)
 	{
 		return Type (Kind::STRING, size);
@@ -68,6 +56,9 @@ public:
 	{
 		return Type (Kind::WSTRING, size);
 	}
+
+	static Type make_sequence (const Type& type, Dim size = 0);
+	static Type make_array (const Type& type, Dim size = 0);
 
 	static Type make_fixed (unsigned digits, unsigned scale)
 	{
@@ -88,9 +79,14 @@ public:
 		return type_.basic_type;
 	}
 
-	static bool is_int (BasicType bt)
+	static bool is_integer (BasicType bt)
 	{
 		return bt <= BasicType::ULONGLONG;
+	}
+
+	static bool is_float (BasicType bt)
+	{
+		return (BasicType::FLOAT <= bt && bt <= BasicType::LONGDOUBLE);
 	}
 
 	const Type& dereference () const noexcept;
@@ -118,12 +114,22 @@ protected:
 	void copy (const Type& src);
 
 	Type (Kind string_kind, Dim size = 0) :
-		kind_ (string_kind)
-	{
-		type_.string_size = size;
-	}
+		kind_ (string_kind),
+		type_ (size)
+	{}
 
 	Type (unsigned digits, unsigned scale);
+
+private:
+	Type (Sequence* seq) :
+		kind_ (Kind::SEQUENCE),
+		type_ (seq)
+	{}
+
+	Type (Array* arr) :
+		kind_ (Kind::ARRAY),
+		type_ (arr)
+	{}
 
 private:
 	Kind kind_;
@@ -140,7 +146,29 @@ private:
 			uint8_t scale;
 		} fixed;                           // FIXED
 
-		U () {}
+		U ()
+		{}
+
+		U (BasicType bt) :
+			basic_type (bt)
+		{}
+
+		U (const Ptr <NamedItem>* nt) :
+			named_type (nt)
+		{}
+
+		U (Dim ssize) :
+			string_size (ssize)
+		{}
+
+		U (Sequence* pseq) :
+			sequence (pseq)
+		{}
+
+		U (Array* parr) :
+			array (parr)
+		{}
+
 		~U () {}
 	} type_;
 };

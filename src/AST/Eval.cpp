@@ -47,19 +47,25 @@ Variant Eval::literal_float (const string& s, unsigned line)
 	return Variant ();
 }
 
-Variant Eval::literal_string (const string& s, unsigned line)
+Variant Eval::literal_string (const string& s, unsigned line, const Variant* append)
 {
 	invalid_literal_type (line);
 	return Variant ();
 }
 
-Variant Eval::literal_wstring (const string& s, unsigned line)
+Variant Eval::literal_wstring (const string& s, unsigned line, const Variant* append)
 {
 	invalid_literal_type (line);
 	return Variant ();
 }
 
 Variant Eval::literal_fixed (const string& s, unsigned line)
+{
+	invalid_literal_type (line);
+	return Variant ();
+}
+
+Variant Eval::literal_boolean (bool v, unsigned line)
 {
 	invalid_literal_type (line);
 	return Variant ();
@@ -154,12 +160,6 @@ Variant Eval::expr_tilde (const Variant& v, unsigned line)
 {
 	invalid_operation (line);
 	return Variant ();
-}
-
-unsigned Eval::positive_int (const Variant& v, unsigned line) const
-{
-	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
-	return 1;
 }
 
 wchar_t Eval::unescape_wchar (const char*& p)
@@ -347,7 +347,7 @@ Variant EvalDouble::literal_float (const string& s, unsigned line)
 
 // String evaluator
 
-Variant EvalString::literal_string (const string& s, unsigned line)
+Variant EvalString::literal_string (const string& s, unsigned line, const Variant* append)
 {
 	try {
 		assert (s.size () >= 2);
@@ -363,6 +363,8 @@ Variant EvalString::literal_string (const string& s, unsigned line)
 				throw runtime_error ("A string literal shall not contain the character \'\\0\'.");
 			v += c;
 		}
+		if (append)
+			v += append->str ();
 		return Variant (move (v));
 	} catch (const exception& ex) {
 		error (line, ex);
@@ -372,7 +374,7 @@ Variant EvalString::literal_string (const string& s, unsigned line)
 
 // Wide string evaluator
 
-Variant EvalWString::literal_wstring (const string& s, unsigned line)
+Variant EvalWString::literal_wstring (const string& s, unsigned line, const Variant* append)
 {
 	try {
 		assert (s.size () >= 3);
@@ -388,6 +390,8 @@ Variant EvalWString::literal_wstring (const string& s, unsigned line)
 			if (!c)
 				throw runtime_error ("A wide string literal shall not contain the character \'\\0\'.");
 		}
+		if (append)
+			v += append->wstr ();
 		return Variant (move (v));
 	} catch (const exception& ex) {
 		error (line, ex);

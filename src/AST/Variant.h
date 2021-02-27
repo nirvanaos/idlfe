@@ -30,6 +30,7 @@ public:
 	Variant& operator = (const Variant& src);
 	Variant& operator = (Variant&& src) noexcept;
 
+	Variant (bool v);
 	Variant (char v);
 	Variant (wchar_t v);
 	Variant (unsigned long v);
@@ -51,6 +52,22 @@ public:
 
 	Variant (const _decNumber& v);
 
+	// String
+
+	const std::string str () const
+	{
+		assert (kind () == Type::Kind::STRING);
+		return val_.s;
+	}
+
+	const std::wstring wstr () const
+	{
+		assert (kind () == Type::Kind::WSTRING);
+		return val_.ws;
+	}
+
+	// Fixed
+
 	const uint8_t* bcd () const
 	{
 		assert (kind () == Type::Kind::FIXED);
@@ -64,10 +81,6 @@ public:
 	}
 
 private:
-	Variant (const Type& t) :
-		Type (t)
-	{}
-
 	void clear () noexcept;
 	void copy (const Variant& src);
 
