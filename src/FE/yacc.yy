@@ -36,6 +36,11 @@
 }
 
 %param {Driver& drv}
+%locations
+
+%define parse.trace
+%define parse.error detailed
+%define parse.lac full
 
 %token T_AMPERSAND
 %token T_ANY
@@ -158,7 +163,7 @@ definition
 
 /*3*/
 module
-	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET { drv.module_begin ($2, @1); }
+	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET { drv.module_begin ($2, @1.begin.line); }
 definitions T_RIGHT_CURLY_BRACKET { drv.module_end (); }
 	;
 
@@ -434,7 +439,9 @@ primary_expr
 literal
 	: T_INTEGER_LITERAL
 	| T_string_literal
+	| T_wstring_literal
 	| T_CHARACTER_LITERAL
+	| T_WCHARACTER_LITERAL
 	| T_FIXED_PT_LITERAL
 	| T_FLOATING_PT_LITERAL
 	| T_TRUE  /*boolean_literal*/
@@ -749,7 +756,7 @@ op_attribute
 /*89*/
 op_type_spec	
 	: param_type_spec { $$ = $1; }
-	| T_VOID { $$ = AST::BasicType::VOID; }
+	| T_VOID { $$ = AST::Type (); }
 	;
 
 /*90*/
@@ -797,12 +804,17 @@ T_string_literal
 	| T_STRING_LITERAL T_string_literal
 	;
 
+T_wstring_literal
+	: T_STRING_LITERAL
+	| T_STRING_LITERAL T_wstring_literal
+	;
+
 /*95*/
 param_type_spec
 	: base_type_spec { $$ = $1; }
 	| string_type { $$ = $1; }
 	| wide_string_type { $$ = $1; }
-	| scoped_name { $$ = $1; }
+	| scoped_name { $$ = drv.lookup ($1, @1); }
 	;
 
 /*96*/
@@ -828,7 +840,7 @@ namespace yy {
 // Report an error to the user.
 void parser::error (const location& l, const std::string& msg)
 {
-	drv.parser_error (l, msg);
+	drv.parser_error (l.begin.line, msg);
 }
 
 }

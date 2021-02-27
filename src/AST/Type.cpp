@@ -25,13 +25,12 @@ Type::Type (const Ptr <NamedItem>* named) :
 	type_.named_type = named;
 }
 
-Type::Type (uint16_t digits, uint16_t scale) :
+Type::Type (unsigned digits, unsigned scale) :
 	kind_ (Kind::FIXED)
 {
-	if (digits > 31 || scale > digits)
-		throw runtime_error (string ("fixed <") + to_string (digits) + ", " + to_string (scale) + "> type specification is invalid.");
-	type_.fixed.digits = digits;
-	type_.fixed.scale = scale;
+	assert (digits <= 62 && scale <= digits);
+	type_.fixed.digits = (uint8_t)digits;
+	type_.fixed.scale = (uint8_t)scale;
 }
 
 Type::Type (Type&& src) noexcept :

@@ -26,10 +26,15 @@ public:
 
 	void parser_error (unsigned line, const std::string& msg)
 	{
-		message (Location (*cur_file_, line), MessageType::ERROR, msg);
+		message (Location (file (), line), MessageType::ERROR, msg);
 	}
 
 	void file (const std::string& name);
+
+	const std::string& file () const
+	{
+		return *cur_file_;
+	}
 
 	void native (const std::string& name, unsigned line);
 
@@ -61,6 +66,15 @@ public:
 	}
 
 	const Ptr <NamedItem>* struct_begin (const std::string& name, unsigned line);
+
+	Type fixed (unsigned digits, unsigned scale, unsigned line)
+	{
+		if (digits > 31 || scale > digits) {
+			message (Location (file (), line), MessageType::ERROR, std::string ("fixed <") + std::to_string (digits) + ", " + std::to_string (scale) + "> type specification is invalid.");
+			return Type ();
+		} else
+			return Type::make_fixed (digits, scale);
+	}
 
 private:
 	bool scope_begin ();

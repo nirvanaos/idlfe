@@ -69,7 +69,7 @@ public:
 		return Type (Kind::WSTRING, size);
 	}
 
-	static Type make_fixed (uint16_t digits, uint16_t scale)
+	static Type make_fixed (unsigned digits, unsigned scale)
 	{
 		return Type (digits, scale);
 	}
@@ -95,6 +95,18 @@ public:
 
 	const Type& dereference () const noexcept;
 
+	uint8_t fixed_digits () const noexcept
+	{
+		assert (kind () == Kind::FIXED);
+		return type_.fixed.digits;
+	}
+
+	uint8_t fixed_scale () const noexcept
+	{
+		assert (kind () == Kind::FIXED);
+		return type_.fixed.scale;
+	}
+
 protected:
 	void clear () noexcept;
 
@@ -105,14 +117,13 @@ protected:
 
 	void copy (const Type& src);
 
-private:
-	Type (Kind string_kind, Dim size) :
+	Type (Kind string_kind, Dim size = 0) :
 		kind_ (string_kind)
 	{
 		type_.string_size = size;
 	}
 
-	Type (uint16_t digits, uint16_t scale);
+	Type (unsigned digits, unsigned scale);
 
 private:
 	Kind kind_;
@@ -125,8 +136,8 @@ private:
 		Array* array;                      // ARRAY
 		struct
 		{
-			uint16_t digits;
-			uint16_t scale;
+			uint8_t digits;
+			uint8_t scale;
 		} fixed;                           // FIXED
 
 		U () {}

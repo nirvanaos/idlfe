@@ -18,18 +18,18 @@ public:
 		return parser_.parse ();
 	}
 
-	void parser_error (const yy::parser::location_type& l, const std::string& msg)
+	void parser_error (unsigned line, const std::string& msg)
 	{
-		builder_.parser_error (l.begin.line, msg);
+		builder_.parser_error (line, msg);
 	}
 
 	void preprocessor_directive (const char*, unsigned line);
 
 	void pragma (const char*, unsigned line);
 
-	void module_begin (const std::string& id, const yy::parser::location_type& l)
+	void module_begin (const std::string& id, unsigned line)
 	{
-		builder_.module_begin (id, l.begin.line);
+		builder_.module_begin (id, line);
 	}
 
 	void module_end ()

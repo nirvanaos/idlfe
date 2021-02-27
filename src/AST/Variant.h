@@ -3,6 +3,8 @@
 
 #include "Type.h"
 
+extern "C" struct _decNumber;
+
 namespace AST {
 
 class Builder;
@@ -28,14 +30,38 @@ public:
 	Variant& operator = (const Variant& src);
 	Variant& operator = (Variant&& src) noexcept;
 
-	Variant (const Ptr <NamedItem>* constant);
-	static Variant make_char (const std::string& v);
-	static Variant make_wchar (const std::string& v);
-	static Variant make_uint (const std::string& v);
-	static Variant make_double (const std::string& v);
-	static Variant make_string (const std::string& v);
-	static Variant make_wstring (const std::string& v);
-	static Variant make_fixed (const std::string& v);
+	Variant (char v);
+	Variant (wchar_t v);
+	Variant (unsigned long v);
+	Variant (unsigned long long v);
+	Variant (double v);
+	Variant (long double v);
+
+	Variant (std::string&& v) :
+		Type (Type::Kind::STRING)
+	{
+		new (&val_.s) std::string (std::move (v));
+	}
+
+	Variant (std::wstring&& v) :
+		Type (Type::Kind::WSTRING)
+	{
+		new (&val_.ws) std::wstring (std::move (v));
+	}
+
+	Variant (const _decNumber& v);
+
+	const uint8_t* bcd () const
+	{
+		assert (kind () == Type::Kind::FIXED);
+		return val_.fixed;
+	}
+
+	size_t bcd_length () const
+	{
+		assert (kind () == Type::Kind::FIXED);
+		return bcd_length (fixed_digits ());
+	}
 
 private:
 	Variant (const Type& t) :
@@ -44,21 +70,19 @@ private:
 
 	void clear () noexcept;
 	void copy (const Variant& src);
-	static wchar_t unescape_wchar (const char*& p);
-	static char unescape_char (const char*& p);
-	static int from_hdigit (int c) noexcept;
-	static unsigned from_hex (const char*& p, unsigned maxlen);
-	[[noreturn]] static void invalid_escape_seq ();
-	[[noreturn]] static void invalid_char_const ();
+
+	static unsigned bcd_length (unsigned digits)
+	{
+		return (digits + 2) / 2;
+	}
 
 private:
 	union Val
 	{
 		int64_t i;
 		uint64_t ui;
-		double d;
-		long double ld;
-		long double fixed; // Temporary solution
+		long double d;
+		uint8_t fixed [32];
 		std::string s;
 		std::wstring ws;
 
@@ -66,9 +90,6 @@ private:
 		~Val () {}
 	} val_;
 };
-
-Variant operator | (const Variant& l, const Variant& r);
-Variant operator ^ (const Variant& l, const Variant& r);
 
 }
 
