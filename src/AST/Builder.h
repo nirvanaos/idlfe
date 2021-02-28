@@ -55,10 +55,12 @@ public:
 
 	void interface_decl (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_begin (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
-	void interface_base (const ScopedName& name, unsigned line);
+	void interface_bases (const ScopedNames& bases);
 
 	void operation_begin (bool oneway, const Type& type, const std::string& name, unsigned line);
 	void operation_parameter (Parameter::Attribute att, const Type& type, const std::string& name, unsigned line);
+	void operation_raises (const ScopedNames& raises);
+
 	void operation_end ()
 	{
 		interface_data_.cur_op = nullptr;
@@ -85,12 +87,8 @@ public:
 
 	void message (const Location& l, MessageType mt, const std::string& err);
 
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name, unsigned line)
-	{
-		return lookup (scoped_name, Location (file (), line));
-	}
-
-	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name, unsigned line);
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
+	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
 
 	template <class Ev>
 	void set_eval ()
@@ -156,9 +154,7 @@ private:
 
 	void error_name_collision (const Location& loc, const std::string& name, const Location& prev_loc);
 	void error_interface_kind (const Location& loc, const std::string& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
-
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name) const;
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name, const Location& loc);
+	void error_symbol_not_found (const ScopedName& sn);
 
 	const ItemScope* cur_scope () const;
 
@@ -174,22 +170,15 @@ private:
 	ContainerStack container_stack_;
 	std::unique_ptr <Eval> eval_;
 
-	typedef std::map <const Item*, Location> Bases;
-
 	struct InterfaceData
 	{
-		Bases bases;
-		std::set <const Item*> all_bases;
 		Symbols all_operations;
 		Operation* cur_op;
 		Symbols cur_op_params;
 
 		void clear ()
 		{
-			bases.clear ();
-			all_bases.clear ();
 			all_operations.clear ();
-			cur_op_params.clear ();
 		}
 	} interface_data_;
 };

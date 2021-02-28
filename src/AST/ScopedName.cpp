@@ -4,7 +4,8 @@ using namespace std;
 
 namespace AST {
 
-ScopedName::ScopedName (bool root, const std::string& name) :
+ScopedName::ScopedName (const Location& loc, bool root, const std::string& name) :
+	Location (loc),
 	from_root (root)
 {
 	push_back (name);

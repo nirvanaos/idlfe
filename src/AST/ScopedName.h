@@ -3,13 +3,19 @@
 
 #include <string>
 #include <vector>
+#include <forward_list>
+#include "Location.h"
 
 namespace AST {
 
-struct ScopedName : std::vector <std::string>
+struct ScopedName : 
+	std::vector <std::string>,
+	Location
 {
-	ScopedName () {}
-	ScopedName (bool root, const std::string& name);
+	ScopedName () : from_root (false)
+	{}
+
+	ScopedName (const Location& loc, bool root, const std::string& name);
 
 	ScopedName (const ScopedName&) = default;
 	ScopedName (ScopedName&&) = default;
@@ -21,6 +27,8 @@ struct ScopedName : std::vector <std::string>
 
 	bool from_root;
 };
+
+typedef std::forward_list <ScopedName> ScopedNames;
 
 }
 

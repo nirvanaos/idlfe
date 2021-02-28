@@ -131,6 +131,8 @@
 %nterm <AST::Variant> T_wstring_literal;
 
 %nterm <AST::ScopedName> scoped_name;
+%nterm <AST::ScopedNames> scoped_names;
+
 %nterm <AST::BasicType> base_type_spec;
 %nterm <AST::BasicType> floating_pt_type;
 %nterm <AST::BasicType> integer_type;
@@ -236,11 +238,11 @@ forward_dcl
 /*7*/
 interface_header
 	: T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1.begin.line); }
-	| T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1.begin.line); } interface_inheritance_spec
+	| T_INTERFACE T_IDENTIFIER interface_inheritance_spec { drv.interface_begin ($2, @1.begin.line); }
 	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
+	| T_ABSTRACT T_INTERFACE T_IDENTIFIER interface_inheritance_spec{ drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
 	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
+	| T_LOCAL T_INTERFACE T_IDENTIFIER interface_inheritance_spec { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
 	;
 
 /*8*/
@@ -265,28 +267,18 @@ export
 
 /*10*/
 interface_inheritance_spec
-	: T_COLON interface_names
-	;
-
-interface_names
-	: interface_name
-	| interface_name T_COMMA interface_names
+	: T_COLON scoped_names { drv.interface_bases ($2); }
 	;
 
 scoped_names
-	: scoped_name
-	| scoped_name T_COMMA scoped_names
-	;
-
-/*11*/
-interface_name
-	: scoped_name { drv.interface_base ($1, @1.begin.line); }
+	: scoped_name { $$ = AST::ScopedNames (1, $1); }
+	| scoped_name T_COMMA scoped_names { $$ = $3; $$.push_front ($1); }
 	;
 
 /*12*/
 scoped_name
-	: T_IDENTIFIER { $$ = AST::ScopedName (false, $1); }
-	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (true, $2); }
+	: T_IDENTIFIER { $$ = AST::ScopedName (AST::Location (drv.file (), @1.begin.line), false, $1); }
+	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (AST::Location (drv.file (), @2.begin.line), true, $2); }
 	| scoped_name T_SCOPE T_IDENTIFIER { $$ = $1; $$.push_back ($3); }
 	;
 
@@ -345,8 +337,8 @@ value_header
 /*19*/
 value_inheritance_spec
 	: T_COLON value_inheritance_bases
-	| T_COLON value_inheritance_bases T_SUPPORTS interface_names
-	| T_SUPPORTS interface_names
+	| T_COLON value_inheritance_bases T_SUPPORTS scoped_names
+	| T_SUPPORTS scoped_names
 	;
 
 value_inheritance_bases
@@ -476,7 +468,7 @@ unary_expr
 
 /*38*/
 primary_expr
-	: scoped_name { $$ = drv.eval ().constant (drv.lookup ($1, @1.begin.line), @1.begin.line); }
+	: scoped_name { $$ = drv.eval ().constant ($1); }
 	| literal { $$ = $1; }
 	| T_LEFT_PARANTHESIS const_exp T_RIGHT_PARANTHESIS { $$ = $2; }
 	;
@@ -520,7 +512,7 @@ type_spec
 simple_type_spec
 	: base_type_spec { $$ = $1; }
   | template_type_spec { $$ = $1; }
-	| scoped_name { $$ = drv.lookup_type ($1, @1.begin.line); }
+	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
 /*46*/
@@ -696,7 +688,7 @@ switch_type_spec
 	| char_type { $$ = AST::BasicType::CHAR; }
 	| boolean_type { $$ = AST::BasicType::BOOLEAN; }
 	| enum_type
-	| scoped_name { $$ = drv.lookup_type ($1, @1.begin.line); }
+	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
 /*74*/
@@ -840,7 +832,7 @@ param_attribute
 /*93*/
 raises_expr
 	: /*empty*/
-	| T_RAISES T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS
+	| T_RAISES T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.operation_raises ($3); }
 	;
 
 /*94*/
@@ -869,7 +861,7 @@ param_type_spec
 	: base_type_spec { $$ = $1; }
 	| string_type { $$ = $1; }
 	| wide_string_type { $$ = $1; }
-	| scoped_name { $$ = drv.lookup_type ($1, @1.begin.line); }
+	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
 /*96*/

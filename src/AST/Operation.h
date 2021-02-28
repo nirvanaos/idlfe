@@ -30,6 +30,7 @@ public:
 
 private:
 	bool oneway_;
+
 };
 
 }

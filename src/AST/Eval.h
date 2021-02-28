@@ -7,6 +7,7 @@
 namespace AST {
 
 class Builder;
+struct ScopedName;
 
 /// Abstract evaluator.
 class Eval
@@ -25,7 +26,7 @@ public:
 	virtual Variant literal_fixed (const std::string& s, unsigned line);
 	virtual Variant literal_boolean (bool v, unsigned line);
 
-	virtual Variant constant (const Ptr <NamedItem>* constant, unsigned line);
+	virtual Variant constant (const ScopedName& constant);
 
 	virtual Variant expr_or (const Variant& l, const Variant& r, unsigned line);
 	virtual Variant expr_xor (const Variant& l, const Variant& r, unsigned line);
@@ -52,6 +53,8 @@ protected:
 	void error (unsigned line, const std::exception& ex) const;
 	static int from_hdigit (int c) noexcept;
 	static unsigned from_hex (const char*& p, unsigned maxlen);
+	const Ptr <NamedItem>* lookup_const (const ScopedName& constant) const;
+	void see_definition (const NamedItem& item) const;
 
 protected:
 	Builder& builder_;

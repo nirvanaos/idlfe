@@ -1,5 +1,6 @@
 #include "Eval.h"
 #include "Builder.h"
+
 extern "C" {
 #include <decNumber/decNumber.h>
 }
@@ -71,17 +72,27 @@ Variant Eval::literal_boolean (bool v, unsigned line)
 	return Variant ();
 }
 
-Variant Eval::constant (const Ptr <NamedItem>* constant, unsigned line)
+Variant Eval::constant (const ScopedName& constant)
 {
-	if (constant) {
-		const NamedItem* item = *constant;
-		if (item->kind () != Item::Kind::CONSTANT)
-			builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, item->name () + " is not a constant.");
-		else
-			builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Invalid constant type.");
-		builder_.message (**constant, Builder::MessageType::MESSAGE, string ("See definition of ") + item->name () + ".");
-	}
 	return Variant ();
+}
+
+const Ptr <NamedItem>* Eval::lookup_const (const ScopedName& constant) const
+{
+	const Ptr <NamedItem>* pitem = builder_.lookup (constant);
+	if (pitem) {
+		const NamedItem* item = *pitem;
+		if (item->kind () != Item::Kind::CONSTANT) {
+			builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a constant.");
+			see_definition (*item);
+		}
+	}
+	return pitem;
+}
+
+void Eval::see_definition (const NamedItem& item) const
+{
+	builder_.message (item, Builder::MessageType::MESSAGE, string ("See definition of ") + item.qualified_name () + ".");
 }
 
 Variant Eval::expr_or (const Variant& l, const Variant& r, unsigned line)

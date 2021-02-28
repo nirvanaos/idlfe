@@ -48,16 +48,22 @@ void Builder::error_name_collision (const Location& loc, const std::string& name
 	message (prev_loc, MessageType::MESSAGE, "See previous declaration.");
 }
 
-inline
-const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name) const
+void Builder::error_symbol_not_found (const ScopedName& sn)
+{
+	message (sn, MessageType::ERROR, string ("Symbol not found: ") + sn.stringize ());
+}
+
+const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 {
 	auto name = scoped_name.begin ();
 	Symbols::const_iterator f;
 	if (scoped_name.from_root) {
 		const Symbols* scope = scope_stack_.front ();
 		f = scope->find (*name);
-		if (f == scope->end ())
+		if (f == scope->end ()) {
+			error_symbol_not_found (scoped_name);
 			return nullptr;
+		}
 	} else {
 		ScopeStack::const_iterator it = scope_stack_.end () - 1;
 		for (;;) {
@@ -65,8 +71,10 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name) const
 			f = scope->find (*name);
 			if (f != scope->end ())
 				break;
-			if (it == scope_stack_.begin ())
+			if (it == scope_stack_.begin ()) {
+				error_symbol_not_found (scoped_name);
 				return nullptr;
+			}
 			--it;
 		}
 	}
@@ -75,10 +83,14 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name) const
 		const ItemScope* scope = ItemScope::cast (*f);
 		if (scope) {
 			f = scope->find (*name);
-			if (f == scope->end ())
+			if (f == scope->end ()) {
+				error_symbol_not_found (scoped_name);
 				return nullptr;
-		} else
+			}
+		} else {
+			error_symbol_not_found (scoped_name);
 			return nullptr;
+		}
 	}
 
 	return &*f;
@@ -91,22 +103,13 @@ unsigned Builder::positive_int (const Variant& v, unsigned line)
 	return 1;
 }
 
-const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name, const Location& loc)
+const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name)
 {
 	const Ptr <NamedItem>* item = lookup (scoped_name);
-	if (!item)
-		message (loc, MessageType::ERROR, string ("Symbol not found: ") + scoped_name.stringize ());
-	return item;
-}
-
-const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name, unsigned line)
-{
-	Location loc (file (), line);
-	const Ptr <NamedItem>* item = lookup (scoped_name, loc);
 	if (item) {
 		const NamedItem* p = *item;
 		if (!p->is_type ()) {
-			message (loc, MessageType::ERROR, scoped_name.stringize () + " is not a type.");
+			message (scoped_name, MessageType::ERROR, scoped_name.stringize () + " is not a type.");
 			item = nullptr;
 		}
 	}
@@ -252,81 +255,88 @@ void Builder::interface_begin (const std::string& name, unsigned line, Interface
 				const_cast <Ptr <NamedItem>&> (*ins.first) = itf;
 			}
 		}
+
 		scope_push (itf);
 	}
 }
 
-void Builder::interface_base (const ScopedName& name, unsigned line)
+void Builder::interface_bases (const ScopedNames& bases)
 {
-	assert (scope_stack_.size () > 1);
-	Interface* this_itf = static_cast <Interface*> (scope_stack_.back ());
-	if (this_itf) {
-		assert (this_itf->kind () == Item::Kind::INTERFACE);
+	Interface* itf = static_cast <Interface*> (scope_stack_.back ());
+	if (itf) {
+		assert (itf->kind () == Item::Kind::INTERFACE);
 
-		Location loc (file (), line);
-		const Ptr <NamedItem>* pbase = lookup (name, loc);
-		if (pbase) {
-			const NamedItem* base = *pbase;
-			const char* err = nullptr;
-			if (base->kind () != Item::Kind::INTERFACE)
-				if (base->kind () == Item::Kind::INTERFACE_DECL)
-					err = "Incomplete interface is not allowed.";
-				else
-					err = "Invalid base type.";
-			else {
-				const Interface* base_itf = static_cast <const Interface*> (base);
-				if (this_itf == base_itf) {
-					message (loc, MessageType::ERROR, "May not derive from itself.");
-					return;
-				}
-				switch (this_itf->interface_kind ()) {
-					case InterfaceKind::UNCONSTRAINED:
-						if (InterfaceKind::LOCAL == base_itf->interface_kind ())
-							err = "Unconstrained interface may not derive local interface.";
-						break;
-					case InterfaceKind::ABSTRACT:
-						if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
-							err = "An abstract interface may only inherit from abstract interfaces.";
-						break;
-				}
-				if (!err) {
-					auto ins = interface_data_.bases.emplace (base, loc);
-					if (!ins.second) {
-						message (loc, MessageType::ERROR, name.stringize () + " is already base of " + this_itf->name () + ".");
-						message (ins.first->second, MessageType::MESSAGE, "See the previous declaration.");
-						return;
+		// Process bases
+		std::map <const Item*, Location> direct_bases;
+		std::set <const Item*> all_bases;
+		for (auto base_name = bases.begin (); base_name != bases.end (); ++base_name) {
+			const Ptr <NamedItem>* pbase = lookup (*base_name);
+			if (pbase) {
+				const NamedItem* base = *pbase;
+				const char* err = nullptr;
+				if (base->kind () != Item::Kind::INTERFACE)
+					if (base->kind () == Item::Kind::INTERFACE_DECL)
+						err = "Incomplete interface is not allowed.";
+					else
+						err = "Invalid base type.";
+				else {
+					const Interface* base_itf = static_cast <const Interface*> (base);
+					if (itf == base_itf) {
+						message (*base_name, MessageType::ERROR, "May not derive from itself.");
+						continue;
 					}
-					{
-						vector <const Interface*> bases;
-						base_itf->get_all_interfaces (bases);
-						for (const Interface* itf : bases) {
-							if (interface_data_.all_bases.insert (itf).second) {
-								// Check operation names
-								const Symbols& members = *itf;
-								for (Symbols::const_iterator it = members.begin (); it != members.end (); ++it) {
-									const Item* member = *it;
-									if (member->kind () == Item::Kind::OPERATION) {
-										Operation* op = static_cast <Operation*> (const_cast <Item*> (member));
-										auto ins = interface_data_.all_operations.insert (op);
-										if (!ins.second) {
-											message (loc, MessageType::ERROR, string ("Operation name ") + op->name () + " collision.");
-											message (**ins.first, MessageType::MESSAGE, (*ins.first)->qualified_name ());
-											message (*op, MessageType::MESSAGE, op->qualified_name ());
-											return;
+					switch (itf->interface_kind ()) {
+						case InterfaceKind::UNCONSTRAINED:
+							if (InterfaceKind::LOCAL == base_itf->interface_kind ())
+								err = "Unconstrained interface may not derive local interface.";
+							break;
+						case InterfaceKind::ABSTRACT:
+							if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
+								err = "An abstract interface may only inherit from abstract interfaces.";
+							break;
+					}
+					if (!err) {
+						auto ins = direct_bases.emplace (base, *base_name);
+						if (!ins.second) {
+							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + itf->name () + ".");
+							message (ins.first->second, MessageType::MESSAGE, "See the previous declaration.");
+							continue;
+						}
+						{
+							vector <const Interface*> bases;
+							base_itf->get_all_interfaces (bases);
+							for (const Interface* itf : bases) {
+								if (all_bases.insert (itf).second) {
+									// Check operation names
+									const Symbols& members = *itf;
+									for (Symbols::const_iterator it = members.begin (); it != members.end (); ++it) {
+										const Item* member = *it;
+										switch (member->kind ()) {
+											case Item::Kind::OPERATION:
+											case Item::Kind::ATTRIBUTE:
+												NamedItem* op = static_cast <NamedItem*> (const_cast <Item*> (member));
+												auto ins = interface_data_.all_operations.insert (op);
+												if (!ins.second) {
+													string opatt = member->kind () == Item::Kind::OPERATION ? "Operation name " : "Attribute name ";
+													message (*base_name, MessageType::ERROR, opatt + op->name () + " collision.");
+													message (**ins.first, MessageType::MESSAGE, (*ins.first)->qualified_name ());
+													message (*op, MessageType::MESSAGE, op->qualified_name ());
+													continue;
+												}
 										}
 									}
 								}
 							}
 						}
-					}
 
-					// OK
-					this_itf->add_base (base_itf);
+						// OK
+						itf->add_base (base_itf);
+					}
 				}
-			}
-			if (err) {
-				message (loc, MessageType::ERROR, err);
-				message (*base, MessageType::MESSAGE, "See declaration of " + name.stringize ());
+				if (err) {
+					message (*base_name, MessageType::ERROR, err);
+					message (*base, MessageType::MESSAGE, "See declaration of " + base_name->stringize ());
+				}
 			}
 		}
 	}
@@ -377,6 +387,11 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 		else if (is_main_file ())
 			op->append (op);
 	}
+}
+
+void Builder::operation_raises (const ScopedNames& raises)
+{
+
 }
 
 void Builder::struct_decl (const std::string& name, unsigned line)
