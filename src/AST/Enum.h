@@ -9,8 +9,8 @@ class EnumItem :
 	public NamedItem
 {
 public:
-	EnumItem (const Location& loc, const ItemScope* parent, const std::string& name) :
-		NamedItem (loc, Item::Kind::ENUM_ITEM, parent, name)
+	EnumItem (const ItemScope* parent, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::ENUM_ITEM, parent, name)
 	{}
 };
 
@@ -18,8 +18,8 @@ class Enum :
 	public ItemContainer
 {
 public:
-	Enum (const Location& loc, const ItemScope* parent, const std::string& name) :
-		ItemContainer (loc, Item::Kind::ENUM, parent, name)
+	Enum (const ItemScope* parent, const SimpleDeclarator& name) :
+		ItemContainer (Item::Kind::ENUM, parent, name)
 	{}
 };
 

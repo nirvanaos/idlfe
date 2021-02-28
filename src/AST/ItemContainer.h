@@ -11,8 +11,8 @@ class ItemContainer :
 	public Container
 {
 public:
-	ItemContainer (const Location& loc, Item::Kind kind, const ItemScope* parent, const std::string& name) :
-		ItemScope (loc, kind, parent, name)
+	ItemContainer (Item::Kind kind, const ItemScope* parent, const SimpleDeclarator& name) :
+		ItemScope (kind, parent, name)
 	{}
 };
 

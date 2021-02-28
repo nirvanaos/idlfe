@@ -9,8 +9,8 @@ class StructDecl :
 	public NamedItem
 {
 public:
-	StructDecl (const Location& loc, const ItemScope* parent, const std::string& name) :
-		NamedItem (loc, Item::Kind::STRUCT_DECL, parent, name)
+	StructDecl (const ItemScope* parent, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::STRUCT_DECL, parent, name)
 	{}
 };
 
@@ -18,8 +18,8 @@ class Struct :
 	public ItemContainer
 {
 public:
-	Struct (const Location& loc, const ItemScope* parent, const std::string& name) :
-		ItemContainer (loc, Item::Kind::STRUCT, parent, name)
+	Struct (const ItemScope* parent, const SimpleDeclarator& name) :
+		ItemContainer (Item::Kind::STRUCT, parent, name)
 	{}
 };
 

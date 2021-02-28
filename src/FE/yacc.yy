@@ -174,9 +174,9 @@
 %nterm <AST::Declarator> array_declarator;
 %nterm <AST::Declarator> complex_declarator;
 %nterm <AST::Declarator> declarator;
-%nterm <AST::Declarator> simple_declarator;
+%nterm <AST::SimpleDeclarator> simple_declarator;
 %nterm <AST::Declarators> declarators;
-%nterm <AST::Declarators> simple_declarators;
+%nterm <AST::SimpleDeclarators> simple_declarators;
 
 %nterm <bool> op_attribute;
 
@@ -208,7 +208,7 @@ definition
 
 /*3*/
 module
-	: T_MODULE T_IDENTIFIER { drv.module_begin ($2, @1.begin.line); }
+	: T_MODULE simple_declarator { drv.module_begin ($2); }
 	T_LEFT_CURLY_BRACKET
 		definitions 
 	T_RIGHT_CURLY_BRACKET { drv.module_end (); }
@@ -230,19 +230,19 @@ interface_dcl
 
 /*6*/
 forward_dcl
-	: T_INTERFACE T_IDENTIFIER { drv.interface_decl ($2, @1.begin.line); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_decl ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
+	: T_INTERFACE simple_declarator { drv.interface_decl ($2); }
+	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::ABSTRACT); }
+	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::LOCAL); }
 	;
 
 /*7*/
 interface_header
-	: T_INTERFACE T_IDENTIFIER { drv.interface_begin ($2, @1.begin.line); }
-	| T_INTERFACE T_IDENTIFIER interface_inheritance_spec { drv.interface_begin ($2, @1.begin.line); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
-	| T_ABSTRACT T_INTERFACE T_IDENTIFIER interface_inheritance_spec{ drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::ABSTRACT); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
-	| T_LOCAL T_INTERFACE T_IDENTIFIER interface_inheritance_spec { drv.interface_begin ($3, @1.begin.line, AST::InterfaceKind::LOCAL); }
+	: T_INTERFACE simple_declarator { drv.interface_begin ($2); }
+	| T_INTERFACE simple_declarator { drv.interface_begin ($2); } interface_inheritance_spec
+	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); }
+	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
+	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); }
+	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	;
 
 /*8*/
@@ -499,7 +499,7 @@ type_dcl
 	| struct_type
 	| union_type
 	| enum_type
-	| T_NATIVE T_IDENTIFIER { drv.native ($2, @1.begin.line); }
+	| T_NATIVE simple_declarator { drv.native ($2); }
 	;
 
 /*44*/
@@ -551,13 +551,13 @@ declarators
 
 /*50*/
 declarator
-	: simple_declarator
+	: simple_declarator { $$ = $1; }
 	| complex_declarator
 	;
 
 /*51*/
 simple_declarator
-	: T_IDENTIFIER { $$ = AST::Declarator ($1, AST::Location (drv.file (), @1.begin.line)); }
+	: T_IDENTIFIER { $$ = AST::SimpleDeclarator ($1, AST::Location (drv.file (), @1.begin.line)); }
 	;
 
 /*52*/
@@ -654,12 +654,12 @@ object_type
 
 /*69*/
 struct_type
-	: T_STRUCT T_IDENTIFIER
-	T_LEFT_CURLY_BRACKET { drv.struct_begin ($2, @1.begin.line); }
+	: T_STRUCT simple_declarator
+	T_LEFT_CURLY_BRACKET { drv.struct_begin ($2); }
 		member_list
 	T_RIGHT_CURLY_BRACKET
 	{ $$ = drv.struct_end (); }
-	| T_STRUCT T_IDENTIFIER { drv.struct_decl ($2, @1.begin.line); }
+	| T_STRUCT simple_declarator { drv.struct_decl ($2); }
 	;
 
 /*70*/
@@ -675,11 +675,11 @@ member
 
 /*72*/
 union_type
-	: T_UNION T_IDENTIFIER T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5, @1.begin.line); }
+	: T_UNION simple_declarator T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5); }
 	T_LEFT_CURLY_BRACKET
 		switch_body
 	T_RIGHT_CURLY_BRACKET { $$ = drv.union_end (); }
-	| T_UNION T_IDENTIFIER { drv.union_decl ($2, @1.begin.line); }
+	| T_UNION simple_declarator{ drv.union_decl ($2); }
 	; 
 
 /*73*/
@@ -716,7 +716,7 @@ element_spec
 
 /*78*/
 enum_type
-	: T_ENUM T_IDENTIFIER { drv.enum_begin ($2, @1.begin.line); }
+	: T_ENUM simple_declarator { drv.enum_begin ($2); }
 	T_LEFT_CURLY_BRACKET
 		enumerators
 	T_RIGHT_CURLY_BRACKET { $$ = drv.enum_end (); }
@@ -729,7 +729,7 @@ enumerators
 
 /*79*/
 enumerator
-	: T_IDENTIFIER { drv.enum_item ($1, @1.begin.line); }
+	: simple_declarator { drv.enum_item ($1); }
 	;
 
 /*80*/
@@ -773,7 +773,7 @@ attr_dcl
 	; 
 
 simple_declarators
-	: simple_declarator { $$ = AST::Declarators (1, $1); }
+	: simple_declarator { $$ = AST::SimpleDeclarators (1, $1); }
 	| simple_declarator T_COMMA simple_declarators { $$ = $3; $$.push_front ($1); }
 	;
 
@@ -790,7 +790,7 @@ members
 
 /*87*/
 op_dcl
-	: op_attribute op_type_spec T_IDENTIFIER { drv.operation_begin ($1, $2, $3, @3.begin.line); }
+	: op_attribute op_type_spec simple_declarator { drv.operation_begin ($1, $2, $3); }
 	parameter_dcls raises_expr context_expr { drv.operation_end (); }
 	;
 
@@ -819,7 +819,7 @@ param_dcls
 
 /*91*/
 param_dcl
-	: param_attribute param_type_spec T_IDENTIFIER { drv.operation_parameter ($1, $2, $3, @1.begin.line); }
+	: param_attribute param_type_spec simple_declarator { drv.operation_parameter ($1, $2, $3); }
 	;
 
 /*92*/

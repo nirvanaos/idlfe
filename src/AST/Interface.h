@@ -37,9 +37,9 @@ class Interface :
 	public ItemContainer
 {
 public:
-	Interface (const Location& loc, const ItemScope* parent, const std::string& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
+	Interface (const ItemScope* parent, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
 		InterfaceKind (kind),
-		ItemContainer (loc, Item::Kind::INTERFACE, parent, name)
+		ItemContainer (Item::Kind::INTERFACE, parent, name)
 	{}
 
 	void add_base (const Interface* base)
@@ -65,9 +65,9 @@ class InterfaceDecl :
 	public NamedItem
 {
 public:
-	InterfaceDecl (const Location& loc, const ItemScope* parent, const std::string& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
+	InterfaceDecl (const ItemScope* parent, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
 		InterfaceKind (kind),
-		NamedItem (loc, Item::Kind::INTERFACE_DECL, parent, name)
+		NamedItem (Item::Kind::INTERFACE_DECL, parent, name)
 	{}
 };
 

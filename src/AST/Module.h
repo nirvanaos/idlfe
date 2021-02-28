@@ -10,8 +10,8 @@ class Module :
 	public ItemScope
 {
 public:
-	Module (const Location& loc, const ItemScope* parent, const std::string& name) :
-		ItemScope (loc, Kind::MODULE, parent, name)
+	Module (const ItemScope* parent, const SimpleDeclarator& name) :
+		ItemScope (Kind::MODULE, parent, name)
 	{}
 };
 

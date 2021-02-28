@@ -9,8 +9,8 @@ class Exception :
 	public ItemContainer
 {
 public:
-	Exception (const Location& loc, const ItemScope* parent, const std::string& name) :
-		ItemContainer (loc, Item::Kind::EXCEPTION, parent, name)
+	Exception (const ItemScope* parent, const SimpleDeclarator& name) :
+		ItemContainer (Item::Kind::EXCEPTION, parent, name)
 	{}
 };
 

@@ -10,8 +10,8 @@ class ItemScope :
 	public Symbols
 {
 public:
-	ItemScope (const Location& loc, Item::Kind kind, const ItemScope* parent, const std::string& name) :
-		NamedItem (loc, kind, parent, name)
+	ItemScope (Item::Kind kind, const ItemScope* parent, const SimpleDeclarator& name) :
+		NamedItem (kind, parent, name)
 	{}
 
 	static const ItemScope* cast (const NamedItem* item)

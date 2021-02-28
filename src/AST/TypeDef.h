@@ -11,8 +11,8 @@ class TypeDef :
 	public Type
 {
 public:
-	TypeDef (const Location& loc, const ItemScope* parent, const std::string& name, const Type& t) :
-		NamedItem (loc, Item::Kind::TYPEDEF, parent, name),
+	TypeDef (const ItemScope* parent, const SimpleDeclarator& name, const Type& t) :
+		NamedItem (Item::Kind::TYPEDEF, parent, name),
 		Type (t)
 	{}
 };

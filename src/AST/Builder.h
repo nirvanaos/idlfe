@@ -61,21 +61,21 @@ public:
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
 	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
 
-	void native (const std::string& name, unsigned line);
+	void native (const SimpleDeclarator& name);
 
-	void module_begin (const std::string& name, unsigned line);
+	void module_begin (const SimpleDeclarator& name);
 
 	void module_end ()
 	{
 		scope_end ();
 	}
 
-	void interface_decl (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
-	void interface_begin (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
+	void interface_decl (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
+	void interface_begin (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_bases (const ScopedNames& bases);
 
-	void operation_begin (bool oneway, const Type& type, const std::string& name, unsigned line);
-	void operation_parameter (Parameter::Attribute att, const Type& type, const std::string& name, unsigned line);
+	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
+	void operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
 	void operation_raises (const ScopedNames& raises);
 
 	void operation_end ()
@@ -92,25 +92,25 @@ public:
 
 	void type_def (const Type& type, const Declarators& declarators);
 
-	void struct_decl (const std::string& name, unsigned line);
-	void struct_begin (const std::string& name, unsigned line);
+	void struct_decl (const SimpleDeclarator& name);
+	void struct_begin (const SimpleDeclarator& name);
 	
 	const Ptr <NamedItem>* struct_end ()
 	{
 		return constr_type_end ();
 	}
 
-	void union_decl (const std::string& name, unsigned line);
-	void union_begin (const std::string& name, const Type& switch_type, unsigned line);
+	void union_decl (const SimpleDeclarator& name);
+	void union_begin (const SimpleDeclarator& name, const Type& switch_type);
 	
 	const Ptr <NamedItem>* union_end ()
 	{
 		return constr_type_end ();
 	}
 
-	void enum_begin (const std::string& name, unsigned line);
+	void enum_begin (const SimpleDeclarator& name);
 	
-	void enum_item (const std::string& name, unsigned line);
+	void enum_item (const SimpleDeclarator& name);
 
 	const Ptr <NamedItem>* enum_end ()
 	{
@@ -152,8 +152,8 @@ private:
 		return Item::Kind::MODULE == ik || Item::Kind::INTERFACE == ik;
 	}
 
-	void error_name_collision (const Location& loc, const std::string& name, const Location& prev_loc);
-	void error_interface_kind (const Location& loc, const std::string& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
+	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
+	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 	void error_symbol_not_found (const ScopedName& sn);
 
 	const ItemScope* cur_scope () const;

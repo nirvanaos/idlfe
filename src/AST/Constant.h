@@ -11,8 +11,8 @@ class Constant :
 	public Variant
 {
 public:
-	Constant (const Location& loc, const ItemScope* parent, const std::string& name, const Variant& val) :
-		NamedItem (loc, Item::Kind::CONSTANT, parent, name),
+	Constant (const ItemScope* parent, const SimpleDeclarator& name, const Variant& val) :
+		NamedItem (Item::Kind::CONSTANT, parent, name),
 		Variant (val)
 	{}
 };

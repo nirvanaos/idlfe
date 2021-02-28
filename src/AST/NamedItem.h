@@ -2,8 +2,7 @@
 #define NIDL_AST_NAMEDITEM_H_
 
 #include "Item.h"
-#include "Location.h"
-#include <string>
+#include "Declarators.h"
 
 namespace AST {
 
@@ -14,9 +13,9 @@ class NamedItem :
 	public Location
 {
 public:
-	NamedItem (const Location& loc, Kind kind, const ItemScope* parent, const std::string& name) :
+	NamedItem (Kind kind, const ItemScope* parent, const SimpleDeclarator& name) :
 		Item (kind),
-		Location (loc),
+		Location (name),
 		name_ (name),
 		parent_ (parent)
 	{}
