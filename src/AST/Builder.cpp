@@ -267,8 +267,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 		assert (itf->kind () == Item::Kind::INTERFACE);
 
 		// Process bases
-		std::map <const Item*, Location> direct_bases;
-		std::set <const Item*> all_bases;
+		map <const Item*, Location> direct_bases;
+		set <const Item*> all_bases;
 		for (auto base_name = bases.begin (); base_name != bases.end (); ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
 			if (pbase) {
@@ -391,7 +391,27 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 
 void Builder::operation_raises (const ScopedNames& raises)
 {
-
+	Operation* op = interface_data_.cur_op;
+	if (op) {
+		map <const Item*, Location> unique;
+		for (auto name = raises.begin (); name != raises.end (); ++name) {
+			const Ptr <NamedItem>* l = lookup (*name);
+			if (l) {
+				const NamedItem* item = *l;
+				if (item->kind () != Item::Kind::EXCEPTION) {
+					message (*name, MessageType::ERROR, name->stringize () + " is not an exception type.");
+					message (*item, MessageType::MESSAGE, string ("See declaration of ") + item->qualified_name () + ".");
+				} else {
+					auto ins = unique.emplace (item, *name);
+					if (!ins.second) {
+						message (*name, MessageType::ERROR, string ("Duplicated exception specification ") + name->stringize () + ".");
+						message (ins.first->second, MessageType::MESSAGE, string ("See previous specification of ") + item->qualified_name () + ".");
+					} else
+						op->add_exception (static_cast <const Exception*> (item));
+				}
+			}
+		}
+	}
 }
 
 void Builder::struct_decl (const std::string& name, unsigned line)

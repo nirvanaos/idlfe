@@ -3,6 +3,7 @@
 
 #include "NamedItem.h"
 #include "Type.h"
+#include "Exception.h"
 
 namespace AST {
 
@@ -28,9 +29,19 @@ public:
 		oneway_ = false;
 	}
 
+	const std::vector <const Exception*>& raises () const
+	{
+		return raises_;
+	}
+
+	void add_exception (const Exception* ex)
+	{
+		raises_.push_back (ex);
+	}
+
 private:
 	bool oneway_;
-
+	std::vector <const Exception*> raises_;
 };
 
 }

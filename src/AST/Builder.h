@@ -44,6 +44,23 @@ public:
 		return *cur_file_;
 	}
 
+	bool is_main_file () const
+	{
+		return is_main_file_;
+	}
+
+	enum class MessageType
+	{
+		ERROR,
+		WARNING,
+		MESSAGE
+	};
+
+	void message (const Location& l, MessageType mt, const std::string& err);
+
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
+	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
+
 	void native (const std::string& name, unsigned line);
 
 	void module_begin (const std::string& name, unsigned line);
@@ -73,46 +90,6 @@ public:
 		interface_data_.clear ();
 	}
 
-	bool is_main_file () const
-	{
-		return is_main_file_;
-	}
-
-	enum class MessageType
-	{
-		ERROR,
-		WARNING,
-		MESSAGE
-	};
-
-	void message (const Location& l, MessageType mt, const std::string& err);
-
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
-	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
-
-	template <class Ev>
-	void set_eval ()
-	{
-		eval_ = std::make_unique <Ev> (*this);
-	}
-
-	Eval& eval () const
-	{
-		assert (eval_);
-		return *eval_.get ();
-	}
-
-	unsigned positive_int (const Variant& v, unsigned line);
-
-	Type fixed_pt_type (unsigned digits, unsigned scale, unsigned line)
-	{
-		if (digits > 31 || scale > digits) {
-			message (Location (file (), line), MessageType::ERROR, std::string ("fixed <") + std::to_string (digits) + ", " + std::to_string (scale) + "> type specification is invalid.");
-			return Type ();
-		} else
-			return Type::make_fixed (digits, scale);
-	}
-
 	void type_def (const Type& type, const Declarators& declarators);
 
 	void struct_decl (const std::string& name, unsigned line);
@@ -138,6 +115,29 @@ public:
 	const Ptr <NamedItem>* enum_end ()
 	{
 		return constr_type_end ();
+	}
+
+	template <class Ev>
+	void set_eval ()
+	{
+		eval_ = std::make_unique <Ev> (*this);
+	}
+
+	Eval& eval () const
+	{
+		assert (eval_);
+		return *eval_.get ();
+	}
+
+	unsigned positive_int (const Variant& v, unsigned line);
+
+	Type fixed_pt_type (unsigned digits, unsigned scale, unsigned line)
+	{
+		if (digits > 31 || scale > digits) {
+			message (Location (file (), line), MessageType::ERROR, std::string ("fixed <") + std::to_string (digits) + ", " + std::to_string (scale) + "> type specification is invalid.");
+			return Type ();
+		} else
+			return Type::make_fixed (digits, scale);
 	}
 
 private:
