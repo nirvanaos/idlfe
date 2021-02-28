@@ -17,11 +17,7 @@ Type::Type (const Ptr <NamedItem>* named) :
 	kind_ (Kind::NAMED_TYPE),
 	type_ (named)
 {
-	if (named) {
-		const NamedItem* p = *named;
-		if (!p->is_type ())
-			throw runtime_error (string ("Type name ") + p->name () + " is invalid.");
-	}
+	assert (!named || (*named)->is_type ());
 }
 
 Type::Type (unsigned digits, unsigned scale) :

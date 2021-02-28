@@ -60,7 +60,6 @@ private:
 	std::vector <const Interface*> bases_;
 };
 
-
 class InterfaceDecl :
 	public InterfaceKind,
 	public NamedItem

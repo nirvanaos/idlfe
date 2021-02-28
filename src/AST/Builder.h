@@ -5,6 +5,7 @@
 #include "Interface.h"
 #include "ScopedName.h"
 #include "Eval.h"
+#include "Declarators.h"
 #include <ostream>
 #include <map>
 
@@ -75,8 +76,10 @@ public:
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name, unsigned line)
 	{
-		return lookup (scoped_name, Location (*cur_file_, line));
+		return lookup (scoped_name, Location (file (), line));
 	}
+
+	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name, unsigned line);
 
 	template <class Ev>
 	void set_eval ()
@@ -92,7 +95,7 @@ public:
 
 	unsigned positive_int (const Variant& v, unsigned line);
 
-	Type fixed (unsigned digits, unsigned scale, unsigned line)
+	Type fixed_pt_type (unsigned digits, unsigned scale, unsigned line)
 	{
 		if (digits > 31 || scale > digits) {
 			message (Location (file (), line), MessageType::ERROR, std::string ("fixed <") + std::to_string (digits) + ", " + std::to_string (scale) + "> type specification is invalid.");
@@ -101,12 +104,39 @@ public:
 			return Type::make_fixed (digits, scale);
 	}
 
-	const Ptr <NamedItem>* struct_begin (const std::string& name, unsigned line);
+	void type_def (const Type& type, const Declarators& declarators);
+
+	void struct_decl (const std::string& name, unsigned line);
+	void struct_begin (const std::string& name, unsigned line);
+	
+	const Ptr <NamedItem>* struct_end ()
+	{
+		return constr_type_end ();
+	}
+
+	void union_decl (const std::string& name, unsigned line);
+	void union_begin (const std::string& name, const Type& switch_type, unsigned line);
+	
+	const Ptr <NamedItem>* union_end ()
+	{
+		return constr_type_end ();
+	}
+
+	void enum_begin (const std::string& name, unsigned line);
+	
+	void enum_item (const std::string& name, unsigned line);
+
+	const Ptr <NamedItem>* enum_end ()
+	{
+		return constr_type_end ();
+	}
 
 private:
 	bool scope_begin ();
 	void scope_push (ItemContainer* scope);
 	void scope_end ();
+
+	const Ptr <NamedItem>* constr_type_end ();
 
 	static bool is_scope (Item::Kind ik)
 	{

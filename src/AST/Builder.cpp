@@ -2,7 +2,11 @@
 #include "Include.h"
 #include "Module.h"
 #include "Native.h"
+#include "TypeDef.h"
 #include "Operation.h"
+#include "Struct.h"
+#include "Union.h"
+#include "Enum.h"
 #include <assert.h>
 #include <stdexcept>
 
@@ -80,11 +84,32 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name) const
 	return &*f;
 }
 
+unsigned Builder::positive_int (const Variant& v, unsigned line)
+{
+	// TODO: Implement
+	message (Location (file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
+	return 1;
+}
+
 const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name, const Location& loc)
 {
 	const Ptr <NamedItem>* item = lookup (scoped_name);
 	if (!item)
 		message (loc, MessageType::ERROR, string ("Symbol not found: ") + scoped_name.stringize ());
+	return item;
+}
+
+const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name, unsigned line)
+{
+	Location loc (file (), line);
+	const Ptr <NamedItem>* item = lookup (scoped_name, loc);
+	if (item) {
+		const NamedItem* p = *item;
+		if (!p->is_type ()) {
+			message (loc, MessageType::ERROR, scoped_name.stringize () + " is not a type.");
+			item = nullptr;
+		}
+	}
 	return item;
 }
 
@@ -116,16 +141,32 @@ bool Builder::scope_begin ()
 	}
 }
 
-unsigned Builder::positive_int (const Variant& v, unsigned line)
+void Builder::scope_end ()
 {
-	message (Location (file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
-	return 1;
+	assert (scope_stack_.size () > 1);
+	scope_stack_.pop_back ();
+	if (is_main_file ()) {
+		assert (container_stack_.size () > 1);
+		container_stack_.pop_back ();
+	}
+}
+const Ptr <NamedItem>* Builder::constr_type_end ()
+{
+	const ItemScope* type = static_cast <const ItemScope*> (scope_stack_.back ());
+	scope_end ();
+	if (type) {
+		const Symbols& scope = *scope_stack_.back ();
+		auto f = scope.find (type->name ());
+		assert (f != scope.end ());
+		return &*f;
+	} else
+		return nullptr;
 }
 
 void Builder::module_begin (const string& name, unsigned line)
 {
 	if (scope_begin ()) {
-		Location loc (*cur_file_, line);
+		Location loc (file (), line);
 		Ptr <Module> mod = Ptr <Module>::make <Module> (ref (loc), cur_scope (), ref (name));
 		auto ins = scope_stack_.back ()->insert (mod);
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::MODULE) {
@@ -143,23 +184,24 @@ void Builder::module_begin (const string& name, unsigned line)
 	}
 }
 
-void Builder::scope_end ()
-{
-	assert (scope_stack_.size () > 1);
-	scope_stack_.pop_back ();
-	if (is_main_file ()) {
-		assert (container_stack_.size () > 1);
-		container_stack_.pop_back ();
-	}
-}
-
 void Builder::native (const std::string& name, unsigned line)
 {
 	if (scope_stack_.back ()) {
-		Location loc (*cur_file_, line);
-		auto ins = scope_stack_.back ()->insert (Ptr <NamedItem>::make <Native> (ref (loc), cur_scope (), name));
+		Location loc (file (), line);
+		auto ins = scope_stack_.back ()->insert (Ptr <NamedItem>::make <Native> (ref (loc), cur_scope (), ref (name)));
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::NATIVE) {
 			error_name_collision (loc, name, **ins.first);
+		}
+	}
+}
+
+void Builder::type_def (const Type& type, const Declarators& declarators)
+{
+	if (scope_stack_.back ()) {
+		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
+			auto ins = scope_stack_.back ()->insert (Ptr <NamedItem>::make <TypeDef> (ref (*decl), cur_scope (), ref (*decl), ref (type)));
+			if (!ins.second)
+				error_name_collision (*decl, *decl, **ins.first);
 		}
 	}
 }
@@ -173,7 +215,7 @@ void Builder::error_interface_kind (const Location& loc, const std::string& name
 void Builder::interface_decl (const std::string& name, unsigned line, InterfaceKind ik)
 {
 	if (scope_stack_.back ()) {
-		Location loc (*cur_file_, line);
+		Location loc (file (), line);
 		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (ref (loc), cur_scope (), name, ik);
 		auto ins = scope_stack_.back ()->insert (decl);
 		if (!ins.second) {
@@ -184,7 +226,7 @@ void Builder::interface_decl (const std::string& name, unsigned line, InterfaceK
 				InterfaceDecl* existent_decl = scast <InterfaceDecl> (*ins.first);
 				if (existent_decl->interface_kind () != ik.interface_kind ())
 					error_interface_kind (loc, name, ik, existent_decl->interface_kind (), **ins.first);
-				else 	if (is_main_file ())
+				else if (is_main_file ())
 					container_stack_.back ()->append (decl);
 			}
 		}
@@ -194,14 +236,15 @@ void Builder::interface_decl (const std::string& name, unsigned line, InterfaceK
 void Builder::interface_begin (const std::string& name, unsigned line, InterfaceKind ik)
 {
 	if (scope_begin ()) {
-		Location loc (*cur_file_, line);
-		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (ref (loc), cur_scope (), name, ik);
+		Location loc (file (), line);
+		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (ref (loc), cur_scope (), ref (name), ik);
 		Symbols& scope = *scope_stack_.back ();
 		auto ins = scope.insert (itf);
 		if (!ins.second) {
 			if ((*ins.first)->kind () != Item::Kind::INTERFACE_DECL) {
 				error_name_collision (loc, name, **ins.first);
 				scope_push (nullptr);
+				return;
 			} else {
 				InterfaceDecl* existent_decl = scast <InterfaceDecl> (*ins.first);
 				if (existent_decl->interface_kind () != ik.interface_kind ())
@@ -220,7 +263,7 @@ void Builder::interface_base (const ScopedName& name, unsigned line)
 		Interface* this_itf = static_cast <Interface*> (scope_stack_.back ());
 		assert (this_itf->kind () == Item::Kind::INTERFACE);
 
-		Location loc (*cur_file_, line);
+		Location loc (file (), line);
 		const Ptr <NamedItem>* pbase = lookup (name, loc);
 		if (pbase) {
 			const NamedItem* base = *pbase;
@@ -286,6 +329,108 @@ void Builder::interface_base (const ScopedName& name, unsigned line)
 				message (*base, MessageType::MESSAGE, "See declaration of " + name.stringize ());
 			}
 		}
+	}
+}
+
+void Builder::struct_decl (const std::string& name, unsigned line)
+{
+	if (scope_stack_.back ()) {
+		Location loc (file (), line);
+		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (ref (loc), cur_scope (), ref (name));
+		auto ins = scope_stack_.back ()->insert (decl);
+		if (!ins.second) {
+			Item::Kind item_kind = (*ins.first)->kind ();
+			if (item_kind != Item::Kind::STRUCT && item_kind != Item::Kind::STRUCT_DECL)
+				error_name_collision (loc, name, **ins.first);
+			else if (is_main_file ())
+				container_stack_.back ()->append (decl);
+		}
+	}
+}
+
+void Builder::struct_begin (const std::string& name, unsigned line)
+{
+	if (scope_begin ()) {
+		Location loc (file (), line);
+		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (loc), cur_scope (), ref (name));
+		Symbols& scope = *scope_stack_.back ();
+		auto ins = scope.insert (def);
+		if (!ins.second) {
+			if ((*ins.first)->kind () != Item::Kind::STRUCT_DECL) {
+				error_name_collision (loc, name, **ins.first);
+				scope_push (nullptr);
+				return;
+			} else {
+				const_cast <Ptr <NamedItem>&> (*ins.first) = def;
+			}
+		}
+		scope_push (def);
+	}
+}
+
+void Builder::union_decl (const std::string& name, unsigned line)
+{
+	if (scope_stack_.back ()) {
+		Location loc (file (), line);
+		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (ref (loc), cur_scope (), ref (name));
+		auto ins = scope_stack_.back ()->insert (decl);
+		if (!ins.second) {
+			Item::Kind item_kind = (*ins.first)->kind ();
+			if (item_kind != Item::Kind::UNION && item_kind != Item::Kind::UNION_DECL)
+				error_name_collision (loc, name, **ins.first);
+			else if (is_main_file ())
+				container_stack_.back ()->append (decl);
+		}
+	}
+}
+
+void Builder::union_begin (const std::string& name, const Type& switch_type, unsigned line)
+{
+	if (scope_begin ()) {
+		Location loc (file (), line);
+		Ptr <Union> def = Ptr <Union>::make <Union> (ref (loc), cur_scope (), ref (name), ref (switch_type));
+		Symbols& scope = *scope_stack_.back ();
+		auto ins = scope.insert (def);
+		if (!ins.second) {
+			if ((*ins.first)->kind () != Item::Kind::UNION_DECL) {
+				error_name_collision (loc, name, **ins.first);
+				scope_push (nullptr);
+				return;
+			} else {
+				const_cast <Ptr <NamedItem>&> (*ins.first) = def;
+			}
+		}
+		scope_push (def);
+	}
+}
+
+void Builder::enum_begin (const std::string& name, unsigned line)
+{
+	if (scope_begin ()) {
+		Location loc (file (), line);
+		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (loc), cur_scope (), ref (name));
+		Symbols& scope = *scope_stack_.back ();
+		auto ins = scope.insert (def);
+		if (!ins.second) {
+			error_name_collision (loc, name, **ins.first);
+			scope_push (nullptr);
+		} else
+			scope_push (def);
+	}
+}
+
+void Builder::enum_item (const std::string& name, unsigned line)
+{
+	assert (scope_stack_.size () > 1);
+	Symbols* en = scope_stack_.back ();
+	if (en) {
+		Location loc (file (), line);
+		Ptr <EnumItem> item = Ptr <EnumItem>::make <EnumItem> (ref (loc), cur_scope (), ref (name));
+		auto ins = en->insert (item);
+		if (!ins.second)
+			error_name_collision (loc, name, **ins.first);
+		else if (is_main_file ())
+			container_stack_.back ()->append (item);
 	}
 }
 

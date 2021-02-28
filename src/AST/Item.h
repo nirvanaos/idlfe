@@ -21,7 +21,11 @@ public:
 		INTERFACE_DECL,
 		TYPEDEF,
 		STRUCT,
+		STRUCT_DECL,
 		UNION,
+		UNION_DECL,
+		ENUM,
+		ENUM_ITEM,
 		OPERATION,
 		CONSTANT
 	};
@@ -44,7 +48,7 @@ public:
 
 	bool is_type () const
 	{
-		return Kind::INTERFACE <= kind_ && kind_ <= Kind::UNION;
+		return Kind::NATIVE <= kind_ && kind_ <= Kind::ENUM;
 	}
 
 private:

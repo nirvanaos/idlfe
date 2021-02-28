@@ -17,9 +17,14 @@ public:
 	static const ItemScope* cast (const NamedItem* item)
 	{
 		if (item) {
-			Item::Kind k = item->kind ();
-			if (Item::Kind::MODULE == k || Item::Kind::INTERFACE == k)
-				return static_cast <const ItemScope*> (item);
+			switch (item->kind ()) {
+				case Item::Kind::MODULE:
+				case Item::Kind::INTERFACE:
+				case Item::Kind::STRUCT:
+				case Item::Kind::UNION:
+				case Item::Kind::ENUM:
+					return static_cast <const ItemScope*> (item);
+			}
 		}
 		return nullptr;
 	}

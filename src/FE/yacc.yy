@@ -33,6 +33,7 @@
 	class Driver;
 #include "../AST/ScopedName.h"
 #include "../AST/Variant.h"
+#include "../AST/Declarators.h"
 }
 
 %param {Driver& drv}
@@ -134,13 +135,24 @@
 %nterm <AST::BasicType> integer_type;
 %nterm <AST::BasicType> signed_int;
 %nterm <AST::BasicType> unsigned_int;
+
+%nterm <AST::Type> fixed_pt_type;
+
 %nterm <AST::Type> string_type;
 %nterm <AST::Type> wide_string_type;
+
+%nterm <AST::Type> type_spec;
 %nterm <AST::Type> simple_type_spec;
 %nterm <AST::Type> param_type_spec;
 %nterm <AST::Type> op_type_spec;
 %nterm <AST::Type> template_type_spec;
 %nterm <AST::Type> sequence_type;
+
+%nterm <AST::Type> constr_type_spec;
+%nterm <AST::Type> struct_type;
+%nterm <AST::Type> union_type;
+%nterm <AST::Type> switch_type_spec;
+%nterm <AST::Type> enum_type;
 
 %nterm <AST::Variant> const_exp;
 %nterm <AST::Variant> or_expr;
@@ -153,6 +165,15 @@
 %nterm <AST::Variant> primary_expr;
 %nterm <AST::Variant> literal;
 %nterm <unsigned> positive_int_const;
+%nterm <unsigned> fixed_array_size;
+
+%nterm <AST::FixedArraySizes> fixed_array_sizes;
+%nterm <AST::Declarator> array_declarator;
+%nterm <AST::Declarator> complex_declarator;
+%nterm <AST::Declarator> declarator;
+%nterm <AST::Declarator> simple_declarator;
+%nterm <AST::Declarators> declarators;
+%nterm <AST::Declarators> simple_declarators;
 
 %%
 
@@ -180,8 +201,10 @@ definition
 
 /*3*/
 module
-	: T_MODULE T_IDENTIFIER T_LEFT_CURLY_BRACKET { drv.module_begin ($2, @1.begin.line); }
-definitions T_RIGHT_CURLY_BRACKET { drv.module_end (); }
+	: T_MODULE T_IDENTIFIER { drv.module_begin ($2, @1.begin.line); }
+	T_LEFT_CURLY_BRACKET
+		definitions 
+	T_RIGHT_CURLY_BRACKET { drv.module_end (); }
 	;
 
 /*4*/
@@ -192,7 +215,9 @@ interface
 
 /*5*/
 interface_dcl
-	: interface_header T_LEFT_CURLY_BRACKET interface_body
+	: interface_header
+	T_LEFT_CURLY_BRACKET
+		interface_body
 	T_RIGHT_CURLY_BRACKET { drv.interface_end (); }
 	;
 
@@ -466,14 +491,14 @@ literal
 	;
 
 /*41*/
-	positive_int_const
-		: { drv.set_eval <AST::EvalLong> (); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); }
+positive_int_const
+	: { drv.set_eval <AST::EvalLong> (); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); }
 	;
 
 /*42*/
 /*43*/
 type_dcl
-	: T_TYPEDEF type_spec declarators
+	: T_TYPEDEF type_spec declarators { drv.type_def ($2, $3); }
 	| struct_type
 	| union_type
 	| enum_type
@@ -482,7 +507,7 @@ type_dcl
 
 /*44*/
 type_spec
-	: simple_type_spec
+	: simple_type_spec { $$ = $1; }
 	| constr_type_spec
 	;
 
@@ -490,7 +515,7 @@ type_spec
 simple_type_spec
 	: base_type_spec { $$ = $1; }
   | template_type_spec { $$ = $1; }
-	| scoped_name { $$ = drv.lookup ($1, @1.begin.line); }
+	| scoped_name { $$ = drv.lookup_type ($1, @1.begin.line); }
 	;
 
 /*46*/
@@ -523,8 +548,8 @@ constr_type_spec
 
 /*49*/
 declarators
-	: declarator
-	| declarator T_COMMA declarators
+	: declarator { $$ = AST::Declarators (1, $1); }
+	| declarator T_COMMA declarators { $$ = $3; $$.push_front ($1); }
 	;
 
 /*50*/
@@ -535,7 +560,7 @@ declarator
 
 /*51*/
 simple_declarator
-	: T_IDENTIFIER
+	: T_IDENTIFIER { $$ = AST::Declarator ($1, AST::Location (drv.file (), @1.begin.line)); }
 	;
 
 /*52*/
@@ -552,8 +577,8 @@ floating_pt_type
 
 /*54*/
 integer_type
-	: signed_int { $$ = $1; }
-	| unsigned_int { $$ = $1; }
+	: signed_int
+	| unsigned_int
 	;
 
 /*55*/
@@ -632,8 +657,12 @@ object_type
 
 /*69*/
 struct_type
-	: T_STRUCT T_IDENTIFIER T_LEFT_CURLY_BRACKET member_list 
-                                               T_RIGHT_CURLY_BRACKET
+	: T_STRUCT T_IDENTIFIER
+	T_LEFT_CURLY_BRACKET { drv.struct_begin ($2, @1.begin.line); }
+		member_list
+	T_RIGHT_CURLY_BRACKET
+	{ $$ = drv.struct_end (); }
+	| T_STRUCT T_IDENTIFIER { drv.struct_decl ($2, @1.begin.line); }
 	;
 
 /*70*/
@@ -649,18 +678,19 @@ member
 
 /*72*/
 union_type
-	: T_UNION T_IDENTIFIER T_SWITCH T_LEFT_PARANTHESIS
-          switch_type_spec T_RIGHT_PARANTHESIS T_LEFT_CURLY_BRACKET
-          switch_body T_RIGHT_CURLY_BRACKET
+	: T_UNION T_IDENTIFIER T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5, @1.begin.line); }
+	T_LEFT_CURLY_BRACKET
+		switch_body
+	T_RIGHT_CURLY_BRACKET { $$ = drv.union_end (); }
 	; 
 
 /*73*/
 switch_type_spec
-	: integer_type
-	| char_type
-	| boolean_type
+	: integer_type { $$ = AST::Type ($1); }
+	| char_type { $$ = AST::BasicType::CHAR; }
+	| boolean_type { $$ = AST::BasicType::BOOLEAN; }
 	| enum_type
-	| scoped_name
+	| scoped_name { $$ = drv.lookup_type ($1, @1.begin.line); }
 	;
 
 /*74*/
@@ -688,8 +718,10 @@ element_spec
 
 /*78*/
 enum_type
-	: T_ENUM T_IDENTIFIER T_LEFT_CURLY_BRACKET enumerators
-                                         T_RIGHT_CURLY_BRACKET
+	: T_ENUM T_IDENTIFIER { drv.enum_begin ($2, @1.begin.line); }
+	T_LEFT_CURLY_BRACKET
+		enumerators
+	T_RIGHT_CURLY_BRACKET { $$ = drv.enum_end (); }
 	;
 
 enumerators
@@ -699,7 +731,7 @@ enumerators
 
 /*79*/
 enumerator
-	: T_IDENTIFIER
+	: T_IDENTIFIER { drv.enum_item ($1, @1.begin.line); }
 	;
 
 /*80*/
@@ -723,17 +755,17 @@ wide_string_type
 
 /*83*/
 array_declarator
-	: T_IDENTIFIER fixed_array_sizes
+	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Declarator ($1, AST::Location (drv.file (), @1.begin.line), $2); }
 	;
 
 fixed_array_sizes
-	: fixed_array_size
-	| fixed_array_size fixed_array_sizes
+	: fixed_array_size { $$ = AST::FixedArraySizes (1, $1); }
+	| fixed_array_size fixed_array_sizes { $$ = $2; $$.push_front ($1); }
 	;
 
 /*84*/
 fixed_array_size
-	: T_LEFT_SQUARE_BRACKET positive_int_const T_RIGHT_SQUARE_BRACKET
+	: T_LEFT_SQUARE_BRACKET positive_int_const T_RIGHT_SQUARE_BRACKET { $$ = $2; }
 	;
 
 /*85*/
@@ -743,8 +775,8 @@ attr_dcl
 	; 
 
 simple_declarators
-	: simple_declarator
-	| simple_declarator T_COMMA simple_declarators
+	: simple_declarator { $$ = AST::Declarators (1, $1); }
+	| simple_declarator T_COMMA simple_declarators { $$ = $3; $$.push_front ($1); }
 	;
 
 /*86*/
@@ -822,8 +854,8 @@ T_string_literal
 	;
 
 T_wstring_literal
-	: T_STRING_LITERAL { $$ = drv.eval ().literal_wstring ($1, @1.begin.line); }
-	| T_STRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1.begin.line, &$2); }
+	: T_WSTRING_LITERAL { $$ = drv.eval ().literal_wstring ($1, @1.begin.line); }
+	| T_WSTRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1.begin.line, &$2); }
 	;
 
 /*95*/
@@ -831,13 +863,13 @@ param_type_spec
 	: base_type_spec { $$ = $1; }
 	| string_type { $$ = $1; }
 	| wide_string_type { $$ = $1; }
-	| scoped_name { $$ = drv.lookup ($1, @1.begin.line); }
+	| scoped_name { $$ = drv.lookup_type ($1, @1.begin.line); }
 	;
 
 /*96*/
 fixed_pt_type
 	: T_FIXED T_LESS_THAN_SIGN positive_int_const T_COMMA
-              T_INTEGER_LITERAL T_GREATER_THAN_SIGN
+	positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1.begin.line); }
 	;
 
 /*97*/
