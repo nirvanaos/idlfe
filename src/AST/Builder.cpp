@@ -259,8 +259,8 @@ void Builder::interface_begin (const std::string& name, unsigned line, Interface
 void Builder::interface_base (const ScopedName& name, unsigned line)
 {
 	assert (scope_stack_.size () > 1);
-	if (scope_stack_.back ()) {
-		Interface* this_itf = static_cast <Interface*> (scope_stack_.back ());
+	Interface* this_itf = static_cast <Interface*> (scope_stack_.back ());
+	if (this_itf) {
 		assert (this_itf->kind () == Item::Kind::INTERFACE);
 
 		Location loc (file (), line);
@@ -329,6 +329,53 @@ void Builder::interface_base (const ScopedName& name, unsigned line)
 				message (*base, MessageType::MESSAGE, "See declaration of " + name.stringize ());
 			}
 		}
+	}
+}
+
+void Builder::operation_begin (bool oneway, const Type& type, const std::string& name, unsigned line)
+{
+	Interface* itf = static_cast <Interface*> (scope_stack_.back ());
+	if (itf) {
+		assert (itf->kind () == Item::Kind::INTERFACE);
+		Location loc (file (), line);
+		if (oneway && type.kind () != Type::Kind::VOID) {
+			message (loc, MessageType::WARNING, "oneway operation must be void. oneway attribute will be ignored.");
+			oneway = false;
+		}
+		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (loc), cur_scope (), oneway, ref (type), ref (name));
+		auto ins = interface_data_.all_operations.insert (op);
+		if (!ins.second) {
+			message (loc, MessageType::ERROR, string ("Operation name ") + op->name () + " collision.");
+			message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
+		} else {
+			Symbols& scope = static_cast <Symbols&> (*itf);
+			ins = scope.insert (op);
+			if (!ins.second)
+				error_name_collision (loc, name, **ins.first);
+			else {
+				interface_data_.cur_op = op;
+				if (is_main_file ())
+					container_stack_.back ()->append (op);
+			}
+		}
+	}
+}
+
+void Builder::operation_parameter (Parameter::Attribute att, const Type& type, const std::string& name, unsigned line)
+{
+	Operation* op = interface_data_.cur_op;
+	if (op) {
+		Location loc (file (), line);
+		if (att != Parameter::Attribute::IN && op->oneway ()) {
+			message (loc, MessageType::WARNING, "oneway operation can have only in parameters. oneway attribute will be ignored.");
+			op->oneway_clear ();
+		}
+		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (loc), cur_scope (), att, ref (type), ref (name));
+		auto ins = interface_data_.cur_op_params.insert (par);
+		if (!ins.second)
+			message (loc, MessageType::ERROR, string ("Duplicated parameter ") + name + ".");
+		else if (is_main_file ())
+			op->append (op);
 	}
 }
 

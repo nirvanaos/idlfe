@@ -3,6 +3,7 @@
 
 #include "AST.h"
 #include "Interface.h"
+#include "Parameter.h"
 #include "ScopedName.h"
 #include "Eval.h"
 #include "Declarators.h"
@@ -10,6 +11,8 @@
 #include <map>
 
 namespace AST {
+
+class Operation;
 
 /// Abstract Syntax Tree builder.
 /// This class does not depend on any Flex/Bison or other parser/scanner declarations.
@@ -53,6 +56,14 @@ public:
 	void interface_decl (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_begin (const std::string& name, unsigned line, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
 	void interface_base (const ScopedName& name, unsigned line);
+
+	void operation_begin (bool oneway, const Type& type, const std::string& name, unsigned line);
+	void operation_parameter (Parameter::Attribute att, const Type& type, const std::string& name, unsigned line);
+	void operation_end ()
+	{
+		interface_data_.cur_op = nullptr;
+		interface_data_.cur_op_params.clear ();
+	}
 
 	void interface_end ()
 	{
@@ -170,12 +181,15 @@ private:
 		Bases bases;
 		std::set <const Item*> all_bases;
 		Symbols all_operations;
+		Operation* cur_op;
+		Symbols cur_op_params;
 
 		void clear ()
 		{
 			bases.clear ();
 			all_bases.clear ();
 			all_operations.clear ();
+			cur_op_params.clear ();
 		}
 	} interface_data_;
 };

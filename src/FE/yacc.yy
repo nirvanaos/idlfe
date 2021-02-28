@@ -34,6 +34,7 @@
 #include "../AST/ScopedName.h"
 #include "../AST/Variant.h"
 #include "../AST/Declarators.h"
+#include "../AST/Parameter.h"
 }
 
 %param {Driver& drv}
@@ -174,6 +175,10 @@
 %nterm <AST::Declarator> simple_declarator;
 %nterm <AST::Declarators> declarators;
 %nterm <AST::Declarators> simple_declarators;
+
+%nterm <bool> op_attribute;
+
+%nterm <AST::Parameter::Attribute> param_attribute;
 
 %%
 
@@ -682,6 +687,7 @@ union_type
 	T_LEFT_CURLY_BRACKET
 		switch_body
 	T_RIGHT_CURLY_BRACKET { $$ = drv.union_end (); }
+	| T_UNION T_IDENTIFIER { drv.union_decl ($2, @1.begin.line); }
 	; 
 
 /*73*/
@@ -792,14 +798,14 @@ members
 
 /*87*/
 op_dcl
-	: op_attribute op_type_spec T_IDENTIFIER parameter_dcls
-                                       raises_expr context_expr
+	: op_attribute op_type_spec T_IDENTIFIER { drv.operation_begin ($1, $2, $3, @3.begin.line); }
+	parameter_dcls raises_expr context_expr { drv.operation_end (); }
 	;
 
 /*88*/
 op_attribute
-	: /*empty*/
-	| T_ONEWAY
+	: /*empty*/ { $$ = false; }
+	| T_ONEWAY{ $$ = true; }
 	;
 
 /*89*/
@@ -821,14 +827,14 @@ param_dcls
 
 /*91*/
 param_dcl
-	: param_attribute param_type_spec simple_declarator
+	: param_attribute param_type_spec T_IDENTIFIER { drv.operation_parameter ($1, $2, $3, @1.begin.line); }
 	;
 
 /*92*/
 param_attribute
-	: T_IN
-	| T_OUT
-	| T_INOUT
+	: T_IN { $$ = AST::Parameter::Attribute::IN; }
+	| T_OUT { $$ = AST::Parameter::Attribute::IN; }
+	| T_INOUT { $$ = AST::Parameter::Attribute::IN; }
 	;
 
 /*93*/

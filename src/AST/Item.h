@@ -27,7 +27,9 @@ public:
 		ENUM,
 		ENUM_ITEM,
 		OPERATION,
-		CONSTANT
+		PARAMETER,
+		CONSTANT,
+		EXCEPTION
 	};
 
 	Item (Kind kind) :
@@ -202,6 +204,15 @@ public:
 			if (p_)
 				p_->_remove_ref ();
 			p_ = p;
+		}
+		return *this;
+	}
+
+	Ptr& operator = (nullptr_t)
+	{
+		if (p_) {
+			p_->_remove_ref ();
+			p_ = nullptr;
 		}
 		return *this;
 	}
