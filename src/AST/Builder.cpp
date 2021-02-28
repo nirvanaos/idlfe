@@ -7,6 +7,8 @@
 #include "Struct.h"
 #include "Union.h"
 #include "Enum.h"
+#include "Exception.h"
+#include "Member.h"
 #include <assert.h>
 #include <stdexcept>
 
@@ -197,9 +199,10 @@ void Builder::native (const SimpleDeclarator& name)
 
 void Builder::type_def (const Type& type, const Declarators& declarators)
 {
-	if (scope_stack_.back ()) {
+	Symbols* scope = scope_stack_.back ();
+	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			auto ins = scope_stack_.back ()->insert (Ptr <NamedItem>::make <TypeDef> (cur_scope (), ref (*decl), ref (type)));
+			auto ins = scope->insert (Ptr <NamedItem>::make <TypeDef> (cur_scope (), ref (*decl), ref (type)));
 			if (!ins.second)
 				error_name_collision (*decl, **ins.first);
 		}
@@ -236,8 +239,7 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	if (scope_begin ()) {
 		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (cur_scope (), ref (name), ik);
-		Symbols& scope = *scope_stack_.back ();
-		auto ins = scope.insert (itf);
+		auto ins = scope_stack_.back ()->insert (itf);
 		if (!ins.second) {
 			if ((*ins.first)->kind () != Item::Kind::INTERFACE_DECL) {
 				error_name_collision (name, **ins.first);
@@ -339,21 +341,21 @@ void Builder::interface_bases (const ScopedNames& bases)
 
 void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name)
 {
-	Interface* itf = static_cast <Interface*> (scope_stack_.back ());
+	assert (scope_stack_.size () > 1);
+	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
 		if (oneway && type.kind () != Type::Kind::VOID) {
 			message (name, MessageType::WARNING, "oneway operation must be void. oneway attribute will be ignored.");
 			oneway = false;
 		}
-		Ptr <Operation> op = Ptr <Operation>::make <Operation> (cur_scope (), oneway, ref (type), ref (name));
+		Ptr <Operation> op = Ptr <Operation>::make <Operation> (itf, oneway, ref (type), ref (name));
 		auto ins = interface_data_.all_operations.insert (op);
 		if (!ins.second) {
 			message (name, MessageType::ERROR, string ("Operation name ") + name + " collision.");
 			message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
 		} else {
-			Symbols& scope = static_cast <Symbols&> (*itf);
-			ins = scope.insert (op);
+			ins = itf->insert (op);
 			if (!ins.second)
 				error_name_collision (name, **ins.first);
 			else {
@@ -426,8 +428,7 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
 		Ptr <Struct> def = Ptr <Struct>::make <Struct> (cur_scope (), ref (name));
-		Symbols& scope = *scope_stack_.back ();
-		auto ins = scope.insert (def);
+		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
 			if ((*ins.first)->kind () != Item::Kind::STRUCT_DECL) {
 				error_name_collision (name, **ins.first);
@@ -438,6 +439,45 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 			}
 		}
 		scope_push (def);
+	}
+}
+
+void Builder::exception_begin (const SimpleDeclarator& name)
+{
+	if (scope_begin ()) {
+		Ptr <ItemContainer> def = Ptr <ItemContainer>::make <Exception> (cur_scope (), ref (name));
+		auto ins = scope_stack_.back ()->insert (def);
+		if (!ins.second) {
+			error_name_collision (name, **ins.first);
+			scope_push (nullptr);
+			return;
+		}
+		scope_push (def);
+	}
+}
+
+void Builder::member (const Type& type, const Declarators& declarators)
+{
+	assert (scope_stack_.size () > 1);
+	ItemScope* parent = static_cast <ItemScope*> (scope_stack_.back ());
+	if (parent) {
+		assert (parent->kind () == Item::Kind::STRUCT || parent->kind () == Item::Kind::EXCEPTION);
+		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
+			Ptr <Member> m;
+			if (decl->array_sizes ().empty ()) {
+				m = Ptr <Member>::make <Member> (parent, ref (type), ref (*decl));
+			} else {
+				Type arr = Type::make_array (type, decl->array_sizes ());
+				m = Ptr <Member>::make <Member> (parent, ref (arr), ref (*decl));
+			}
+			auto ins = static_cast <Symbols*> (parent)->insert (m);
+			if (!ins.second)
+				error_name_collision (*decl, **ins.first);
+			else {
+				if (is_main_file ())
+					container_stack_.back ()->append (m);
+			}
+		}
 	}
 }
 
@@ -460,8 +500,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 {
 	if (scope_begin ()) {
 		Ptr <Union> def = Ptr <Union>::make <Union> (cur_scope (), ref (name), ref (switch_type));
-		Symbols& scope = *scope_stack_.back ();
-		auto ins = scope.insert (def);
+		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
 			if ((*ins.first)->kind () != Item::Kind::UNION_DECL) {
 				error_name_collision (name, **ins.first);
@@ -479,8 +518,7 @@ void Builder::enum_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
 		Ptr <Enum> def = Ptr <Enum>::make <Enum> (cur_scope (), ref (name));
-		Symbols& scope = *scope_stack_.back ();
-		auto ins = scope.insert (def);
+		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
 			error_name_collision (name, **ins.first);
 			scope_push (nullptr);

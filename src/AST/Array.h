@@ -9,9 +9,15 @@ namespace AST {
 class Array
 {
 public:
-	Array (const Type& type) :
-		type_ (type)
+	Array (const Type& type, std::vector <Dim>&& dimensions) :
+		type_ (type),
+		dimensions_ (std::move (dimensions))
 	{}
+
+	const std::vector <Dim>& dimensions () const
+	{
+		return dimensions_;
+	}
 
 private:
 	Type type_;

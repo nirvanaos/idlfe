@@ -30,7 +30,8 @@ public:
 		ATTRIBUTE,
 		PARAMETER,
 		CONSTANT,
-		EXCEPTION
+		EXCEPTION,
+		MEMBER
 	};
 
 	Item (Kind kind) :

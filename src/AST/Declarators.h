@@ -2,7 +2,6 @@
 #define NIDL_AST_DECLARATORS_H_
 
 #include <string>
-#include <vector>
 #include "Location.h"
 #include <forward_list>
 
@@ -61,6 +60,11 @@ public:
 
 	Declarator& operator = (const Declarator&) = default;
 	Declarator& operator = (Declarator&&) = default;
+
+	const FixedArraySizes& array_sizes () const
+	{
+		return array_;
+	}
 
 private:
 	FixedArraySizes array_;

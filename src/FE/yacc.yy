@@ -670,7 +670,7 @@ member_list
 
 /*71*/
 member
-	: type_spec declarators T_SEMICOLON
+	: type_spec declarators T_SEMICOLON { drv.member ($1, $2); }
 	;
 
 /*72*/
@@ -779,8 +779,10 @@ simple_declarators
 
 /*86*/
 except_dcl
-	: T_EXCEPTION T_IDENTIFIER T_LEFT_CURLY_BRACKET members
-                                          T_RIGHT_CURLY_BRACKET
+	: T_EXCEPTION simple_declarator
+	T_LEFT_CURLY_BRACKET { drv.exception_begin ($2); }
+		members
+	T_RIGHT_CURLY_BRACKET { drv.exception_end (); }
 	;
 
 members

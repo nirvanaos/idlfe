@@ -105,4 +105,10 @@ Type Type::make_sequence (const Type& type, Dim size)
 	return Type (new Sequence (type, size));
 }
 
+Type Type::make_array (const Type& type, const FixedArraySizes& sizes)
+{
+	std::vector <Dim> dimensions (sizes.begin (), sizes.end ());
+	return Type (new Array (type, move (dimensions)));
+}
+
 }

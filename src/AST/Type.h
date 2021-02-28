@@ -3,6 +3,7 @@
 
 #include "BasicType.h"
 #include "NamedItem.h"
+#include "Declarators.h"
 #include <assert.h>
 
 namespace AST {
@@ -58,7 +59,7 @@ public:
 	}
 
 	static Type make_sequence (const Type& type, Dim size = 0);
-	static Type make_array (const Type& type, Dim size = 0);
+	static Type make_array (const Type& type, const FixedArraySizes& sizes);
 
 	static Type make_fixed (unsigned digits, unsigned scale)
 	{

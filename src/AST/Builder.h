@@ -100,6 +100,15 @@ public:
 		return constr_type_end ();
 	}
 
+	void exception_begin (const SimpleDeclarator& name);
+
+	void exception_end ()
+	{
+		return scope_end ();
+	}
+
+	void member (const Type& type, const Declarators& declarators);
+
 	void union_decl (const SimpleDeclarator& name);
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type);
 	
