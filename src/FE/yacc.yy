@@ -395,7 +395,7 @@ init_param_attribute
 
 /*27*/
 const_dcl
-	: T_CONST const_type T_IDENTIFIER T_EQUAL const_exp
+	: T_CONST const_type simple_declarator T_EQUAL const_exp
 	;
 
 /*28*/
@@ -420,49 +420,49 @@ const_exp
 /*30*/
 or_expr
 	: xor_expr
-	| or_expr T_VERTICAL_LINE xor_expr { $$ = drv.eval ().expr_or ($1, $3, @2.begin.line); }
+	| or_expr T_VERTICAL_LINE xor_expr { $$ = drv.eval ().expr ($1, '|', $3, @2.begin.line); }
 	;
 
 /*31*/
 xor_expr
 	: and_expr
-	| xor_expr T_CIRCUMFLEX and_expr { $$ = drv.eval ().expr_xor ($1, $3, @2.begin.line); }
+	| xor_expr T_CIRCUMFLEX and_expr { $$ = drv.eval ().expr ($1, '^', $3, @2.begin.line); }
 	;
 
 /*32*/
 and_expr
 	: shift_expr
-	| and_expr T_AMPERSAND shift_expr { $$ = drv.eval ().expr_and ($1, $3, @2.begin.line); }
+	| and_expr T_AMPERSAND shift_expr { $$ = drv.eval ().expr ($1, '&', $3, @2.begin.line); }
 	;
 
 /*33*/
 shift_expr
 	: add_expr
-	| shift_expr T_SHIFTRIGHT add_expr { $$ = drv.eval ().expr_shift_right ($1, $3, @2.begin.line); }
-	| shift_expr T_SHIFTLEFT add_expr { $$ = drv.eval ().expr_shift_left ($1, $3, @2.begin.line); }
+	| shift_expr T_SHIFTRIGHT add_expr { $$ = drv.eval ().expr ($1, '>', $3, @2.begin.line); }
+	| shift_expr T_SHIFTLEFT add_expr { $$ = drv.eval ().expr ($1, '<', $3, @2.begin.line); }
 	;
 
 /*34*/
 add_expr
 	: mult_expr
-	| add_expr T_PLUS_SIGN mult_expr { $$ = drv.eval ().expr_add ($1, $3, @2.begin.line); }
-	| add_expr T_MINUS_SIGN mult_expr { $$ = drv.eval ().expr_sub ($1, $3, @2.begin.line); }
+	| add_expr T_PLUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '+', $3, @2.begin.line); }
+	| add_expr T_MINUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '-', $3, @2.begin.line); }
 	;
 
 /*35*/
 mult_expr
 	: unary_expr
-	| mult_expr T_ASTERISK unary_expr { $$ = drv.eval ().expr_mul ($1, $3, @2.begin.line); }
-	| mult_expr T_SOLIDUS unary_expr { $$ = drv.eval ().expr_div ($1, $3, @2.begin.line); }
-	| mult_expr T_PERCENT_SIGN unary_expr { $$ = drv.eval ().expr_rem ($1, $3, @2.begin.line); }
+	| mult_expr T_ASTERISK unary_expr { $$ = drv.eval ().expr ($1, '*', $3, @2.begin.line); }
+	| mult_expr T_SOLIDUS unary_expr { $$ = drv.eval ().expr ($1, '/', $3, @2.begin.line); }
+	| mult_expr T_PERCENT_SIGN unary_expr { $$ = drv.eval ().expr ($1, '%', $3, @2.begin.line); }
 	;
 
 /*36*/
 /*37*/
 unary_expr
-	: T_MINUS_SIGN primary_expr { $$ = drv.eval ().expr_minus ($2, @1.begin.line); }
-	| T_PLUS_SIGN primary_expr { $$ = drv.eval ().expr_plus ($2, @1.begin.line); }
-	| T_TILDE primary_expr { $$ = drv.eval ().expr_tilde ($2, @1.begin.line); }
+	: T_MINUS_SIGN primary_expr { $$ = drv.eval ().expr ('-', $2, @1.begin.line); }
+	| T_PLUS_SIGN primary_expr { $$ = drv.eval ().expr ('+', $2, @1.begin.line); }
+	| T_TILDE primary_expr { $$ = drv.eval ().expr ('~', $2, @1.begin.line); }
 	| primary_expr
 	;
 
@@ -489,7 +489,7 @@ literal
 
 /*41*/
 positive_int_const
-	: { drv.set_eval <AST::EvalLong> (); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); }
+	: { drv.eval_push (AST::BasicType::ULONG); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); drv.eval_pop (); }
 	;
 
 /*42*/

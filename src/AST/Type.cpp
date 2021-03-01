@@ -111,4 +111,17 @@ Type Type::make_array (const Type& type, const FixedArraySizes& sizes)
 	return Type (new Array (type, move (dimensions)));
 }
 
+bool Type::is_signed () const noexcept
+{
+	const Type& t = dereference ();
+	switch (t.kind ()) {
+		case Kind::BASIC_TYPE:
+			return is_signed (t.basic_type ());
+		case Kind::FIXED:
+			return true;
+		default:
+			return false;
+	}
+}
+
 }

@@ -5,16 +5,16 @@ namespace AST {
 
 enum class BasicType
 {
+	BOOLEAN,
+	OCTET,
 	CHAR,
 	WCHAR,
-	OCTET,
 	USHORT,
-	LONG,
-	LONGLONG,
-	SHORT,
 	ULONG,
 	ULONGLONG,
-	BOOLEAN,
+	SHORT,
+	LONG,
+	LONGLONG,
 	FLOAT,
 	DOUBLE,
 	LONGDOUBLE,

@@ -30,7 +30,7 @@ void Driver::preprocessor_directive (const char* const dir, unsigned line)
 					while (isspace (*(--end)))
 						;
 					if (*end == '\"')
-						file (string (s + 1, end - s - 1));
+						file (string (s + 1, end - s - 1), line);
 					else
 						parser_error (line, string ("Invalid file name: ") + string (s, end - s));
 				}

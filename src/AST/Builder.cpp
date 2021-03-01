@@ -11,6 +11,8 @@
 #include "Member.h"
 #include <assert.h>
 #include <stdexcept>
+#include <map>
+#include <set>
 
 using namespace std;
 
@@ -31,12 +33,15 @@ void Builder::pragma (const char* s, unsigned line)
 	assert (false); // TODO: Implement
 }
 
-void Builder::file (const std::string& name)
+void Builder::file (const std::string& name, unsigned line)
 {
 	if (tree_->file () == name) {
 		cur_file_ = &tree_->file ();
 		is_main_file_ = true;
 	} else {
+		if (scope_stack_.size () > 1) {
+			message (Location (file (), line), MessageType::WARNING, "#include shall not be used inside a scope.");
+		}
 		cur_file_ = &tree_->add_file (name);
 		is_main_file_ = false;
 		if (is_main_file ())
@@ -131,8 +136,8 @@ void Builder::scope_push (ItemContainer* scope)
 	scope_stack_.push_back (scope);
 	if (is_main_file ()) {
 		if (scope)
-			container_stack_.back ()->append (scope);
-		container_stack_.push_back (scope);
+			container_stack_.top ()->append (scope);
+		container_stack_.push (scope);
 	}
 }
 
@@ -152,7 +157,7 @@ void Builder::scope_end ()
 	scope_stack_.pop_back ();
 	if (is_main_file ()) {
 		assert (container_stack_.size () > 1);
-		container_stack_.pop_back ();
+		container_stack_.pop ();
 	}
 }
 const Ptr <NamedItem>* Builder::constr_type_end ()
@@ -181,8 +186,8 @@ void Builder::module_begin (const SimpleDeclarator& name)
 			scope_stack_.push_back (mod);
 			if (is_main_file ()) {
 				Ptr <ModuleItems> cont = Ptr <ModuleItems>::make <ModuleItems> (std::ref (*mod));
-				container_stack_.back ()->append (cont);
-				container_stack_.push_back (cont);
+				container_stack_.top ()->append (cont);
+				container_stack_.push (cont);
 			}
 		}
 	}
@@ -229,7 +234,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				if (existent_decl->interface_kind () != ik.interface_kind ())
 					error_interface_kind (name, ik, existent_decl->interface_kind (), **ins.first);
 				else if (is_main_file ())
-					container_stack_.back ()->append (decl);
+					container_stack_.top ()->append (decl);
 			}
 		}
 	}
@@ -361,7 +366,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			else {
 				interface_data_.cur_op = op;
 				if (is_main_file ())
-					container_stack_.back ()->append (op);
+					container_stack_.top ()->append (op);
 			}
 		}
 	}
@@ -419,7 +424,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 			if (item_kind != Item::Kind::STRUCT && item_kind != Item::Kind::STRUCT_DECL)
 				error_name_collision (name, **ins.first);
 			else if (is_main_file ())
-				container_stack_.back ()->append (decl);
+				container_stack_.top ()->append (decl);
 		}
 	}
 }
@@ -475,7 +480,7 @@ void Builder::member (const Type& type, const Declarators& declarators)
 				error_name_collision (*decl, **ins.first);
 			else {
 				if (is_main_file ())
-					container_stack_.back ()->append (m);
+					container_stack_.top ()->append (m);
 			}
 		}
 	}
@@ -491,7 +496,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 			if (item_kind != Item::Kind::UNION && item_kind != Item::Kind::UNION_DECL)
 				error_name_collision (name, **ins.first);
 			else if (is_main_file ())
-				container_stack_.back ()->append (decl);
+				container_stack_.top ()->append (decl);
 		}
 	}
 }
@@ -537,8 +542,49 @@ void Builder::enum_item (const SimpleDeclarator& name)
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
 		else if (is_main_file ())
-			container_stack_.back ()->append (item);
+			container_stack_.top ()->append (item);
 	}
+}
+
+void Builder::eval_push (const Type& t)
+{
+	const Type& type = t.dereference ();
+	unique_ptr <Eval> eval;
+	switch (type.kind ()) {
+		case Type::Kind::BASIC_TYPE:
+			switch (type.basic_type ()) {
+				case BasicType::BOOLEAN:
+					eval = make_unique <EvalBool> (*this);
+					break;
+				case BasicType::LONGLONG:
+				case BasicType::ULONGLONG:
+					eval = make_unique <EvalLongLong> (*this);
+					break;
+				case BasicType::LONGDOUBLE:
+					eval = make_unique <EvalLongDouble> (*this);
+					break;
+				default:
+					if (Type::is_integer (t.basic_type ()))
+						eval = make_unique <EvalLong> (*this);
+					else if (Type::is_floating_pt (t.basic_type ()))
+						eval = make_unique <EvalDouble> (*this);
+					else
+						eval = make_unique <Eval> (*this);
+			}
+			break;
+		case Type::Kind::STRING:
+			eval = make_unique <EvalString> (*this);
+			break;
+		case Type::Kind::WSTRING:
+			eval = make_unique <EvalWString> (*this);
+			break;
+		case Type::Kind::FIXED:
+			eval = make_unique <EvalFixed> (*this);
+			break;
+		default:
+			eval = make_unique <Eval> (*this);
+	}
+	eval_stack_.push (move (eval));
 }
 
 }

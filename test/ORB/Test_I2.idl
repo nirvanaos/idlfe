@@ -1,3 +1,6 @@
+#ifndef IDL_TEST_I2_H_
+#define IDL_TEST_I2_H_
+
 module Test {
 
 interface I2
@@ -6,3 +9,5 @@ interface I2
 };
 
 };
+
+#endif

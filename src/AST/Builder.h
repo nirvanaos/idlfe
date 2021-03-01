@@ -8,7 +8,7 @@
 #include "Eval.h"
 #include "Declarators.h"
 #include <ostream>
-#include <map>
+#include <stack>
 
 namespace AST {
 
@@ -27,7 +27,7 @@ public:
 	{
 		cur_file_ = &tree_->file ();
 		scope_stack_.push_back (tree_);
-		container_stack_.push_back (tree_);
+		container_stack_.push (tree_);
 	}
 
 	void parser_error (unsigned line, const std::string& msg)
@@ -35,7 +35,7 @@ public:
 		message (Location (file (), line), MessageType::ERROR, msg);
 	}
 
-	void file (const std::string& name);
+	void file (const std::string& name, unsigned line);
 
 	void pragma (const char*, unsigned line);
 
@@ -126,16 +126,18 @@ public:
 		return constr_type_end ();
 	}
 
-	template <class Ev>
-	void set_eval ()
+	void eval_push (const Type& t);
+
+	void eval_pop ()
 	{
-		eval_ = std::make_unique <Ev> (*this);
+		assert (!eval_stack_.empty ());
+		eval_stack_.pop ();
 	}
 
 	Eval& eval () const
 	{
-		assert (eval_);
-		return *eval_.get ();
+		assert (!eval_stack_.empty ());
+		return *eval_stack_.top ();
 	}
 
 	unsigned positive_int (const Variant& v, unsigned line);
@@ -175,9 +177,8 @@ private:
 	bool is_main_file_;
 	typedef std::vector <Symbols*> ScopeStack;
 	ScopeStack scope_stack_;
-	typedef std::vector <Container*> ContainerStack;
-	ContainerStack container_stack_;
-	std::unique_ptr <Eval> eval_;
+	std::stack <Container*> container_stack_;
+	std::stack <std::unique_ptr <Eval>> eval_stack_;
 
 	struct InterfaceData
 	{

@@ -1,5 +1,6 @@
 #include "Eval.h"
 #include "Builder.h"
+#include "Constant.h"
 
 extern "C" {
 #include <decNumber/decNumber.h>
@@ -77,17 +78,18 @@ Variant Eval::constant (const ScopedName& constant)
 	return Variant ();
 }
 
-const Ptr <NamedItem>* Eval::lookup_const (const ScopedName& constant) const
+const Constant* Eval::lookup_const (const ScopedName& constant) const
 {
 	const Ptr <NamedItem>* pitem = builder_.lookup (constant);
 	if (pitem) {
 		const NamedItem* item = *pitem;
 		if (item->kind () != Item::Kind::CONSTANT) {
-			builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a constant.");
+			invalid_constant_type (constant);
 			see_definition (*item);
-		}
+		} else
+			return static_cast <const Constant*> (item);
 	}
-	return pitem;
+	return nullptr;
 }
 
 void Eval::see_definition (const NamedItem& item) const
@@ -95,79 +97,18 @@ void Eval::see_definition (const NamedItem& item) const
 	builder_.message (item, Builder::MessageType::MESSAGE, string ("See definition of ") + item.qualified_name () + ".");
 }
 
-Variant Eval::expr_or (const Variant& l, const Variant& r, unsigned line)
+void Eval::invalid_constant_type (const ScopedName& constant) const
+{
+	builder_.message (constant, Builder::MessageType::ERROR, string ("Constant ") + constant.stringize () + " type is invalid.");
+}
+
+Variant Eval::expr (const Variant& l, char op, const Variant& r, unsigned line)
 {
 	invalid_operation (line);
 	return Variant ();
 }
 
-Variant Eval::expr_xor (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_and (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_shift_right (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_shift_left (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_add (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_sub (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_mul (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_div (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_rem (const Variant& l, const Variant& r, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_minus (const Variant& v, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_plus (const Variant& v, unsigned line)
-{
-	invalid_operation (line);
-	return Variant ();
-}
-
-Variant Eval::expr_tilde (const Variant& v, unsigned line)
+Variant Eval::expr (char op, const Variant& v, unsigned line)
 {
 	invalid_operation (line);
 	return Variant ();
@@ -284,6 +225,67 @@ unsigned Eval::from_hex (const char*& p, unsigned maxlen)
 	throw runtime_error ("Invalid character constant.");
 }
 
+[[noreturn]] void Eval::throw_out_of_range ()
+{
+	throw out_of_range ("Value out of range.");
+}
+
+// Boolean evaluator.
+
+Variant EvalBool::literal_boolean (bool v, unsigned line)
+{
+	return Variant (v);
+}
+
+Variant EvalBool::constant (const ScopedName& constant)
+{
+	const Constant* pc = lookup_const (constant);
+	if (pc) {
+		const Type& t = pc->dereference ();
+		if (t.kind () == Type::Kind::BASIC_TYPE && t.basic_type () == BasicType::BOOLEAN)
+			return Variant (*pc);
+		else {
+			invalid_constant_type (constant);
+			see_definition (*pc);
+		}
+	}
+	return Variant ();
+}
+
+Variant EvalBool::expr (const Variant& l, char op, const Variant& r, unsigned line)
+{
+	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+		bool lv = l.as_bool (), rv = r.as_bool (), ret;
+		switch (op) {
+			case '|':
+				ret = lv || rv;
+				break;
+			case '^':
+				ret = lv != rv;
+				break;
+			case '&':
+				ret = lv && rv;
+				break;
+			default:
+				invalid_operation (line);
+				return Variant ();
+		}
+		return ret;
+	}
+	return Variant ();
+}
+
+Variant EvalBool::expr (char op, const Variant& v, unsigned line)
+{
+	if (v.kind () != Type::Kind::VOID) {
+		if ('~' == op)
+			return !v.as_bool ();
+		else
+			invalid_operation (line);
+	}
+	return Variant ();
+}
+
 // Integer evaluator
 
 Variant EvalLong::literal_char (const string& s, unsigned line)
@@ -325,17 +327,113 @@ Variant EvalLong::literal_int (const string& s, unsigned line)
 {
 	try {
 		size_t idx;
-		unsigned long long ull = stoull (s, &idx, 0);
+		uint64_t ull = stoull (s, &idx, 0);
 		if (idx != s.size ())
 			throw runtime_error ("Invalid integer constant.");
 		if (ull > numeric_limits <uint32_t>::max ())
 			return Variant (ull);
 		else
-			return Variant ((unsigned long)ull);
+			return Variant ((uint32_t)ull);
 	} catch (const exception& ex) {
 		error (line, ex);
 		return Variant ();
 	}
+}
+
+Variant EvalLong::constant (const ScopedName& constant)
+{
+	const Constant* pc = lookup_const (constant);
+	if (pc) {
+		if (pc->is_integer ())
+			return Variant (*pc);
+		else {
+			invalid_constant_type (constant);
+			see_definition (*pc);
+		}
+	}
+	return Variant ();
+}
+
+Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned line)
+{
+	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+		try {
+			assert (l.kind () == Type::Kind::BASIC_TYPE && r.kind () == Type::Kind::BASIC_TYPE);
+			if (
+				l.basic_type () == BasicType::LONGLONG || r.basic_type () == BasicType::LONGLONG
+				||
+				l.basic_type () == BasicType::ULONGLONG || r.basic_type () == BasicType::ULONGLONG
+			) {
+				Variant ll = EvalLongLong (builder_).expr (l, op, r, line);
+				if (l.is_signed ())
+					return ll.as_long ();
+				else
+					return ll.as_unsigned_long ();
+			} else {
+				if (l.is_signed ()) {
+					int32_t lv = l.as_long (), ret;
+					if ('>' == op || '<' == op) {
+						uint32_t shift = r.as_unsigned_long ();
+						if (shift > 32)
+							builder_.message (Location (builder_.file (), line), Builder::MessageType::WARNING, "Shift size is too large.");
+						ret = op == '>' ? lv >> shift : lv << shift;
+					} else {
+						int32_t rv = r.as_long ();
+						switch (op) {
+							case '|':
+								ret = lv | rv;
+								break;
+							case '^':
+								ret = lv ^ rv;
+								break;
+							case '&':
+								ret = lv & rv;
+								break;
+							case '+':
+								if (rv > 0) {
+									if (lv > numeric_limits <int32_t>::max () - rv)
+										throw_out_of_range ();
+								} else if (rv < 0) {
+									if (lv < numeric_limits <int32_t>::min () - rv)
+										throw_out_of_range ();
+								}
+								ret = lv + rv;
+								break;
+							case '-':
+								if (rv < 0) {
+									if (lv > numeric_limits <int32_t>::max () + rv)
+										throw_out_of_range ();
+								} else if (rv > 0) {
+									if (lv < numeric_limits <int32_t>::min () + rv)
+										throw_out_of_range ();
+								}
+								ret = lv - rv;
+								break;
+							case '*':
+								if (lv > numeric_limits <int32_t>::max () / rv || lv < numeric_limits <int32_t>::min () / rv)
+									throw_out_of_range ();
+								break;
+							case '/':
+								break;
+							case '%':
+								break;
+						}
+					}
+					return ret;
+				} else {
+					uint32_t lv = l.as_unsigned_long (), rv = r.as_unsigned_long (), ret;
+				}
+			}
+		} catch (const exception& ex) {
+			error (line, ex);
+		}
+	}
+	return Variant ();
+}
+
+Variant EvalLong::expr (char op, const Variant& v, unsigned line)
+{
+	return Variant ();
 }
 
 // Long integer evaluator
@@ -375,7 +473,7 @@ Variant EvalString::literal_string (const string& s, unsigned line, const Varian
 			v += c;
 		}
 		if (append)
-			v += append->str ();
+			v += append->as_string ();
 		return Variant (move (v));
 	} catch (const exception& ex) {
 		error (line, ex);
@@ -402,7 +500,7 @@ Variant EvalWString::literal_wstring (const string& s, unsigned line, const Vari
 				throw runtime_error ("A wide string literal shall not contain the character \'\\0\'.");
 		}
 		if (append)
-			v += append->wstr ();
+			v += append->as_wstring ();
 		return Variant (move (v));
 	} catch (const exception& ex) {
 		error (line, ex);

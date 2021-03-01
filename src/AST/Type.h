@@ -23,9 +23,9 @@ public:
 		NAMED_TYPE,
 		STRING,
 		WSTRING,
+		FIXED,
 		SEQUENCE,
-		ARRAY,
-		FIXED
+		ARRAY
 	};
 
 	~Type ()
@@ -69,38 +69,59 @@ public:
 	Type& operator = (const Type& src);
 	Type& operator = (Type&& src) noexcept;
 
-	Kind kind () const
+	Kind kind () const noexcept
 	{
 		return kind_;
 	}
 
-	BasicType basic_type () const
+	BasicType basic_type () const noexcept
 	{
 		assert (Kind::BASIC_TYPE == kind_);
 		return type_.basic_type;
 	}
 
-	static bool is_integer (BasicType bt)
+	static bool is_integer (BasicType bt) noexcept
 	{
-		return bt <= BasicType::ULONGLONG;
+		return BasicType::BOOLEAN < bt && bt <= BasicType::LONGLONG;
 	}
 
-	static bool is_float (BasicType bt)
+	bool is_integer () const  noexcept
+	{
+		const Type& t = dereference ();
+		return t.kind () == Kind::BASIC_TYPE && is_integer (t.basic_type ());
+	}
+
+	bool is_signed (BasicType bt) const noexcept
+	{
+		return BasicType::SHORT <= bt && bt <= BasicType::LONGDOUBLE;
+	}
+
+	bool is_signed () const noexcept;
+
+	static bool is_floating_pt (BasicType bt) noexcept
 	{
 		return (BasicType::FLOAT <= bt && bt <= BasicType::LONGDOUBLE);
 	}
 
+	bool is_floating_pt () noexcept
+	{
+		const Type& t = dereference ();
+		return t.kind () == Kind::BASIC_TYPE && is_floating_pt (t.basic_type ());
+	}
+
 	const Type& dereference () const noexcept;
+
+	// Fixed
 
 	uint8_t fixed_digits () const noexcept
 	{
-		assert (kind () == Kind::FIXED);
+		assert (dereference ().kind () == Kind::FIXED);
 		return type_.fixed.digits;
 	}
 
 	uint8_t fixed_scale () const noexcept
 	{
-		assert (kind () == Kind::FIXED);
+		assert (dereference ().kind () == Kind::FIXED);
 		return type_.fixed.scale;
 	}
 
