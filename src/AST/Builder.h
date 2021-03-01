@@ -164,6 +164,9 @@ public:
 	}
 
 private:
+	static bool get_quoted_string (const char*& s, std::string& qs);
+	static bool get_scoped_name (const char*& s, ScopedName& sn);
+
 	bool scope_begin ();
 	void scope_push (ItemContainer* scope);
 	void scope_end ();

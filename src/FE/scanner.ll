@@ -69,12 +69,12 @@ CORBA_Identifier	[a-zA-Z_][a-zA-Z0-9_]*
 [ \t]			;
 [\n]			;
 "//"[^\n]*		;
-"#pragma"[^\n]*\n       {
-                          static_cast <FE::Driver*> (this)->pragma (YYText (), lineno ());
-                        }
-"#"[^\n]*\n             {
-                          static_cast <FE::Driver*> (this)->preprocessor_directive (YYText (), lineno ());
-                        }
+"#pragma"[^\n]*\n {
+  static_cast <FE::Driver*> (this)->pragma (YYText (), lineno ());
+}
+"#"[^\n]*\n {
+  static_cast <FE::Driver*> (this)->preprocessor_directive (YYText (), lineno ());
+}
 "{"			return yy::parser::make_T_LEFT_CURLY_BRACKET (yy::parser::location_type (nullptr, lineno ()));
 "}"			return yy::parser::make_T_RIGHT_CURLY_BRACKET (yy::parser::location_type (nullptr, lineno ()));
 "["		 	return yy::parser::make_T_LEFT_SQUARE_BRACKET (yy::parser::location_type (nullptr, lineno ()));

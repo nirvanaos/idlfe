@@ -15,6 +15,7 @@
 #include "EvalString.h"
 #include "EvalFixed.h"
 #include "Constant.h"
+#include "Prefix.h"
 #include <assert.h>
 #include <stdexcept>
 #include <map>
@@ -36,7 +37,139 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 
 void Builder::pragma (const char* s, unsigned line)
 {
-	assert (false); // TODO: Implement
+	assert (*s == '#');
+	++s;
+	while (isspace (*s))
+		++s;
+	if (*s) {
+		assert (!strncmp (s, "pragma ", 7));
+		s += 7;
+		while (isspace (*s))
+			++s;
+		const char* end = s + 1;
+		while (!isspace (*end))
+			++end;
+		string pr (s, end - s);
+		if (pr == "ID") {
+			s = end + 1;
+			ScopedName name;
+			string id;
+			if (get_scoped_name (s, name) && get_quoted_string (s, id)) {
+				const Ptr <NamedItem>* item = lookup (name);
+				if (!item)
+					message (Location (file (), line), MessageType::ERROR, name.stringize () + " not found.");
+				else
+					(*item)->pragma_id (move (id));
+				return;
+			}
+		} else if (pr == "prefix") {
+			string prefix;
+			if (get_quoted_string (s, prefix)) {
+				container_stack_.top ()->append (Ptr <Item>::make <Prefix> (move (prefix)));
+				return;
+			}
+		} else if (pr == "version") {
+			s = end + 1;
+			ScopedName name;
+			if (get_scoped_name (s, name)) {
+				while (isspace (*s))
+					++s;
+				Version ver;
+				char* endptr;
+				unsigned long u = strtoul (s, &endptr, 10);
+				if (endptr > s && (!*endptr || '.' == *endptr) && u <= numeric_limits <uint16_t>::max ()) {
+					bool OK = true;
+					ver.major = (uint16_t)u;
+					if (*(s = endptr)) {
+						u = strtoul (s, &endptr, 10);
+						if (!*endptr && u <= numeric_limits <uint16_t>::max ())
+							ver.minor = (uint16_t)u;
+						else
+							OK = false;
+					}
+					if (OK) {
+						const Ptr <NamedItem>* item = lookup (name);
+						if (!item)
+							message (Location (file (), line), MessageType::ERROR, name.stringize () + " not found.");
+						else
+							(*item)->version (ver);
+						return;
+					}
+				}
+			}
+		} else {
+			message (Location (file (), line), MessageType::WARNING, string ("Unknown pragma \'") + pr + "\'.");
+			return;
+		}
+	}
+
+	message (Location (file (), line), MessageType::ERROR, "Invalid pragma syntax.");
+}
+
+bool Builder::get_quoted_string (const char*& s, std::string& qs)
+{
+	const char* begin = s;
+	while (isspace (*begin))
+		++begin;
+	if ('\"' == *begin) {
+		++begin;
+		const char* end = strchr (begin, '\"');
+		if (end) {
+			qs.assign (begin, end - begin);
+			s = end + 1;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
+{
+	const char* begin = s;
+	char c;
+	while ((c = isspace (*begin)))
+		++begin;
+
+	if (':' == c) {
+		++begin;
+		if (':' == *begin) {
+			do {
+				c = *++begin;
+			} while (isspace (c));
+			if (!isalpha (c))
+				return false;
+			sn.from_root = true;
+		} else
+			return false;
+	} else if (!isalpha (c))
+		return false;
+
+	assert (isalpha (c));
+	assert (*begin == c);
+
+	for (;;) {
+		const char* end = begin + 1;
+		for (;;) {
+			c = *end;
+			if (isalnum (c) || '_' == c)
+				++end;
+			else
+				break;
+		}
+		sn.push_back (string (begin, end - begin));
+		begin = end;
+		while ((c = isspace (*begin)))
+			++begin;
+		if (':' == c) {
+			++begin;
+			if (':' == *begin)
+				c = *++begin;
+			else
+				return false;
+		} else if (!c)
+			break;
+	}
+	return true;
 }
 
 void Builder::file (const std::string& name, unsigned line)

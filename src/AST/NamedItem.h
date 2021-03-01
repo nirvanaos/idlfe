@@ -8,6 +8,15 @@ namespace AST {
 
 class ItemScope;
 
+struct Version
+{
+	uint16_t major, minor;
+
+	Version () :
+		major (1), minor (0)
+	{}
+};
+
 class NamedItem :
 	public Item,
 	public Location
@@ -32,9 +41,31 @@ public:
 
 	std::string qualified_name () const;
 
+	const std::string& pragma_id () const
+	{
+		return pragma_id_;
+	}
+
+	void pragma_id (std::string&& id)
+	{
+		pragma_id_ = std::move (id);
+	}
+
+	const Version& version () const
+	{
+		return version_;
+	}
+
+	void version (const Version& ver)
+	{
+		version_ = ver;
+	}
+
 private:
 	const std::string name_;
 	const ItemScope* parent_;
+	std::string pragma_id_;
+	Version version_;
 };
 
 }

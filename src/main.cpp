@@ -7,8 +7,10 @@ int main (int argc, char* argv [])
 {
 	list <string> files;
 	if (CmdLineParser (argc, argv).parse (files)) {
-		for (auto f = files.begin (); f != files.end (); ++f)
+		for (auto f = files.begin (); f != files.end (); ++f) {
+			cout << *f << endl;
 			compile (*f);
+		}
 		return 0;
 	} else
 		return -1;
