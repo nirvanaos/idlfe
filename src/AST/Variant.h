@@ -65,8 +65,92 @@ public:
 
 	// Integer
 
-	uint32_t as_unsigned_long () const;
-	int32_t as_long () const;
+	uint8_t as_octet () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::OCTET);
+		return (uint8_t)val_.ui;
+	}
+
+	uint8_t to_octet () const;
+
+	char as_char () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::CHAR);
+		return (char)val_.ui;
+	}
+
+	char to_char () const
+	{
+		return (char)to_octet ();
+	}
+
+	wchar_t as_wchar () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::WCHAR);
+		return (wchar_t)val_.ui;
+	}
+
+	wchar_t to_wchar () const
+	{
+		return (char)to_unsigned_short ();
+	}
+
+	uint16_t as_unsigned_short () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::USHORT);
+		return (uint16_t)val_.ui;
+	}
+
+	uint16_t to_unsigned_short () const;
+
+	int16_t as_short () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::SHORT);
+		return (int16_t)val_.i;
+	}
+
+	int16_t to_short () const;
+
+	uint32_t as_unsigned_long () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::ULONG);
+		return (uint32_t)val_.ui;
+	}
+
+	uint32_t to_unsigned_long () const;
+
+	int32_t as_long () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::LONG);
+		return (int32_t)val_.i;
+	}
+
+	int32_t to_long () const;
+
+	uint64_t as_unsigned_long_long () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::ULONGLONG);
+		return val_.ui;
+	}
+
+	uint64_t to_unsigned_long_long () const;
+
+	int64_t as_long_long () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::LONGLONG);
+		return val_.i;
+	}
+
+	int64_t to_long_long () const;
 
 	// String
 

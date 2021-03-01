@@ -34,9 +34,10 @@ public:
 protected:
 	[[noreturn]] static void invalid_escape_seq ();
 	[[noreturn]] static void invalid_char_const ();
-	[[noreturn]] void throw_out_of_range ();
+	[[noreturn]] void overflow ();
+	[[noreturn]] void zero_divide ();
 
-		static wchar_t unescape_wchar (const char*& p);
+	static wchar_t unescape_wchar (const char*& p);
 	static char unescape_char (const char*& p);
 	void invalid_literal_type (unsigned line) const;
 	void invalid_operation (unsigned line) const;

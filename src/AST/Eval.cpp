@@ -1,7 +1,7 @@
 #include "Eval.h"
 #include "Builder.h"
 #include "Constant.h"
-
+#include "SafeInt/SafeInt.hpp"
 extern "C" {
 #include <decNumber/decNumber.h>
 }
@@ -225,9 +225,14 @@ unsigned Eval::from_hex (const char*& p, unsigned maxlen)
 	throw runtime_error ("Invalid character constant.");
 }
 
-[[noreturn]] void Eval::throw_out_of_range ()
+[[noreturn]] void Eval::overflow ()
 {
-	throw out_of_range ("Value out of range.");
+	throw overflow_error ("Overflow.");
+}
+
+[[noreturn]] void Eval::zero_divide ()
+{
+	throw runtime_error ("Divide by zero.");
 }
 
 // Boolean evaluator.
@@ -357,8 +362,8 @@ Variant EvalLong::constant (const ScopedName& constant)
 Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned line)
 {
 	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+		assert (l.is_integer () && r.is_integer ());
 		try {
-			assert (l.kind () == Type::Kind::BASIC_TYPE && r.kind () == Type::Kind::BASIC_TYPE);
 			if (
 				l.basic_type () == BasicType::LONGLONG || r.basic_type () == BasicType::LONGLONG
 				||
@@ -366,19 +371,19 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 			) {
 				Variant ll = EvalLongLong (builder_).expr (l, op, r, line);
 				if (l.is_signed ())
-					return ll.as_long ();
+					return ll.to_long ();
 				else
-					return ll.as_unsigned_long ();
+					return ll.to_unsigned_long ();
 			} else {
 				if (l.is_signed ()) {
-					int32_t lv = l.as_long (), ret;
+					int32_t lv = l.to_long (), ret = 0;
 					if ('>' == op || '<' == op) {
-						uint32_t shift = r.as_unsigned_long ();
+						uint32_t shift = r.to_unsigned_long ();
 						if (shift > 32)
-							builder_.message (Location (builder_.file (), line), Builder::MessageType::WARNING, "Shift size is too large.");
+							throw range_error ("Shift size is too large.");
 						ret = op == '>' ? lv >> shift : lv << shift;
 					} else {
-						int32_t rv = r.as_long ();
+						int32_t rv = r.to_long ();
 						switch (op) {
 							case '|':
 								ret = lv | rv;
@@ -390,38 +395,76 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 								ret = lv & rv;
 								break;
 							case '+':
-								if (rv > 0) {
-									if (lv > numeric_limits <int32_t>::max () - rv)
-										throw_out_of_range ();
-								} else if (rv < 0) {
-									if (lv < numeric_limits <int32_t>::min () - rv)
-										throw_out_of_range ();
-								}
-								ret = lv + rv;
+								if (SafeAdd (lv, rv, ret))
+									overflow ();
 								break;
 							case '-':
-								if (rv < 0) {
-									if (lv > numeric_limits <int32_t>::max () + rv)
-										throw_out_of_range ();
-								} else if (rv > 0) {
-									if (lv < numeric_limits <int32_t>::min () + rv)
-										throw_out_of_range ();
-								}
-								ret = lv - rv;
+								if (SafeSubtract (lv, rv, ret))
+									overflow ();
 								break;
 							case '*':
-								if (lv > numeric_limits <int32_t>::max () / rv || lv < numeric_limits <int32_t>::min () / rv)
-									throw_out_of_range ();
+								if (SafeMultiply (lv, rv, ret))
+									overflow ();
 								break;
 							case '/':
+								if (SafeDivide (lv, rv, ret))
+									zero_divide ();
 								break;
 							case '%':
+								if (SafeModulus (lv, rv, ret))
+									zero_divide ();
 								break;
+							default:
+								invalid_operation (line);
+								return Variant ();
 						}
 					}
 					return ret;
 				} else {
-					uint32_t lv = l.as_unsigned_long (), rv = r.as_unsigned_long (), ret;
+					uint32_t lv = l.to_unsigned_long (), ret = 0;
+					if ('>' == op || '<' == op) {
+						uint32_t shift = r.to_unsigned_long ();
+						if (shift > 32)
+							throw range_error ("Shift size is too large.");
+						ret = op == '>' ? lv >> shift : lv << shift;
+					} else {
+						uint32_t rv = r.to_unsigned_long ();
+						switch (op) {
+							case '|':
+								ret = lv | rv;
+								break;
+							case '^':
+								ret = lv ^ rv;
+								break;
+							case '&':
+								ret = lv & rv;
+								break;
+							case '+':
+								if (SafeAdd (lv, rv, ret))
+									overflow ();
+								break;
+							case '-':
+								if (SafeSubtract (lv, rv, ret))
+									overflow ();
+								break;
+							case '*':
+								if (SafeMultiply (lv, rv, ret))
+									overflow ();
+								break;
+							case '/':
+								if (SafeDivide (lv, rv, ret))
+									zero_divide ();
+								break;
+							case '%':
+								if (SafeModulus (lv, rv, ret))
+									zero_divide ();
+								break;
+							default:
+								invalid_operation (line);
+								return Variant ();
+						}
+					}
+					return ret;
 				}
 			}
 		} catch (const exception& ex) {
@@ -433,6 +476,50 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 
 Variant EvalLong::expr (char op, const Variant& v, unsigned line)
 {
+	if (v.kind () != Type::Kind::VOID) {
+		assert (v.is_integer ());
+		try {
+			if (v.is_signed ()) {
+				int32_t i = v.to_long (), ret = 0;
+				switch (op) {
+					case '-':
+						ret = -i;
+						break;
+					case '+':
+						ret = i;
+						break;
+					case '~':
+						ret = -(i + 1);
+						break;
+					default:
+						invalid_operation (line);
+						return Variant ();
+				}
+			} else {
+				uint32_t u = v.to_unsigned_long ();
+				switch (op) {
+					case '-': {
+							int32_t i;
+							if (SafeCast (u, i))
+								overflow ();
+							return -i;
+						}
+						break;
+					case '+':
+						return u;
+						break;
+					case '~':
+						return numeric_limits <uint32_t>::max () - u;;
+						break;
+					default:
+						invalid_operation (line);
+						return Variant ();
+				}
+			}
+		} catch (const exception& ex) {
+			error (line, ex);
+		}
+	}
 	return Variant ();
 }
 

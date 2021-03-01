@@ -1,4 +1,5 @@
 #include "Variant.h"
+#include "SafeInt/SafeInt.hpp"
 extern "C" {
 #include <decNumber/decNumber.h>
 #include <decNumber/decPacked.h>
@@ -127,35 +128,76 @@ Variant::Variant (const _decNumber& v) noexcept :
 
 [[noreturn]] void Variant::throw_out_of_range ()
 {
-	throw out_of_range ("Value out of range.");
+	throw range_error ("Value out of range.");
 }
 
-uint32_t Variant::as_unsigned_long () const
+uint8_t Variant::to_octet () const
 {
 	assert (is_integer ());
-	if (is_signed ()) {
-		if (val_.i < 0 || val_.i > numeric_limits <uint32_t>::max ())
-			throw_out_of_range ();
-		else
-			return (uint32_t)val_.i;
-	} else if (val_.ui > numeric_limits <uint32_t>::max ())
+	uint8_t ret;
+	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
-	else
-		return (uint32_t)val_.ui;
+	return ret;
 }
 
-int32_t Variant::as_long () const
+uint16_t Variant::to_unsigned_short () const
 {
 	assert (is_integer ());
-	if (is_signed ()) {
-		if (val_.i < numeric_limits <int32_t>::min () || val_.i > numeric_limits <int32_t>::max ())
-			throw_out_of_range ();
-		else
-			return (int32_t)val_.i;
-	} else if (val_.ui > numeric_limits <int32_t>::max ())
+	uint16_t ret;
+	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
-	else
-		return (int32_t)val_.ui;
+	return ret;
+}
+
+int16_t Variant::to_short () const
+{
+	assert (is_integer ());
+	int16_t ret;
+	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+		throw_out_of_range ();
+	return ret;
+}
+
+uint32_t Variant::to_unsigned_long () const
+{
+	assert (is_integer ());
+	uint32_t ret;
+	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+		throw_out_of_range ();
+	return ret;
+}
+
+int32_t Variant::to_long () const
+{
+	assert (is_integer ());
+	int32_t ret;
+	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+		throw_out_of_range ();
+	return ret;
+}
+
+uint64_t Variant::to_unsigned_long_long () const
+{
+	assert (is_integer ());
+	uint64_t ret;
+	if (is_signed (basic_type ())) {
+		if (SafeCast (val_.i, ret))
+			throw_out_of_range ();
+	} else
+		ret = val_.ui;
+	return ret;
+}
+
+int64_t Variant::to_long_long () const
+{
+	assert (is_integer ());
+	int64_t ret;
+	if (!is_signed (basic_type ())) {
+		if (SafeCast (val_.ui, ret))
+			throw_out_of_range ();
+	} else
+		ret = val_.i;
+	return ret;
 }
 
 }
