@@ -9,7 +9,7 @@ FlexLexer* lexer;
 
 using namespace std;
 
-int compile (const string& file)
+bool compile (const string& file)
 {
 	istringstream preprocessed;
 
@@ -56,18 +56,13 @@ int compile (const string& file)
         }
         std::cerr << output.msg << std::endl;
       }
-      return -1;
+      return false;
     }
 
 		preprocessed.str (output_tokens.stringify ());
 	}
 
-	{
-		Driver driver (file, preprocessed);
-		int err = driver.parse ();
-    if (err)
-      return err;
-	}
+	AST::Ptr <AST::AST> ast = FE::Driver::parse (file, preprocessed);
 
-	return 0;
+	return true;
 }

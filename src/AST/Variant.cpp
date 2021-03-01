@@ -1,4 +1,4 @@
-#include "Variant.h"
+#include "Builder.h"
 #include "SafeInt/SafeInt.hpp"
 extern "C" {
 #include <decNumber/decNumber.h>
@@ -6,6 +6,7 @@ extern "C" {
 }
 #include <stdexcept>
 #include <limits>
+#include <cfenv>
 #include <assert.h>
 
 using namespace std;
@@ -106,6 +107,12 @@ Variant::Variant (uint64_t v) noexcept :
 	val_.ui = v;
 }
 
+Variant::Variant (float v) noexcept :
+	Type (BasicType::FLOAT)
+{
+	val_.d = v;
+}
+
 Variant::Variant (double v) noexcept :
 	Type (BasicType::DOUBLE)
 {
@@ -135,16 +142,38 @@ uint8_t Variant::to_octet () const
 {
 	assert (is_integer ());
 	uint8_t ret;
-	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	if (basic_type () == BasicType::OCTET)
+		ret = (uint8_t)val_.ui;
+	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
 	return ret;
+}
+
+char Variant::to_char () const
+{
+	assert (is_integer ());
+	if (basic_type () == BasicType::CHAR)
+		return (char)val_.ui;
+	else
+		return (char)to_octet ();
+}
+
+wchar_t Variant::to_wchar () const
+{
+	assert (is_integer ());
+	if (basic_type () == BasicType::WCHAR)
+		return (wchar_t)val_.ui;
+	else
+		return (wchar_t)to_unsigned_short ();
 }
 
 uint16_t Variant::to_unsigned_short () const
 {
 	assert (is_integer ());
 	uint16_t ret;
-	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	if (basic_type () == BasicType::USHORT)
+		ret = (uint16_t)val_.ui;
+	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -153,7 +182,9 @@ int16_t Variant::to_short () const
 {
 	assert (is_integer ());
 	int16_t ret;
-	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	if (basic_type () == BasicType::SHORT)
+		ret = (int16_t)val_.i;
+	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -162,7 +193,9 @@ uint32_t Variant::to_unsigned_long () const
 {
 	assert (is_integer ());
 	uint32_t ret;
-	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	if (basic_type () == BasicType::SHORT)
+		ret = (uint32_t)val_.ui;
+	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -171,7 +204,9 @@ int32_t Variant::to_long () const
 {
 	assert (is_integer ());
 	int32_t ret;
-	if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	if (basic_type () == BasicType::SHORT)
+		ret = (int32_t)val_.i;
+	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -198,6 +233,58 @@ int64_t Variant::to_long_long () const
 	} else
 		ret = val_.i;
 	return ret;
+}
+
+void Variant::check_fp ()
+{
+	int ex = fetestexcept (FE_ALL_EXCEPT);
+	if (ex & FE_OVERFLOW)
+		throw overflow_error ("Conversion overflow.");
+	else if (ex & FE_UNDERFLOW)
+		throw underflow_error ("Conversion underflow.");
+}
+
+float Variant::to_float () const
+{
+	assert (is_floating_pt ());
+	float ret;
+	feclearexcept (FE_ALL_EXCEPT);
+	if (basic_type () == BasicType::FLOAT)
+		ret = (float)val_.d;
+	else {
+		ret = (float)val_.d;
+		check_fp ();
+	}
+	return ret;
+}
+
+double Variant::to_double () const
+{
+	assert (is_floating_pt ());
+	double ret;
+	feclearexcept (FE_ALL_EXCEPT);
+	if (basic_type () == BasicType::DOUBLE)
+		ret = (double)val_.d;
+	else {
+		ret = (double)val_.d;
+		check_fp ();
+	}
+	return ret;
+}
+
+long double Variant::to_long_double () const
+{
+	assert (is_floating_pt ());
+	feclearexcept (FE_ALL_EXCEPT);
+	return val_.d;
+}
+
+void Variant::as_decNumber (_decNumber& dn) const noexcept
+{
+	assert (kind () == Type::Kind::FIXED);
+	int scale = fixed_scale ();
+	decPackedToNumber (val_.fixed, bcd_length (), &scale, &dn);
+	assert (fixed_scale () == scale);
 }
 
 }

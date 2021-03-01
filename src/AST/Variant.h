@@ -7,8 +7,6 @@ extern "C" struct _decNumber;
 
 namespace AST {
 
-class Builder;
-
 class Variant :
 	public Type
 {
@@ -37,6 +35,7 @@ public:
 	Variant (uint32_t v) noexcept;
 	Variant (int64_t v) noexcept;
 	Variant (uint64_t v) noexcept;
+	Variant (float v) noexcept;
 	Variant (double v) noexcept;
 	Variant (long double v) noexcept;
 
@@ -81,10 +80,7 @@ public:
 		return (char)val_.ui;
 	}
 
-	char to_char () const
-	{
-		return (char)to_octet ();
-	}
+	char to_char () const;
 
 	wchar_t as_wchar () const noexcept
 	{
@@ -93,10 +89,7 @@ public:
 		return (wchar_t)val_.ui;
 	}
 
-	wchar_t to_wchar () const
-	{
-		return (char)to_unsigned_short ();
-	}
+	wchar_t to_wchar () const;
 
 	uint16_t as_unsigned_short () const noexcept
 	{
@@ -152,6 +145,35 @@ public:
 
 	int64_t to_long_long () const;
 
+	// Floating point
+
+	float as_float () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::FLOAT);
+		return (float)val_.d;
+	}
+
+	float to_float () const;
+
+	double as_double () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::DOUBLE);
+		return (double)val_.d;
+	}
+
+	double to_double () const;
+
+	long double as_long_double () const noexcept
+	{
+		assert (dereference ().kind () == Kind::BASIC_TYPE);
+		assert (dereference ().basic_type () == BasicType::LONGDOUBLE);
+		return val_.d;
+	}
+
+	long double to_long_double () const;
+
 	// String
 
 	const std::string& as_string () const noexcept
@@ -189,6 +211,8 @@ private:
 	{
 		return (digits + 2) / 2;
 	}
+
+	static void check_fp ();
 
 private:
 	[[noreturn]] static void throw_out_of_range ();

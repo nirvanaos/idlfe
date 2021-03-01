@@ -103,7 +103,7 @@ public:
 		return (BasicType::FLOAT <= bt && bt <= BasicType::LONGDOUBLE);
 	}
 
-	bool is_floating_pt () noexcept
+	bool is_floating_pt () const noexcept
 	{
 		const Type& t = dereference ();
 		return t.kind () == Kind::BASIC_TYPE && is_floating_pt (t.basic_type ());

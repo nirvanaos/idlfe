@@ -3,6 +3,6 @@
 
 #include <string>
 
-extern int compile (const std::string& file);
+extern bool compile (const std::string& file);
 
 #endif

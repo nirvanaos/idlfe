@@ -9,6 +9,11 @@
 #include "Enum.h"
 #include "Exception.h"
 #include "Member.h"
+#include "EvalBool.h"
+#include "EvalLongLong.h"
+#include "EvalDouble.h"
+#include "EvalString.h"
+#include "EvalFixed.h"
 #include <assert.h>
 #include <stdexcept>
 #include <map>

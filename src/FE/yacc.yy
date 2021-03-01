@@ -30,14 +30,16 @@
 %define api.token.constructor
 
 %code requires {
-	class Driver;
+namespace FE {
+class Driver;
+}
 #include "../AST/ScopedName.h"
 #include "../AST/Variant.h"
 #include "../AST/Declarators.h"
 #include "../AST/Parameter.h"
 }
 
-%param {Driver& drv}
+%param {FE::Driver& drv}
 %locations
 
 %define parse.trace

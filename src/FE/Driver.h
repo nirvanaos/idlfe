@@ -7,26 +7,40 @@
 #include "../AST/Builder.h"
 #include <iostream>
 
-/// The proxy class between Flex/Bison and `AST::Builder`.
+namespace FE {
+
+/// The proxy class between Flex, Bison and `AST::Builder`.
 class Driver :
 	public yyFlexLexer,
 	public AST::Builder
 {
 public:
-	Driver (const std::string& file, std::istream& yyin);
-
-	int parse ()
+	static AST::Ptr <AST::AST> parse (const std::string& file, std::istream& yyin)
 	{
-		return parser_.parse ();
+		Driver driver (file, yyin);
+		return driver.parse ();
 	}
 
 	void preprocessor_directive (const char*, unsigned line);
 
 private:
+	Driver (const std::string& file, std::istream& yyin);
+
+	AST::Ptr <AST::AST> parse ()
+	{
+		if (!parser_.parse () && !err_cnt ())
+			return tree ();
+		else
+			return AST::Ptr <AST::AST> ();
+	}
+
+private:
 	yy::parser parser_;
 };
 
-inline yy::parser::symbol_type yylex (Driver& drv)
+}
+
+inline yy::parser::symbol_type yylex (FE::Driver& drv)
 {
 	return drv.yylex ();
 }

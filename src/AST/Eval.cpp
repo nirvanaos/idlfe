@@ -1,10 +1,7 @@
+/// \file Eval.cpp Expression evaluiator.
 #include "Eval.h"
 #include "Builder.h"
 #include "Constant.h"
-#include "SafeInt/SafeInt.hpp"
-extern "C" {
-#include <decNumber/decNumber.h>
-}
 
 using namespace std;
 
@@ -15,9 +12,20 @@ void Eval::invalid_literal_type (unsigned line) const
 	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Invalid literal type.");
 }
 
-void Eval::invalid_operation (unsigned line) const
+void Eval::invalid_operation (char op, unsigned line) const
 {
-	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Invalid operation.");
+	string sop;
+	switch (op) {
+		case '>':
+			sop = ">>";
+			break;
+		case '<':
+			sop = "<<";
+			break;
+		default:
+			sop = op;
+	}
+	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, string ("Operation ") + sop + " is invalid in this context.");
 }
 
 void Eval::error (unsigned line, const std::exception& ex) const
@@ -104,13 +112,13 @@ void Eval::invalid_constant_type (const ScopedName& constant) const
 
 Variant Eval::expr (const Variant& l, char op, const Variant& r, unsigned line)
 {
-	invalid_operation (line);
+	invalid_operation (op, line);
 	return Variant ();
 }
 
 Variant Eval::expr (char op, const Variant& v, unsigned line)
 {
-	invalid_operation (line);
+	invalid_operation (op, line);
 	return Variant ();
 }
 
@@ -225,399 +233,19 @@ unsigned Eval::from_hex (const char*& p, unsigned maxlen)
 	throw runtime_error ("Invalid character constant.");
 }
 
-[[noreturn]] void Eval::overflow ()
+[[noreturn]] void Eval::overflow (char op)
 {
-	throw overflow_error ("Overflow.");
+	throw overflow_error (string ("Overflow in ") + op + " operation.");
 }
 
-[[noreturn]] void Eval::zero_divide ()
+[[noreturn]] void Eval::underflow (char op)
 {
-	throw runtime_error ("Divide by zero.");
+	throw underflow_error (string ("Underflow in ") + op + " operation.");
 }
 
-// Boolean evaluator.
-
-Variant EvalBool::literal_boolean (bool v, unsigned line)
+[[noreturn]] void Eval::zero_divide (char op)
 {
-	return Variant (v);
-}
-
-Variant EvalBool::constant (const ScopedName& constant)
-{
-	const Constant* pc = lookup_const (constant);
-	if (pc) {
-		const Type& t = pc->dereference ();
-		if (t.kind () == Type::Kind::BASIC_TYPE && t.basic_type () == BasicType::BOOLEAN)
-			return Variant (*pc);
-		else {
-			invalid_constant_type (constant);
-			see_definition (*pc);
-		}
-	}
-	return Variant ();
-}
-
-Variant EvalBool::expr (const Variant& l, char op, const Variant& r, unsigned line)
-{
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
-		bool lv = l.as_bool (), rv = r.as_bool (), ret;
-		switch (op) {
-			case '|':
-				ret = lv || rv;
-				break;
-			case '^':
-				ret = lv != rv;
-				break;
-			case '&':
-				ret = lv && rv;
-				break;
-			default:
-				invalid_operation (line);
-				return Variant ();
-		}
-		return ret;
-	}
-	return Variant ();
-}
-
-Variant EvalBool::expr (char op, const Variant& v, unsigned line)
-{
-	if (v.kind () != Type::Kind::VOID) {
-		if ('~' == op)
-			return !v.as_bool ();
-		else
-			invalid_operation (line);
-	}
-	return Variant ();
-}
-
-// Integer evaluator
-
-Variant EvalLong::literal_char (const string& s, unsigned line)
-{
-	try {
-		assert (s.size () > 2);
-		assert (s.front () == '\'');
-		assert (s.back () == '\'');
-		const char* p = &s.front () + 1;
-		char v = unescape_char (p);
-		if (p != &s.back ())
-			invalid_char_const ();
-		return Variant (v);
-	} catch (const exception& ex) {
-		error (line, ex);
-		return Variant ();
-	}
-}
-
-Variant EvalLong::literal_wchar (const string& s, unsigned line)
-{
-	try {
-		assert (s.size () > 3);
-		assert (s [0] == 'L');
-		assert (s [1] == '\'');
-		assert (s.back () == '\'');
-		const char* p = &s.front () + 2;
-		wchar_t v = unescape_wchar (p);
-		if (p != &s.back ())
-			invalid_char_const ();
-		return Variant (v);
-	} catch (const exception& ex) {
-		error (line, ex);
-		return Variant ();
-	}
-}
-
-Variant EvalLong::literal_int (const string& s, unsigned line)
-{
-	try {
-		size_t idx;
-		uint64_t ull = stoull (s, &idx, 0);
-		if (idx != s.size ())
-			throw runtime_error ("Invalid integer constant.");
-		if (ull > numeric_limits <uint32_t>::max ())
-			return Variant (ull);
-		else
-			return Variant ((uint32_t)ull);
-	} catch (const exception& ex) {
-		error (line, ex);
-		return Variant ();
-	}
-}
-
-Variant EvalLong::constant (const ScopedName& constant)
-{
-	const Constant* pc = lookup_const (constant);
-	if (pc) {
-		if (pc->is_integer ())
-			return Variant (*pc);
-		else {
-			invalid_constant_type (constant);
-			see_definition (*pc);
-		}
-	}
-	return Variant ();
-}
-
-Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned line)
-{
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
-		assert (l.is_integer () && r.is_integer ());
-		try {
-			if (
-				l.basic_type () == BasicType::LONGLONG || r.basic_type () == BasicType::LONGLONG
-				||
-				l.basic_type () == BasicType::ULONGLONG || r.basic_type () == BasicType::ULONGLONG
-			) {
-				Variant ll = EvalLongLong (builder_).expr (l, op, r, line);
-				if (l.is_signed ())
-					return ll.to_long ();
-				else
-					return ll.to_unsigned_long ();
-			} else {
-				if (l.is_signed ()) {
-					int32_t lv = l.to_long (), ret = 0;
-					if ('>' == op || '<' == op) {
-						uint32_t shift = r.to_unsigned_long ();
-						if (shift > 32)
-							throw range_error ("Shift size is too large.");
-						ret = op == '>' ? lv >> shift : lv << shift;
-					} else {
-						int32_t rv = r.to_long ();
-						switch (op) {
-							case '|':
-								ret = lv | rv;
-								break;
-							case '^':
-								ret = lv ^ rv;
-								break;
-							case '&':
-								ret = lv & rv;
-								break;
-							case '+':
-								if (SafeAdd (lv, rv, ret))
-									overflow ();
-								break;
-							case '-':
-								if (SafeSubtract (lv, rv, ret))
-									overflow ();
-								break;
-							case '*':
-								if (SafeMultiply (lv, rv, ret))
-									overflow ();
-								break;
-							case '/':
-								if (SafeDivide (lv, rv, ret))
-									zero_divide ();
-								break;
-							case '%':
-								if (SafeModulus (lv, rv, ret))
-									zero_divide ();
-								break;
-							default:
-								invalid_operation (line);
-								return Variant ();
-						}
-					}
-					return ret;
-				} else {
-					uint32_t lv = l.to_unsigned_long (), ret = 0;
-					if ('>' == op || '<' == op) {
-						uint32_t shift = r.to_unsigned_long ();
-						if (shift > 32)
-							throw range_error ("Shift size is too large.");
-						ret = op == '>' ? lv >> shift : lv << shift;
-					} else {
-						uint32_t rv = r.to_unsigned_long ();
-						switch (op) {
-							case '|':
-								ret = lv | rv;
-								break;
-							case '^':
-								ret = lv ^ rv;
-								break;
-							case '&':
-								ret = lv & rv;
-								break;
-							case '+':
-								if (SafeAdd (lv, rv, ret))
-									overflow ();
-								break;
-							case '-':
-								if (SafeSubtract (lv, rv, ret))
-									overflow ();
-								break;
-							case '*':
-								if (SafeMultiply (lv, rv, ret))
-									overflow ();
-								break;
-							case '/':
-								if (SafeDivide (lv, rv, ret))
-									zero_divide ();
-								break;
-							case '%':
-								if (SafeModulus (lv, rv, ret))
-									zero_divide ();
-								break;
-							default:
-								invalid_operation (line);
-								return Variant ();
-						}
-					}
-					return ret;
-				}
-			}
-		} catch (const exception& ex) {
-			error (line, ex);
-		}
-	}
-	return Variant ();
-}
-
-Variant EvalLong::expr (char op, const Variant& v, unsigned line)
-{
-	if (v.kind () != Type::Kind::VOID) {
-		assert (v.is_integer ());
-		try {
-			if (v.is_signed ()) {
-				int32_t i = v.to_long (), ret = 0;
-				switch (op) {
-					case '-':
-						ret = -i;
-						break;
-					case '+':
-						ret = i;
-						break;
-					case '~':
-						ret = -(i + 1);
-						break;
-					default:
-						invalid_operation (line);
-						return Variant ();
-				}
-			} else {
-				uint32_t u = v.to_unsigned_long ();
-				switch (op) {
-					case '-': {
-							int32_t i;
-							if (SafeCast (u, i))
-								overflow ();
-							return -i;
-						}
-						break;
-					case '+':
-						return u;
-						break;
-					case '~':
-						return numeric_limits <uint32_t>::max () - u;;
-						break;
-					default:
-						invalid_operation (line);
-						return Variant ();
-				}
-			}
-		} catch (const exception& ex) {
-			error (line, ex);
-		}
-	}
-	return Variant ();
-}
-
-// Long integer evaluator
-
-// Double evaluator
-
-Variant EvalDouble::literal_float (const string& s, unsigned line)
-{
-	try {
-		size_t idx;
-		double d = stod (s, &idx);
-		if (idx != s.size ())
-			throw runtime_error ("Invalid floating-point constant.");
-		return Variant (d);
-	} catch (const exception& ex) {
-		error (line, ex);
-		return Variant ();
-	}
-}
-
-// String evaluator
-
-Variant EvalString::literal_string (const string& s, unsigned line, const Variant* append)
-{
-	try {
-		assert (s.size () >= 2);
-		assert (s.front () == '\"');
-		assert (s.back () == '\"');
-		const char* p = &s.front () + 1;
-		const char* end = &s.back ();
-		string v;
-		v.reserve (s.size ());
-		while (p < end) {
-			char c = unescape_char (p);
-			if (!c)
-				throw runtime_error ("A string literal shall not contain the character \'\\0\'.");
-			v += c;
-		}
-		if (append)
-			v += append->as_string ();
-		return Variant (move (v));
-	} catch (const exception& ex) {
-		error (line, ex);
-		return Variant ();
-	}
-}
-
-// Wide string evaluator
-
-Variant EvalWString::literal_wstring (const string& s, unsigned line, const Variant* append)
-{
-	try {
-		assert (s.size () >= 3);
-		assert (s [0] == 'L');
-		assert (s [1] == '\"');
-		assert (s.back () == '\"');
-		const char* p = &s.front () + 2;
-		const char* end = &s.back ();
-		wstring v;
-		v.reserve (s.size ());
-		while (p < end) {
-			wchar_t c = unescape_wchar (p);
-			if (!c)
-				throw runtime_error ("A wide string literal shall not contain the character \'\\0\'.");
-		}
-		if (append)
-			v += append->as_wstring ();
-		return Variant (move (v));
-	} catch (const exception& ex) {
-		error (line, ex);
-		return Variant ();
-	}
-}
-
-// Fixed evaluator
-
-struct EvalFixed::Context : decContext
-{
-	Context ()
-	{
-		decContextDefault (this, DEC_INIT_BASE);
-	}
-};
-
-Variant EvalFixed::literal_fixed (const string& s, unsigned line)
-{
-	assert (!s.empty ());
-	assert (s.back () == 'd' || s.back () == 'D');
-
-	decNumber v;
-	Context ctx;
-	decNumberFromString (&v, s.substr (0, s.length () - 1).c_str (), &ctx);
-	if (DEC_CLASS_QNAN == decNumberClass (&v, &ctx)) {
-		builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, string ("Fixed literal ") + s + " can not be converted.");
-		return Variant ();
-	} else
-		return Variant (v);
+	throw runtime_error (string ("Divide by zero in ") + op + " operation.");
 }
 
 }

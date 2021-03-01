@@ -3,6 +3,8 @@
 
 using namespace std;
 
+namespace FE {
+
 Driver::Driver (const std::string& file, std::istream& yyin) :
 	yyFlexLexer (yyin, cout),
 	AST::Builder (file, cout),
@@ -42,3 +44,4 @@ void Driver::preprocessor_directive (const char* const dir, unsigned line)
 	parser_error (line, string ("Invalid preprocessor directive: ") + dir);
 }
 
+}

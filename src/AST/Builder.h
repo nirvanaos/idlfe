@@ -30,6 +30,16 @@ public:
 		container_stack_.push (tree_);
 	}
 
+	Ptr <AST> tree () const
+	{
+		return tree_;
+	}
+
+	unsigned err_cnt () const
+	{
+		return err_cnt_;
+	}
+
 	void parser_error (unsigned line, const std::string& msg)
 	{
 		message (Location (file (), line), MessageType::ERROR, msg);
