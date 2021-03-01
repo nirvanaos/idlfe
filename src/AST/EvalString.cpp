@@ -33,6 +33,13 @@ Variant EvalString::literal_string (const string& s, unsigned line, const Varian
 	}
 }
 
+Variant EvalString::cast (const Type& t, Variant&& v, unsigned line)
+{
+	assert (t.kind () == Type::Kind::STRING);
+	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::STRING);
+	return move (v);
+}
+
 // Wide string evaluator
 
 Variant EvalWString::literal_wstring (const string& s, unsigned line, const Variant* append)
@@ -58,6 +65,13 @@ Variant EvalWString::literal_wstring (const string& s, unsigned line, const Vari
 		error (line, ex);
 		return Variant ();
 	}
+}
+
+Variant EvalWString::cast (const Type& t, Variant&& v, unsigned line)
+{
+	assert (t.kind () == Type::Kind::WSTRING);
+	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::WSTRING);
+	return move (v);
 }
 
 }

@@ -59,4 +59,11 @@ Variant EvalBool::expr (char op, const Variant& v, unsigned line)
 	return Variant ();
 }
 
+Variant EvalBool::cast (const Type& t, Variant&& v, unsigned line)
+{
+	assert (t.kind () == Type::Kind::BASIC_TYPE && t.basic_type () == BasicType::BOOLEAN);
+	assert (v.kind () == Type::Kind::VOID || (v.kind () == Type::Kind::BASIC_TYPE && v.basic_type () == BasicType::BOOLEAN));
+	return move (v);
+}
+
 }

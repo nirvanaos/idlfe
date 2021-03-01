@@ -123,4 +123,11 @@ Variant EvalFixed::expr (char op, const Variant& v, unsigned line)
 	return Variant ();
 }
 
+Variant EvalFixed::cast (const Type& t, Variant&& v, unsigned line)
+{
+	assert (t.kind () == Type::Kind::FIXED);
+	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::FIXED);
+	return v;
+}
+
 }

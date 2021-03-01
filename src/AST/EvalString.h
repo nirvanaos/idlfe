@@ -16,6 +16,8 @@ public:
 	{}
 
 	virtual Variant literal_string (const std::string& s, unsigned line, const Variant* append);
+
+	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
 };
 
 /// Wide string evaluator
@@ -28,6 +30,8 @@ public:
 	{}
 
 	virtual Variant literal_wstring (const std::string& s, unsigned line, const Variant* append);
+
+	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
 };
 
 }

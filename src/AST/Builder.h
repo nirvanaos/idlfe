@@ -136,7 +136,7 @@ public:
 		return constr_type_end ();
 	}
 
-	void eval_push (const Type& t);
+	void eval_push (const Type& t, unsigned line);
 
 	void eval_pop ()
 	{
@@ -149,6 +149,8 @@ public:
 		assert (!eval_stack_.empty ());
 		return *eval_stack_.top ();
 	}
+
+	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line);
 
 	unsigned positive_int (const Variant& v, unsigned line);
 

@@ -115,4 +115,30 @@ Variant EvalDouble::expr (char op, const Variant& v, unsigned line)
 	return Variant ();
 }
 
+Variant EvalDouble::cast (const Type& t, Variant&& v, unsigned line)
+{
+	Variant ret;
+	assert (t.is_floating_pt ());
+	if (v.kind () != Type::Kind::VOID) {
+		assert (v.is_floating_pt ());
+		try {
+			switch (t.basic_type ()) {
+				case BasicType::FLOAT:
+					ret = v.to_float ();
+					break;
+				case BasicType::DOUBLE:
+					ret = v.to_double ();
+					break;
+				case BasicType::LONGDOUBLE:
+					ret = v.to_double ();
+					break;
+			}
+			check_inexact (line);
+		} catch (const exception& ex) {
+			error (line, ex);
+		}
+	}
+	return ret;
+}
+
 }

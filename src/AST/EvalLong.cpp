@@ -1,5 +1,6 @@
 /// \file EvalLong.cpp Integer expression evaluiator.
 #include "EvalLongLong.h"
+#include "Builder.h"
 #include "SafeInt/SafeInt.hpp"
 #include <stdexcept>
 
@@ -237,6 +238,51 @@ Variant EvalLong::expr (char op, const Variant& v, unsigned line)
 		}
 	}
 	return Variant ();
+}
+
+Variant EvalLong::cast (const Type& t, Variant&& v, unsigned line)
+{
+	Variant ret;
+	assert (t.is_integer ());
+	if (v.kind () != Type::Kind::VOID) {
+		assert (v.is_integer ());
+		try {
+			switch (t.basic_type ()) {
+				case BasicType::OCTET:
+					ret = v.to_octet ();
+					break;
+				case BasicType::CHAR:
+					ret = v.to_char ();
+					break;
+				case BasicType::WCHAR:
+					ret = v.to_wchar ();
+					break;
+				case BasicType::USHORT:
+					ret = v.to_unsigned_short ();
+					break;
+				case BasicType::SHORT:
+					ret = v.to_short ();
+					break;
+				case BasicType::ULONG:
+					ret = v.to_unsigned_long ();
+					break;
+				case BasicType::LONG:
+					ret = v.to_long ();
+					break;
+				case BasicType::ULONGLONG:
+					ret = v.to_unsigned_long_long ();
+					break;
+				case BasicType::LONGLONG:
+					ret = v.to_long_long ();
+					break;
+				default:
+					builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Invalid constant type.");
+			}
+		} catch (const exception& ex) {
+			error (line, ex);
+		}
+	}
+	return ret;
 }
 
 }

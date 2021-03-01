@@ -158,6 +158,7 @@ class Driver;
 %nterm <AST::Type> union_type;
 %nterm <AST::Type> switch_type_spec;
 %nterm <AST::Type> enum_type;
+%nterm <AST::Type> const_type;
 
 %nterm <AST::Variant> const_exp;
 %nterm <AST::Variant> or_expr;
@@ -397,21 +398,21 @@ init_param_attribute
 
 /*27*/
 const_dcl
-	: T_CONST const_type simple_declarator T_EQUAL const_exp
+	: T_CONST const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2.begin.line); } const_exp { drv.constant ($2, $3, std::move ($6), @6.begin.line); }
 	;
 
 /*28*/
 const_type
-	: integer_type
-	| char_type
-	| wide_char_type
-	| boolean_type
-	| floating_pt_type
+	: integer_type { $$ = $1; }
+	| char_type { $$ = AST::BasicType::CHAR; }
+	| wide_char_type { $$ = AST::BasicType::WCHAR; }
+	| boolean_type { $$ = AST::BasicType::BOOLEAN; }
+	| floating_pt_type { $$ = $1; }
 	| string_type
 	| wide_string_type
-	| fixed_pt_const_type
-	| scoped_name 
-	| octet_type
+	| fixed_pt_const_type { $$ = AST::Type::make_fixed (0, 0); }
+	| scoped_name { $$ = drv.lookup_type ($1); }
+	| octet_type { $$ = AST::BasicType::OCTET; }
 	;
 
 /*29*/
@@ -491,7 +492,7 @@ literal
 
 /*41*/
 positive_int_const
-	: { drv.eval_push (AST::BasicType::ULONG); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); drv.eval_pop (); }
+	: { drv.eval_push (AST::BasicType::ULONG, 0); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); drv.eval_pop (); }
 	;
 
 /*42*/

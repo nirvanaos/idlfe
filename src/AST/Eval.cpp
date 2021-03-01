@@ -92,7 +92,7 @@ const Constant* Eval::lookup_const (const ScopedName& constant) const
 	if (pitem) {
 		const NamedItem* item = *pitem;
 		if (item->kind () != Item::Kind::CONSTANT) {
-			invalid_constant_type (constant);
+			builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a constant.");
 			see_definition (*item);
 		} else
 			return static_cast <const Constant*> (item);
@@ -119,6 +119,11 @@ Variant Eval::expr (const Variant& l, char op, const Variant& r, unsigned line)
 Variant Eval::expr (char op, const Variant& v, unsigned line)
 {
 	invalid_operation (op, line);
+	return Variant ();
+}
+
+Variant Eval::cast (const Type& t, Variant&& v, unsigned line)
+{
 	return Variant ();
 }
 

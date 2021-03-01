@@ -31,6 +31,8 @@ public:
 	virtual Variant expr (const Variant& l, char op, const Variant& r, unsigned line);
 	virtual Variant expr (char op, const Variant& v, unsigned line);
 
+	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
+
 protected:
 	[[noreturn]] static void invalid_escape_seq ();
 	[[noreturn]] static void invalid_char_const ();

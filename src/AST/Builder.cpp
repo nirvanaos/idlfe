@@ -14,6 +14,7 @@
 #include "EvalDouble.h"
 #include "EvalString.h"
 #include "EvalFixed.h"
+#include "Constant.h"
 #include <assert.h>
 #include <stdexcept>
 #include <map>
@@ -110,8 +111,15 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 
 unsigned Builder::positive_int (const Variant& v, unsigned line)
 {
-	// TODO: Implement
-	message (Location (file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
+	assert (v.is_integer ());
+	try {
+		uint32_t i = v.to_unsigned_long ();
+		if (i)
+			return i;
+		message (Location (file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
+	} catch (const exception& ex) {
+		message (Location (file (), line), Builder::MessageType::ERROR, ex.what ());
+	}
 	return 1;
 }
 
@@ -551,7 +559,7 @@ void Builder::enum_item (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::eval_push (const Type& t)
+void Builder::eval_push (const Type& t, unsigned line)
 {
 	const Type& type = t.dereference ();
 	unique_ptr <Eval> eval;
@@ -573,8 +581,10 @@ void Builder::eval_push (const Type& t)
 						eval = make_unique <EvalLong> (*this);
 					else if (Type::is_floating_pt (t.basic_type ()))
 						eval = make_unique <EvalDouble> (*this);
-					else
+					else {
+						message (Location (file (), line), MessageType::ERROR, "Invalid constant type.");
 						eval = make_unique <Eval> (*this);
+					}
 			}
 			break;
 		case Type::Kind::STRING:
@@ -590,6 +600,19 @@ void Builder::eval_push (const Type& t)
 			eval = make_unique <Eval> (*this);
 	}
 	eval_stack_.push (move (eval));
+}
+
+void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line)
+{
+	if (scope_stack_.back ()) {
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (cur_scope (), ref (name), move (eval ().cast (t, move (val), line)));
+		auto ins = scope_stack_.back ()->insert (item);
+		if (!ins.second)
+			error_name_collision (name, **ins.first);
+		else if (is_main_file ())
+			container_stack_.top ()->append (item);
+	}
+	eval_pop ();
 }
 
 }
