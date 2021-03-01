@@ -1,3 +1,6 @@
 [submodule "src/simplecpp"]
 	path = src/simplecpp
 	url = https://github.com/danmar/simplecpp.git
+[submodule "src/AST/SafeInt"]
+	path = src/AST/SafeInt
+	url = https://github.com/dcleblanc/SafeInt.git
