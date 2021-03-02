@@ -7,12 +7,13 @@
 namespace AST {
 
 class Exception :
-	public RepositoryId,
-	public ItemContainer
+	public ItemContainer,
+	public RepositoryId
 {
 public:
-	Exception (const ItemScope* parent, const SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::EXCEPTION, parent, name)
+	Exception (const Builder& builder, const SimpleDeclarator& name) :
+		ItemContainer (Item::Kind::EXCEPTION, builder, name),
+		RepositoryId (*this, builder)
 	{}
 };
 

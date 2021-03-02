@@ -8,13 +8,14 @@
 namespace AST {
 
 class TypeDef :
-	public RepositoryId,
 	public NamedItem,
+	public RepositoryId,
 	public Type
 {
 public:
-	TypeDef (const ItemScope* parent, const SimpleDeclarator& name, const Type& t) :
-		NamedItem (Item::Kind::TYPEDEF, parent, name),
+	TypeDef (const Builder& builder, const SimpleDeclarator& name, const Type& t) :
+		NamedItem (Item::Kind::TYPEDEF, builder, name),
+		RepositoryId (*this, builder),
 		Type (t)
 	{}
 };

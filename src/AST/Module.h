@@ -10,8 +10,8 @@ class Module :
 	public ItemScope
 {
 public:
-	Module (const ItemScope* parent, const SimpleDeclarator& name) :
-		ItemScope (Kind::MODULE, parent, name)
+	Module (const Builder& builder, const SimpleDeclarator& name) :
+		ItemScope (Kind::MODULE, builder, name)
 	{}
 };
 

@@ -10,8 +10,8 @@ class ItemScope :
 	public Symbols
 {
 public:
-	ItemScope (Item::Kind kind, const ItemScope* parent, const SimpleDeclarator& name) :
-		NamedItem (kind, parent, name)
+	ItemScope (Item::Kind kind, const Builder& builder, const SimpleDeclarator& name) :
+		NamedItem (kind, builder, name)
 	{}
 
 	static const ItemScope* cast (const NamedItem* item)

@@ -13,8 +13,8 @@ class Operation :
 	public Container
 {
 public:
-	Operation (const ItemScope* parent, bool oneway, const Type& type, const SimpleDeclarator& name) :
-		NamedItem (Item::Kind::OPERATION, parent, name),
+	Operation (const Builder& builder, bool oneway, const Type& type, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)
 	{}

@@ -14,8 +14,9 @@ struct Version
 	uint16_t major, minor;
 };
 
-class RepositoryId
+class RepositoryIdData
 {
+protected:
 	enum class Definition
 	{
 		PREFIX,
@@ -23,29 +24,47 @@ class RepositoryId
 		VERSION
 	};
 
-public:
-	static RepositoryId* cast (NamedItem* item) noexcept;
-
-	RepositoryId () :
-		definition_ (Definition::PREFIX)
+	RepositoryIdData (const std::string& prefix) :
+		definition_ (Definition::PREFIX),
+		prefix_or_id_ (prefix)
 	{
 		version_.major = 1;
 		version_.minor = 0;
 	}
 
-	bool check_prefix (Builder& builder, const NamedItem& item, const Location& loc) const;
+	Definition definition_;
+	std::string prefix_or_id_;
+	Version version_;
+	Location pragma_loc_;
+};
+
+class RepositoryId :
+	public RepositoryIdData
+{
+public:
+	static RepositoryId* cast (NamedItem* item) noexcept;
+
+	const NamedItem& item () const
+	{
+		return item_;
+	}
+
+	bool check_prefix (Builder& builder, const Location& loc) const;
 
 	void pragma_id (Builder& builder, const std::string& id, const Location& loc);
 
 	void pragma_version (Builder& builder, const Version v, const Location& loc);
 
-	std::string repository_id (const NamedItem& item);
+	std::string repository_id () const;
+
+protected:
+	RepositoryId (const NamedItem& item, const Builder& builder);
 
 private:
-	Definition definition_;
-	std::string prefix_or_id_;
-	Version version_;
-	Location pragma_loc_;
+	static void see_prev_declaration (Builder& builder, const Location& loc);
+
+private:
+	const NamedItem& item_;
 };
 
 }

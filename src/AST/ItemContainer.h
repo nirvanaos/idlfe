@@ -11,8 +11,8 @@ class ItemContainer :
 	public Container
 {
 public:
-	ItemContainer (Item::Kind kind, const ItemScope* parent, const SimpleDeclarator& name) :
-		ItemScope (kind, parent, name)
+	ItemContainer (Item::Kind kind, const Builder& builder, const SimpleDeclarator& name) :
+		ItemScope (kind, builder, name)
 	{}
 };
 

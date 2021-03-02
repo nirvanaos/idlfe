@@ -74,6 +74,8 @@ public:
 		return prefix_stack_.top ();
 	}
 
+	const ItemScope* cur_scope () const;
+
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
 	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
 
@@ -86,8 +88,8 @@ public:
 		scope_end ();
 	}
 
-	void interface_decl (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
-	void interface_begin (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind::UNCONSTRAINED);
+	void interface_decl (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
+	void interface_begin (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
 	void interface_bases (const ScopedNames& bases);
 
 	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
@@ -188,8 +190,6 @@ private:
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 	void error_symbol_not_found (const ScopedName& sn);
-
-	const ItemScope* cur_scope () const;
 
 private:
 	unsigned err_cnt_;

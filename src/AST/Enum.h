@@ -10,18 +10,19 @@ class EnumItem :
 	public NamedItem
 {
 public:
-	EnumItem (const ItemScope* parent, const SimpleDeclarator& name) :
-		NamedItem (Item::Kind::ENUM_ITEM, parent, name)
+	EnumItem (const Builder& builder, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::ENUM_ITEM, builder, name)
 	{}
 };
 
 class Enum :
-	public RepositoryId,
-	public ItemContainer
+	public ItemContainer,
+	public RepositoryId
 {
 public:
-	Enum (const ItemScope* parent, const SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::ENUM, parent, name)
+	Enum (const Builder& builder, const SimpleDeclarator& name) :
+		ItemContainer (Item::Kind::ENUM, builder, name),
+		RepositoryId (*this, builder)
 	{}
 };
 

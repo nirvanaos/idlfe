@@ -50,33 +50,64 @@ RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
 	return p;
 }
 
-bool RepositoryId::check_prefix (Builder& builder, const NamedItem& item, const Location& loc) const
+RepositoryId::RepositoryId (const NamedItem& item, const Builder& builder) :
+	item_ (item),
+	RepositoryIdData (builder.prefix ())
+{}
+
+bool RepositoryId::check_prefix (Builder& builder, const Location& loc) const
 {
 	if (Definition::ID != definition_) {
 		const string& pref = builder.prefix ();
 		if (prefix_or_id_ != pref) {
-			builder.message (loc, Builder::MessageType::ERROR, item.qualified_name () + " is already declared with different prefix \"" + prefix_or_id_
+			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different prefix \"" + prefix_or_id_
 				+ "\". Current prefix is \"" + pref + "\".");
-			builder.message (item, Builder::MessageType::MESSAGE, "See previous declaration.");
+			see_prev_declaration (builder, item ());
 			return false;
 		}
-	} else
-		return true;
+	}
+	return true;
 }
-/*
-bool RepositoryId::pragma_id (Builder& builder, const NamedItem& item, const std::string& id, const Location& loc)
+
+void RepositoryId::pragma_id (Builder& builder, const std::string& id, const Location& loc)
 {
 	switch (definition_) {
 		case Definition::VERSION:
-			builder.message (loc, Builder::MessageType::ERROR, "");
-			return false;
+			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
+			see_prev_declaration (builder, pragma_loc_);
+			return;
 		case Definition::ID:
-			return prefix_or_id_ == id;
+			if (prefix_or_id_ != id) {
+				builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma ID \"" + prefix_or_id_ + "\".");
+				see_prev_declaration (builder, pragma_loc_);
+			}
+			return;
 	}
 	prefix_or_id_ = id;
 	definition_ = Definition::ID;
 	pragma_loc_ = loc;
-	return true;
 }
-*/
+
+void RepositoryId::pragma_version (Builder& builder, const Version v, const Location& loc)
+{
+	switch (definition_) {
+		case Definition::VERSION:
+			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
+			see_prev_declaration (builder, pragma_loc_);
+			return;
+		case Definition::ID:
+			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma ID \"" + prefix_or_id_ + "\".");
+			see_prev_declaration (builder, pragma_loc_);
+			return;
+	}
+	version_ = v;
+	definition_ = Definition::VERSION;
+	pragma_loc_ = loc;
+}
+
+void RepositoryId::see_prev_declaration (Builder& builder, const Location& loc)
+{
+	builder.message (loc, Builder::MessageType::MESSAGE, "See previous declaration.");
+}
+
 }

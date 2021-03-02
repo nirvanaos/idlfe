@@ -341,7 +341,7 @@ const Ptr <NamedItem>* Builder::constr_type_end ()
 void Builder::module_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
-		Ptr <Module> mod = Ptr <Module>::make <Module> (cur_scope (), ref (name));
+		Ptr <Module> mod = Ptr <Module>::make <Module> (ref (*this), ref (name));
 		auto ins = scope_stack_.back ()->insert (mod);
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::MODULE) {
 			error_name_collision (name, **ins.first);
@@ -361,9 +361,12 @@ void Builder::module_begin (const SimpleDeclarator& name)
 void Builder::native (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
-		auto ins = scope_stack_.back ()->insert (Ptr <NamedItem>::make <Native> (cur_scope (), ref (name)));
-		if (!ins.second && (*ins.first)->kind () != Item::Kind::NATIVE)
+		Ptr <NamedItem> def = Ptr <NamedItem>::make <Native> (ref (*this), ref (name));
+		auto ins = scope_stack_.back ()->insert (def);
+		if (!ins.second)
 			error_name_collision (name, **ins.first);
+		else if (is_main_file ())
+			container_stack_.top ()->append (def);
 	}
 }
 
@@ -372,9 +375,12 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 	Symbols* scope = scope_stack_.back ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			auto ins = scope->insert (Ptr <NamedItem>::make <TypeDef> (cur_scope (), ref (*decl), ref (type)));
+			Ptr <NamedItem> def = Ptr <NamedItem>::make <TypeDef> (ref (*this), ref (*decl), ref (type));
+			auto ins = scope->insert (def);
 			if (!ins.second)
 				error_name_collision (*decl, **ins.first);
+			else if (is_main_file ())
+				container_stack_.top ()->append (def);
 		}
 	}
 }
@@ -388,37 +394,61 @@ void Builder::error_interface_kind (const SimpleDeclarator& name, InterfaceKind 
 void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	if (scope_stack_.back ()) {
-		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (cur_scope (), name, ik);
+		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (ref (*this), name, ik);
 		auto ins = scope_stack_.back ()->insert (decl);
 		if (!ins.second) {
-			Item::Kind item_kind = (*ins.first)->kind ();
-			if (item_kind != Item::Kind::INTERFACE && item_kind != Item::Kind::INTERFACE_DECL) {
-				error_name_collision (name, **ins.first);
-			} else {
-				InterfaceDecl* existent_decl = scast <InterfaceDecl> (*ins.first);
-				if (existent_decl->interface_kind () != ik.interface_kind ())
-					error_interface_kind (name, ik, existent_decl->interface_kind (), **ins.first);
-				else if (is_main_file ())
-					container_stack_.top ()->append (decl);
+			const NamedItem& item = **ins.first;
+			const RepositoryId* rid = nullptr;
+			InterfaceKind prev_ik;
+			switch (item.kind ()) {
+				case Item::Kind::INTERFACE_DECL: {
+					const InterfaceDecl& itf = static_cast <const InterfaceDecl&> (item);
+					rid = &itf;
+					prev_ik = itf;
+				} break;
+				case Item::Kind::INTERFACE: {
+					const Interface& itf = static_cast <const Interface&> (item);
+					rid = &itf;
+					prev_ik = itf;
+				} break;
 			}
+
+			if (!rid) {
+				error_name_collision (name, **ins.first);
+				return;
+			}
+			
+			if (prev_ik.interface_kind () != ik.interface_kind ()) {
+				error_interface_kind (name, ik, prev_ik, item);
+				return;
+			}
+
+			if (!rid->check_prefix (*this, name))
+				return;
 		}
+		
+		if (is_main_file ())
+			container_stack_.top ()->append (decl);
 	}
 }
 
 void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	if (scope_begin ()) {
-		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (cur_scope (), ref (name), ik);
+		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (ref (*this), ref (name), ik);
 		auto ins = scope_stack_.back ()->insert (itf);
 		if (!ins.second) {
+			const NamedItem& item = **ins.first;
 			if ((*ins.first)->kind () != Item::Kind::INTERFACE_DECL) {
-				error_name_collision (name, **ins.first);
+				error_name_collision (name, item);
 				scope_push (nullptr);
 				return;
 			} else {
-				InterfaceDecl* existent_decl = scast <InterfaceDecl> (*ins.first);
-				if (existent_decl->interface_kind () != ik.interface_kind ())
-					error_interface_kind (name, ik, *existent_decl, **ins.first);
+				const InterfaceDecl& decl = static_cast <const InterfaceDecl&> (item);
+				if (decl.interface_kind () != ik.interface_kind ())
+					error_interface_kind (name, ik, decl, decl);
+				decl.check_prefix (*this, name);
+				static_cast <RepositoryIdData&> (*itf) = decl;
 				const_cast <Ptr <NamedItem>&> (*ins.first) = itf;
 			}
 		}
@@ -519,7 +549,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			message (name, MessageType::WARNING, "oneway operation must be void. oneway attribute will be ignored.");
 			oneway = false;
 		}
-		Ptr <Operation> op = Ptr <Operation>::make <Operation> (itf, oneway, ref (type), ref (name));
+		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
 		auto ins = interface_data_.all_operations.insert (op);
 		if (!ins.second) {
 			message (name, MessageType::ERROR, string ("Operation name ") + name + " collision.");
@@ -545,7 +575,7 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 			message (name, MessageType::WARNING, "oneway operation can not return data. oneway attribute will be ignored.");
 			op->oneway_clear ();
 		}
-		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (cur_scope (), att, ref (type), ref (name));
+		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
 		auto ins = interface_data_.cur_op_params.insert (par);
 		if (!ins.second)
 			message (name, MessageType::ERROR, string ("Duplicated parameter ") + name + ".");
@@ -582,32 +612,53 @@ void Builder::operation_raises (const ScopedNames& raises)
 void Builder::struct_decl (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
-		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (cur_scope (), ref (name));
+		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (ref (*this), ref (name));
 		auto ins = scope_stack_.back ()->insert (decl);
 		if (!ins.second) {
-			Item::Kind item_kind = (*ins.first)->kind ();
-			if (item_kind != Item::Kind::STRUCT && item_kind != Item::Kind::STRUCT_DECL)
+			const NamedItem& item = **ins.first;
+			const RepositoryId* rid = nullptr;
+			switch (item.kind ()) {
+				case Item::Kind::STRUCT_DECL:
+					rid = &static_cast <const StructDecl&> (item);
+					break;
+				case Item::Kind::STRUCT:
+					rid = &static_cast <const Struct&> (item);
+					break;
+			}
+
+			if (!rid) {
 				error_name_collision (name, **ins.first);
-			else if (is_main_file ())
-				container_stack_.top ()->append (decl);
+				return;
+			}
+			
+			if (!rid->check_prefix (*this, name))
+				return;
 		}
+
+		if (is_main_file ())
+			container_stack_.top ()->append (decl);
 	}
 }
 
 void Builder::struct_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
-		Ptr <Struct> def = Ptr <Struct>::make <Struct> (cur_scope (), ref (name));
+		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
 		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
-			if ((*ins.first)->kind () != Item::Kind::STRUCT_DECL) {
-				error_name_collision (name, **ins.first);
+			const NamedItem& item = **ins.first;
+			if (item.kind () != Item::Kind::STRUCT_DECL) {
+				error_name_collision (name, item);
 				scope_push (nullptr);
 				return;
-			} else {
-				const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 			}
+			
+			const StructDecl& decl = static_cast <const StructDecl&> (item);
+			decl.check_prefix (*this, name);
+			static_cast <RepositoryIdData&> (*def) = decl;
+			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
+
 		scope_push (def);
 	}
 }
@@ -615,13 +666,14 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 void Builder::exception_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
-		Ptr <ItemContainer> def = Ptr <ItemContainer>::make <Exception> (cur_scope (), ref (name));
+		Ptr <Exception> def = Ptr <Exception>::make <Exception> (ref (*this), ref (name));
 		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
 			error_name_collision (name, **ins.first);
 			scope_push (nullptr);
 			return;
 		}
+
 		scope_push (def);
 	}
 }
@@ -635,10 +687,10 @@ void Builder::member (const Type& type, const Declarators& declarators)
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
 			Ptr <Member> m;
 			if (decl->array_sizes ().empty ()) {
-				m = Ptr <Member>::make <Member> (parent, ref (type), ref (*decl));
+				m = Ptr <Member>::make <Member> (ref (*this), ref (type), ref (*decl));
 			} else {
 				Type arr = Type::make_array (type, decl->array_sizes ());
-				m = Ptr <Member>::make <Member> (parent, ref (arr), ref (*decl));
+				m = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
 			}
 			auto ins = static_cast <Symbols*> (parent)->insert (m);
 			if (!ins.second)
@@ -654,32 +706,53 @@ void Builder::member (const Type& type, const Declarators& declarators)
 void Builder::union_decl (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
-		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (cur_scope (), ref (name));
+		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (ref (*this), ref (name));
 		auto ins = scope_stack_.back ()->insert (decl);
 		if (!ins.second) {
-			Item::Kind item_kind = (*ins.first)->kind ();
-			if (item_kind != Item::Kind::UNION && item_kind != Item::Kind::UNION_DECL)
+			const NamedItem& item = **ins.first;
+			const RepositoryId* rid = nullptr;
+			switch (item.kind ()) {
+				case Item::Kind::UNION_DECL:
+					rid = &static_cast <const UnionDecl&> (item);
+					break;
+				case Item::Kind::UNION:
+					rid = &static_cast <const Union&> (item);
+					break;
+			}
+
+			if (!rid) {
 				error_name_collision (name, **ins.first);
-			else if (is_main_file ())
-				container_stack_.top ()->append (decl);
+				return;
+			}
+
+			if (!rid->check_prefix (*this, name))
+				return;
 		}
+
+		if (is_main_file ())
+			container_stack_.top ()->append (decl);
 	}
 }
 
 void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type)
 {
 	if (scope_begin ()) {
-		Ptr <Union> def = Ptr <Union>::make <Union> (cur_scope (), ref (name), ref (switch_type));
+		Ptr <Union> def = Ptr <Union>::make <Union> (ref (*this), ref (name), ref (switch_type));
 		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
-			if ((*ins.first)->kind () != Item::Kind::UNION_DECL) {
-				error_name_collision (name, **ins.first);
+			const NamedItem& item = **ins.first;
+			if (item.kind () != Item::Kind::UNION_DECL) {
+				error_name_collision (name, item);
 				scope_push (nullptr);
 				return;
-			} else {
-				const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 			}
+
+			const UnionDecl& decl = static_cast <const UnionDecl&> (item);
+			decl.check_prefix (*this, name);
+			static_cast <RepositoryIdData&> (*def) = decl;
+			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
+
 		scope_push (def);
 	}
 }
@@ -687,7 +760,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 void Builder::enum_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
-		Ptr <Enum> def = Ptr <Enum>::make <Enum> (cur_scope (), ref (name));
+		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
 		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
 			error_name_collision (name, **ins.first);
@@ -702,13 +775,26 @@ void Builder::enum_item (const SimpleDeclarator& name)
 	assert (scope_stack_.size () > 1);
 	Symbols* en = scope_stack_.back ();
 	if (en) {
-		Ptr <EnumItem> item = Ptr <EnumItem>::make <EnumItem> (cur_scope (), ref (name));
+		Ptr <EnumItem> item = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (name));
 		auto ins = en->insert (item);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
 		else if (is_main_file ())
 			container_stack_.top ()->append (item);
 	}
+}
+
+void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line)
+{
+	if (scope_stack_.back ()) {
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (name), move (eval ().cast (t, move (val), line)));
+		auto ins = scope_stack_.back ()->insert (item);
+		if (!ins.second)
+			error_name_collision (name, **ins.first);
+		else if (is_main_file ())
+			container_stack_.top ()->append (item);
+	}
+	eval_pop ();
 }
 
 void Builder::eval_push (const Type& t, unsigned line)
@@ -752,19 +838,6 @@ void Builder::eval_push (const Type& t, unsigned line)
 			eval = make_unique <Eval> (*this);
 	}
 	eval_stack_.push (move (eval));
-}
-
-void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line)
-{
-	if (scope_stack_.back ()) {
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (cur_scope (), ref (name), move (eval ().cast (t, move (val), line)));
-		auto ins = scope_stack_.back ()->insert (item);
-		if (!ins.second)
-			error_name_collision (name, **ins.first);
-		else if (is_main_file ())
-			container_stack_.top ()->append (item);
-	}
-	eval_pop ();
 }
 
 }

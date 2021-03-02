@@ -3,10 +3,10 @@
 
 #include "Item.h"
 #include "Declarators.h"
-#include "RepositoryId.h"
 
 namespace AST {
 
+class Builder;
 class ItemScope;
 
 class NamedItem :
@@ -14,12 +14,7 @@ class NamedItem :
 	public Location
 {
 public:
-	NamedItem (Kind kind, const ItemScope* parent, const SimpleDeclarator& name) :
-		Item (kind),
-		Location (name),
-		name_ (name),
-		parent_ (parent)
-	{}
+	NamedItem (Kind kind, const Builder& builder, const SimpleDeclarator& name);
 
 	const std::string& name () const
 	{
@@ -33,31 +28,9 @@ public:
 
 	std::string qualified_name () const;
 
-	const std::string& pragma_id () const
-	{
-		return pragma_id_;
-	}
-
-	void pragma_id (std::string&& id)
-	{
-		pragma_id_ = std::move (id);
-	}
-
-	const Version& version () const
-	{
-		return version_;
-	}
-
-	void version (const Version& ver)
-	{
-		version_ = ver;
-	}
-
 private:
-	const std::string name_;
 	const ItemScope* parent_;
-	std::string pragma_id_;
-	Version version_;
+	const std::string name_;
 };
 
 }

@@ -18,8 +18,8 @@ public:
 		INOUT
 	};
 
-	Parameter (const ItemScope* parent, Attribute att, const Type& type, const SimpleDeclarator& name) :
-		NamedItem (Item::Kind::PARAMETER, parent, name),
+	Parameter (const Builder& builder, Attribute att, const Type& type, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::PARAMETER, builder, name),
 		Type (type),
 		attribute_ (att)
 	{}

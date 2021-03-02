@@ -18,7 +18,7 @@ public:
 		LOCAL
 	};
 
-	InterfaceKind (Kind kind) :
+	InterfaceKind (Kind kind = UNCONSTRAINED) :
 		kind_ (kind)
 	{}
 
@@ -33,24 +33,16 @@ private:
 	Kind kind_;
 };
 
-class InterfaceBase :
+class Interface :
 	public InterfaceKind,
+	public ItemContainer,
 	public RepositoryId
 {
-protected:
-	InterfaceBase (InterfaceKind kind) :
-		InterfaceKind (kind)
-	{}
-};
-
-class Interface :
-	public InterfaceBase,
-	public ItemContainer
-{
 public:
-	Interface (const ItemScope* parent, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
-		InterfaceBase (kind),
-		ItemContainer (Item::Kind::INTERFACE, parent, name)
+	Interface (const Builder& builder, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
+		InterfaceKind (kind),
+		ItemContainer (Item::Kind::INTERFACE, builder, name),
+		RepositoryId (*this, builder)
 	{}
 
 	void add_base (const Interface* base)
@@ -72,13 +64,15 @@ private:
 };
 
 class InterfaceDecl :
-	public InterfaceBase,
-	public NamedItem
+	public InterfaceKind,
+	public NamedItem,
+	public RepositoryId
 {
 public:
-	InterfaceDecl (const ItemScope* parent, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
-		InterfaceBase (kind),
-		NamedItem (Item::Kind::INTERFACE_DECL, parent, name)
+	InterfaceDecl (const Builder& builder, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
+		InterfaceKind (kind),
+		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
+		RepositoryId (*this, builder)
 	{}
 };
 

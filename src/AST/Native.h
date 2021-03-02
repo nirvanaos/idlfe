@@ -7,12 +7,13 @@
 namespace AST {
 
 class Native :
-	public RepositoryId,
-	public NamedItem
+	public NamedItem,
+	public RepositoryId
 {
 public:
-	Native (const ItemScope* parent, const SimpleDeclarator& name) :
-		NamedItem (Kind::NATIVE, parent, name)
+	Native (const Builder& builder, const SimpleDeclarator& name) :
+		NamedItem (Kind::NATIVE, builder, name),
+		RepositoryId (*this)
 	{}
 };
 

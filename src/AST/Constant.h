@@ -11,8 +11,8 @@ class Constant :
 	public Variant
 {
 public:
-	Constant (const ItemScope* parent, const SimpleDeclarator& name, Variant&& val) :
-		NamedItem (Item::Kind::CONSTANT, parent, name),
+	Constant (const Builder& builder, const SimpleDeclarator& name, Variant&& val) :
+		NamedItem (Item::Kind::CONSTANT, builder, name),
 		Variant (std::move (val))
 	{}
 };

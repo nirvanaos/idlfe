@@ -7,22 +7,24 @@
 namespace AST {
 
 class StructDecl :
-	public RepositoryId,
-	public NamedItem
+	public NamedItem,
+	public RepositoryId
 {
 public:
-	StructDecl (const ItemScope* parent, const SimpleDeclarator& name) :
-		NamedItem (Item::Kind::STRUCT_DECL, parent, name)
+	StructDecl (const Builder& builder, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::STRUCT_DECL, builder, name),
+		RepositoryId (*this, builder)
 	{}
 };
 
 class Struct :
-	public RepositoryId,
-	public ItemContainer
+	public ItemContainer,
+	public RepositoryId
 {
 public:
-	Struct (const ItemScope* parent, const SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::STRUCT, parent, name)
+	Struct (const Builder& builder, const SimpleDeclarator& name) :
+		ItemContainer (Item::Kind::STRUCT, builder, name),
+		RepositoryId (*this, builder)
 	{}
 };
 

@@ -10,8 +10,8 @@ class Member :
 	public Type
 {
 public:
-	Member (const ItemScope* parent, const Type& t, const SimpleDeclarator& name) :
-		NamedItem (Item::Kind::MEMBER, parent, name),
+	Member (const Builder& builder, const Type& t, const SimpleDeclarator& name) :
+		NamedItem (Item::Kind::MEMBER, builder, name),
 		Type (t)
 	{}
 };
