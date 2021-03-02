@@ -25,7 +25,10 @@ public:
 		return *main_file_;
 	}
 
-	const std::string& add_file (const std::string& name);
+	std::pair <std::set <std::string>::iterator, bool> add_file (const std::string& name)
+	{
+		return files_.insert (name);
+	}
 
 private:
 	std::set <std::string> files_;

@@ -2,10 +2,12 @@
 #define NIDL_AST_STRUCT_H_
 
 #include "ItemContainer.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
 class StructDecl :
+	public RepositoryId,
 	public NamedItem
 {
 public:
@@ -15,6 +17,7 @@ public:
 };
 
 class Struct :
+	public RepositoryId,
 	public ItemContainer
 {
 public:

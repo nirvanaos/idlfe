@@ -2,6 +2,7 @@
 #define NIDL_AST_INTERFACE_H_
 
 #include "ItemContainer.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
@@ -32,13 +33,23 @@ private:
 	Kind kind_;
 };
 
-class Interface :
+class InterfaceBase :
 	public InterfaceKind,
+	public RepositoryId
+{
+protected:
+	InterfaceBase (InterfaceKind kind) :
+		InterfaceKind (kind)
+	{}
+};
+
+class Interface :
+	public InterfaceBase,
 	public ItemContainer
 {
 public:
 	Interface (const ItemScope* parent, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
-		InterfaceKind (kind),
+		InterfaceBase (kind),
 		ItemContainer (Item::Kind::INTERFACE, parent, name)
 	{}
 
@@ -61,12 +72,12 @@ private:
 };
 
 class InterfaceDecl :
-	public InterfaceKind,
+	public InterfaceBase,
 	public NamedItem
 {
 public:
 	InterfaceDecl (const ItemScope* parent, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind::UNCONSTRAINED) :
-		InterfaceKind (kind),
+		InterfaceBase (kind),
 		NamedItem (Item::Kind::INTERFACE_DECL, parent, name)
 	{}
 };

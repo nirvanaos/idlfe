@@ -12,7 +12,13 @@ struct ScopedName :
 	std::vector <std::string>,
 	Location
 {
-	ScopedName () : from_root (false)
+	ScopedName () : 
+		from_root (false)
+	{}
+
+	ScopedName (const Location& loc) :
+		Location (loc),
+		from_root (false)
 	{}
 
 	ScopedName (const Location& loc, bool root, const std::string& name);

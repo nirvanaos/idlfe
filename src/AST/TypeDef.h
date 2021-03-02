@@ -3,10 +3,12 @@
 
 #include "NamedItem.h"
 #include "Type.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
 class TypeDef :
+	public RepositoryId,
 	public NamedItem,
 	public Type
 {

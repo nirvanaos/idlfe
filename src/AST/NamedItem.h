@@ -3,19 +3,11 @@
 
 #include "Item.h"
 #include "Declarators.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
 class ItemScope;
-
-struct Version
-{
-	uint16_t major, minor;
-
-	Version () :
-		major (1), minor (0)
-	{}
-};
 
 class NamedItem :
 	public Item,

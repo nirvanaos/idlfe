@@ -15,7 +15,6 @@
 #include "EvalString.h"
 #include "EvalFixed.h"
 #include "Constant.h"
-#include "Prefix.h"
 #include <assert.h>
 #include <stdexcept>
 #include <map>
@@ -37,6 +36,8 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 
 void Builder::pragma (const char* s, unsigned line)
 {
+	Location loc (file (), line);
+
 	assert (*s == '#');
 	++s;
 	while (isspace (*s))
@@ -52,58 +53,71 @@ void Builder::pragma (const char* s, unsigned line)
 		string pr (s, end - s);
 		if (pr == "ID") {
 			s = end + 1;
-			ScopedName name;
+			ScopedName name (loc);
 			string id;
-			if (get_scoped_name (s, name) && get_quoted_string (s, id)) {
-				const Ptr <NamedItem>* item = lookup (name);
-				if (!item)
-					message (Location (file (), line), MessageType::ERROR, name.stringize () + " not found.");
-				else
-					(*item)->pragma_id (move (id));
+			if (get_scoped_name (s, name) && get_quoted_string (s, id) && !id.empty ()) {
+				RepositoryId* rep_id = lookup_rep_id (name);
+				if (rep_id)
+					rep_id->pragma_id (*this, id, loc);
 				return;
 			}
 		} else if (pr == "prefix") {
 			string prefix;
 			if (get_quoted_string (s, prefix)) {
-				container_stack_.top ()->append (Ptr <Item>::make <Prefix> (move (prefix)));
+				prefix_stack_.top () = move (prefix);
 				return;
 			}
 		} else if (pr == "version") {
 			s = end + 1;
-			ScopedName name;
+			ScopedName name (loc);
 			if (get_scoped_name (s, name)) {
 				while (isspace (*s))
 					++s;
 				Version ver;
 				char* endptr;
 				unsigned long u = strtoul (s, &endptr, 10);
-				if (endptr > s && (!*endptr || '.' == *endptr) && u <= numeric_limits <uint16_t>::max ()) {
-					bool OK = true;
+				if (endptr > s && u <= numeric_limits <uint16_t>::max ()) {
 					ver.major = (uint16_t)u;
-					if (*(s = endptr)) {
+					s = endptr;
+					while (isspace (*s))
+						++s;
+					if ('.' == *s) {
+						++s;
+						while (isspace (*s))
+							++s;
 						u = strtoul (s, &endptr, 10);
-						if (!*endptr && u <= numeric_limits <uint16_t>::max ())
+						if (endptr > s && u <= numeric_limits <uint16_t>::max ()) {
 							ver.minor = (uint16_t)u;
-						else
-							OK = false;
-					}
-					if (OK) {
-						const Ptr <NamedItem>* item = lookup (name);
-						if (!item)
-							message (Location (file (), line), MessageType::ERROR, name.stringize () + " not found.");
-						else
-							(*item)->version (ver);
-						return;
+							RepositoryId* rep_id = lookup_rep_id (name);
+							if (rep_id)
+								rep_id->pragma_version (*this, ver, loc);
+							return;
+						}
 					}
 				}
 			}
 		} else {
-			message (Location (file (), line), MessageType::WARNING, string ("Unknown pragma \'") + pr + "\'.");
+			message (loc, MessageType::WARNING, string ("Unknown pragma \'") + pr + "\'.");
 			return;
 		}
 	}
 
-	message (Location (file (), line), MessageType::ERROR, "Invalid pragma syntax.");
+	message (loc, MessageType::ERROR, "Invalid pragma syntax.");
+}
+
+RepositoryId* Builder::lookup_rep_id (const ScopedName& sn)
+{
+	RepositoryId* rep_id = nullptr;
+	const Ptr <NamedItem>* it = lookup (sn);
+	if (it) {
+		NamedItem* item = *it;
+		rep_id = RepositoryId::cast (item);
+		if (!rep_id) {
+			message (sn, MessageType::ERROR, sn.stringize () + " has not repository id.");
+			message (*item, MessageType::MESSAGE, string ("See declaration of ") + item->qualified_name () + '.');
+		}
+	}
+	return rep_id;
 }
 
 bool Builder::get_quoted_string (const char*& s, std::string& qs)
@@ -174,17 +188,22 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 
 void Builder::file (const std::string& name, unsigned line)
 {
-	if (tree_->file () == name) {
-		cur_file_ = &tree_->file ();
-		is_main_file_ = true;
-	} else {
-		if (scope_stack_.size () > 1) {
-			message (Location (file (), line), MessageType::WARNING, "#include shall not be used inside a scope.");
+	if (*cur_file_ != name) {
+		if (tree_->file () == name) {
+			cur_file_ = &tree_->file ();
+			is_main_file_ = true;
+			prefix_stack_.pop ();
+		} else {
+			auto ins = tree_->add_file (name);
+			if (is_main_file ())
+				tree_->append (Ptr <Item>::make <Include> (name));
+			cur_file_ = &*ins.first;
+			is_main_file_ = false;
+			if (ins.second)
+				prefix_stack_.emplace ();
+			else
+				prefix_stack_.pop ();
 		}
-		cur_file_ = &tree_->add_file (name);
-		is_main_file_ = false;
-		if (is_main_file ())
-			tree_->append (Ptr <Item>::make <Include> (name));
 	}
 }
 

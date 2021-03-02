@@ -2,6 +2,7 @@
 #define NIDL_AST_ENUM_H_
 
 #include "ItemContainer.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
@@ -15,6 +16,7 @@ public:
 };
 
 class Enum :
+	public RepositoryId,
 	public ItemContainer
 {
 public:

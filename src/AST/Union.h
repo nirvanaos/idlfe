@@ -3,10 +3,12 @@
 
 #include "ItemContainer.h"
 #include "Type.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
 class UnionDecl :
+	public RepositoryId,
 	public NamedItem
 {
 public:
@@ -16,6 +18,7 @@ public:
 };
 
 class Union :
+	public RepositoryId,
 	public ItemContainer
 {
 public:

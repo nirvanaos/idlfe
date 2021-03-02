@@ -28,6 +28,7 @@ public:
 		cur_file_ = &tree_->file ();
 		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
+		prefix_stack_.emplace ();
 	}
 
 	Ptr <AST> tree () const
@@ -67,6 +68,11 @@ public:
 	};
 
 	void message (const Location& l, MessageType mt, const std::string& err);
+
+	const std::string& prefix () const
+	{
+		return prefix_stack_.top ();
+	}
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
 	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
@@ -166,6 +172,7 @@ public:
 private:
 	static bool get_quoted_string (const char*& s, std::string& qs);
 	static bool get_scoped_name (const char*& s, ScopedName& sn);
+	RepositoryId* lookup_rep_id (const ScopedName& sn);
 
 	bool scope_begin ();
 	void scope_push (ItemContainer* scope);
@@ -194,6 +201,7 @@ private:
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
 	std::stack <std::unique_ptr <Eval>> eval_stack_;
+	std::stack <std::string> prefix_stack_;
 
 	struct InterfaceData
 	{

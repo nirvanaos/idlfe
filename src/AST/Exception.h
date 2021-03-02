@@ -2,10 +2,12 @@
 #define NIDL_AST_EXCEPTION_H_
 
 #include "ItemContainer.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
 class Exception :
+	public RepositoryId,
 	public ItemContainer
 {
 public:
