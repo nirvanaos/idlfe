@@ -135,14 +135,7 @@ public:
 		return constr_type_end ();
 	}
 
-	void enum_begin (const SimpleDeclarator& name);
-	
-	void enum_item (const SimpleDeclarator& name);
-
-	const Ptr <NamedItem>* enum_end ()
-	{
-		return constr_type_end ();
-	}
+	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
 	void eval_push (const Type& t, unsigned line);
 

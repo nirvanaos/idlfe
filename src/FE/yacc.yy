@@ -682,7 +682,7 @@ union_type
 	T_LEFT_CURLY_BRACKET
 		switch_body
 	T_RIGHT_CURLY_BRACKET { $$ = drv.union_end (); }
-	| T_UNION simple_declarator{ drv.union_decl ($2); }
+	| T_UNION simple_declarator { drv.union_decl ($2); }
 	; 
 
 /*73*/
@@ -719,22 +719,21 @@ element_spec
 
 /*78*/
 enum_type
-	: T_ENUM simple_declarator { drv.enum_begin ($2); }
+	: T_ENUM simple_declarator
 	T_LEFT_CURLY_BRACKET
-		enumerators
-	T_RIGHT_CURLY_BRACKET { $$ = drv.enum_end (); }
+		simple_declarators
+	T_RIGHT_CURLY_BRACKET { $$ = drv.enum_type ($2, $4); }
 	;
-
+/*
 enumerators
 	: enumerator
 	| enumerator T_COMMA enumerators
 	;
 
-/*79*/
 enumerator
 	: simple_declarator { drv.enum_item ($1); }
 	;
-
+*/
 /*80*/
 sequence_type
 	: T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_COMMA

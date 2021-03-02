@@ -757,31 +757,30 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 	}
 }
 
-void Builder::enum_begin (const SimpleDeclarator& name)
-{
-	if (scope_begin ()) {
-		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (def);
-		if (!ins.second) {
-			error_name_collision (name, **ins.first);
-			scope_push (nullptr);
-		} else
-			scope_push (def);
-	}
-}
-
-void Builder::enum_item (const SimpleDeclarator& name)
+const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
 {
 	assert (scope_stack_.size () > 1);
-	Symbols* en = scope_stack_.back ();
-	if (en) {
-		Ptr <EnumItem> item = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (name));
-		auto ins = en->insert (item);
+	Symbols* scope = scope_stack_.back ();
+	if (scope) {
+		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
+		auto ins = scope->insert (def);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
-		else if (is_main_file ())
-			container_stack_.top ()->append (item);
+		else {
+			if (is_main_file ())
+				container_stack_.top ()->append (def);
+			for (auto item = items.begin (); item != items.end (); ++item) {
+				Ptr <NamedItem> enumerator = Ptr <NamedItem>::make <EnumItem> (ref (*this), ref (*def), ref (name));
+				ins = scope->insert (enumerator);
+				if (!ins.second)
+					error_name_collision (*item, **ins.first);
+				else
+					def->append (enumerator);
+			}
+		}
+		return &*ins.first;
 	}
+	return nullptr;
 }
 
 void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line)
