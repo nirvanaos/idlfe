@@ -99,78 +99,78 @@ CORBA_Identifier	[a-zA-Z_][a-zA-Z0-9_]*
 "<"			return yy::parser::make_T_LESS_THAN_SIGN (yy::parser::location_type (nullptr, lineno ()));
 ">"			return yy::parser::make_T_GREATER_THAN_SIGN (yy::parser::location_type (nullptr, lineno ()));
 
-const			return yy::parser::make_T_CONST (yy::parser::location_type (nullptr, lineno ()));
-typedef		return yy::parser::make_T_TYPEDEF (yy::parser::location_type (nullptr, lineno ()));
-float			return yy::parser::make_T_FLOAT (yy::parser::location_type (nullptr, lineno ()));
-double		return yy::parser::make_T_DOUBLE (yy::parser::location_type (nullptr, lineno ()));
-char			return yy::parser::make_T_CHAR (yy::parser::location_type (nullptr, lineno ()));
-wchar			return yy::parser::make_T_WCHAR (yy::parser::location_type (nullptr, lineno ()));
-fixed     return yy::parser::make_T_FIXED (yy::parser::location_type (nullptr, lineno ()));
-boolean			return yy::parser::make_T_BOOLEAN (yy::parser::location_type (nullptr, lineno ()));
-string			return yy::parser::make_T_STRING (yy::parser::location_type (nullptr, lineno ()));
-wstring			return yy::parser::make_T_WSTRING (yy::parser::location_type (nullptr, lineno ()));
-void			return yy::parser::make_T_VOID (yy::parser::location_type (nullptr, lineno ()));
-unsigned		return yy::parser::make_T_UNSIGNED (yy::parser::location_type (nullptr, lineno ()));
-long 			return yy::parser::make_T_LONG (yy::parser::location_type (nullptr, lineno ()));
-short			return yy::parser::make_T_SHORT (yy::parser::location_type (nullptr, lineno ()));
-FALSE			return yy::parser::make_T_FALSE (yy::parser::location_type (nullptr, lineno ()));
-TRUE			return yy::parser::make_T_TRUE (yy::parser::location_type (nullptr, lineno ()));
-struct			return yy::parser::make_T_STRUCT (yy::parser::location_type (nullptr, lineno ()));
-union			return yy::parser::make_T_UNION (yy::parser::location_type (nullptr, lineno ()));
-switch			return yy::parser::make_T_SWITCH (yy::parser::location_type (nullptr, lineno ()));
-case			return yy::parser::make_T_CASE (yy::parser::location_type (nullptr, lineno ()));
-default			return yy::parser::make_T_DEFAULT (yy::parser::location_type (nullptr, lineno ()));
-enum			return yy::parser::make_T_ENUM (yy::parser::location_type (nullptr, lineno ()));
-in			return yy::parser::make_T_IN (yy::parser::location_type (nullptr, lineno ()));
-out			return yy::parser::make_T_OUT (yy::parser::location_type (nullptr, lineno ()));
-interface		return yy::parser::make_T_INTERFACE (yy::parser::location_type (nullptr, lineno ()));
-abstract		return yy::parser::make_T_ABSTRACT (yy::parser::location_type (nullptr, lineno ()));
-local		return yy::parser::make_T_LOCAL (yy::parser::location_type (nullptr, lineno ()));
-valuetype		return yy::parser::make_T_VALUETYPE (yy::parser::location_type (nullptr, lineno ()));
-truncatable		return yy::parser::make_T_TRUNCATABLE (yy::parser::location_type (nullptr, lineno ()));
-supports		return yy::parser::make_T_SUPPORTS (yy::parser::location_type (nullptr, lineno ()));
-custom			return yy::parser::make_T_CUSTOM (yy::parser::location_type (nullptr, lineno ()));
-public			return yy::parser::make_T_PUBLIC (yy::parser::location_type (nullptr, lineno ()));
-private			return yy::parser::make_T_PRIVATE (yy::parser::location_type (nullptr, lineno ()));
-factory			return yy::parser::make_T_FACTORY (yy::parser::location_type (nullptr, lineno ()));
-native			return yy::parser::make_T_NATIVE (yy::parser::location_type (nullptr, lineno ()));
-ValueBase		return yy::parser::make_T_VALUEBASE (yy::parser::location_type (nullptr, lineno ()));
+const       return yy::parser::make_T_CONST (yy::parser::location_type (nullptr, lineno ()));
+typedef     return yy::parser::make_T_TYPEDEF (yy::parser::location_type (nullptr, lineno ()));
+float       return yy::parser::make_T_FLOAT (yy::parser::location_type (nullptr, lineno ()));
+double      return yy::parser::make_T_DOUBLE (yy::parser::location_type (nullptr, lineno ()));
+char        return yy::parser::make_T_CHAR (yy::parser::location_type (nullptr, lineno ()));
+wchar       return yy::parser::make_T_WCHAR (yy::parser::location_type (nullptr, lineno ()));
+fixed       return yy::parser::make_T_FIXED (yy::parser::location_type (nullptr, lineno ()));
+boolean     return yy::parser::make_T_BOOLEAN (yy::parser::location_type (nullptr, lineno ()));
+string      return yy::parser::make_T_STRING (yy::parser::location_type (nullptr, lineno ()));
+wstring     return yy::parser::make_T_WSTRING (yy::parser::location_type (nullptr, lineno ()));
+void        return yy::parser::make_T_VOID (yy::parser::location_type (nullptr, lineno ()));
+unsigned    return yy::parser::make_T_UNSIGNED (yy::parser::location_type (nullptr, lineno ()));
+long        return yy::parser::make_T_LONG (yy::parser::location_type (nullptr, lineno ()));
+short       return yy::parser::make_T_SHORT (yy::parser::location_type (nullptr, lineno ()));
+FALSE       return yy::parser::make_T_FALSE (yy::parser::location_type (nullptr, lineno ()));
+TRUE        return yy::parser::make_T_TRUE (yy::parser::location_type (nullptr, lineno ()));
+struct      return yy::parser::make_T_STRUCT (yy::parser::location_type (nullptr, lineno ()));
+union       return yy::parser::make_T_UNION (yy::parser::location_type (nullptr, lineno ()));
+switch      return yy::parser::make_T_SWITCH (yy::parser::location_type (nullptr, lineno ()));
+case        return yy::parser::make_T_CASE (yy::parser::location_type (nullptr, lineno ()));
+default     return yy::parser::make_T_DEFAULT (yy::parser::location_type (nullptr, lineno ()));
+enum        return yy::parser::make_T_ENUM (yy::parser::location_type (nullptr, lineno ()));
+in          return yy::parser::make_T_IN (yy::parser::location_type (nullptr, lineno ()));
+out         return yy::parser::make_T_OUT (yy::parser::location_type (nullptr, lineno ()));
+interface   return yy::parser::make_T_INTERFACE (yy::parser::location_type (nullptr, lineno ()));
+abstract    return yy::parser::make_T_ABSTRACT (yy::parser::location_type (nullptr, lineno ()));
+local       return yy::parser::make_T_LOCAL (yy::parser::location_type (nullptr, lineno ()));
+valuetype   return yy::parser::make_T_VALUETYPE (yy::parser::location_type (nullptr, lineno ()));
+truncatable return yy::parser::make_T_TRUNCATABLE (yy::parser::location_type (nullptr, lineno ()));
+supports    return yy::parser::make_T_SUPPORTS (yy::parser::location_type (nullptr, lineno ()));
+custom      return yy::parser::make_T_CUSTOM (yy::parser::location_type (nullptr, lineno ()));
+public      return yy::parser::make_T_PUBLIC (yy::parser::location_type (nullptr, lineno ()));
+private     return yy::parser::make_T_PRIVATE (yy::parser::location_type (nullptr, lineno ()));
+factory     return yy::parser::make_T_FACTORY (yy::parser::location_type (nullptr, lineno ()));
+native      return yy::parser::make_T_NATIVE (yy::parser::location_type (nullptr, lineno ()));
+ValueBase   return yy::parser::make_T_VALUEBASE (yy::parser::location_type (nullptr, lineno ()));
 
-"::"			return yy::parser::make_T_SCOPE (yy::parser::location_type (nullptr, lineno ())); 
+"::"        return yy::parser::make_T_SCOPE (yy::parser::location_type (nullptr, lineno ())); 
 
-module			return yy::parser::make_T_MODULE (yy::parser::location_type (nullptr, lineno ()));
-octet			return yy::parser::make_T_OCTET (yy::parser::location_type (nullptr, lineno ()));
-any			return yy::parser::make_T_ANY (yy::parser::location_type (nullptr, lineno ()));
-sequence		return yy::parser::make_T_SEQUENCE (yy::parser::location_type (nullptr, lineno ()));
-readonly		return yy::parser::make_T_READONLY (yy::parser::location_type (nullptr, lineno ()));
-attribute		return yy::parser::make_T_ATTRIBUTE (yy::parser::location_type (nullptr, lineno ()));
-exception		return yy::parser::make_T_EXCEPTION (yy::parser::location_type (nullptr, lineno ()));
-oneway			return yy::parser::make_T_ONEWAY (yy::parser::location_type (nullptr, lineno ()));
-inout			return yy::parser::make_T_INOUT (yy::parser::location_type (nullptr, lineno ()));
-raises			return yy::parser::make_T_RAISES (yy::parser::location_type (nullptr, lineno ()));
-context			return yy::parser::make_T_CONTEXT (yy::parser::location_type (nullptr, lineno ()));
+module      return yy::parser::make_T_MODULE (yy::parser::location_type (nullptr, lineno ()));
+octet       return yy::parser::make_T_OCTET (yy::parser::location_type (nullptr, lineno ()));
+any         return yy::parser::make_T_ANY (yy::parser::location_type (nullptr, lineno ()));
+sequence    return yy::parser::make_T_SEQUENCE (yy::parser::location_type (nullptr, lineno ()));
+readonly    return yy::parser::make_T_READONLY (yy::parser::location_type (nullptr, lineno ()));
+attribute   return yy::parser::make_T_ATTRIBUTE (yy::parser::location_type (nullptr, lineno ()));
+exception   return yy::parser::make_T_EXCEPTION (yy::parser::location_type (nullptr, lineno ()));
+oneway      return yy::parser::make_T_ONEWAY (yy::parser::location_type (nullptr, lineno ()));
+inout       return yy::parser::make_T_INOUT (yy::parser::location_type (nullptr, lineno ()));
+raises      return yy::parser::make_T_RAISES (yy::parser::location_type (nullptr, lineno ()));
+context     return yy::parser::make_T_CONTEXT (yy::parser::location_type (nullptr, lineno ()));
 
-Object                  return yy::parser::make_T_OBJECT (yy::parser::location_type (nullptr, lineno ()));
+Object      return yy::parser::make_T_OBJECT (yy::parser::location_type (nullptr, lineno ()));
 
 
-{CORBA_Identifier}	return yy::parser::make_T_IDENTIFIER (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Float_Literal1}	|
-{Float_Literal2}	|
-{Float_Literal3}	|
-{Float_Literal4}	|
-{Float_Literal5}	|
-{Float_Literal6}	return yy::parser::make_T_FLOATING_PT_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Fixed_Literal1}	|
-{Fixed_Literal2}	|
-{Fixed_Literal3}	|
-{Fixed_Literal4}	return yy::parser::make_T_FIXED_PT_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Int_Literal}		return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Oct_Literal}		return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Hex_Literal}		return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Char_Literal}		return yy::parser::make_T_CHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{WChar_Literal}		return yy::parser::make_T_WCHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{String_Literal}	return yy::parser::make_T_STRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{WString_Literal}		return yy::parser::make_T_WSTRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{CORBA_Identifier} return yy::parser::make_T_IDENTIFIER (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Float_Literal1} |
+{Float_Literal2} |
+{Float_Literal3} |
+{Float_Literal4} |
+{Float_Literal5} |
+{Float_Literal6}   return yy::parser::make_T_FLOATING_PT_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Fixed_Literal1} |
+{Fixed_Literal2} |
+{Fixed_Literal3} |
+{Fixed_Literal4}   return yy::parser::make_T_FIXED_PT_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Int_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Oct_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Hex_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Char_Literal}     return yy::parser::make_T_CHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{WChar_Literal}    return yy::parser::make_T_WCHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{String_Literal}   return yy::parser::make_T_STRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{WString_Literal}  return yy::parser::make_T_WSTRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
 .                       {
                           return yy::parser::make_T_UNKNOWN (yy::parser::location_type (nullptr, lineno ()));
                         }
