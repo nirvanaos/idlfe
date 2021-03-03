@@ -14,17 +14,17 @@ public:
 		Eval (builder)
 	{}
 
-	virtual Variant literal_float (const std::string& s, unsigned line);
+	virtual Variant literal_float (const std::string& s, const Location& loc);
 
 	virtual Variant constant (const ScopedName& constant);
 
-	virtual Variant expr (const Variant& l, char op, const Variant& r, unsigned line);
-	virtual Variant expr (char op, const Variant& v, unsigned line);
+	virtual Variant expr (const Variant& l, char op, const Variant& r, const Location& loc);
+	virtual Variant expr (char op, const Variant& v, const Location& loc);
 
-	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
+	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 
 private:
-	void check_inexact (unsigned line) const;
+	void check_inexact (const Location& loc) const;
 };
 
 /// Long double is not yet supported

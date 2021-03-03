@@ -17,13 +17,24 @@ class Driver :
 public:
 	static AST::Ptr <AST::AST> parse (const std::string& file, std::istream& yyin)
 	{
-		Driver driver (file, yyin);
-		return driver.parse ();
+		Driver drv (file, yyin);
+		return drv.parse ();
 	}
 
-	void preprocessor_directive (const char*, unsigned line);
+	yy::location location () const
+	{
+		return yy::location (&file (), lineno ());
+	}
+
+	void preprocessor_directive (const char*);
 
 private:
+	/// Returns reference to FlexLexer.
+	virtual Driver& driver ()
+	{
+		return *this;
+	}
+
 	Driver (const std::string& file, std::istream& yyin);
 
 	AST::Ptr <AST::AST> parse ()

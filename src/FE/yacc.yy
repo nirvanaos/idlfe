@@ -22,6 +22,12 @@
 
 %{
 #include "Driver.h"
+
+inline AST::Location::Location (const yy::location& loc) :
+	file_ (loc.begin.filename),
+	line_ (loc.begin.line)
+{}
+
 %}
 
 %require "3.7.1"
@@ -280,8 +286,8 @@ scoped_names
 
 /*12*/
 scoped_name
-	: T_IDENTIFIER { $$ = AST::ScopedName (AST::Location (drv.file (), @1.begin.line), false, $1); }
-	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (AST::Location (drv.file (), @2.begin.line), true, $2); }
+	: T_IDENTIFIER { $$ = AST::ScopedName (@1, false, $1); }
+	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (@2, true, $2); }
 	| scoped_name T_SCOPE T_IDENTIFIER { $$ = $1; $$.push_back ($3); }
 	;
 
@@ -398,7 +404,7 @@ init_param_attribute
 
 /*27*/
 const_dcl
-	: T_CONST const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2.begin.line); } const_exp { drv.constant ($2, $3, std::move ($6), @6.begin.line); }
+	: T_CONST const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant ($2, $3, std::move ($6), @6); }
 	;
 
 /*28*/
@@ -423,49 +429,49 @@ const_exp
 /*30*/
 or_expr
 	: xor_expr
-	| or_expr T_VERTICAL_LINE xor_expr { $$ = drv.eval ().expr ($1, '|', $3, @2.begin.line); }
+	| or_expr T_VERTICAL_LINE xor_expr { $$ = drv.eval ().expr ($1, '|', $3, @2); }
 	;
 
 /*31*/
 xor_expr
 	: and_expr
-	| xor_expr T_CIRCUMFLEX and_expr { $$ = drv.eval ().expr ($1, '^', $3, @2.begin.line); }
+	| xor_expr T_CIRCUMFLEX and_expr { $$ = drv.eval ().expr ($1, '^', $3, @2); }
 	;
 
 /*32*/
 and_expr
 	: shift_expr
-	| and_expr T_AMPERSAND shift_expr { $$ = drv.eval ().expr ($1, '&', $3, @2.begin.line); }
+	| and_expr T_AMPERSAND shift_expr { $$ = drv.eval ().expr ($1, '&', $3, @2); }
 	;
 
 /*33*/
 shift_expr
 	: add_expr
-	| shift_expr T_SHIFTRIGHT add_expr { $$ = drv.eval ().expr ($1, '>', $3, @2.begin.line); }
-	| shift_expr T_SHIFTLEFT add_expr { $$ = drv.eval ().expr ($1, '<', $3, @2.begin.line); }
+	| shift_expr T_SHIFTRIGHT add_expr { $$ = drv.eval ().expr ($1, '>', $3, @2); }
+	| shift_expr T_SHIFTLEFT add_expr { $$ = drv.eval ().expr ($1, '<', $3, @2); }
 	;
 
 /*34*/
 add_expr
 	: mult_expr
-	| add_expr T_PLUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '+', $3, @2.begin.line); }
-	| add_expr T_MINUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '-', $3, @2.begin.line); }
+	| add_expr T_PLUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '+', $3, @2); }
+	| add_expr T_MINUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '-', $3, @2); }
 	;
 
 /*35*/
 mult_expr
 	: unary_expr
-	| mult_expr T_ASTERISK unary_expr { $$ = drv.eval ().expr ($1, '*', $3, @2.begin.line); }
-	| mult_expr T_SOLIDUS unary_expr { $$ = drv.eval ().expr ($1, '/', $3, @2.begin.line); }
-	| mult_expr T_PERCENT_SIGN unary_expr { $$ = drv.eval ().expr ($1, '%', $3, @2.begin.line); }
+	| mult_expr T_ASTERISK unary_expr { $$ = drv.eval ().expr ($1, '*', $3, @2); }
+	| mult_expr T_SOLIDUS unary_expr { $$ = drv.eval ().expr ($1, '/', $3, @2); }
+	| mult_expr T_PERCENT_SIGN unary_expr { $$ = drv.eval ().expr ($1, '%', $3, @2); }
 	;
 
 /*36*/
 /*37*/
 unary_expr
-	: T_MINUS_SIGN primary_expr { $$ = drv.eval ().expr ('-', $2, @1.begin.line); }
-	| T_PLUS_SIGN primary_expr { $$ = drv.eval ().expr ('+', $2, @1.begin.line); }
-	| T_TILDE primary_expr { $$ = drv.eval ().expr ('~', $2, @1.begin.line); }
+	: T_MINUS_SIGN primary_expr { $$ = drv.eval ().expr ('-', $2, @1); }
+	| T_PLUS_SIGN primary_expr { $$ = drv.eval ().expr ('+', $2, @1); }
+	| T_TILDE primary_expr { $$ = drv.eval ().expr ('~', $2, @1); }
 	| primary_expr
 	;
 
@@ -479,20 +485,20 @@ primary_expr
 /*39*/
 /*40*/
 literal
-	: T_INTEGER_LITERAL { $$ = drv.eval ().literal_int ($1, @1.begin.line); }
+	: T_INTEGER_LITERAL { $$ = drv.eval ().literal_int ($1, @1); }
 	| T_string_literal { $$ = $1; }
 	| T_wstring_literal { $$ = $1; }
-	| T_CHARACTER_LITERAL { $$ = drv.eval ().literal_char ($1, @1.begin.line); }
-	| T_WCHARACTER_LITERAL { $$ = drv.eval ().literal_wchar ($1, @1.begin.line); }
-	| T_FIXED_PT_LITERAL { $$ = drv.eval ().literal_fixed ($1, @1.begin.line); }
-	| T_FLOATING_PT_LITERAL { $$ = drv.eval ().literal_float ($1, @1.begin.line); }
-	| T_TRUE { $$ = drv.eval ().literal_boolean (true, @1.begin.line); }
-	| T_FALSE { $$ = drv.eval ().literal_boolean (false, @1.begin.line); }
+	| T_CHARACTER_LITERAL { $$ = drv.eval ().literal_char ($1, @1); }
+	| T_WCHARACTER_LITERAL { $$ = drv.eval ().literal_wchar ($1, @1); }
+	| T_FIXED_PT_LITERAL { $$ = drv.eval ().literal_fixed ($1, @1); }
+	| T_FLOATING_PT_LITERAL { $$ = drv.eval ().literal_float ($1, @1); }
+	| T_TRUE { $$ = drv.eval ().literal_boolean (true, @1); }
+	| T_FALSE { $$ = drv.eval ().literal_boolean (false, @1); }
 	;
 
 /*41*/
 positive_int_const
-	: { drv.eval_push (AST::BasicType::ULONG, 0); } const_exp { $$ = drv.positive_int ($2, @1.begin.line); drv.eval_pop (); }
+	: { drv.eval_push (AST::BasicType::ULONG, AST::Location ()); } const_exp { $$ = drv.positive_int ($2, @1); drv.eval_pop (); }
 	;
 
 /*42*/
@@ -560,7 +566,7 @@ declarator
 
 /*51*/
 simple_declarator
-	: T_IDENTIFIER { $$ = AST::SimpleDeclarator ($1, AST::Location (drv.file (), @1.begin.line)); }
+	: T_IDENTIFIER { $$ = AST::SimpleDeclarator ($1, @1); }
 	;
 
 /*52*/
@@ -755,7 +761,7 @@ wide_string_type
 
 /*83*/
 array_declarator
-	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Declarator ($1, AST::Location (drv.file (), @1.begin.line), $2); }
+	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Declarator ($1, @1, $2); }
 	;
 
 fixed_array_sizes
@@ -851,13 +857,13 @@ string_literals
 	;
 
 T_string_literal
-	: T_STRING_LITERAL { $$ = drv.eval ().literal_string ($1, @1.begin.line);  }
-	| T_STRING_LITERAL T_string_literal { $$ = drv.eval ().literal_string ($1, @1.begin.line, &$2); }
+	: T_STRING_LITERAL { $$ = drv.eval ().literal_string ($1, @1);  }
+	| T_STRING_LITERAL T_string_literal { $$ = drv.eval ().literal_string ($1, @1, &$2); }
 	;
 
 T_wstring_literal
-	: T_WSTRING_LITERAL { $$ = drv.eval ().literal_wstring ($1, @1.begin.line); }
-	| T_WSTRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1.begin.line, &$2); }
+	: T_WSTRING_LITERAL { $$ = drv.eval ().literal_wstring ($1, @1); }
+	| T_WSTRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1, &$2); }
 	;
 
 /*95*/
@@ -871,7 +877,7 @@ param_type_spec
 /*96*/
 fixed_pt_type
 	: T_FIXED T_LESS_THAN_SIGN positive_int_const T_COMMA
-	positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1.begin.line); }
+	positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1); }
 	;
 
 /*97*/
@@ -891,7 +897,7 @@ namespace yy {
 // Report an error to the user.
 void parser::error (const location& l, const std::string& msg)
 {
-	drv.parser_error (l.begin.line, msg);
+	drv.parser_error (l, msg);
 }
 
 }

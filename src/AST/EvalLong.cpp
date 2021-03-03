@@ -10,7 +10,7 @@ namespace AST {
 
 // Integer evaluator
 
-Variant EvalLong::literal_char (const string& s, unsigned line)
+Variant EvalLong::literal_char (const string& s, const Location& loc)
 {
 	try {
 		assert (s.size () > 2);
@@ -22,12 +22,12 @@ Variant EvalLong::literal_char (const string& s, unsigned line)
 			invalid_char_const ();
 		return Variant (v);
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 }
 
-Variant EvalLong::literal_wchar (const string& s, unsigned line)
+Variant EvalLong::literal_wchar (const string& s, const Location& loc)
 {
 	try {
 		assert (s.size () > 3);
@@ -40,12 +40,12 @@ Variant EvalLong::literal_wchar (const string& s, unsigned line)
 			invalid_char_const ();
 		return Variant (v);
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 }
 
-Variant EvalLong::literal_int (const string& s, unsigned line)
+Variant EvalLong::literal_int (const string& s, const Location& loc)
 {
 	try {
 		size_t idx;
@@ -57,7 +57,7 @@ Variant EvalLong::literal_int (const string& s, unsigned line)
 		else
 			return Variant ((uint32_t)ull);
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 }
@@ -76,7 +76,7 @@ Variant EvalLong::constant (const ScopedName& constant)
 	return Variant ();
 }
 
-Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned line)
+Variant EvalLong::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
 	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
 		assert (l.is_integer () && r.is_integer ());
@@ -86,7 +86,7 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 				||
 				l.basic_type () == BasicType::ULONGLONG || r.basic_type () == BasicType::ULONGLONG
 				) {
-				Variant ll = EvalLongLong (builder_).expr (l, op, r, line);
+				Variant ll = EvalLongLong (builder_).expr (l, op, r, loc);
 				if (l.is_signed ())
 					return ll.to_long ();
 				else
@@ -132,7 +132,7 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 									zero_divide (op);
 								break;
 							default:
-								invalid_operation (op, line);
+								invalid_operation (op, loc);
 								return Variant ();
 						}
 					}
@@ -177,7 +177,7 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 									zero_divide (op);
 								break;
 							default:
-								invalid_operation (op, line);
+								invalid_operation (op, loc);
 								return Variant ();
 						}
 					}
@@ -185,13 +185,13 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, unsigned li
 				}
 			}
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalLong::expr (char op, const Variant& v, unsigned line)
+Variant EvalLong::expr (char op, const Variant& v, const Location& loc)
 {
 	if (v.kind () != Type::Kind::VOID) {
 		assert (v.is_integer ());
@@ -208,7 +208,7 @@ Variant EvalLong::expr (char op, const Variant& v, unsigned line)
 						i = -(i + 1);
 						break;
 					default:
-						invalid_operation (op, line);
+						invalid_operation (op, loc);
 						return Variant ();
 				}
 				return i;
@@ -229,18 +229,18 @@ Variant EvalLong::expr (char op, const Variant& v, unsigned line)
 						return numeric_limits <uint32_t>::max () - u;;
 						break;
 					default:
-						invalid_operation (op, line);
+						invalid_operation (op, loc);
 						return Variant ();
 				}
 			}
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalLong::cast (const Type& t, Variant&& v, unsigned line)
+Variant EvalLong::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	Variant ret;
 	assert (t.is_integer ());
@@ -276,10 +276,10 @@ Variant EvalLong::cast (const Type& t, Variant&& v, unsigned line)
 					ret = v.to_long_long ();
 					break;
 				default:
-					builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Invalid constant type.");
+					builder_.message (loc, Builder::MessageType::ERROR, "Invalid constant type.");
 			}
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return ret;

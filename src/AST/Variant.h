@@ -7,14 +7,14 @@ extern "C" struct _decNumber;
 
 namespace AST {
 
+class EnumItem;
+class Constant;
+
 class Variant :
 	public Type
 {
 public:
-	~Variant ()
-	{
-		clear ();
-	}
+	~Variant ();
 
 	Variant () {}
 
@@ -53,75 +53,92 @@ public:
 
 	Variant (const _decNumber& v) noexcept;
 
+	Variant (const Constant& constant) noexcept;
+	Variant (const EnumItem& item) noexcept;
+
+	bool is_const_ref () const
+	{
+		return is_const_ref_;
+	}
+
+	const Constant& as_constant () const noexcept
+	{
+		assert (kind () != Type::Kind::VOID);
+		assert (is_const_ref_);
+		return *val_.const_ref;
+	}
+
+	const Variant& dereference_const () const noexcept;
+
 	// Boolean
 
 	bool as_bool () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::BOOLEAN);
-		return val_.b;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::BOOLEAN);
+		return dereference_const ().val_.b;
 	}
 
 	// Integer
 
 	uint8_t as_octet () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::OCTET);
-		return (uint8_t)val_.ui;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::OCTET);
+		return (uint8_t)dereference_const ().val_.ui;
 	}
 
 	uint8_t to_octet () const;
 
 	char as_char () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::CHAR);
-		return (char)val_.ui;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::CHAR);
+		return (char)dereference_const ().val_.ui;
 	}
 
 	char to_char () const;
 
 	wchar_t as_wchar () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::WCHAR);
-		return (wchar_t)val_.ui;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::WCHAR);
+		return (wchar_t)dereference_const ().val_.ui;
 	}
 
 	wchar_t to_wchar () const;
 
 	uint16_t as_unsigned_short () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::USHORT);
-		return (uint16_t)val_.ui;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::USHORT);
+		return (uint16_t)dereference_const ().val_.ui;
 	}
 
 	uint16_t to_unsigned_short () const;
 
 	int16_t as_short () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::SHORT);
-		return (int16_t)val_.i;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::SHORT);
+		return (int16_t)dereference_const ().val_.i;
 	}
 
 	int16_t to_short () const;
 
 	uint32_t as_unsigned_long () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::ULONG);
-		return (uint32_t)val_.ui;
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::ULONG);
+		return (uint32_t)dereference_const ().val_.ui;
 	}
 
 	uint32_t to_unsigned_long () const;
 
 	int32_t as_long () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::LONG);
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::LONG);
 		return (int32_t)val_.i;
 	}
 
@@ -129,8 +146,8 @@ public:
 
 	uint64_t as_unsigned_long_long () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::ULONGLONG);
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::ULONGLONG);
 		return val_.ui;
 	}
 
@@ -138,8 +155,8 @@ public:
 
 	int64_t as_long_long () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::LONGLONG);
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::LONGLONG);
 		return val_.i;
 	}
 
@@ -149,8 +166,8 @@ public:
 
 	float as_float () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::FLOAT);
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::FLOAT);
 		return (float)val_.d;
 	}
 
@@ -158,8 +175,8 @@ public:
 
 	double as_double () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::DOUBLE);
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::DOUBLE);
 		return (double)val_.d;
 	}
 
@@ -167,8 +184,8 @@ public:
 
 	long double as_long_double () const noexcept
 	{
-		assert (dereference ().kind () == Kind::BASIC_TYPE);
-		assert (dereference ().basic_type () == BasicType::LONGDOUBLE);
+		assert (dereference_type ().kind () == Kind::BASIC_TYPE);
+		assert (dereference_type ().basic_type () == BasicType::LONGDOUBLE);
 		return val_.d;
 	}
 
@@ -178,13 +195,13 @@ public:
 
 	const std::string& as_string () const noexcept
 	{
-		assert (dereference ().kind () == Type::Kind::STRING);
+		assert (dereference_type ().kind () == Type::Kind::STRING);
 		return val_.s;
 	}
 
 	const std::wstring& as_wstring () const noexcept
 	{
-		assert (dereference ().kind () == Type::Kind::WSTRING);
+		assert (dereference_type ().kind () == Type::Kind::WSTRING);
 		return val_.ws;
 	}
 
@@ -193,19 +210,20 @@ public:
 
 	const uint8_t* as_bcd () const noexcept
 	{
-		assert (dereference ().kind () == Type::Kind::FIXED);
+		assert (dereference_type ().kind () == Type::Kind::FIXED);
 		return val_.fixed;
 	}
 
 	size_t bcd_length () const noexcept
 	{
-		assert (dereference ().kind () == Type::Kind::FIXED);
+		assert (dereference_type ().kind () == Type::Kind::FIXED);
 		return bcd_length (fixed_digits ());
 	}
 
 private:
 	void clear () noexcept;
 	void copy (const Variant& src);
+	void _move (const Variant& src);
 
 	static unsigned bcd_length (unsigned digits) noexcept
 	{
@@ -227,10 +245,13 @@ private:
 		uint8_t fixed [32];
 		std::string s;
 		std::wstring ws;
+		const EnumItem* enum_item;
+		const Constant* const_ref;
 
 		Val () {}
 		~Val () {}
 	} val_;
+	bool is_const_ref_;
 };
 
 }

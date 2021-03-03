@@ -87,7 +87,7 @@ public:
 
 	bool is_integer () const  noexcept
 	{
-		const Type& t = dereference ();
+		const Type& t = dereference_type ();
 		return t.kind () == Kind::BASIC_TYPE && is_integer (t.basic_type ());
 	}
 
@@ -105,23 +105,29 @@ public:
 
 	bool is_floating_pt () const noexcept
 	{
-		const Type& t = dereference ();
+		const Type& t = dereference_type ();
 		return t.kind () == Kind::BASIC_TYPE && is_floating_pt (t.basic_type ());
 	}
 
-	const Type& dereference () const noexcept;
+	const Type& dereference_type () const noexcept;
+
+	const Ptr <NamedItem>* named_type () const noexcept
+	{
+		assert (kind () == Kind::NAMED_TYPE);
+		return type_.named_type;
+	}
 
 	// Fixed
 
 	uint8_t fixed_digits () const noexcept
 	{
-		assert (dereference ().kind () == Kind::FIXED);
+		assert (dereference_type ().kind () == Kind::FIXED);
 		return type_.fixed.digits;
 	}
 
 	uint8_t fixed_scale () const noexcept
 	{
-		assert (dereference ().kind () == Kind::FIXED);
+		assert (dereference_type ().kind () == Kind::FIXED);
 		return type_.fixed.scale;
 	}
 

@@ -87,7 +87,7 @@ Type& Type::operator = (Type&& src) noexcept
 	return *this;
 }
 
-const Type& Type::dereference () const noexcept
+const Type& Type::dereference_type () const noexcept
 {
 	const Type* t = this;
 	while (t->kind_ == Kind::NAMED_TYPE && t->type_.named_type) {
@@ -113,7 +113,7 @@ Type Type::make_array (const Type& type, const FixedArraySizes& sizes)
 
 bool Type::is_signed () const noexcept
 {
-	const Type& t = dereference ();
+	const Type& t = dereference_type ();
 	switch (t.kind ()) {
 		case Kind::BASIC_TYPE:
 			return is_signed (t.basic_type ());

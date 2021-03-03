@@ -8,7 +8,7 @@ using namespace std;
 
 namespace AST {
 
-Variant EvalDouble::literal_float (const string& s, unsigned line)
+Variant EvalDouble::literal_float (const string& s, const Location& loc)
 {
 	try {
 		size_t idx;
@@ -17,7 +17,7 @@ Variant EvalDouble::literal_float (const string& s, unsigned line)
 			throw runtime_error ("Invalid floating-point constant.");
 		return Variant (d);
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 }
@@ -36,26 +36,26 @@ Variant EvalDouble::constant (const ScopedName& constant)
 	return Variant ();
 }
 
-void EvalDouble::check_inexact (unsigned line) const
+void EvalDouble::check_inexact (const Location& loc) const
 {
 	if (fetestexcept (FE_INEXACT))
-		builder_.message (Location (builder_.file (), line), Builder::MessageType::WARNING, "Precision lost in conversion.");
+		builder_.message (loc, Builder::MessageType::WARNING, "Precision lost in conversion.");
 }
 
-Variant EvalDouble::expr (const Variant& l, char op, const Variant& r, unsigned line)
+Variant EvalDouble::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
 	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
 		assert (l.is_floating_pt () && r.is_floating_pt ());
 		try {
 			double ret;
 			if (l.basic_type () == BasicType::LONGDOUBLE || r.basic_type () == BasicType::LONGDOUBLE) {
-				ret = EvalLongDouble (builder_).expr (l, op, r, line).to_double ();
-				check_inexact (line);
+				ret = EvalLongDouble (builder_).expr (l, op, r, loc).to_double ();
+				check_inexact (loc);
 			} else {
 				double lv = l.to_double ();
-				check_inexact (line);
+				check_inexact (loc);
 				double rv = r.to_double ();
-				check_inexact (line);
+				check_inexact (loc);
 				feclearexcept (FE_ALL_EXCEPT);
 				switch (op) {
 					case '+':
@@ -71,7 +71,7 @@ Variant EvalDouble::expr (const Variant& l, char op, const Variant& r, unsigned 
 						ret = lv / rv;
 						break;
 					default:
-						invalid_operation (op, line);
+						invalid_operation (op, loc);
 						return Variant ();
 				}
 				int ex = fetestexcept (FE_ALL_EXCEPT);
@@ -84,19 +84,19 @@ Variant EvalDouble::expr (const Variant& l, char op, const Variant& r, unsigned 
 			}
 			return ret;
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalDouble::expr (char op, const Variant& v, unsigned line)
+Variant EvalDouble::expr (char op, const Variant& v, const Location& loc)
 {
 	if (v.kind () != Type::Kind::VOID) {
 		assert (v.is_floating_pt ());
 		try {
 			double d = v.to_double ();
-			check_inexact (line);
+			check_inexact (loc);
 			switch (op) {
 				case '-':
 					d = -d;
@@ -104,18 +104,18 @@ Variant EvalDouble::expr (char op, const Variant& v, unsigned line)
 				case '+':
 					break;
 				default:
-					invalid_operation (op, line);
+					invalid_operation (op, loc);
 					return Variant ();
 			}
 			return d;
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalDouble::cast (const Type& t, Variant&& v, unsigned line)
+Variant EvalDouble::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	Variant ret;
 	assert (t.is_floating_pt ());
@@ -133,9 +133,9 @@ Variant EvalDouble::cast (const Type& t, Variant&& v, unsigned line)
 					ret = v.to_double ();
 					break;
 			}
-			check_inexact (line);
+			check_inexact (loc);
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return ret;

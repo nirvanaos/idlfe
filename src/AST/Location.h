@@ -1,8 +1,15 @@
+/// \file Location.h
+/// Defines the Location class.
 #ifndef NIDL_AST_LOCATION_H_
 #define NIDL_AST_LOCATION_H_
 
 #include <string>
 #include <assert.h>
+
+/// Support for the Bison location.
+namespace yy {
+class location;
+}
 
 namespace AST {
 
@@ -18,6 +25,8 @@ public:
 		file_ (&file),
 		line_ (line)
 	{}
+
+	Location (const yy::location&);
 
 	const std::string& file () const
 	{

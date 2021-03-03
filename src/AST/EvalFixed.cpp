@@ -1,11 +1,7 @@
 /// \file EvalFixed.cpp Fixed expression evaluiator.
 #include "EvalFixed.h"
 #include "Builder.h"
-
-extern "C" {
-#include <decNumber/decNumber.h>
-}
-
+#include "decNumber.h"
 #include <stdexcept>
 
 using namespace std;
@@ -31,7 +27,7 @@ void EvalFixed::Context::check () const
 		throw runtime_error (decContextStatusToString (this));
 }
 
-Variant EvalFixed::literal_fixed (const string& s, unsigned line)
+Variant EvalFixed::literal_fixed (const string& s, const Location& loc)
 {
 	assert (!s.empty ());
 	assert (s.back () == 'd' || s.back () == 'D');
@@ -42,7 +38,7 @@ Variant EvalFixed::literal_fixed (const string& s, unsigned line)
 	try {
 		ctx.check ();
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 	return v;
@@ -62,7 +58,7 @@ Variant EvalFixed::constant (const ScopedName& constant)
 	return Variant ();
 }
 
-Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, unsigned line)
+Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
 	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
 		assert (l.kind () == Type::Kind::FIXED && r.kind () == Type::Kind::FIXED);
@@ -85,19 +81,19 @@ Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, unsigned l
 					decNumberDivide (&ret, &lv, &rv, &ctx);
 					break;
 				default:
-					invalid_operation (op, line);
+					invalid_operation (op, loc);
 					return Variant ();
 			}
 			ctx.check ();
 			return ret;
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalFixed::expr (char op, const Variant& v, unsigned line)
+Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 {
 	if (v.kind () != Type::Kind::VOID) {
 		assert (v.kind () == Type::Kind::FIXED);
@@ -112,18 +108,18 @@ Variant EvalFixed::expr (char op, const Variant& v, unsigned line)
 				case '+':
 					break;
 				default:
-					invalid_operation (op, line);
+					invalid_operation (op, loc);
 					return Variant ();
 			}
 			return dn;
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalFixed::cast (const Type& t, Variant&& v, unsigned line)
+Variant EvalFixed::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	assert (t.kind () == Type::Kind::FIXED);
 	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::FIXED);

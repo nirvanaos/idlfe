@@ -9,7 +9,7 @@ namespace AST {
 
 // Long integer evaluator
 
-Variant EvalLongLong::expr (const Variant& l, char op, const Variant& r, unsigned line)
+Variant EvalLongLong::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
 	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
 		assert (l.is_integer () && r.is_integer ());
@@ -54,7 +54,7 @@ Variant EvalLongLong::expr (const Variant& l, char op, const Variant& r, unsigne
 								zero_divide (op);
 							break;
 						default:
-							invalid_operation (op, line);
+							invalid_operation (op, loc);
 							return Variant ();
 					}
 				}
@@ -99,20 +99,20 @@ Variant EvalLongLong::expr (const Variant& l, char op, const Variant& r, unsigne
 								zero_divide (op);
 							break;
 						default:
-							invalid_operation (op, line);
+							invalid_operation (op, loc);
 							return Variant ();
 					}
 				}
 				return ret;
 			}
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();
 }
 
-Variant EvalLongLong::expr (char op, const Variant& v, unsigned line)
+Variant EvalLongLong::expr (char op, const Variant& v, const Location& loc)
 {
 	if (v.kind () != Type::Kind::VOID) {
 		assert (v.is_integer ());
@@ -130,7 +130,7 @@ Variant EvalLongLong::expr (char op, const Variant& v, unsigned line)
 						ret = -(i + 1);
 						break;
 					default:
-						invalid_operation (op, line);
+						invalid_operation (op, loc);
 						return Variant ();
 				}
 			} else {
@@ -150,12 +150,12 @@ Variant EvalLongLong::expr (char op, const Variant& v, unsigned line)
 						return numeric_limits <uint64_t>::max () - u;;
 						break;
 					default:
-						invalid_operation (op, line);
+						invalid_operation (op, loc);
 						return Variant ();
 				}
 			}
 		} catch (const exception& ex) {
-			error (line, ex);
+			error (loc, ex);
 		}
 	}
 	return Variant ();

@@ -8,7 +8,7 @@ namespace AST {
 
 // String evaluator
 
-Variant EvalString::literal_string (const string& s, unsigned line, const Variant* append)
+Variant EvalString::literal_string (const string& s, const Location& loc, const Variant* append)
 {
 	try {
 		assert (s.size () >= 2);
@@ -28,12 +28,12 @@ Variant EvalString::literal_string (const string& s, unsigned line, const Varian
 			v += append->as_string ();
 		return Variant (move (v));
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 }
 
-Variant EvalString::cast (const Type& t, Variant&& v, unsigned line)
+Variant EvalString::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	assert (t.kind () == Type::Kind::STRING);
 	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::STRING);
@@ -42,7 +42,7 @@ Variant EvalString::cast (const Type& t, Variant&& v, unsigned line)
 
 // Wide string evaluator
 
-Variant EvalWString::literal_wstring (const string& s, unsigned line, const Variant* append)
+Variant EvalWString::literal_wstring (const string& s, const Location& loc, const Variant* append)
 {
 	try {
 		assert (s.size () >= 3);
@@ -62,12 +62,12 @@ Variant EvalWString::literal_wstring (const string& s, unsigned line, const Vari
 			v += append->as_wstring ();
 		return Variant (move (v));
 	} catch (const exception& ex) {
-		error (line, ex);
+		error (loc, ex);
 		return Variant ();
 	}
 }
 
-Variant EvalWString::cast (const Type& t, Variant&& v, unsigned line)
+Variant EvalWString::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	assert (t.kind () == Type::Kind::WSTRING);
 	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::WSTRING);

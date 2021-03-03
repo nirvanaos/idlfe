@@ -14,6 +14,7 @@
 #include "EvalDouble.h"
 #include "EvalString.h"
 #include "EvalFixed.h"
+#include "EvalEnum.h"
 #include "Constant.h"
 #include <assert.h>
 #include <stdexcept>
@@ -34,10 +35,8 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 		throw runtime_error ("Too many errors, compilation aborted.");
 }
 
-void Builder::pragma (const char* s, unsigned line)
+void Builder::pragma (const char* s, const Location& loc)
 {
-	Location loc (file (), line);
-
 	assert (*s == '#');
 	++s;
 	while (isspace (*s))
@@ -186,7 +185,7 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 	return true;
 }
 
-void Builder::file (const std::string& name, unsigned line)
+void Builder::file (const std::string& name, const Location& loc)
 {
 	if (*cur_file_ != name) {
 		if (tree_->file () == name) {
@@ -261,16 +260,16 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 	return &*f;
 }
 
-unsigned Builder::positive_int (const Variant& v, unsigned line)
+unsigned Builder::positive_int (const Variant& v, const Location& loc)
 {
 	assert (v.is_integer ());
 	try {
 		uint32_t i = v.to_unsigned_long ();
 		if (i)
 			return i;
-		message (Location (file (), line), Builder::MessageType::ERROR, "Expected positive integer.");
+		message (loc, Builder::MessageType::ERROR, "Expected positive integer.");
 	} catch (const exception& ex) {
-		message (Location (file (), line), Builder::MessageType::ERROR, ex.what ());
+		message (loc, Builder::MessageType::ERROR, ex.what ());
 	}
 	return 1;
 }
@@ -770,12 +769,17 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 			if (is_main_file ())
 				container_stack_.top ()->append (def);
 			for (auto item = items.begin (); item != items.end (); ++item) {
-				Ptr <NamedItem> enumerator = Ptr <NamedItem>::make <EnumItem> (ref (*this), ref (*def), ref (name));
+				Ptr <NamedItem> enumerator = Ptr <NamedItem>::make <EnumItem> (ref (*this), ref (*ins.first), ref (name));
 				ins = scope->insert (enumerator);
 				if (!ins.second)
 					error_name_collision (*item, **ins.first);
-				else
+				else {
+					if (def->size () == numeric_limits <uint32_t>::max ()) {
+						message (*item, MessageType::ERROR, "Too many enumerators.");
+						break;
+					}
 					def->append (enumerator);
+				}
 			}
 		}
 		return &*ins.first;
@@ -783,10 +787,10 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 	return nullptr;
 }
 
-void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line)
+void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc)
 {
 	if (scope_stack_.back ()) {
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (name), move (eval ().cast (t, move (val), line)));
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (name), move (eval ().cast (t, move (val), loc)));
 		auto ins = scope_stack_.back ()->insert (item);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
@@ -796,45 +800,52 @@ void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& v
 	eval_pop ();
 }
 
-void Builder::eval_push (const Type& t, unsigned line)
+void Builder::eval_push (const Type& t, const Location& loc)
 {
-	const Type& type = t.dereference ();
+	const Type& type = t.dereference_type ();
 	unique_ptr <Eval> eval;
 	switch (type.kind ()) {
 		case Type::Kind::BASIC_TYPE:
 			switch (type.basic_type ()) {
 				case BasicType::BOOLEAN:
-					eval = make_unique <EvalBool> (*this);
+					eval = make_unique <EvalBool> (ref (*this));
 					break;
 				case BasicType::LONGLONG:
 				case BasicType::ULONGLONG:
-					eval = make_unique <EvalLongLong> (*this);
+					eval = make_unique <EvalLongLong> (ref (*this));
 					break;
 				case BasicType::LONGDOUBLE:
-					eval = make_unique <EvalLongDouble> (*this);
+					eval = make_unique <EvalLongDouble> (ref (*this));
 					break;
 				default:
 					if (Type::is_integer (t.basic_type ()))
-						eval = make_unique <EvalLong> (*this);
+						eval = make_unique <EvalLong> (ref (*this));
 					else if (Type::is_floating_pt (t.basic_type ()))
-						eval = make_unique <EvalDouble> (*this);
-					else {
-						message (Location (file (), line), MessageType::ERROR, "Invalid constant type.");
-						eval = make_unique <Eval> (*this);
-					}
-			}
-			break;
+						eval = make_unique <EvalDouble> (ref (*this));
+			} break;
 		case Type::Kind::STRING:
-			eval = make_unique <EvalString> (*this);
+			eval = make_unique <EvalString> (ref (*this));
 			break;
 		case Type::Kind::WSTRING:
-			eval = make_unique <EvalWString> (*this);
+			eval = make_unique <EvalWString> (ref (*this));
 			break;
 		case Type::Kind::FIXED:
-			eval = make_unique <EvalFixed> (*this);
+			eval = make_unique <EvalFixed> (ref (*this));
 			break;
-		default:
-			eval = make_unique <Eval> (*this);
+		case Type::Kind::NAMED_TYPE: {
+			const Ptr <NamedItem>* ptype = type.named_type ();
+			if (ptype) {
+				const NamedItem& type = **ptype;
+				if (type.kind () == Item::Kind::ENUM)
+					eval = make_unique <EvalEnum> (ref (*this), ptype);
+			} else
+				eval = make_unique <Eval> (*this);
+		} break;
+	}
+
+	if (!eval) {
+		message (loc, MessageType::ERROR, "Invalid constant type.");
+		eval = make_unique <Eval> (*this);
 	}
 	eval_stack_.push (move (eval));
 }

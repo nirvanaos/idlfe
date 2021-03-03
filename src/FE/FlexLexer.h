@@ -49,10 +49,19 @@
 #define __FLEX_LEXER_H
 
 #include <iostream>
+
+//*** Begin modification for NIDL FE.
+
 #include "yacc.tab.h"
 
 #define YY_DECL yy::parser::symbol_type yyFlexLexer::yylex()
 #define yyterminate() return yy::parser::make_YYEOF (yy::parser::location_type (nullptr, lineno ()));
+
+namespace FE {
+class Driver;
+}
+
+//*** End modification for NIDL FE.
 
 extern "C++" {
 
@@ -75,7 +84,12 @@ public:
   virtual void yyrestart( std::istream* s ) = 0;
   virtual void yyrestart( std::istream& s ) = 0;
 
+  //*** Begin modification for NIDL FE.
+
   virtual yy::parser::symbol_type yylex() = 0;
+  virtual FE::Driver& driver () = 0;
+
+  //*** End modification for NIDL FE.
 
   // Call yylex with new input/output sources.
   yy::parser::symbol_type yylex( std::istream& new_in, std::ostream& new_out )

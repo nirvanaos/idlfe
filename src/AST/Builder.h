@@ -41,14 +41,14 @@ public:
 		return err_cnt_;
 	}
 
-	void parser_error (unsigned line, const std::string& msg)
+	void parser_error (const Location& loc, const std::string& msg)
 	{
-		message (Location (file (), line), MessageType::ERROR, msg);
+		message (loc, MessageType::ERROR, msg);
 	}
 
-	void file (const std::string& name, unsigned line);
+	void file (const std::string& name, const Location& loc);
 
-	void pragma (const char*, unsigned line);
+	void pragma (const char*, const Location& loc);
 
 	const std::string& file () const
 	{
@@ -137,7 +137,7 @@ public:
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
-	void eval_push (const Type& t, unsigned line);
+	void eval_push (const Type& t, const Location& loc);
 
 	void eval_pop ()
 	{
@@ -151,14 +151,14 @@ public:
 		return *eval_stack_.top ();
 	}
 
-	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, unsigned line);
+	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
 
-	unsigned positive_int (const Variant& v, unsigned line);
+	unsigned positive_int (const Variant& v, const Location& loc);
 
-	Type fixed_pt_type (unsigned digits, unsigned scale, unsigned line)
+	Type fixed_pt_type (unsigned digits, unsigned scale, const Location& loc)
 	{
 		if (digits > 31 || scale > digits) {
-			message (Location (file (), line), MessageType::ERROR, std::string ("fixed <") + std::to_string (digits) + ", " + std::to_string (scale) + "> type specification is invalid.");
+			message (loc, MessageType::ERROR, std::string ("fixed <") + std::to_string (digits) + ", " + std::to_string (scale) + "> type specification is invalid.");
 			return Type ();
 		} else
 			return Type::make_fixed (digits, scale);

@@ -70,109 +70,109 @@ CORBA_Identifier	[a-zA-Z_][a-zA-Z0-9_]*
 [\n]			;
 "//"[^\n]*		;
 "#pragma"[^\n]*\n {
-  static_cast <FE::Driver*> (this)->pragma (YYText (), lineno ());
+  driver ().pragma (YYText (), driver ().location ());
 }
 "#"[^\n]*\n {
-  static_cast <FE::Driver*> (this)->preprocessor_directive (YYText (), lineno ());
+  driver ().preprocessor_directive (YYText ());
 }
-"{"			return yy::parser::make_T_LEFT_CURLY_BRACKET (yy::parser::location_type (nullptr, lineno ()));
-"}"			return yy::parser::make_T_RIGHT_CURLY_BRACKET (yy::parser::location_type (nullptr, lineno ()));
-"["		 	return yy::parser::make_T_LEFT_SQUARE_BRACKET (yy::parser::location_type (nullptr, lineno ()));
-"]"			return yy::parser::make_T_RIGHT_SQUARE_BRACKET (yy::parser::location_type (nullptr, lineno ()));
-"("			return yy::parser::make_T_LEFT_PARANTHESIS (yy::parser::location_type (nullptr, lineno ()));
-")"			return yy::parser::make_T_RIGHT_PARANTHESIS (yy::parser::location_type (nullptr, lineno ()));
-":"			return yy::parser::make_T_COLON (yy::parser::location_type (nullptr, lineno ()));
-","			return yy::parser::make_T_COMMA (yy::parser::location_type (nullptr, lineno ()));
-";"			return yy::parser::make_T_SEMICOLON (yy::parser::location_type (nullptr, lineno ()));
-"="			return yy::parser::make_T_EQUAL (yy::parser::location_type (nullptr, lineno ()));
-">>"		return yy::parser::make_T_SHIFTRIGHT (yy::parser::location_type (nullptr, lineno ()));
-"<<"		return yy::parser::make_T_SHIFTLEFT (yy::parser::location_type (nullptr, lineno ()));
-"+"			return yy::parser::make_T_PLUS_SIGN (yy::parser::location_type (nullptr, lineno ()));
-"-"			return yy::parser::make_T_MINUS_SIGN (yy::parser::location_type (nullptr, lineno ()));
-"*"			return yy::parser::make_T_ASTERISK (yy::parser::location_type (nullptr, lineno ()));
-"/"			return yy::parser::make_T_SOLIDUS (yy::parser::location_type (nullptr, lineno ()));
-"%"			return yy::parser::make_T_PERCENT_SIGN (yy::parser::location_type (nullptr, lineno ()));
-"~"			return yy::parser::make_T_TILDE (yy::parser::location_type (nullptr, lineno ()));
-"|"			return yy::parser::make_T_VERTICAL_LINE (yy::parser::location_type (nullptr, lineno ()));
-"^"			return yy::parser::make_T_CIRCUMFLEX (yy::parser::location_type (nullptr, lineno ()));
-"&"			return yy::parser::make_T_AMPERSAND (yy::parser::location_type (nullptr, lineno ()));
-"<"			return yy::parser::make_T_LESS_THAN_SIGN (yy::parser::location_type (nullptr, lineno ()));
-">"			return yy::parser::make_T_GREATER_THAN_SIGN (yy::parser::location_type (nullptr, lineno ()));
+"{"			return yy::parser::make_T_LEFT_CURLY_BRACKET (driver ().location ());
+"}"			return yy::parser::make_T_RIGHT_CURLY_BRACKET (driver ().location ());
+"["		 	return yy::parser::make_T_LEFT_SQUARE_BRACKET (driver ().location ());
+"]"			return yy::parser::make_T_RIGHT_SQUARE_BRACKET (driver ().location ());
+"("			return yy::parser::make_T_LEFT_PARANTHESIS (driver ().location ());
+")"			return yy::parser::make_T_RIGHT_PARANTHESIS (driver ().location ());
+":"			return yy::parser::make_T_COLON (driver ().location ());
+","			return yy::parser::make_T_COMMA (driver ().location ());
+";"			return yy::parser::make_T_SEMICOLON (driver ().location ());
+"="			return yy::parser::make_T_EQUAL (driver ().location ());
+">>"		return yy::parser::make_T_SHIFTRIGHT (driver ().location ());
+"<<"		return yy::parser::make_T_SHIFTLEFT (driver ().location ());
+"+"			return yy::parser::make_T_PLUS_SIGN (driver ().location ());
+"-"			return yy::parser::make_T_MINUS_SIGN (driver ().location ());
+"*"			return yy::parser::make_T_ASTERISK (driver ().location ());
+"/"			return yy::parser::make_T_SOLIDUS (driver ().location ());
+"%"			return yy::parser::make_T_PERCENT_SIGN (driver ().location ());
+"~"			return yy::parser::make_T_TILDE (driver ().location ());
+"|"			return yy::parser::make_T_VERTICAL_LINE (driver ().location ());
+"^"			return yy::parser::make_T_CIRCUMFLEX (driver ().location ());
+"&"			return yy::parser::make_T_AMPERSAND (driver ().location ());
+"<"			return yy::parser::make_T_LESS_THAN_SIGN (driver ().location ());
+">"			return yy::parser::make_T_GREATER_THAN_SIGN (driver ().location ());
 
-const       return yy::parser::make_T_CONST (yy::parser::location_type (nullptr, lineno ()));
-typedef     return yy::parser::make_T_TYPEDEF (yy::parser::location_type (nullptr, lineno ()));
-float       return yy::parser::make_T_FLOAT (yy::parser::location_type (nullptr, lineno ()));
-double      return yy::parser::make_T_DOUBLE (yy::parser::location_type (nullptr, lineno ()));
-char        return yy::parser::make_T_CHAR (yy::parser::location_type (nullptr, lineno ()));
-wchar       return yy::parser::make_T_WCHAR (yy::parser::location_type (nullptr, lineno ()));
-fixed       return yy::parser::make_T_FIXED (yy::parser::location_type (nullptr, lineno ()));
-boolean     return yy::parser::make_T_BOOLEAN (yy::parser::location_type (nullptr, lineno ()));
-string      return yy::parser::make_T_STRING (yy::parser::location_type (nullptr, lineno ()));
-wstring     return yy::parser::make_T_WSTRING (yy::parser::location_type (nullptr, lineno ()));
-void        return yy::parser::make_T_VOID (yy::parser::location_type (nullptr, lineno ()));
-unsigned    return yy::parser::make_T_UNSIGNED (yy::parser::location_type (nullptr, lineno ()));
-long        return yy::parser::make_T_LONG (yy::parser::location_type (nullptr, lineno ()));
-short       return yy::parser::make_T_SHORT (yy::parser::location_type (nullptr, lineno ()));
-FALSE       return yy::parser::make_T_FALSE (yy::parser::location_type (nullptr, lineno ()));
-TRUE        return yy::parser::make_T_TRUE (yy::parser::location_type (nullptr, lineno ()));
-struct      return yy::parser::make_T_STRUCT (yy::parser::location_type (nullptr, lineno ()));
-union       return yy::parser::make_T_UNION (yy::parser::location_type (nullptr, lineno ()));
-switch      return yy::parser::make_T_SWITCH (yy::parser::location_type (nullptr, lineno ()));
-case        return yy::parser::make_T_CASE (yy::parser::location_type (nullptr, lineno ()));
-default     return yy::parser::make_T_DEFAULT (yy::parser::location_type (nullptr, lineno ()));
-enum        return yy::parser::make_T_ENUM (yy::parser::location_type (nullptr, lineno ()));
-in          return yy::parser::make_T_IN (yy::parser::location_type (nullptr, lineno ()));
-out         return yy::parser::make_T_OUT (yy::parser::location_type (nullptr, lineno ()));
-interface   return yy::parser::make_T_INTERFACE (yy::parser::location_type (nullptr, lineno ()));
-abstract    return yy::parser::make_T_ABSTRACT (yy::parser::location_type (nullptr, lineno ()));
-local       return yy::parser::make_T_LOCAL (yy::parser::location_type (nullptr, lineno ()));
-valuetype   return yy::parser::make_T_VALUETYPE (yy::parser::location_type (nullptr, lineno ()));
-truncatable return yy::parser::make_T_TRUNCATABLE (yy::parser::location_type (nullptr, lineno ()));
-supports    return yy::parser::make_T_SUPPORTS (yy::parser::location_type (nullptr, lineno ()));
-custom      return yy::parser::make_T_CUSTOM (yy::parser::location_type (nullptr, lineno ()));
-public      return yy::parser::make_T_PUBLIC (yy::parser::location_type (nullptr, lineno ()));
-private     return yy::parser::make_T_PRIVATE (yy::parser::location_type (nullptr, lineno ()));
-factory     return yy::parser::make_T_FACTORY (yy::parser::location_type (nullptr, lineno ()));
-native      return yy::parser::make_T_NATIVE (yy::parser::location_type (nullptr, lineno ()));
-ValueBase   return yy::parser::make_T_VALUEBASE (yy::parser::location_type (nullptr, lineno ()));
+const       return yy::parser::make_T_CONST (driver ().location ());
+typedef     return yy::parser::make_T_TYPEDEF (driver ().location ());
+float       return yy::parser::make_T_FLOAT (driver ().location ());
+double      return yy::parser::make_T_DOUBLE (driver ().location ());
+char        return yy::parser::make_T_CHAR (driver ().location ());
+wchar       return yy::parser::make_T_WCHAR (driver ().location ());
+fixed       return yy::parser::make_T_FIXED (driver ().location ());
+boolean     return yy::parser::make_T_BOOLEAN (driver ().location ());
+string      return yy::parser::make_T_STRING (driver ().location ());
+wstring     return yy::parser::make_T_WSTRING (driver ().location ());
+void        return yy::parser::make_T_VOID (driver ().location ());
+unsigned    return yy::parser::make_T_UNSIGNED (driver ().location ());
+long        return yy::parser::make_T_LONG (driver ().location ());
+short       return yy::parser::make_T_SHORT (driver ().location ());
+FALSE       return yy::parser::make_T_FALSE (driver ().location ());
+TRUE        return yy::parser::make_T_TRUE (driver ().location ());
+struct      return yy::parser::make_T_STRUCT (driver ().location ());
+union       return yy::parser::make_T_UNION (driver ().location ());
+switch      return yy::parser::make_T_SWITCH (driver ().location ());
+case        return yy::parser::make_T_CASE (driver ().location ());
+default     return yy::parser::make_T_DEFAULT (driver ().location ());
+enum        return yy::parser::make_T_ENUM (driver ().location ());
+in          return yy::parser::make_T_IN (driver ().location ());
+out         return yy::parser::make_T_OUT (driver ().location ());
+interface   return yy::parser::make_T_INTERFACE (driver ().location ());
+abstract    return yy::parser::make_T_ABSTRACT (driver ().location ());
+local       return yy::parser::make_T_LOCAL (driver ().location ());
+valuetype   return yy::parser::make_T_VALUETYPE (driver ().location ());
+truncatable return yy::parser::make_T_TRUNCATABLE (driver ().location ());
+supports    return yy::parser::make_T_SUPPORTS (driver ().location ());
+custom      return yy::parser::make_T_CUSTOM (driver ().location ());
+public      return yy::parser::make_T_PUBLIC (driver ().location ());
+private     return yy::parser::make_T_PRIVATE (driver ().location ());
+factory     return yy::parser::make_T_FACTORY (driver ().location ());
+native      return yy::parser::make_T_NATIVE (driver ().location ());
+ValueBase   return yy::parser::make_T_VALUEBASE (driver ().location ());
 
-"::"        return yy::parser::make_T_SCOPE (yy::parser::location_type (nullptr, lineno ())); 
+"::"        return yy::parser::make_T_SCOPE (driver ().location ()); 
 
-module      return yy::parser::make_T_MODULE (yy::parser::location_type (nullptr, lineno ()));
-octet       return yy::parser::make_T_OCTET (yy::parser::location_type (nullptr, lineno ()));
-any         return yy::parser::make_T_ANY (yy::parser::location_type (nullptr, lineno ()));
-sequence    return yy::parser::make_T_SEQUENCE (yy::parser::location_type (nullptr, lineno ()));
-readonly    return yy::parser::make_T_READONLY (yy::parser::location_type (nullptr, lineno ()));
-attribute   return yy::parser::make_T_ATTRIBUTE (yy::parser::location_type (nullptr, lineno ()));
-exception   return yy::parser::make_T_EXCEPTION (yy::parser::location_type (nullptr, lineno ()));
-oneway      return yy::parser::make_T_ONEWAY (yy::parser::location_type (nullptr, lineno ()));
-inout       return yy::parser::make_T_INOUT (yy::parser::location_type (nullptr, lineno ()));
-raises      return yy::parser::make_T_RAISES (yy::parser::location_type (nullptr, lineno ()));
-context     return yy::parser::make_T_CONTEXT (yy::parser::location_type (nullptr, lineno ()));
+module      return yy::parser::make_T_MODULE (driver ().location ());
+octet       return yy::parser::make_T_OCTET (driver ().location ());
+any         return yy::parser::make_T_ANY (driver ().location ());
+sequence    return yy::parser::make_T_SEQUENCE (driver ().location ());
+readonly    return yy::parser::make_T_READONLY (driver ().location ());
+attribute   return yy::parser::make_T_ATTRIBUTE (driver ().location ());
+exception   return yy::parser::make_T_EXCEPTION (driver ().location ());
+oneway      return yy::parser::make_T_ONEWAY (driver ().location ());
+inout       return yy::parser::make_T_INOUT (driver ().location ());
+raises      return yy::parser::make_T_RAISES (driver ().location ());
+context     return yy::parser::make_T_CONTEXT (driver ().location ());
 
-Object      return yy::parser::make_T_OBJECT (yy::parser::location_type (nullptr, lineno ()));
+Object      return yy::parser::make_T_OBJECT (driver ().location ());
 
 
-{CORBA_Identifier} return yy::parser::make_T_IDENTIFIER (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{CORBA_Identifier} return yy::parser::make_T_IDENTIFIER (std::string (YYText (), YYLeng ()), driver ().location ());
 {Float_Literal1} |
 {Float_Literal2} |
 {Float_Literal3} |
 {Float_Literal4} |
 {Float_Literal5} |
-{Float_Literal6}   return yy::parser::make_T_FLOATING_PT_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Float_Literal6}   return yy::parser::make_T_FLOATING_PT_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
 {Fixed_Literal1} |
 {Fixed_Literal2} |
 {Fixed_Literal3} |
-{Fixed_Literal4}   return yy::parser::make_T_FIXED_PT_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Int_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Oct_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Hex_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{Char_Literal}     return yy::parser::make_T_CHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{WChar_Literal}    return yy::parser::make_T_WCHARACTER_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{String_Literal}   return yy::parser::make_T_STRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
-{WString_Literal}  return yy::parser::make_T_WSTRING_LITERAL (std::string (YYText (), YYLeng ()), yy::parser::location_type (nullptr, lineno ()));
+{Fixed_Literal4}   return yy::parser::make_T_FIXED_PT_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{Int_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{Oct_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{Hex_Literal}      return yy::parser::make_T_INTEGER_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{Char_Literal}     return yy::parser::make_T_CHARACTER_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{WChar_Literal}    return yy::parser::make_T_WCHARACTER_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{String_Literal}   return yy::parser::make_T_STRING_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
+{WString_Literal}  return yy::parser::make_T_WSTRING_LITERAL (std::string (YYText (), YYLeng ()), driver ().location ());
 .                       {
-                          return yy::parser::make_T_UNKNOWN (yy::parser::location_type (nullptr, lineno ()));
+                          return yy::parser::make_T_UNKNOWN (driver ().location ());
                         }
 
 %%

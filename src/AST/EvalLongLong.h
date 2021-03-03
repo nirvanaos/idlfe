@@ -14,8 +14,8 @@ public:
 		EvalLong (builder)
 	{}
 
-	virtual Variant expr (const Variant& l, char op, const Variant& r, unsigned line);
-	virtual Variant expr (char op, const Variant& v, unsigned line);
+	virtual Variant expr (const Variant& l, char op, const Variant& r, const Location& loc);
+	virtual Variant expr (char op, const Variant& v, const Location& loc);
 };
 
 }

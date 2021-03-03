@@ -11,7 +11,7 @@ Driver::Driver (const std::string& file, std::istream& yyin) :
 	parser_ (*this)
 {}
 
-void Driver::preprocessor_directive (const char* const dir, unsigned line)
+void Driver::preprocessor_directive (const char* const dir)
 {
 	const char* s = dir;
 	assert (*s == '#');
@@ -32,16 +32,16 @@ void Driver::preprocessor_directive (const char* const dir, unsigned line)
 					while (isspace (*(--end)))
 						;
 					if (*end == '\"')
-						file (string (s + 1, end - s - 1), line);
+						file (string (s + 1, end - s - 1), location ());
 					else
-						parser_error (line, string ("Invalid file name: ") + string (s, end - s));
+						parser_error (location (), string ("Invalid file name: ") + string (s, end - s));
 				}
 				yylineno = l;
 			}
 			return;
 		}
 	}
-	parser_error (line, string ("Invalid preprocessor directive: ") + dir);
+	parser_error (location (), string ("Invalid preprocessor directive: ") + dir);
 }
 
 }

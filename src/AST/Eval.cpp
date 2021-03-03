@@ -7,12 +7,12 @@ using namespace std;
 
 namespace AST {
 
-void Eval::invalid_literal_type (unsigned line) const
+void Eval::invalid_literal_type (const Location& loc) const
 {
-	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, "Invalid literal type.");
+	builder_.message (loc, Builder::MessageType::ERROR, "Invalid literal type.");
 }
 
-void Eval::invalid_operation (char op, unsigned line) const
+void Eval::invalid_operation (char op, const Location& loc) const
 {
 	string sop;
 	switch (op) {
@@ -25,59 +25,59 @@ void Eval::invalid_operation (char op, unsigned line) const
 		default:
 			sop = op;
 	}
-	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, string ("Operation ") + sop + " is invalid in this context.");
+	builder_.message (loc, Builder::MessageType::ERROR, string ("Operation ") + sop + " is invalid in this context.");
 }
 
-void Eval::error (unsigned line, const std::exception& ex) const
+void Eval::error (const Location& loc, const std::exception& ex) const
 {
-	builder_.message (Location (builder_.file (), line), Builder::MessageType::ERROR, ex.what ());
+	builder_.message (loc, Builder::MessageType::ERROR, ex.what ());
 }
 
-Variant Eval::literal_char (const string& s, unsigned line)
+Variant Eval::literal_char (const string& s, const Location& loc)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_wchar (const string& s, unsigned line)
+Variant Eval::literal_wchar (const string& s, const Location& loc)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_int (const string& s, unsigned line)
+Variant Eval::literal_int (const string& s, const Location& loc)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_float (const string& s, unsigned line)
+Variant Eval::literal_float (const string& s, const Location& loc)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_string (const string& s, unsigned line, const Variant* append)
+Variant Eval::literal_string (const string& s, const Location& loc, const Variant* append)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_wstring (const string& s, unsigned line, const Variant* append)
+Variant Eval::literal_wstring (const string& s, const Location& loc, const Variant* append)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_fixed (const string& s, unsigned line)
+Variant Eval::literal_fixed (const string& s, const Location& loc)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_boolean (bool v, unsigned line)
+Variant Eval::literal_boolean (bool v, const Location& loc)
 {
-	invalid_literal_type (line);
+	invalid_literal_type (loc);
 	return Variant ();
 }
 
@@ -110,19 +110,19 @@ void Eval::invalid_constant_type (const ScopedName& constant) const
 	builder_.message (constant, Builder::MessageType::ERROR, string ("Constant ") + constant.stringize () + " type is invalid.");
 }
 
-Variant Eval::expr (const Variant& l, char op, const Variant& r, unsigned line)
+Variant Eval::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
-	invalid_operation (op, line);
+	invalid_operation (op, loc);
 	return Variant ();
 }
 
-Variant Eval::expr (char op, const Variant& v, unsigned line)
+Variant Eval::expr (char op, const Variant& v, const Location& loc)
 {
-	invalid_operation (op, line);
+	invalid_operation (op, loc);
 	return Variant ();
 }
 
-Variant Eval::cast (const Type& t, Variant&& v, unsigned line)
+Variant Eval::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	return Variant ();
 }

@@ -15,9 +15,9 @@ public:
 		Eval (builder)
 	{}
 
-	virtual Variant literal_string (const std::string& s, unsigned line, const Variant* append);
+	virtual Variant literal_string (const std::string& s, const Location& loc, const Variant* append);
 
-	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
+	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };
 
 /// Wide string evaluator
@@ -29,9 +29,9 @@ public:
 		Eval (builder)
 	{}
 
-	virtual Variant literal_wstring (const std::string& s, unsigned line, const Variant* append);
+	virtual Variant literal_wstring (const std::string& s, const Location& loc, const Variant* append);
 
-	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
+	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };
 
 }
