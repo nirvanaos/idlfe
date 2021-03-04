@@ -11,7 +11,7 @@ class Exception :
 	public RepositoryId
 {
 public:
-	Exception (const Builder& builder, const SimpleDeclarator& name) :
+	Exception (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemContainer (Item::Kind::EXCEPTION, builder, name),
 		RepositoryId (*this, builder)
 	{}

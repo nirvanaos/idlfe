@@ -2,11 +2,15 @@
 #define NIDL_AST_NAMEDITEM_H_
 
 #include "Item.h"
-#include "Declarators.h"
+#include "Location.h"
 
 namespace AST {
 
+namespace Build {
 class Builder;
+class SimpleDeclarator;
+}
+
 class ItemScope;
 
 class NamedItem :
@@ -14,7 +18,7 @@ class NamedItem :
 	public Location
 {
 public:
-	NamedItem (Kind kind, const Builder& builder, const SimpleDeclarator& name);
+	NamedItem (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 	const std::string& name () const
 	{

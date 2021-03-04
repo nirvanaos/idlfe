@@ -5,6 +5,7 @@
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 // String evaluator
 
@@ -74,4 +75,5 @@ Variant EvalWString::cast (const Type& t, Variant&& v, const Location& loc)
 	return move (v);
 }
 
+}
 }

@@ -1,21 +1,21 @@
 #include "Builder.h"
-#include "Include.h"
-#include "Module.h"
-#include "Native.h"
-#include "TypeDef.h"
-#include "Operation.h"
-#include "Struct.h"
-#include "Union.h"
-#include "Enum.h"
-#include "Exception.h"
-#include "Member.h"
 #include "EvalBool.h"
 #include "EvalLongLong.h"
 #include "EvalDouble.h"
 #include "EvalString.h"
 #include "EvalFixed.h"
 #include "EvalEnum.h"
-#include "Constant.h"
+#include "../Include.h"
+#include "../Module.h"
+#include "../Native.h"
+#include "../TypeDef.h"
+#include "../Operation.h"
+#include "../Struct.h"
+#include "../Union.h"
+#include "../Enum.h"
+#include "../Exception.h"
+#include "../Member.h"
+#include "../Constant.h"
 #include <assert.h>
 #include <stdexcept>
 #include <map>
@@ -24,6 +24,7 @@
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 void Builder::message (const Location& l, MessageType mt, const string& err)
 {
@@ -416,7 +417,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				error_name_collision (name, **ins.first);
 				return;
 			}
-			
+
 			if (prev_ik.interface_kind () != ik.interface_kind ()) {
 				error_interface_kind (name, ik, prev_ik, item);
 				return;
@@ -425,7 +426,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 			if (!rid->check_prefix (*this, name))
 				return;
 		}
-		
+
 		if (is_main_file ())
 			container_stack_.top ()->append (decl);
 	}
@@ -629,7 +630,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 				error_name_collision (name, **ins.first);
 				return;
 			}
-			
+
 			if (!rid->check_prefix (*this, name))
 				return;
 		}
@@ -651,7 +652,7 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 				scope_push (nullptr);
 				return;
 			}
-			
+
 			const StructDecl& decl = static_cast <const StructDecl&> (item);
 			decl.check_prefix (*this, name);
 			static_cast <RepositoryIdData&> (*def) = decl;
@@ -849,4 +850,5 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (move (eval));
 }
 
+}
 }

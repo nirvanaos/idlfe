@@ -6,7 +6,10 @@
 
 namespace AST {
 
+namespace Build {
 class Builder;
+}
+
 class NamedItem;
 
 struct Version
@@ -49,19 +52,19 @@ public:
 		return item_;
 	}
 
-	bool check_prefix (Builder& builder, const Location& loc) const;
+	bool check_prefix (Build::Builder& builder, const Location& loc) const;
 
-	void pragma_id (Builder& builder, const std::string& id, const Location& loc);
+	void pragma_id (Build::Builder& builder, const std::string& id, const Location& loc);
 
-	void pragma_version (Builder& builder, const Version v, const Location& loc);
+	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
 
 	std::string repository_id () const;
 
 protected:
-	RepositoryId (const NamedItem& item, const Builder& builder);
+	RepositoryId (const NamedItem& item, const Build::Builder& builder);
 
 private:
-	static void see_prev_declaration (Builder& builder, const Location& loc);
+	static void see_prev_declaration (Build::Builder& builder, const Location& loc);
 
 private:
 	const NamedItem& item_;

@@ -7,7 +7,7 @@ namespace FE {
 
 Driver::Driver (const std::string& file, std::istream& yyin) :
 	yyFlexLexer (yyin, cout),
-	AST::Builder (file, cout),
+	AST::Build::Builder (file, cout),
 	parser_ (*this)
 {}
 

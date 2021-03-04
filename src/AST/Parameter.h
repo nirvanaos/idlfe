@@ -18,7 +18,7 @@ public:
 		INOUT
 	};
 
-	Parameter (const Builder& builder, Attribute att, const Type& type, const SimpleDeclarator& name) :
+	Parameter (const Build::Builder& builder, Attribute att, const Type& type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::PARAMETER, builder, name),
 		Type (type),
 		attribute_ (att)

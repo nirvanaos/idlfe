@@ -1,6 +1,7 @@
-#include "Builder.h"
+#include "Builder/Builder.h"
 
 using namespace std;
+using namespace AST::Build;
 
 namespace AST {
 

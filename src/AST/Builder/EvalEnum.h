@@ -8,6 +8,8 @@ namespace AST {
 
 class Enum;
 
+namespace Build {
+
 /// Enum expression evaluiator.
 class EvalEnum : public Eval
 {
@@ -25,6 +27,7 @@ private:
 	const Ptr <NamedItem>& type_;
 };
 
+}
 }
 
 #endif

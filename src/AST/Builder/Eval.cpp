@@ -1,11 +1,12 @@
 /// \file Eval.cpp Expression evaluiator.
 #include "Eval.h"
 #include "Builder.h"
-#include "Constant.h"
+#include "../Constant.h"
 
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 void Eval::invalid_literal_type (const Location& loc) const
 {
@@ -253,4 +254,5 @@ unsigned Eval::from_hex (const char*& p, unsigned maxlen)
 	throw runtime_error (string ("Divide by zero in ") + op + " operation.");
 }
 
+}
 }

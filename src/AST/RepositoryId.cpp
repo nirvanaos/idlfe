@@ -1,4 +1,4 @@
-#include "Builder.h"
+#include "Builder/Builder.h"
 #include "Struct.h"
 #include "Union.h"
 #include "Enum.h"
@@ -7,6 +7,7 @@
 #include "Exception.h"
 
 using namespace std;
+using namespace AST::Build;
 
 namespace AST {
 

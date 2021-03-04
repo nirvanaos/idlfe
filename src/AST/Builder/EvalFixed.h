@@ -5,6 +5,7 @@
 #include "Eval.h"
 
 namespace AST {
+namespace Build {
 
 /// /// Fixed evaluator
 class EvalFixed : public Eval
@@ -25,6 +26,7 @@ public:
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };
 
+}
 }
 
 #endif

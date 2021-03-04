@@ -1,12 +1,13 @@
 /// \file EvalLongLong.cpp Long integer expression evaluiator.
 #include "EvalLongLong.h"
-#include "Constant.h"
+#include "../Constant.h"
 #include "SafeInt/SafeInt.hpp"
 #include <stdexcept>
 
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 // Long integer evaluator
 
@@ -162,4 +163,5 @@ Variant EvalLongLong::expr (char op, const Variant& v, const Location& loc)
 	return Variant ();
 }
 
+}
 }

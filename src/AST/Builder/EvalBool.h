@@ -5,6 +5,7 @@
 #include "Eval.h"
 
 namespace AST {
+namespace Build {
 
 /// Boolean evaluator.
 class EvalBool : public Eval
@@ -23,6 +24,7 @@ public:
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };
 
+}
 }
 
 #endif

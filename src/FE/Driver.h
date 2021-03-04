@@ -4,7 +4,7 @@
 #if !defined(yyFlexLexerOnce)
 #include "FlexLexer.h"
 #endif
-#include "../AST/Builder.h"
+#include "../AST/Builder/Builder.h"
 #include <iostream>
 
 namespace FE {
@@ -12,7 +12,7 @@ namespace FE {
 /// The proxy class between Flex, Bison and `AST::Builder`.
 class Driver :
 	public yyFlexLexer,
-	public AST::Builder
+	public AST::Build::Builder
 {
 public:
 	static AST::Ptr <AST::AST> parse (const std::string& file, std::istream& yyin)

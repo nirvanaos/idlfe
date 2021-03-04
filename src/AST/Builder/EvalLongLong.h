@@ -5,6 +5,7 @@
 #include "EvalLong.h"
 
 namespace AST {
+namespace Build {
 
 /// Long integer evaluator
 class EvalLongLong : public EvalLong
@@ -18,6 +19,7 @@ public:
 	virtual Variant expr (char op, const Variant& v, const Location& loc);
 };
 
+}
 }
 
 #endif

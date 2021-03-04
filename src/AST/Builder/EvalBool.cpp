@@ -1,10 +1,11 @@
 /// \file EvalBool.cpp Boolean expression evaluiator.
 #include "EvalBool.h"
-#include "Constant.h"
+#include "../Constant.h"
 
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 Variant EvalBool::literal_boolean (bool v, const Location& loc)
 {
@@ -67,4 +68,5 @@ Variant EvalBool::cast (const Type& t, Variant&& v, const Location& loc)
 	return move (v);
 }
 
+}
 }

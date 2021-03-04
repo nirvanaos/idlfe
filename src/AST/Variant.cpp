@@ -1,8 +1,8 @@
-#include "Builder.h"
+#include "Builder/Builder.h"
 #include "Constant.h"
 #include "Enum.h"
-#include "SafeInt/SafeInt.hpp"
-#include "decNumber.h"
+#include "Builder/SafeInt/SafeInt.hpp"
+#include "Builder/decNumber.h"
 extern "C" {
 #include <decNumber/decPacked.h>
 }
@@ -305,7 +305,7 @@ void Variant::as_decNumber (_decNumber& dn) const noexcept
 {
 	assert (dereference_type ().kind () == Type::Kind::FIXED);
 	int scale = fixed_scale ();
-	decPackedToNumber (val_.v.u.fixed, bcd_length (), &scale, &dn);
+	decPackedToNumber (val_.v.u.fixed, (int32_t)bcd_length (), &scale, &dn);
 	assert (fixed_scale () == scale);
 }
 

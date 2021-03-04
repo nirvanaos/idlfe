@@ -39,7 +39,7 @@ class Interface :
 	public RepositoryId
 {
 public:
-	Interface (const Builder& builder, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
+	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		ItemContainer (Item::Kind::INTERFACE, builder, name),
 		RepositoryId (*this, builder)
@@ -69,7 +69,7 @@ class InterfaceDecl :
 	public RepositoryId
 {
 public:
-	InterfaceDecl (const Builder& builder, const SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
+	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
 		RepositoryId (*this, builder)

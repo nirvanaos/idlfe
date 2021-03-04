@@ -10,7 +10,7 @@ class ItemScope :
 	public Symbols
 {
 public:
-	ItemScope (Item::Kind kind, const Builder& builder, const SimpleDeclarator& name) :
+	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (kind, builder, name)
 	{}
 

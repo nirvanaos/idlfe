@@ -11,7 +11,7 @@ class Native :
 	public RepositoryId
 {
 public:
-	Native (const Builder& builder, const SimpleDeclarator& name) :
+	Native (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Kind::NATIVE, builder, name),
 		RepositoryId (*this)
 	{}

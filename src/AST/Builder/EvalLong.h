@@ -5,6 +5,7 @@
 #include "Eval.h"
 
 namespace AST {
+namespace Build {
 
 /// Integer evaluator.
 class EvalLong : public Eval
@@ -26,6 +27,7 @@ public:
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };
 
+}
 }
 
 #endif

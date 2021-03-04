@@ -1,9 +1,10 @@
 #include "EvalEnum.h"
-#include "Enum.h"
 #include "Builder.h"
-#include "Constant.h"
+#include "../Enum.h"
+#include "../Constant.h"
 
 namespace AST {
+namespace Build {
 
 Variant EvalEnum::constant (const ScopedName& constant)
 {
@@ -30,4 +31,5 @@ Variant EvalEnum::constant (const ScopedName& constant)
 	return Variant ();
 }
 
+}
 }

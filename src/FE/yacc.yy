@@ -39,9 +39,9 @@ inline AST::Location::Location (const yy::location& loc) :
 namespace FE {
 class Driver;
 }
+#include "../AST/Builder/Declarators.h"
 #include "../AST/ScopedName.h"
 #include "../AST/Variant.h"
-#include "../AST/Declarators.h"
 #include "../AST/Parameter.h"
 }
 
@@ -179,13 +179,13 @@ class Driver;
 %nterm <unsigned> positive_int_const;
 %nterm <unsigned> fixed_array_size;
 
-%nterm <AST::FixedArraySizes> fixed_array_sizes;
-%nterm <AST::Declarator> array_declarator;
-%nterm <AST::Declarator> complex_declarator;
-%nterm <AST::Declarator> declarator;
-%nterm <AST::SimpleDeclarator> simple_declarator;
-%nterm <AST::Declarators> declarators;
-%nterm <AST::SimpleDeclarators> simple_declarators;
+%nterm <AST::Build::FixedArraySizes> fixed_array_sizes;
+%nterm <AST::Build::Declarator> array_declarator;
+%nterm <AST::Build::Declarator> complex_declarator;
+%nterm <AST::Build::Declarator> declarator;
+%nterm <AST::Build::SimpleDeclarator> simple_declarator;
+%nterm <AST::Build::Declarators> declarators;
+%nterm <AST::Build::SimpleDeclarators> simple_declarators;
 
 %nterm <bool> op_attribute;
 
@@ -554,7 +554,7 @@ constr_type_spec
 
 /*49*/
 declarators
-	: declarator { $$ = AST::Declarators (1, $1); }
+	: declarator { $$ = AST::Build::Declarators (1, $1); }
 	| declarator T_COMMA declarators { $$ = $3; $$.push_front ($1); }
 	;
 
@@ -566,7 +566,7 @@ declarator
 
 /*51*/
 simple_declarator
-	: T_IDENTIFIER { $$ = AST::SimpleDeclarator ($1, @1); }
+	: T_IDENTIFIER { $$ = AST::Build::SimpleDeclarator ($1, @1); }
 	;
 
 /*52*/
@@ -761,7 +761,7 @@ wide_string_type
 
 /*83*/
 array_declarator
-	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Declarator ($1, @1, $2); }
+	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Build::Declarator ($1, @1, $2); }
 	;
 
 fixed_array_sizes
@@ -781,7 +781,7 @@ attr_dcl
 	; 
 
 simple_declarators
-	: simple_declarator { $$ = AST::SimpleDeclarators (1, $1); }
+	: simple_declarator { $$ = AST::Build::SimpleDeclarators (1, $1); }
 	| simple_declarator T_COMMA simple_declarators { $$ = $3; $$.push_front ($1); }
 	;
 

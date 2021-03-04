@@ -2,10 +2,11 @@
 #define NIDL_AST_DECLARATORS_H_
 
 #include <string>
-#include "Location.h"
+#include "../Location.h"
 #include <forward_list>
 
 namespace AST {
+namespace Build {
 
 class SimpleDeclarator :
 	public std::string,
@@ -31,7 +32,7 @@ typedef std::forward_list <SimpleDeclarator> SimpleDeclarators;
 
 typedef std::forward_list <unsigned> FixedArraySizes;
 
-class Declarator : 
+class Declarator :
 	public SimpleDeclarator
 {
 public:
@@ -72,6 +73,7 @@ private:
 
 typedef std::forward_list <Declarator> Declarators;
 
+}
 }
 
 #endif

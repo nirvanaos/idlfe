@@ -3,10 +3,12 @@
 
 #include "BasicType.h"
 #include "NamedItem.h"
-#include "Declarators.h"
+#include <forward_list>
 #include <assert.h>
 
 namespace AST {
+
+typedef std::forward_list <unsigned> FixedArraySizes;
 
 typedef uint32_t Dim;
 

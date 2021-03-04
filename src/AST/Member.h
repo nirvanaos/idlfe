@@ -10,7 +10,7 @@ class Member :
 	public Type
 {
 public:
-	Member (const Builder& builder, const Type& t, const SimpleDeclarator& name) :
+	Member (const Build::Builder& builder, const Type& t, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::MEMBER, builder, name),
 		Type (t)
 	{}

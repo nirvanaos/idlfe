@@ -1,13 +1,14 @@
 /// \file EvalFixed.cpp Fixed expression evaluiator.
 #include "EvalFixed.h"
 #include "Builder.h"
-#include "Constant.h"
+#include "../Constant.h"
 #include "decNumber.h"
 #include <stdexcept>
 
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 // Fixed evaluator
 
@@ -127,4 +128,5 @@ Variant EvalFixed::cast (const Type& t, Variant&& v, const Location& loc)
 	return v;
 }
 
+}
 }

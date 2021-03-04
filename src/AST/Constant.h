@@ -11,7 +11,7 @@ class Constant :
 	public Variant
 {
 public:
-	Constant (const Builder& builder, const SimpleDeclarator& name, Variant&& val) :
+	Constant (const Build::Builder& builder, const Build::SimpleDeclarator& name, Variant&& val) :
 		NamedItem (Item::Kind::CONSTANT, builder, name),
 		Variant (std::move (val))
 	{}

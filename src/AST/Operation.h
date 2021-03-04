@@ -13,7 +13,7 @@ class Operation :
 	public Container
 {
 public:
-	Operation (const Builder& builder, bool oneway, const Type& type, const SimpleDeclarator& name) :
+	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)

@@ -13,7 +13,7 @@ class TypeDef :
 	public Type
 {
 public:
-	TypeDef (const Builder& builder, const SimpleDeclarator& name, const Type& t) :
+	TypeDef (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& t) :
 		NamedItem (Item::Kind::TYPEDEF, builder, name),
 		RepositoryId (*this, builder),
 		Type (t)

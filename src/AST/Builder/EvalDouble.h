@@ -5,6 +5,7 @@
 #include "Eval.h"
 
 namespace AST {
+namespace Build {
 
 /// Double evaluator
 class EvalDouble : public Eval
@@ -30,6 +31,7 @@ private:
 /// Long double is not yet supported
 typedef EvalDouble EvalLongDouble;
 
+}
 }
 
 #endif

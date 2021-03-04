@@ -13,7 +13,7 @@ class Enum :
 	public Container
 {
 public:
-	Enum (const Builder& builder, const SimpleDeclarator& name) :
+	Enum (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM, builder, name),
 		RepositoryId (*this, builder)
 	{}
@@ -23,7 +23,7 @@ class EnumItem :
 	public NamedItem
 {
 public:
-	EnumItem (const Builder& builder, const Ptr <NamedItem>& enum_type, const SimpleDeclarator& name) :
+	EnumItem (const Build::Builder& builder, const Ptr <NamedItem>& enum_type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM_ITEM, builder, name),
 		enum_type_ (enum_type)
 	{}

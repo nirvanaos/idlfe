@@ -2,14 +2,16 @@
 #ifndef NIDL_AST_EVAL_H_
 #define NIDL_AST_EVAL_H_
 
-#include "Variant.h"
+#include "../Variant.h"
 
 namespace AST {
 
-class Builder;
-class Constant;
 struct ScopedName;
+class Constant;
 
+namespace Build {
+
+class Builder;
 /// Evaluator base.
 class Eval
 {
@@ -56,6 +58,7 @@ protected:
 	Builder& builder_;
 };
 
+}
 }
 
 #endif

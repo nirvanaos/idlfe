@@ -1,10 +1,10 @@
 #ifndef NIDL_AST_BUILDER_H_
 #define NIDL_AST_BUILDER_H_
 
-#include "AST.h"
-#include "Interface.h"
-#include "Parameter.h"
-#include "ScopedName.h"
+#include "../AST.h"
+#include "../Interface.h"
+#include "../Parameter.h"
+#include "../ScopedName.h"
 #include "Eval.h"
 #include "Declarators.h"
 #include <ostream>
@@ -13,6 +13,8 @@
 namespace AST {
 
 class Operation;
+
+namespace Build {
 
 /// Abstract Syntax Tree builder.
 /// This class does not depend on any Flex/Bison or other parser/scanner declarations.
@@ -112,7 +114,7 @@ public:
 
 	void struct_decl (const SimpleDeclarator& name);
 	void struct_begin (const SimpleDeclarator& name);
-	
+
 	const Ptr <NamedItem>* struct_end ()
 	{
 		return constr_type_end ();
@@ -129,7 +131,7 @@ public:
 
 	void union_decl (const SimpleDeclarator& name);
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type);
-	
+
 	const Ptr <NamedItem>* union_end ()
 	{
 		return constr_type_end ();
@@ -209,6 +211,7 @@ private:
 	} interface_data_;
 };
 
+}
 }
 
 #endif

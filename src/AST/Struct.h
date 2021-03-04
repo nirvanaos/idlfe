@@ -11,7 +11,7 @@ class StructDecl :
 	public RepositoryId
 {
 public:
-	StructDecl (const Builder& builder, const SimpleDeclarator& name) :
+	StructDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::STRUCT_DECL, builder, name),
 		RepositoryId (*this, builder)
 	{}
@@ -22,7 +22,7 @@ class Struct :
 	public RepositoryId
 {
 public:
-	Struct (const Builder& builder, const SimpleDeclarator& name) :
+	Struct (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemContainer (Item::Kind::STRUCT, builder, name),
 		RepositoryId (*this, builder)
 	{}

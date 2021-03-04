@@ -1,13 +1,14 @@
 /// \file EvalDouble.cpp Double expression evaluiator.
 #include "EvalDouble.h"
 #include "Builder.h"
-#include "Constant.h"
+#include "../Constant.h"
 #include <stdexcept>
 #include <cfenv>
 
 using namespace std;
 
 namespace AST {
+namespace Build {
 
 Variant EvalDouble::literal_float (const string& s, const Location& loc)
 {
@@ -142,4 +143,5 @@ Variant EvalDouble::cast (const Type& t, Variant&& v, const Location& loc)
 	return ret;
 }
 
+}
 }
