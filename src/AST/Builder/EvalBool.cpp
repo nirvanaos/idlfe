@@ -29,7 +29,7 @@ Variant EvalBool::constant (const ScopedName& constant)
 
 Variant EvalBool::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+	if (!l.empty () && !r.empty ()) {
 		bool lv = l.as_bool (), rv = r.as_bool (), ret;
 		switch (op) {
 			case '|':
@@ -52,7 +52,7 @@ Variant EvalBool::expr (const Variant& l, char op, const Variant& r, const Locat
 
 Variant EvalBool::expr (char op, const Variant& v, const Location& loc)
 {
-	if (v.kind () != Type::Kind::VOID) {
+	if (!v.empty ()) {
 		if ('~' == op)
 			return !v.as_bool ();
 		else

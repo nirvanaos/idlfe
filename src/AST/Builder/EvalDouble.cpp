@@ -46,11 +46,11 @@ void EvalDouble::check_inexact (const Location& loc) const
 
 Variant EvalDouble::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+	if (!l.empty () && !r.empty ()) {
 		assert (l.is_floating_pt () && r.is_floating_pt ());
 		try {
 			double ret;
-			if (l.basic_type () == BasicType::LONGDOUBLE || r.basic_type () == BasicType::LONGDOUBLE) {
+			if (l.dereference_type ().basic_type () == BasicType::LONGDOUBLE || r.dereference_type ().basic_type () == BasicType::LONGDOUBLE) {
 				ret = EvalLongDouble (builder_).expr (l, op, r, loc).to_double ();
 				check_inexact (loc);
 			} else {
@@ -94,7 +94,7 @@ Variant EvalDouble::expr (const Variant& l, char op, const Variant& r, const Loc
 
 Variant EvalDouble::expr (char op, const Variant& v, const Location& loc)
 {
-	if (v.kind () != Type::Kind::VOID) {
+	if (!v.empty ()) {
 		assert (v.is_floating_pt ());
 		try {
 			double d = v.to_double ();

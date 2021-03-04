@@ -3,6 +3,8 @@
 #include "../Enum.h"
 #include "../Constant.h"
 
+using namespace std;
+
 namespace AST {
 namespace Build {
 
@@ -29,6 +31,11 @@ Variant EvalEnum::constant (const ScopedName& constant)
 		see_definition (item);
 	}
 	return Variant ();
+}
+
+Variant EvalEnum::cast (const Type& t, Variant&& v, const Location& loc)
+{
+	return move (v);
 }
 
 }

@@ -21,7 +21,7 @@ public:
 
 	virtual Variant constant (const ScopedName& constant);
 
-	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
+	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 
 private:
 	const Ptr <NamedItem>& type_;

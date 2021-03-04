@@ -50,7 +50,7 @@ Variant EvalFixed::constant (const ScopedName& constant)
 {
 	const Constant* pc = lookup_const (constant);
 	if (pc) {
-		if (static_cast <const Type*> (pc)->kind () == Type::Kind::FIXED)
+		if (pc->dereference_type ().kind () == Type::Kind::FIXED)
 			return Variant (*pc);
 		else {
 			invalid_constant_type (constant);
@@ -62,8 +62,8 @@ Variant EvalFixed::constant (const ScopedName& constant)
 
 Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
-		assert (l.kind () == Type::Kind::FIXED && r.kind () == Type::Kind::FIXED);
+	if (!l.empty () && !r.empty ()) {
+		assert (l.dereference_type ().kind () == Type::Kind::FIXED && r.dereference_type ().kind () == Type::Kind::FIXED);
 		try {
 			Context ctx;
 			decNumber lv, rv, ret;
@@ -97,7 +97,7 @@ Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Loca
 
 Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 {
-	if (v.kind () != Type::Kind::VOID) {
+	if (!v.empty ()) {
 		assert (v.kind () == Type::Kind::FIXED);
 		try {
 			Context ctx;

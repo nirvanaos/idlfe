@@ -13,7 +13,7 @@ namespace Build {
 
 Variant EvalLongLong::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+	if (!l.empty () && !r.empty ()) {
 		assert (l.is_integer () && r.is_integer ());
 		try {
 			if (l.is_signed ()) {
@@ -116,7 +116,7 @@ Variant EvalLongLong::expr (const Variant& l, char op, const Variant& r, const L
 
 Variant EvalLongLong::expr (char op, const Variant& v, const Location& loc)
 {
-	if (v.kind () != Type::Kind::VOID) {
+	if (!v.empty ()) {
 		assert (v.is_integer ());
 		try {
 			if (v.is_signed ()) {

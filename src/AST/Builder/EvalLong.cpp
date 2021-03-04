@@ -80,13 +80,14 @@ Variant EvalLong::constant (const ScopedName& constant)
 
 Variant EvalLong::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
-	if (l.kind () != Type::Kind::VOID && r.kind () != Type::Kind::VOID) {
+	if (!l.empty () && !r.empty ()) {
 		assert (l.is_integer () && r.is_integer ());
 		try {
+			const BasicType lbt = l.dereference_type ().basic_type (), & rbt = r.dereference_type ().basic_type ();
 			if (
-				l.basic_type () == BasicType::LONGLONG || r.basic_type () == BasicType::LONGLONG
+				lbt == BasicType::LONGLONG || rbt == BasicType::LONGLONG
 				||
-				l.basic_type () == BasicType::ULONGLONG || r.basic_type () == BasicType::ULONGLONG
+				lbt == BasicType::ULONGLONG || rbt == BasicType::ULONGLONG
 				) {
 				Variant ll = EvalLongLong (builder_).expr (l, op, r, loc);
 				if (l.is_signed ())
@@ -195,7 +196,7 @@ Variant EvalLong::expr (const Variant& l, char op, const Variant& r, const Locat
 
 Variant EvalLong::expr (char op, const Variant& v, const Location& loc)
 {
-	if (v.kind () != Type::Kind::VOID) {
+	if (!v.empty ()) {
 		assert (v.is_integer ());
 		try {
 			if (v.is_signed ()) {

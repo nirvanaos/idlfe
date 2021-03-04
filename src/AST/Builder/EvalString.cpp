@@ -1,5 +1,6 @@
 /// \file EvalString.cpp String expression evaluiator.
 #include "EvalString.h"
+#include "../Constant.h"
 #include <stdexcept>
 
 using namespace std;
@@ -34,6 +35,20 @@ Variant EvalString::literal_string (const string& s, const Location& loc, const 
 	}
 }
 
+Variant EvalString::constant (const ScopedName& constant)
+{
+	const Constant* pc = lookup_const (constant);
+	if (pc) {
+		if (pc->dereference_type ().kind () == Type::Kind::STRING)
+			return Variant (*pc);
+		else {
+			invalid_constant_type (constant);
+			see_definition (*pc);
+		}
+	}
+	return Variant ();
+}
+
 Variant EvalString::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	assert (t.kind () == Type::Kind::STRING);
@@ -66,6 +81,20 @@ Variant EvalWString::literal_wstring (const string& s, const Location& loc, cons
 		error (loc, ex);
 		return Variant ();
 	}
+}
+
+Variant EvalWString::constant (const ScopedName& constant)
+{
+	const Constant* pc = lookup_const (constant);
+	if (pc) {
+		if (pc->dereference_type ().kind () == Type::Kind::WSTRING)
+			return Variant (*pc);
+		else {
+			invalid_constant_type (constant);
+			see_definition (*pc);
+		}
+	}
+	return Variant ();
 }
 
 Variant EvalWString::cast (const Type& t, Variant&& v, const Location& loc)

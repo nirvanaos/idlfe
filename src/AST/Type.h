@@ -123,14 +123,16 @@ public:
 
 	uint8_t fixed_digits () const noexcept
 	{
-		assert (dereference_type ().kind () == Kind::FIXED);
-		return type_.fixed.digits;
+		const Type& t = dereference_type ();
+		assert (t.kind () == Kind::FIXED);
+		return t.type_.fixed.digits;
 	}
 
 	uint8_t fixed_scale () const noexcept
 	{
-		assert (dereference_type ().kind () == Kind::FIXED);
-		return type_.fixed.scale;
+		const Type& t = dereference_type ();
+		assert (t.kind () == Kind::FIXED);
+		return t.type_.fixed.scale;
 	}
 
 protected:
