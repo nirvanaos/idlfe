@@ -1,6 +1,7 @@
 /// \file EvalDouble.cpp Double expression evaluiator.
 #include "EvalDouble.h"
 #include "Builder.h"
+#include "Constant.h"
 #include <stdexcept>
 #include <cfenv>
 

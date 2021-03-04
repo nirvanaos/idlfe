@@ -1,5 +1,6 @@
 /// \file EvalLongLong.cpp Long integer expression evaluiator.
 #include "EvalLongLong.h"
+#include "Constant.h"
 #include "SafeInt/SafeInt.hpp"
 #include <stdexcept>
 

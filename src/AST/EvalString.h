@@ -17,6 +17,8 @@ public:
 
 	virtual Variant literal_string (const std::string& s, const Location& loc, const Variant* append);
 
+	virtual Variant constant (const ScopedName& constant);
+
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };
 
@@ -30,6 +32,8 @@ public:
 	{}
 
 	virtual Variant literal_wstring (const std::string& s, const Location& loc, const Variant* append);
+
+	virtual Variant constant (const ScopedName& constant);
 
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 };

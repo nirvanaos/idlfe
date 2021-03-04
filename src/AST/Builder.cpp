@@ -835,9 +835,8 @@ void Builder::eval_push (const Type& t, const Location& loc)
 		case Type::Kind::NAMED_TYPE: {
 			const Ptr <NamedItem>* ptype = type.named_type ();
 			if (ptype) {
-				const NamedItem& type = **ptype;
-				if (type.kind () == Item::Kind::ENUM)
-					eval = make_unique <EvalEnum> (ref (*this), ptype);
+				if ((*ptype)->kind () == Item::Kind::ENUM)
+					eval = make_unique <EvalEnum> (ref (*this), *ptype);
 			} else
 				eval = make_unique <Eval> (*this);
 		} break;

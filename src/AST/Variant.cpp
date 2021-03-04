@@ -1,4 +1,5 @@
 #include "Builder.h"
+#include "Constant.h"
 #include "Enum.h"
 #include "SafeInt/SafeInt.hpp"
 #include "decNumber.h"
@@ -22,7 +23,7 @@ Variant::~Variant ()
 Variant::Variant (Variant&& src) noexcept :
 	Type (move (src))
 {
-	_move (src);
+	val_.plain = src.val_.plain;
 	src.reset ();
 }
 
@@ -36,28 +37,20 @@ Variant& Variant::operator = (const Variant& src)
 Variant& Variant::operator = (Variant&& src) noexcept
 {
 	clear ();
-	_move (src);
+	val_.plain = src.val_.plain;
 	src.reset ();
 	return *this;
 }
 
-void Variant::_move (const Variant& src)
-{
-	if ((is_const_ref_ = src.is_const_ref_))
-		val_.const_ref = src.val_.const_ref;
-	else
-		memcpy (&val_, &src.val_, sizeof (val_));
-}
-
 void Variant::clear () noexcept
 {
-	if (!is_const_ref_) {
+	if (!val_.v.constant) {
 		switch (dereference_type ().kind ()) {
 			case Kind::STRING:
-				val_.s.~basic_string ();
+				val_.v.u.s.~basic_string ();
 				break;
 			case Kind::WSTRING:
-				val_.ws.~basic_string ();
+				val_.v.u.ws.~basic_string ();
 				break;
 		}
 	}
@@ -67,122 +60,95 @@ void Variant::clear () noexcept
 void Variant::copy (const Variant& src)
 {
 	Type::copy (src);
-	if ((is_const_ref_ = src.is_const_ref_))
-		val_.const_ref = src.val_.const_ref;
-	else {
+	if (!(val_.v.constant = src.val_.v.constant)) {
 		switch (dereference_type ().kind ()) {
 			case Kind::STRING:
-				new (&val_.s) string (src.val_.s);
+				new (&val_.v.u.s) string (src.val_.v.u.s);
 				break;
 
 			case Kind::WSTRING:
-				new (&val_.ws) wstring (src.val_.ws);
+				new (&val_.v.u.ws) wstring (src.val_.v.u.ws);
 				break;
 
 			default:
-				memcpy (&val_, &src.val_, sizeof (val_));
+				val_.plain = src.val_.plain;
 		}
 	}
 }
 
 Variant::Variant (bool v) noexcept :
 	Type (BasicType::BOOLEAN),
-	is_const_ref_ (false)
-{
-	val_.b = v;
-}
+	val_ (v)
+{}
 
 Variant::Variant (char v) noexcept :
 	Type (BasicType::CHAR),
-	is_const_ref_ (false)
-{
-	val_.ui = v;
-}
+	val_ ((uint64_t)v)
+{}
 
 Variant::Variant (wchar_t v) noexcept :
 	Type (BasicType::WCHAR),
-	is_const_ref_ (false)
-{
-	val_.ui = v;
-}
+	val_ ((uint64_t)v)
+{}
 
 Variant::Variant (int32_t v) noexcept :
 	Type (BasicType::LONG),
-	is_const_ref_ (false)
-{
-	val_.i = v;
-}
+	val_ ((int64_t)v)
+{}
 
 Variant::Variant (uint32_t v) noexcept :
 	Type (BasicType::ULONG),
-	is_const_ref_ (false)
-{
-	val_.ui = v;
-}
+	val_ ((uint64_t)v)
+{}
 
 Variant::Variant (int64_t v) noexcept :
 	Type (BasicType::LONGLONG),
-	is_const_ref_ (false)
-{
-	val_.i = v;
-}
+	val_ ((int64_t)v)
+{}
 
 Variant::Variant (uint64_t v) noexcept :
 	Type (BasicType::ULONGLONG),
-	is_const_ref_ (false)
-{
-	val_.ui = v;
-}
+	val_ (v)
+{}
 
 Variant::Variant (float v) noexcept :
 	Type (BasicType::FLOAT),
-	is_const_ref_ (false)
-{
-	val_.d = v;
-}
+	val_ ((long double)v)
+{}
 
 Variant::Variant (double v) noexcept :
 	Type (BasicType::DOUBLE),
-	is_const_ref_ (false)
-{
-	val_.d = v;
-}
+	val_ ((long double)v)
+{}
 
 Variant::Variant (long double v) noexcept :
 	Type (BasicType::LONGDOUBLE),
-	is_const_ref_ (false)
-{
-	val_.d = v;
-}
+	val_ (v)
+{}
 
 Variant::Variant (const _decNumber& v) noexcept :
-	Type (v.digits, -v.exponent),
-	is_const_ref_ (false)
+	Type (v.digits, -v.exponent)
 {
 	int scale;
-	decPackedFromNumber (val_.fixed, bcd_length (v.digits), &scale, &v);
+	decPackedFromNumber (val_.v.u.fixed, bcd_length (v.digits), &scale, &v);
 	assert (fixed_scale () == scale);
 }
 
 Variant::Variant (const Constant& constant) noexcept :
 	Type (constant),
-	is_const_ref_ (true)
-{
-	val_.const_ref = &constant;
-}
+	val_ (constant)
+{}
 
 Variant::Variant (const EnumItem& item) noexcept :
 	Type (&item.enum_type ()),
-	is_const_ref_ (false)
-{
-	val_.enum_item = &item;
-}
+	val_ (item)
+{}
 
 const Variant& Variant::dereference_const () const noexcept
 {
 	const Variant* v = this;
-	while (v->is_const_ref_) {
-		v = v->val_.const_ref;
+	while (const Constant* c = v->val_.v.constant) {
+		v = c;
 	}
 	return *v;
 }
@@ -199,8 +165,8 @@ uint8_t Variant::to_octet () const
 	uint8_t ret;
 	BasicType bt = v.dereference_type ().basic_type ();
 	if (bt == BasicType::OCTET)
-		ret = (uint8_t)v.val_.ui;
-	else if (is_signed (bt) ? SafeCast (v.val_.i, ret) : SafeCast (v.val_.ui, ret))
+		ret = (uint8_t)v.val_.v.u.ui;
+	else if (is_signed (bt) ? SafeCast (v.val_.v.u.i, ret) : SafeCast (v.val_.v.u.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -209,7 +175,7 @@ char Variant::to_char () const
 {
 	assert (is_integer ());
 	if (dereference_type ().basic_type () == BasicType::CHAR)
-		return (char)dereference_const ().val_.ui;
+		return (char)dereference_const ().val_.v.u.ui;
 	else
 		return (char)to_octet ();
 }
@@ -218,7 +184,7 @@ wchar_t Variant::to_wchar () const
 {
 	assert (is_integer ());
 	if (dereference_type ().basic_type () == BasicType::WCHAR)
-		return (wchar_t)dereference_const ().val_.ui;
+		return (wchar_t)dereference_const ().val_.v.u.ui;
 	else
 		return (wchar_t)to_unsigned_short ();
 }
@@ -230,8 +196,8 @@ uint16_t Variant::to_unsigned_short () const
 	uint16_t ret;
 	BasicType bt = v.dereference_type ().basic_type ();
 	if (bt == BasicType::USHORT)
-		ret = (uint16_t)v.val_.ui;
-	else if (is_signed (bt) ? SafeCast (v.val_.i, ret) : SafeCast (v.val_.ui, ret))
+		ret = (uint16_t)v.val_.v.u.ui;
+	else if (is_signed (bt) ? SafeCast (v.val_.v.u.i, ret) : SafeCast (v.val_.v.u.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -243,8 +209,8 @@ int16_t Variant::to_short () const
 	int16_t ret;
 	BasicType bt = v.dereference_type ().basic_type ();
 	if (bt == BasicType::SHORT)
-		ret = (int16_t)v.val_.i;
-	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+		ret = (int16_t)v.val_.v.u.i;
+	else if (is_signed (bt) ? SafeCast (v.val_.v.u.i, ret) : SafeCast (v.val_.v.u.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -252,10 +218,12 @@ int16_t Variant::to_short () const
 uint32_t Variant::to_unsigned_long () const
 {
 	assert (is_integer ());
+	const Variant& v = dereference_const ();
 	uint32_t ret;
-	if (basic_type () == BasicType::SHORT)
-		ret = (uint32_t)val_.ui;
-	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	BasicType bt = v.dereference_type ().basic_type ();
+	if (bt == BasicType::ULONG)
+		ret = (uint32_t)v.val_.v.u.ui;
+	else if (is_signed (bt) ? SafeCast (v.val_.v.u.i, ret) : SafeCast (v.val_.v.u.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -263,10 +231,12 @@ uint32_t Variant::to_unsigned_long () const
 int32_t Variant::to_long () const
 {
 	assert (is_integer ());
+	const Variant& v = dereference_const ();
 	int32_t ret;
-	if (basic_type () == BasicType::SHORT)
-		ret = (int32_t)val_.i;
-	else if (is_signed (basic_type ()) ? SafeCast (val_.i, ret) : SafeCast (val_.ui, ret))
+	BasicType bt = v.dereference_type ().basic_type ();
+	if (bt == BasicType::LONG)
+		ret = (int32_t)v.val_.v.u.i;
+	else if (is_signed (bt) ? SafeCast (v.val_.v.u.i, ret) : SafeCast (v.val_.v.u.ui, ret))
 		throw_out_of_range ();
 	return ret;
 }
@@ -274,24 +244,26 @@ int32_t Variant::to_long () const
 uint64_t Variant::to_unsigned_long_long () const
 {
 	assert (is_integer ());
+	const Variant& v = dereference_const ();
 	uint64_t ret;
-	if (is_signed (basic_type ())) {
-		if (SafeCast (val_.i, ret))
+	if (is_signed (v.dereference_type ().basic_type ())) {
+		if (SafeCast (v.val_.v.u.i, ret))
 			throw_out_of_range ();
 	} else
-		ret = val_.ui;
+		ret = v.val_.v.u.ui;
 	return ret;
 }
 
 int64_t Variant::to_long_long () const
 {
 	assert (is_integer ());
+	const Variant& v = dereference_const ();
 	int64_t ret;
-	if (!is_signed (basic_type ())) {
-		if (SafeCast (val_.ui, ret))
+	if (!is_signed (v.dereference_type ().basic_type ())) {
+		if (SafeCast (v.val_.v.u.ui, ret))
 			throw_out_of_range ();
 	} else
-		ret = val_.i;
+		ret = v.val_.v.u.i;
 	return ret;
 }
 
@@ -307,28 +279,18 @@ void Variant::check_fp ()
 float Variant::to_float () const
 {
 	assert (is_floating_pt ());
-	float ret;
 	feclearexcept (FE_ALL_EXCEPT);
-	if (basic_type () == BasicType::FLOAT)
-		ret = (float)val_.d;
-	else {
-		ret = (float)val_.d;
-		check_fp ();
-	}
+	float ret = (float)dereference_const ().val_.v.u.d;
+	check_fp ();
 	return ret;
 }
 
 double Variant::to_double () const
 {
 	assert (is_floating_pt ());
-	double ret;
 	feclearexcept (FE_ALL_EXCEPT);
-	if (basic_type () == BasicType::DOUBLE)
-		ret = (double)val_.d;
-	else {
-		ret = (double)val_.d;
-		check_fp ();
-	}
+	double ret = (double)dereference_const ().val_.v.u.d;
+	check_fp ();
 	return ret;
 }
 
@@ -336,14 +298,14 @@ long double Variant::to_long_double () const
 {
 	assert (is_floating_pt ());
 	feclearexcept (FE_ALL_EXCEPT);
-	return val_.d;
+	return dereference_const ().val_.v.u.d;
 }
 
 void Variant::as_decNumber (_decNumber& dn) const noexcept
 {
-	assert (kind () == Type::Kind::FIXED);
+	assert (dereference_type ().kind () == Type::Kind::FIXED);
 	int scale = fixed_scale ();
-	decPackedToNumber (val_.fixed, bcd_length (), &scale, &dn);
+	decPackedToNumber (val_.v.u.fixed, bcd_length (), &scale, &dn);
 	assert (fixed_scale () == scale);
 }
 

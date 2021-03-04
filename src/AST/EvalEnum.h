@@ -12,7 +12,7 @@ class Enum;
 class EvalEnum : public Eval
 {
 public:
-	EvalEnum (Builder& builder, const Ptr <NamedItem>* type) :
+	EvalEnum (Builder& builder, const Ptr <NamedItem>& type) :
 		Eval (builder),
 		type_ (type)
 	{}
@@ -22,7 +22,7 @@ public:
 	virtual Variant cast (const Type& t, Variant&& v, unsigned line);
 
 private:
-	const Ptr <NamedItem>* type_;
+	const Ptr <NamedItem>& type_;
 };
 
 }

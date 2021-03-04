@@ -1,5 +1,6 @@
 /// \file EvalBool.cpp Boolean expression evaluiator.
 #include "EvalBool.h"
+#include "Constant.h"
 
 using namespace std;
 
