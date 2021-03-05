@@ -684,7 +684,7 @@ member
 
 /*72*/
 union_type
-	: T_UNION simple_declarator T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5); }
+	: T_UNION simple_declarator T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5, @5); }
 	T_LEFT_CURLY_BRACKET
 		switch_body
 	T_RIGHT_CURLY_BRACKET { $$ = drv.union_end (); }
@@ -776,8 +776,8 @@ fixed_array_size
 
 /*85*/
 attr_dcl
-	: T_ATTRIBUTE param_type_spec simple_declarators
-	| T_READONLY T_ATTRIBUTE param_type_spec simple_declarators
+	: T_ATTRIBUTE param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
+	| T_READONLY T_ATTRIBUTE param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
 	; 
 
 simple_declarators

@@ -32,7 +32,8 @@ public:
 		CONSTANT,
 		EXCEPTION,
 		MEMBER,
-		CASE
+		CASE,
+		DEFAULT
 	};
 
 	Item (Kind kind) :

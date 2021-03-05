@@ -14,6 +14,11 @@ public:
 	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (kind, builder, name)
 	{}
+
+	std::pair <ItemScope::iterator, bool> insert (NamedItem* item)
+	{
+		return ItemScope::insert (item);
+	}
 };
 
 }

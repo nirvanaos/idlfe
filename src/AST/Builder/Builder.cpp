@@ -10,6 +10,7 @@
 #include "../Native.h"
 #include "../TypeDef.h"
 #include "../Operation.h"
+#include "../Attribute.h"
 #include "../Struct.h"
 #include "../Union.h"
 #include "../Enum.h"
@@ -327,7 +328,23 @@ void Builder::scope_end ()
 }
 const Ptr <NamedItem>* Builder::constr_type_end ()
 {
-	const ItemScope* type = static_cast <const ItemScope*> (scope_stack_.back ());
+	ItemScope* type = static_cast <ItemScope*> (scope_stack_.back ());
+
+	if (type) {
+		// Delete members from scope
+		for (auto it = type->begin (); it != type->end ();) {
+			switch ((*it)->kind ()) {
+				case Item::Kind::MEMBER:
+				case Item::Kind::CASE:
+				case Item::Kind::DEFAULT:
+					it = type->erase (it);
+					break;
+				default:
+					++it;
+			}
+		}
+	}
+
 	scope_end ();
 	if (type) {
 		const Symbols& scope = *scope_stack_.back ();
@@ -505,8 +522,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 							for (const Interface* itf : bases) {
 								if (all_bases.insert (itf).second) {
 									// Check operation names
-									const Symbols& members = *itf;
-									for (Symbols::const_iterator it = members.begin (); it != members.end (); ++it) {
+									const Container& members = *itf;
+									for (auto it = members.begin (); it != members.end (); ++it) {
 										const Item* member = *it;
 										switch (member->kind ()) {
 											case Item::Kind::OPERATION:
@@ -557,11 +574,38 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 		} else {
 			ins = itf->insert (op);
 			if (!ins.second)
-				error_name_collision (name, **ins.first);
+				error_name_collision (name, **ins.first); // Op name collides with nested type.
 			else {
 				interface_data_.cur_op = op;
-				if (is_main_file ())
-					container_stack_.top ()->append (op);
+				// We always append operation to the container, whatever it is the main file or not.
+				// We need it to build all_operations for derived interfaces.
+				container_stack_.top ()->append (op);
+			}
+		}
+	}
+}
+
+void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators)
+{
+	assert (scope_stack_.size () > 1);
+	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
+	if (itf) {
+		assert (itf->kind () == Item::Kind::INTERFACE);
+		for (auto name = declarators.begin (); name != declarators.end (); ++name) {
+			Ptr <NamedItem> item = Ptr <NamedItem>::make <Attribute> (ref (*this), readonly, ref (type), ref (*name));
+			auto ins = interface_data_.all_operations.insert (item);
+			if (!ins.second) {
+				message (*name, MessageType::ERROR, string ("Attribute name ") + *name + " collision.");
+				message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
+			} else {
+				ins = itf->insert (item);
+				if (!ins.second)
+					error_name_collision (*name, **ins.first); // Op name collides with nested type.
+				else {
+					// We always append attribute to the container, whatever it is the main file or not.
+					// We need it to build all_operations for derived interfaces.
+					container_stack_.top ()->append (item);
+				}
 			}
 		}
 	}
@@ -734,9 +778,37 @@ void Builder::union_decl (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type)
+void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc)
 {
 	if (scope_begin ()) {
+		const Type& t = switch_type.dereference_type ();
+
+		bool type_OK = false;
+		const Ptr <NamedItem>* enum_type = nullptr;
+		switch (t.kind ()) {
+			case Type::Kind::BASIC_TYPE: {
+				BasicType bt = t.basic_type ();
+				if (Type::is_integer (bt) || bt == BasicType::BOOLEAN)
+					type_OK = true;
+			} break;
+
+			case Type::Kind::NAMED_TYPE: {
+				const Ptr <NamedItem>* pt = t.named_type ();
+				if (pt && (*pt)->kind () == Item::Kind::ENUM) {
+					enum_type = switch_type.named_type ();
+					type_OK = true;
+				}
+			}
+		}
+
+		if (!type_OK) {
+			message (type_loc, MessageType::ERROR, "Invalid switch type.");
+			eval_stack_.push (move (make_unique <Eval> (*this)));
+			scope_push (nullptr);
+			return;
+		} else
+			eval_push (switch_type, type_loc);
+
 		Ptr <Union> def = Ptr <Union>::make <Union> (ref (*this), ref (name), ref (switch_type));
 		auto ins = scope_stack_.back ()->insert (def);
 		if (!ins.second) {
@@ -754,6 +826,11 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 		}
 
 		scope_push (def);
+
+		// If the <switch_type_spec> is an enumeration, the identifier for the enumeration is
+		// as well in the scope of the union; as a result, it must be distinct from the element declarators.
+		if (enum_type)
+			scope_stack_.back ()->insert (*enum_type);
 	}
 }
 
@@ -769,8 +846,9 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 		else {
 			if (is_main_file ())
 				container_stack_.top ()->append (def);
+			unsigned ord = 0;
 			for (auto item = items.begin (); item != items.end (); ++item) {
-				Ptr <NamedItem> enumerator = Ptr <NamedItem>::make <EnumItem> (ref (*this), ref (*ins.first), ref (name));
+				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*ins.first), ref (name), ord++);
 				ins = scope->insert (enumerator);
 				if (!ins.second)
 					error_name_collision (*item, **ins.first);
@@ -779,7 +857,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 						message (*item, MessageType::ERROR, "Too many enumerators.");
 						break;
 					}
-					def->append (enumerator);
+					def->push_back (enumerator);
 				}
 			}
 		}

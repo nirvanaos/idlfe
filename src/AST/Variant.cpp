@@ -3,9 +3,6 @@
 #include "Enum.h"
 #include "Builder/SafeInt/SafeInt.hpp"
 #include "Builder/decNumber.h"
-extern "C" {
-#include <decNumber/decPacked.h>
-}
 #include <stdexcept>
 #include <limits>
 #include <cfenv>
@@ -127,11 +124,10 @@ Variant::Variant (long double v) noexcept :
 {}
 
 Variant::Variant (const _decNumber& v) noexcept :
-	Type (v.digits, -v.exponent)
+	Type (v.digits, (unsigned)-v.exponent)
 {
-	int scale;
-	decPackedFromNumber (val_.v.u.fixed, bcd_length (v.digits), &scale, &v);
-	assert (fixed_scale () == scale);
+	val_.v.u.fixed.bits = v.bits;
+	std::copy (v.lsu, v.lsu + size (v.lsu), val_.v.u.fixed.lsu);
 }
 
 Variant::Variant (const Constant& constant) noexcept :
@@ -301,12 +297,16 @@ long double Variant::to_long_double () const
 	return dereference_const ().val_.v.u.d;
 }
 
-void Variant::as_decNumber (_decNumber& dn) const noexcept
+void Variant::to_decNumber (_decNumber& dn) const noexcept
 {
 	assert (dereference_type ().kind () == Type::Kind::FIXED);
-	int scale = fixed_scale ();
-	decPackedToNumber (val_.v.u.fixed, (int32_t)bcd_length (), &scale, &dn);
-	assert (fixed_scale () == scale);
+	dn.digits = fixed_digits ();
+	dn.exponent = -(int32_t)fixed_scale ();
+	const Fixed& fixed = dereference_const ().val_.v.u.fixed;
+	dn.bits = fixed.bits;
+	std::copy (fixed.lsu, fixed.lsu + size (fixed.lsu), dn.lsu);
 }
 
 }
+
+//std::ostream& operator << (std::ostream& os, const AST::Variant& v){}

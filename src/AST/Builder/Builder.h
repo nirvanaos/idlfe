@@ -104,8 +104,22 @@ public:
 		interface_data_.cur_op_params.clear ();
 	}
 
+	void attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators);
+
 	void interface_end ()
 	{
+		// Delete all operations and attributes from scope
+		Symbols* scope = scope_stack_.back ();
+		for (auto it = scope->begin (); it != scope->end ();) {
+			switch ((*it)->kind ()) {
+				case Item::Kind::OPERATION:
+				case Item::Kind::ATTRIBUTE:
+					it = scope->erase (it);
+					break;
+				default:
+					++it;
+			}
+		}
 		scope_end ();
 		interface_data_.clear ();
 	}
@@ -130,10 +144,13 @@ public:
 	void member (const Type& type, const Declarators& declarators);
 
 	void union_decl (const SimpleDeclarator& name);
-	void union_begin (const SimpleDeclarator& name, const Type& switch_type);
+	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
+	void union_label (const Variant& label);
+	void union_case (const Type& t, const Build::SimpleDeclarator& name);
 
 	const Ptr <NamedItem>* union_end ()
 	{
+		eval_pop ();
 		return constr_type_end ();
 	}
 
@@ -209,6 +226,8 @@ private:
 			all_operations.clear ();
 		}
 	} interface_data_;
+
+	std::vector <Variant> case_labels_;
 };
 
 }
