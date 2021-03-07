@@ -99,6 +99,7 @@ public:
 	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
 	void operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
 	void operation_raises (const ScopedNames& raises);
+	void operation_context (const Variants& context);
 
 	void operation_end ()
 	{
@@ -261,6 +262,11 @@ private:
 			bool is_default;
 			std::vector <Variant> labels;
 
+			void clear ()
+			{
+				is_default = false;
+				labels.clear ();
+			}
 		} element;
 	} union_;
 

@@ -191,6 +191,8 @@ class Driver;
 
 %nterm <AST::Parameter::Attribute> param_attribute;
 
+%nterm <AST::Build::Variants> string_literals;
+
 %%
 
 /*1*/
@@ -848,12 +850,14 @@ raises_expr
 /*94*/
 context_expr
 	: /*empty*/
-	| T_CONTEXT T_LEFT_PARANTHESIS string_literals T_RIGHT_PARANTHESIS
+	| T_CONTEXT T_LEFT_PARANTHESIS { drv.eval_push (AST::Type::make_string (), AST::Location ()); }
+			string_literals
+		T_RIGHT_PARANTHESIS { drv.eval_pop (); drv.operation_context ($4); }
 	;
 
 string_literals
-	: T_string_literal
-	| T_string_literal T_COMMA string_literals
+	: T_string_literal { $$ = AST::Build::Variants (1, $1); }
+	| T_string_literal T_COMMA string_literals { $$ = $3; $$.push_front ($1); }
 	;
 
 T_string_literal

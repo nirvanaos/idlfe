@@ -4,6 +4,7 @@
 #include "NamedItem.h"
 #include "Type.h"
 #include "Exception.h"
+#include "Variant.h"
 
 namespace AST {
 
@@ -13,25 +14,36 @@ class Operation :
 	public Container
 {
 public:
+	bool oneway () const
+	{
+		return oneway_;
+	}
+
+	typedef std::vector <const Exception*> Raises;
+
+	const Raises& raises () const
+	{
+		return raises_;
+	}
+
+	typedef std::vector <std::string> Context;
+
+	const Context context () const
+	{
+		return context_;
+	}
+
+	// Internals
+
 	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)
 	{}
 
-	bool oneway () const
-	{
-		return oneway_;
-	}
-
 	void oneway_clear ()
 	{
 		oneway_ = false;
-	}
-
-	const std::vector <const Exception*>& raises () const
-	{
-		return raises_;
 	}
 
 	void add_exception (const Exception* ex)
@@ -39,9 +51,20 @@ public:
 		raises_.push_back (ex);
 	}
 
+	void context (const Build::Variants& strings)
+	{
+		for (auto it = strings.begin (); it != strings.end (); ++it) {
+			if (!it->empty ()) {
+				assert (it->vtype () == Variant::VT::STRING);
+				context_.push_back (it->as_string ());
+			}
+		}
+	}
+
 private:
 	bool oneway_;
-	std::vector <const Exception*> raises_;
+	Raises raises_;
+	Context context_;
 };
 
 }

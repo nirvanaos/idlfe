@@ -163,6 +163,7 @@ public:
 	}
 
 	/// Converts value to std::string.
+	/// This method escapes character and string values accordingly to C constant escape rules.
 	std::string to_string () const;
 
 	// Internals
@@ -419,6 +420,10 @@ private:
 
 	} val_;
 };
+
+namespace Build {
+typedef std::forward_list <Variant> Variants;
+}
 
 }
 

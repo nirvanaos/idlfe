@@ -651,6 +651,13 @@ void Builder::operation_raises (const ScopedNames& raises)
 	}
 }
 
+void Builder::operation_context (const Variants& context)
+{
+	Operation* op = interface_.operation.op;
+	if (op)
+		op->context (context);
+}
+
 void Builder::struct_decl (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
@@ -877,6 +884,7 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 		else if (is_main_file ())
 			container_stack_.top ()->append (item);
 	}
+	union_.element.clear ();
 }
 
 const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
