@@ -149,6 +149,8 @@ oneway      return yy::parser::make_T_ONEWAY (driver ().location ());
 inout       return yy::parser::make_T_INOUT (driver ().location ());
 raises      return yy::parser::make_T_RAISES (driver ().location ());
 context     return yy::parser::make_T_CONTEXT (driver ().location ());
+typeid      return yy::parser::make_T_TYPEID (driver ().location ());
+typeprefix  return yy::parser::make_T_TYPEPREFIX (driver ().location ());
 
 Object      return yy::parser::make_T_OBJECT (driver ().location ());
 

@@ -134,6 +134,8 @@ class Driver;
 %token T_FACTORY
 %token T_NATIVE
 %token T_VALUEBASE
+%token T_TYPEID
+%token T_TYPEPREFIX
 
 %nterm <AST::Variant> T_string_literal;
 %nterm <AST::Variant> T_wstring_literal;
@@ -195,7 +197,6 @@ class Driver;
 
 %%
 
-/*1*/
 specification
 	: /*empty*/
 	| definitions
@@ -207,7 +208,6 @@ definitions
 	| definition definitions
 	;
 
-/*2*/
 definition
 	: type_dcl T_SEMICOLON
 	| const_dcl T_SEMICOLON
@@ -215,9 +215,10 @@ definition
 	| interface T_SEMICOLON
 	| module T_SEMICOLON
 	| value T_SEMICOLON
+	| type_id_dcl T_SEMICOLON
+	| type_prefix_dcl T_SEMICOLON
 	;
 
-/*3*/
 module
 	: T_MODULE simple_declarator { drv.module_begin ($2); }
 	T_LEFT_CURLY_BRACKET
@@ -225,13 +226,11 @@ module
 	T_RIGHT_CURLY_BRACKET { drv.module_end (); }
 	;
 
-/*4*/
 interface
 	: interface_dcl
 	| forward_dcl
 	;
 
-/*5*/
 interface_dcl
 	: interface_header
 	T_LEFT_CURLY_BRACKET
@@ -239,14 +238,12 @@ interface_dcl
 	T_RIGHT_CURLY_BRACKET { drv.interface_end (); }
 	;
 
-/*6*/
 forward_dcl
 	: T_INTERFACE simple_declarator { drv.interface_decl ($2); }
 	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::ABSTRACT); }
 	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::LOCAL); }
 	;
 
-/*7*/
 interface_header
 	: T_INTERFACE simple_declarator { drv.interface_begin ($2); }
 	| T_INTERFACE simple_declarator { drv.interface_begin ($2); } interface_inheritance_spec
@@ -256,7 +253,6 @@ interface_header
 	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	;
 
-/*8*/
 interface_body
 	: /*empty*/
 	| exports
@@ -267,16 +263,16 @@ exports
 	| export exports
 	;
 
-/*9*/
 export
 	: type_dcl T_SEMICOLON
 	| const_dcl T_SEMICOLON 
 	| except_dcl T_SEMICOLON
 	| attr_dcl T_SEMICOLON
 	| op_dcl T_SEMICOLON 
+	| type_id_dcl T_SEMICOLON
+	| type_prefix_dcl T_SEMICOLON
 	;
 
-/*10*/
 interface_inheritance_spec
 	: T_COLON scoped_names { drv.interface_bases ($2); }
 	;
@@ -286,14 +282,12 @@ scoped_names
 	| scoped_name T_COMMA scoped_names { $$ = $3; $$.push_front ($1); }
 	;
 
-/*12*/
 scoped_name
 	: T_IDENTIFIER { $$ = AST::ScopedName (@1, false, $1); }
 	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (@2, true, $2); }
 	| scoped_name T_SCOPE T_IDENTIFIER { $$ = $1; $$.push_back ($3); }
 	;
 
-/*13*/
 value
 	: value_dcl
 	| value_abs_dcl
@@ -301,18 +295,15 @@ value
 	| value_forward_dcl
 	;
 
-/*14*/
 value_forward_dcl
 	: T_VALUETYPE T_IDENTIFIER
 	| T_ABSTRACT T_VALUETYPE T_IDENTIFIER
 	;
 
-/*15*/
 value_box_dcl
 	: T_VALUETYPE T_IDENTIFIER type_spec
 	;
 
-/*16*/
 value_abs_dcl
 	: T_ABSTRACT T_VALUETYPE T_IDENTIFIER
 		T_LEFT_CURLY_BRACKET value_body T_RIGHT_CURLY_BRACKET
@@ -325,7 +316,6 @@ value_body
 	| exports
 	;
 
-/*17*/
 value_dcl
 	: value_header T_LEFT_CURLY_BRACKET value_elements
 		T_RIGHT_CURLY_BRACKET
@@ -337,7 +327,6 @@ value_elements
 	| value_element value_elements
 	;
 
-/*18*/
 value_header
 	: T_VALUETYPE T_IDENTIFIER value_inheritance_spec
 	| T_CUSTOM T_VALUETYPE T_IDENTIFIER value_inheritance_spec
@@ -345,7 +334,6 @@ value_header
 	| T_CUSTOM T_VALUETYPE T_IDENTIFIER
 	;
 
-/*19*/
 value_inheritance_spec
 	: T_COLON value_inheritance_bases
 	| T_COLON value_inheritance_bases T_SUPPORTS scoped_names
@@ -363,53 +351,44 @@ value_names
 	: scoped_names
 	;
 
-/*20*/
 value_name
 	: scoped_name
 	;
 
-/*21*/
 value_element
 	: export
 	| state_member
 	| init_dcl
 	;
 
-/*22*/
 state_member
 	: T_PUBLIC type_spec declarators T_SEMICOLON
 	| T_PRIVATE type_spec declarators T_SEMICOLON
 	;
 
-/*23*/
 init_dcl
 	: T_FACTORY T_IDENTIFIER
 		T_LEFT_PARANTHESIS init_param_decls T_RIGHT_PARANTHESIS
 		T_SEMICOLON
 	;
 
-/*24*/
 init_param_decls
 	: init_param_decl
 	| init_param_decl T_COMMA init_param_decls
 	;
 
-/*25*/
 init_param_decl
 	: init_param_attribute param_type_spec simple_declarator
 	;
 
-/*26*/
 init_param_attribute
 	: T_IN
 	;
 
-/*27*/
 const_dcl
 	: T_CONST const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant ($2, $3, std::move ($6), @6); }
 	;
 
-/*28*/
 const_type
 	: integer_type { $$ = $1; }
 	| char_type { $$ = AST::BasicType::CHAR; }
@@ -423,44 +402,37 @@ const_type
 	| octet_type { $$ = AST::BasicType::OCTET; }
 	;
 
-/*29*/
 const_exp
 	: or_expr
 	;
 
-/*30*/
 or_expr
 	: xor_expr
 	| or_expr T_VERTICAL_LINE xor_expr { $$ = drv.eval ().expr ($1, '|', $3, @2); }
 	;
 
-/*31*/
 xor_expr
 	: and_expr
 	| xor_expr T_CIRCUMFLEX and_expr { $$ = drv.eval ().expr ($1, '^', $3, @2); }
 	;
 
-/*32*/
 and_expr
 	: shift_expr
 	| and_expr T_AMPERSAND shift_expr { $$ = drv.eval ().expr ($1, '&', $3, @2); }
 	;
 
-/*33*/
 shift_expr
 	: add_expr
 	| shift_expr T_SHIFTRIGHT add_expr { $$ = drv.eval ().expr ($1, '>', $3, @2); }
 	| shift_expr T_SHIFTLEFT add_expr { $$ = drv.eval ().expr ($1, '<', $3, @2); }
 	;
 
-/*34*/
 add_expr
 	: mult_expr
 	| add_expr T_PLUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '+', $3, @2); }
 	| add_expr T_MINUS_SIGN mult_expr { $$ = drv.eval ().expr ($1, '-', $3, @2); }
 	;
 
-/*35*/
 mult_expr
 	: unary_expr
 	| mult_expr T_ASTERISK unary_expr { $$ = drv.eval ().expr ($1, '*', $3, @2); }
@@ -468,8 +440,6 @@ mult_expr
 	| mult_expr T_PERCENT_SIGN unary_expr { $$ = drv.eval ().expr ($1, '%', $3, @2); }
 	;
 
-/*36*/
-/*37*/
 unary_expr
 	: T_MINUS_SIGN primary_expr { $$ = drv.eval ().expr ('-', $2, @1); }
 	| T_PLUS_SIGN primary_expr { $$ = drv.eval ().expr ('+', $2, @1); }
@@ -477,15 +447,12 @@ unary_expr
 	| primary_expr
 	;
 
-/*38*/
 primary_expr
 	: scoped_name { $$ = drv.eval ().constant ($1); }
 	| literal { $$ = $1; }
 	| T_LEFT_PARANTHESIS const_exp T_RIGHT_PARANTHESIS { $$ = $2; }
 	;
 
-/*39*/
-/*40*/
 literal
 	: T_INTEGER_LITERAL { $$ = drv.eval ().literal_int ($1, @1); }
 	| T_string_literal { $$ = $1; }
@@ -498,13 +465,10 @@ literal
 	| T_FALSE { $$ = drv.eval ().literal_boolean (false, @1); }
 	;
 
-/*41*/
 positive_int_const
 	: { drv.eval_push (AST::BasicType::ULONG, AST::Location ()); } const_exp { $$ = drv.positive_int ($2, @1); drv.eval_pop (); }
 	;
 
-/*42*/
-/*43*/
 type_dcl
 	: T_TYPEDEF type_spec declarators { drv.type_def ($2, $3); }
 	| struct_type
@@ -513,20 +477,17 @@ type_dcl
 	| T_NATIVE simple_declarator { drv.native ($2); }
 	;
 
-/*44*/
 type_spec
 	: simple_type_spec { $$ = $1; }
 	| constr_type_spec
 	;
 
-/*45*/
 simple_type_spec
 	: base_type_spec { $$ = $1; }
   | template_type_spec { $$ = $1; }
 	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
-/*46*/
 base_type_spec
 	: floating_pt_type { $$ = $1; }
 	| integer_type { $$ = $1; }
@@ -539,7 +500,6 @@ base_type_spec
 	| value_base_type { $$ = AST::BasicType::VALUE_BASE; }
 	;
 
-/*47*/
 template_type_spec
 	: sequence_type
 	| string_type
@@ -547,123 +507,101 @@ template_type_spec
 	| fixed_pt_type
 	;
 
-/*48*/
 constr_type_spec
 	: struct_type
 	| union_type
 	| enum_type
 	;
 
-/*49*/
 declarators
 	: declarator { $$ = AST::Build::Declarators (1, $1); }
 	| declarator T_COMMA declarators { $$ = $3; $$.push_front ($1); }
 	;
 
-/*50*/
 declarator
 	: simple_declarator { $$ = $1; }
 	| complex_declarator
 	;
 
-/*51*/
 simple_declarator
 	: T_IDENTIFIER { $$ = AST::Build::SimpleDeclarator ($1, @1); }
 	;
 
-/*52*/
 complex_declarator
 	: array_declarator
 	;
 
-/*53*/
 floating_pt_type
 	: T_FLOAT { $$ = AST::BasicType::FLOAT; }
 	| T_DOUBLE { $$ = AST::BasicType::DOUBLE; }
 	| T_LONG T_DOUBLE { $$ = AST::BasicType::LONGDOUBLE; }
 	;
 
-/*54*/
 integer_type
 	: signed_int
 	| unsigned_int
 	;
 
-/*55*/
 signed_int
 	: signed_long_int { $$ = AST::BasicType::LONG; }
 	| signed_short_int { $$ = AST::BasicType::SHORT; }
 	| signed_longlong_int { $$ = AST::BasicType::LONGLONG; }
 	;
 
-/*56*/
 signed_short_int
 	: T_SHORT
 	;
 
-/*57*/
 signed_long_int
 	: T_LONG
 	;
 
-/*58*/
 signed_longlong_int
 	: T_LONG T_LONG
 	;
 
-/*59*/
 unsigned_int
 	: unsigned_long_int { $$ = AST::BasicType::ULONG; }
 	| unsigned_short_int { $$ = AST::BasicType::USHORT; }
 	| unsigned_longlong_int { $$ = AST::BasicType::ULONGLONG; }
 	;
 
-/*60*/
 unsigned_short_int
 	: T_UNSIGNED T_SHORT
 	;
 
-/*61*/
 unsigned_long_int
 	: T_UNSIGNED T_LONG
 	;
 
-/*62*/
 unsigned_longlong_int
 	: T_UNSIGNED T_LONG T_LONG
 	;
 
-/*63*/
 char_type
 	: T_CHAR
 	;
 
-/*64*/
 wide_char_type
 	: T_WCHAR
 	;
 
-/*65*/
 boolean_type
 	: T_BOOLEAN
 	;
 
-/*66*/
 octet_type
 	: T_OCTET
 	;
 
-/*67*/
 any_type
 	: T_ANY
 	;
 
-/*68*/
 object_type
 	: T_OBJECT
 	;
 
-/*69*/
 struct_type
 	: T_STRUCT simple_declarator
 	T_LEFT_CURLY_BRACKET { drv.struct_begin ($2); }
@@ -673,18 +611,15 @@ struct_type
 	| T_STRUCT simple_declarator { drv.struct_decl ($2); }
 	;
 
-/*70*/
 member_list
 	: member
 	| member member_list
 	;
 
-/*71*/
 member
 	: type_spec declarators T_SEMICOLON { drv.member ($1, $2); }
 	;
 
-/*72*/
 union_type
 	: T_UNION simple_declarator T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5, @5); }
 	T_LEFT_CURLY_BRACKET
@@ -693,7 +628,6 @@ union_type
 	| T_UNION simple_declarator { drv.union_decl ($2); }
 	; 
 
-/*73*/
 switch_type_spec
 	: integer_type { $$ = AST::Type ($1); }
 	| char_type { $$ = AST::BasicType::CHAR; }
@@ -702,25 +636,21 @@ switch_type_spec
 	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
-/*74*/
 switch_body
 	: case
 	| case switch_body
 	;
 
-/*75*/
 case	
 	: case_label case
 	| case_label element_spec T_SEMICOLON
 	;
 
-/*76*/
 case_label
 	: T_CASE const_exp T_COLON { drv.union_label ($2, @2); }
 	| T_DEFAULT T_COLON { drv.union_default (@1); }
 	;
 
-/*77*/
 element_spec
 	: type_spec declarator { drv.union_element ($1, $2); }
 	;
@@ -732,36 +662,23 @@ enum_type
 		simple_declarators
 	T_RIGHT_CURLY_BRACKET { $$ = drv.enum_type ($2, $4); }
 	;
-/*
-enumerators
-	: enumerator
-	| enumerator T_COMMA enumerators
-	;
 
-enumerator
-	: simple_declarator { drv.enum_item ($1); }
-	;
-*/
-/*80*/
 sequence_type
 	: T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_COMMA
-	positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3, $5); }
+		positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3, $5); }
 	| T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3); }
 	;
 
-/*81*/
 string_type
 	: T_STRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_string (); }
 	| T_STRING { $$ = AST::Type::make_string (); }
 	;
 
-/*82*/
 wide_string_type
 	: T_WSTRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_wstring (); }
 	| T_WSTRING { $$ = AST::Type::make_wstring (); }
 	;
 
-/*83*/
 array_declarator
 	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Build::Declarator ($1, @1, $2); }
 	;
@@ -771,12 +688,10 @@ fixed_array_sizes
 	| fixed_array_size fixed_array_sizes { $$ = $2; $$.push_front ($1); }
 	;
 
-/*84*/
 fixed_array_size
 	: T_LEFT_SQUARE_BRACKET positive_int_const T_RIGHT_SQUARE_BRACKET { $$ = $2; }
 	;
 
-/*85*/
 attr_dcl
 	: T_ATTRIBUTE param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
 	| T_READONLY T_ATTRIBUTE param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
@@ -787,7 +702,6 @@ simple_declarators
 	| simple_declarator T_COMMA simple_declarators { $$ = $3; $$.push_front ($1); }
 	;
 
-/*86*/
 except_dcl
 	: T_EXCEPTION simple_declarator
 	T_LEFT_CURLY_BRACKET { drv.exception_begin ($2); }
@@ -800,25 +714,21 @@ members
 	| member members
 	;
 
-/*87*/
 op_dcl
 	: op_attribute op_type_spec simple_declarator { drv.operation_begin ($1, $2, $3); }
 	parameter_dcls raises_expr context_expr { drv.operation_end (); }
 	;
 
-/*88*/
 op_attribute
 	: /*empty*/ { $$ = false; }
 	| T_ONEWAY{ $$ = true; }
 	;
 
-/*89*/
 op_type_spec	
 	: param_type_spec { $$ = $1; }
 	| T_VOID { $$ = AST::Type (); }
 	;
 
-/*90*/
 parameter_dcls
 	: T_LEFT_PARANTHESIS param_dcls T_RIGHT_PARANTHESIS
 	| T_LEFT_PARANTHESIS T_RIGHT_PARANTHESIS
@@ -829,25 +739,21 @@ param_dcls
 	| param_dcl T_COMMA param_dcls
 	;
 
-/*91*/
 param_dcl
 	: param_attribute param_type_spec simple_declarator { drv.operation_parameter ($1, $2, $3); }
 	;
 
-/*92*/
 param_attribute
 	: T_IN { $$ = AST::Parameter::Attribute::IN; }
 	| T_OUT { $$ = AST::Parameter::Attribute::IN; }
 	| T_INOUT { $$ = AST::Parameter::Attribute::IN; }
 	;
 
-/*93*/
 raises_expr
 	: /*empty*/
 	| T_RAISES T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.operation_raises ($3); }
 	;
 
-/*94*/
 context_expr
 	: /*empty*/
 	| T_CONTEXT T_LEFT_PARANTHESIS { drv.eval_push (AST::Type::make_string (), AST::Location ()); }
@@ -870,7 +776,6 @@ T_wstring_literal
 	| T_WSTRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1, &$2); }
 	;
 
-/*95*/
 param_type_spec
 	: base_type_spec { $$ = $1; }
 	| string_type { $$ = $1; }
@@ -878,21 +783,24 @@ param_type_spec
 	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
-/*96*/
 fixed_pt_type
 	: T_FIXED T_LESS_THAN_SIGN positive_int_const T_COMMA
 	positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1); }
 	;
 
-/*97*/
 fixed_pt_const_type
 	: T_FIXED
 	;
 
-/*98*/
 value_base_type
 	: T_VALUEBASE
 	;
+
+type_id_dcl
+	: T_TYPEID scoped_name T_string_literal
+
+type_prefix_dcl
+	: T_TYPEPREFIX scoped_name T_string_literal
 
 %%
 
