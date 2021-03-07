@@ -34,24 +34,27 @@ private:
 	Type switch_type_;
 };
 
-class Case :
-	public Member,
-	public Variant
-{
-public:
-	Case (const Variant& label, const Build::Builder& builder, const Type& t, const Build::SimpleDeclarator& name) :
-		Member (builder, t, name, Item::Kind::CASE),
-		Variant (label)
-	{}
-};
-
-class Default :
+class UnionElement :
 	public Member
 {
 public:
-	Default (const Build::Builder& builder, const Type& t, const Build::SimpleDeclarator& name) :
-		Member (builder, t, name, Item::Kind::DEFAULT)
+	UnionElement (const Build::Builder& builder, std::vector <Variant>&& labels, const Type& t, const Build::SimpleDeclarator& name) :
+		Member (builder, t, name, Item::Kind::UNION_ELEMENT),
+		labels_ (std::move (labels))
 	{}
+
+	const std::vector <Variant>& labels () const
+	{
+		return labels_;
+	}
+
+	bool is_default () const
+	{
+		return labels_.empty ();
+	}
+
+private:
+	const std::vector <Variant> labels_;
 };
 
 }

@@ -9,6 +9,7 @@
 #include "Declarators.h"
 #include <ostream>
 #include <stack>
+#include <map>
 
 namespace AST {
 
@@ -101,8 +102,7 @@ public:
 
 	void operation_end ()
 	{
-		interface_data_.cur_op = nullptr;
-		interface_data_.cur_op_params.clear ();
+		interface_.operation.clear ();
 	}
 
 	void attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators);
@@ -122,7 +122,7 @@ public:
 			}
 		}
 		scope_end ();
-		interface_data_.clear ();
+		interface_.clear ();
 	}
 
 	void type_def (const Type& type, const Declarators& declarators);
@@ -146,11 +146,13 @@ public:
 
 	void union_decl (const SimpleDeclarator& name);
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
-	void union_label (const Variant& label);
-	void union_case (const Type& t, const Build::SimpleDeclarator& name);
+	void union_label (const Variant& label, const Location& loc);
+	void union_default (const Location& loc);
+	void union_element (const Type& type, const Build::Declarator& decl);
 
 	const Ptr <NamedItem>* union_end ()
 	{
+		union_.clear ();
 		eval_pop ();
 		return constr_type_end ();
 	}
@@ -219,16 +221,49 @@ private:
 	struct InterfaceData
 	{
 		Symbols all_operations;
-		Operation* cur_op;
-		Symbols cur_op_params;
 
 		void clear ()
 		{
 			all_operations.clear ();
 		}
-	} interface_data_;
 
-	std::vector <Variant> case_labels_;
+		struct OperationData
+		{
+			Operation* op;
+			Symbols params;
+
+			void clear ()
+			{
+				op = nullptr;
+				params.clear ();
+			}
+		} operation;
+
+	} interface_;
+
+	struct UnionData
+	{
+		std::map <Variant::Key, Location> all_labels;
+		bool has_default;
+
+		UnionData () :
+			has_default (false)
+		{}
+
+		void clear ()
+		{
+			all_labels.clear ();
+			has_default = false;
+		}
+
+		struct ElementData
+		{
+			bool is_default;
+			std::vector <Variant> labels;
+
+		} element;
+	} union_;
+
 };
 
 }

@@ -41,7 +41,6 @@ bool is_floating_point (BasicType bt) noexcept
 	return BasicType::FLOAT <= bt && bt <= BasicType::LONGDOUBLE;
 }
 
-
 }
 
 #endif

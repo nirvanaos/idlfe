@@ -334,8 +334,7 @@ const Ptr <NamedItem>* Builder::constr_type_end ()
 		for (auto it = type->begin (); it != type->end ();) {
 			switch ((*it)->kind ()) {
 				case Item::Kind::MEMBER:
-				case Item::Kind::CASE:
-				case Item::Kind::DEFAULT:
+				case Item::Kind::UNION_ELEMENT:
 					it = type->erase (it);
 					break;
 				default:
@@ -528,7 +527,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 											case Item::Kind::OPERATION:
 											case Item::Kind::ATTRIBUTE:
 												NamedItem* op = static_cast <NamedItem*> (const_cast <Item*> (member));
-												auto ins = interface_data_.all_operations.insert (op);
+												auto ins = interface_.all_operations.insert (op);
 												if (!ins.second) {
 													string opatt = member->kind () == Item::Kind::OPERATION ? "Operation name " : "Attribute name ";
 													message (*base_name, MessageType::ERROR, opatt + op->name () + " collision.");
@@ -566,7 +565,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			oneway = false;
 		}
 		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
-		auto ins = interface_data_.all_operations.insert (op);
+		auto ins = interface_.all_operations.insert (op);
 		if (!ins.second) {
 			message (name, MessageType::ERROR, string ("Operation name ") + name + " collision.");
 			message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
@@ -575,7 +574,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			if (!ins.second)
 				error_name_collision (name, **ins.first); // Op name collides with nested type.
 			else {
-				interface_data_.cur_op = op;
+				interface_.operation.op = op;
 				// We always append operation to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
 				container_stack_.top ()->append (op);
@@ -592,7 +591,7 @@ void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarator
 		assert (itf->kind () == Item::Kind::INTERFACE);
 		for (auto name = declarators.begin (); name != declarators.end (); ++name) {
 			Ptr <NamedItem> item = Ptr <NamedItem>::make <Attribute> (ref (*this), readonly, ref (type), ref (*name));
-			auto ins = interface_data_.all_operations.insert (item);
+			auto ins = interface_.all_operations.insert (item);
 			if (!ins.second) {
 				message (*name, MessageType::ERROR, string ("Attribute name ") + *name + " collision.");
 				message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
@@ -612,14 +611,14 @@ void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarator
 
 void Builder::operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name)
 {
-	Operation* op = interface_data_.cur_op;
+	Operation* op = interface_.operation.op;
 	if (op) {
 		if (att != Parameter::Attribute::IN && op->oneway ()) {
 			message (name, MessageType::WARNING, "oneway operation can not return data. oneway attribute will be ignored.");
 			op->oneway_clear ();
 		}
 		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
-		auto ins = interface_data_.cur_op_params.insert (par);
+		auto ins = interface_.operation.params.insert (par);
 		if (!ins.second)
 			message (name, MessageType::ERROR, string ("Duplicated parameter ") + name + ".");
 		else if (is_main_file ())
@@ -629,7 +628,7 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 
 void Builder::operation_raises (const ScopedNames& raises)
 {
-	Operation* op = interface_data_.cur_op;
+	Operation* op = interface_.operation.op;
 	if (op) {
 		map <const Item*, Location> unique;
 		for (auto name = raises.begin (); name != raises.end (); ++name) {
@@ -728,19 +727,19 @@ void Builder::member (const Type& type, const Declarators& declarators)
 	if (parent) {
 		assert (parent->kind () == Item::Kind::STRUCT || parent->kind () == Item::Kind::EXCEPTION);
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			Ptr <Member> m;
+			Ptr <NamedItem> item;
 			if (decl->array_sizes ().empty ()) {
-				m = Ptr <Member>::make <Member> (ref (*this), ref (type), ref (*decl));
+				item = Ptr <Member>::make <Member> (ref (*this), ref (type), ref (*decl));
 			} else {
 				Type arr = Type::make_array (type, decl->array_sizes ());
-				m = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
+				item = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
 			}
-			auto ins = static_cast <Symbols*> (parent)->insert (m);
+			auto ins = static_cast <Symbols*> (parent)->insert (item);
 			if (!ins.second)
 				error_name_collision (*decl, **ins.first);
 			else {
 				if (is_main_file ())
-					container_stack_.top ()->append (m);
+					container_stack_.top ()->append (item);
 			}
 		}
 	}
@@ -833,6 +832,57 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 	}
 }
 
+void Builder::union_label (const Variant& label, const Location& loc)
+{
+	if (!label.empty ()) {
+		auto ins = union_.all_labels.emplace (label.to_key (), loc);
+		if (!ins.second) {
+			message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used.");
+			message (ins.first->second, MessageType::MESSAGE, "See previous declaration.");
+		} else if (union_.element.is_default)
+			message (loc, MessageType::WARNING, "Default element, case is ignored.");
+		else
+			union_.element.labels.push_back (label);
+	}
+}
+
+void Builder::union_default (const Location& loc)
+{
+	if (union_.has_default)
+		message (loc, MessageType::ERROR, "Union already has the default element.");
+	else {
+		union_.has_default = true;
+		union_.element.is_default = true;
+		if (!union_.element.labels.empty ()) {
+			message (loc, MessageType::WARNING, "Default element, other cases are ignored.");
+			union_.element.labels.clear ();
+		}
+	}
+}
+/*
+void Builder::union_element (const Type& type, const Build::Declarator& decl)
+{
+	assert (scope_stack_.size () > 1);
+	ItemScope* parent = static_cast <ItemScope*> (scope_stack_.back ());
+	if (parent) {
+		assert (parent->kind () == Item::Kind::UNION);
+		Ptr <UnionElement> m;
+		if (decl.array_sizes ().empty ()) {
+			m = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
+		} else {
+			Type arr = Type::make_array (type, decl.array_sizes ());
+			m = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
+		}
+		auto ins = static_cast <Symbols*> (parent)->insert (m);
+		if (!ins.second)
+			error_name_collision (decl, **ins.first);
+		else {
+			if (is_main_file ())
+				container_stack_.top ()->append (m);
+		}
+	}
+}
+*/
 const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
 {
 	assert (scope_stack_.size () > 1);

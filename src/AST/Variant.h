@@ -288,7 +288,9 @@ public:
 	double to_double () const;
 	long double to_long_double () const;
 
-	int64_t to_key () const noexcept
+	typedef int64_t Key;
+
+	Key to_key () const noexcept
 	{
 		const Variant& v = dereference_const ();
 		if (v.is_integral ())

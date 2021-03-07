@@ -714,13 +714,13 @@ case
 
 /*76*/
 case_label
-	: T_CASE const_exp T_COLON 
-	| T_DEFAULT T_COLON
+	: T_CASE const_exp T_COLON { drv.union_label ($2, @2); }
+	| T_DEFAULT T_COLON { drv.union_default (@1); }
 	;
 
 /*77*/
 element_spec
-	: type_spec declarator
+	: type_spec declarator { drv.union_element ($1, $2); }
 	;
 
 /*78*/
