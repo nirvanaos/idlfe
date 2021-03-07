@@ -12,6 +12,7 @@
 
 namespace AST {
 
+class AST;
 class Operation;
 
 namespace Build {

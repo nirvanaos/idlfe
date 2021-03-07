@@ -1,7 +1,6 @@
 #include "Builder.h"
-#include "EvalBool.h"
-#include "EvalLongLong.h"
-#include "EvalDouble.h"
+#include "EvalIntegral.h"
+#include "EvalFloatingPoint.h"
 #include "EvalString.h"
 #include "EvalFixed.h"
 #include "EvalEnum.h"
@@ -264,7 +263,7 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 
 unsigned Builder::positive_int (const Variant& v, const Location& loc)
 {
-	assert (v.is_integer ());
+	assert (v.is_integral ());
 	try {
 		uint32_t i = v.to_unsigned_long ();
 		if (i)
@@ -788,7 +787,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 		switch (t.kind ()) {
 			case Type::Kind::BASIC_TYPE: {
 				BasicType bt = t.basic_type ();
-				if (Type::is_integer (bt) || bt == BasicType::BOOLEAN)
+				if (is_integral (bt))
 					type_OK = true;
 			} break;
 
@@ -846,9 +845,8 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 		else {
 			if (is_main_file ())
 				container_stack_.top ()->append (def);
-			unsigned ord = 0;
 			for (auto item = items.begin (); item != items.end (); ++item) {
-				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*ins.first), ref (name), ord++);
+				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*ins.first), ref (name));
 				ins = scope->insert (enumerator);
 				if (!ins.second)
 					error_name_collision (*item, **ins.first);
@@ -869,7 +867,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc)
 {
 	if (scope_stack_.back ()) {
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (name), move (eval ().cast (t, move (val), loc)));
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (t), ref (name), move (eval ().cast (t, move (val), loc)));
 		auto ins = scope_stack_.back ()->insert (item);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
@@ -882,50 +880,38 @@ void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& v
 void Builder::eval_push (const Type& t, const Location& loc)
 {
 	const Type& type = t.dereference_type ();
-	unique_ptr <Eval> eval;
+	Eval* eval = nullptr;
 	switch (type.kind ()) {
 		case Type::Kind::BASIC_TYPE:
-			switch (type.basic_type ()) {
-				case BasicType::BOOLEAN:
-					eval = make_unique <EvalBool> (ref (*this));
-					break;
-				case BasicType::LONGLONG:
-				case BasicType::ULONGLONG:
-					eval = make_unique <EvalLongLong> (ref (*this));
-					break;
-				case BasicType::LONGDOUBLE:
-					eval = make_unique <EvalLongDouble> (ref (*this));
-					break;
-				default:
-					if (Type::is_integer (t.basic_type ()))
-						eval = make_unique <EvalLong> (ref (*this));
-					else if (Type::is_floating_pt (t.basic_type ()))
-						eval = make_unique <EvalDouble> (ref (*this));
-			} break;
+			if (is_integral (type.basic_type ()))
+				eval = new EvalIntegral (*this);
+			else if (is_floating_point (type.basic_type ()))
+				eval = new EvalFloatingPoint (*this);
+			break;
 		case Type::Kind::STRING:
-			eval = make_unique <EvalString> (ref (*this));
+			eval = new EvalString (*this);
 			break;
 		case Type::Kind::WSTRING:
-			eval = make_unique <EvalWString> (ref (*this));
+			eval = new EvalWString (*this);
 			break;
 		case Type::Kind::FIXED:
-			eval = make_unique <EvalFixed> (ref (*this));
+			eval = new EvalFixed (*this);
 			break;
 		case Type::Kind::NAMED_TYPE: {
 			const Ptr <NamedItem>* ptype = type.named_type ();
 			if (ptype) {
 				if ((*ptype)->kind () == Item::Kind::ENUM)
-					eval = make_unique <EvalEnum> (ref (*this), *ptype);
+					eval = new EvalEnum (*this, *ptype);
 			} else
-				eval = make_unique <Eval> (*this);
+				eval = new Eval (*this);
 		} break;
 	}
 
 	if (!eval) {
 		message (loc, MessageType::ERROR, "Invalid constant type.");
-		eval = make_unique <Eval> (*this);
+		eval = new Eval (*this);
 	}
-	eval_stack_.push (move (eval));
+	eval_stack_.push (unique_ptr <Eval> (eval));
 }
 
 }

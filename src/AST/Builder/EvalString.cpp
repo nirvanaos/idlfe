@@ -1,5 +1,6 @@
 /// \file EvalString.cpp String expression evaluiator.
 #include "EvalString.h"
+#include "Builder.h"
 #include "../Constant.h"
 #include <stdexcept>
 
@@ -7,6 +8,16 @@ using namespace std;
 
 namespace AST {
 namespace Build {
+
+void EvalStringBase::error_length (const Location& loc) const
+{
+	builder_.message (loc, Builder::MessageType::ERROR, "String literal length exceedes the limit.");
+}
+
+[[noreturn]] void EvalStringBase::throw_char0 ()
+{
+	throw runtime_error ("A string literal shall not contain the character \'\\0\'.");
+}
 
 // String evaluator
 
@@ -23,7 +34,7 @@ Variant EvalString::literal_string (const string& s, const Location& loc, const 
 		while (p < end) {
 			char c = unescape_char (p);
 			if (!c)
-				throw runtime_error ("A string literal shall not contain the character \'\\0\'.");
+				throw_char0 ();
 			v += c;
 		}
 		if (append)
@@ -51,8 +62,15 @@ Variant EvalString::constant (const ScopedName& constant)
 
 Variant EvalString::cast (const Type& t, Variant&& v, const Location& loc)
 {
-	assert (t.kind () == Type::Kind::STRING);
-	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::STRING);
+	if (!v.empty ()) {
+		assert (v.dereference_const ().vtype () == Variant::VT::STRING);
+		const Type& dt = t.dereference_type ();
+		assert (dt.kind () == Type::Kind::STRING);
+		if (dt.string_size () && v.dereference_const ().as_string ().length () > dt.string_size ()) {
+			error_length (loc);
+			return Variant ();
+		}
+	}
 	return move (v);
 }
 
@@ -72,7 +90,7 @@ Variant EvalWString::literal_wstring (const string& s, const Location& loc, cons
 		while (p < end) {
 			wchar_t c = unescape_wchar (p);
 			if (!c)
-				throw runtime_error ("A wide string literal shall not contain the character \'\\0\'.");
+				throw_char0 ();
 		}
 		if (append)
 			v += append->as_wstring ();
@@ -99,8 +117,15 @@ Variant EvalWString::constant (const ScopedName& constant)
 
 Variant EvalWString::cast (const Type& t, Variant&& v, const Location& loc)
 {
-	assert (t.kind () == Type::Kind::WSTRING);
-	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::WSTRING);
+	if (!v.empty ()) {
+		assert (v.dereference_const ().vtype () == Variant::VT::WSTRING);
+		const Type& dt = t.dereference_type ();
+		assert (dt.kind () == Type::Kind::WSTRING);
+		if (dt.string_size () && v.dereference_const ().as_wstring ().length () > dt.string_size ()) {
+			error_length (loc);
+			return Variant ();
+		}
+	}
 	return move (v);
 }
 

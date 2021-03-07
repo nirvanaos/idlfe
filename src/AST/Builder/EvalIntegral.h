@@ -1,20 +1,21 @@
-/// \file EvalLong.h Integer expression evaluiator.
-#ifndef NIDL_AST_EVALLONG_H_
-#define NIDL_AST_EVALLONG_H_
+/// \file EvalIntegral.h Integral expression evaluiator.
+#ifndef NIDL_AST_EVALINTEGRAL_H_
+#define NIDL_AST_EVALINTEGRAL_H_
 
 #include "Eval.h"
 
 namespace AST {
 namespace Build {
 
-/// Integer evaluator.
-class EvalLong : public Eval
+/// Integral evaluator.
+class EvalIntegral : public Eval
 {
 public:
-	EvalLong (Builder& builder) :
+	EvalIntegral (Builder& builder) :
 		Eval (builder)
 	{}
 
+	virtual Variant literal_boolean (bool v, const Location& loc);
 	virtual Variant literal_char (const std::string& s, const Location& loc);
 	virtual Variant literal_wchar (const std::string& s, const Location& loc);
 	virtual Variant literal_int (const std::string& s, const Location& loc);

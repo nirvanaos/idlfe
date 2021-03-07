@@ -7,13 +7,25 @@
 namespace AST {
 namespace Build {
 
+class EvalStringBase : public Eval
+{
+public:
+	EvalStringBase (Builder& builder) :
+		Eval (builder)
+	{}
+
+protected:
+	[[noreturn]] static void throw_char0 ();
+	void error_length (const Location& loc) const;
+};
+
 /// String evaluator
 
-class EvalString : public Eval
+class EvalString : public EvalStringBase
 {
 public:
 	EvalString (Builder& builder) :
-		Eval (builder)
+		EvalStringBase (builder)
 	{}
 
 	virtual Variant literal_string (const std::string& s, const Location& loc, const Variant* append);
@@ -25,11 +37,11 @@ public:
 
 /// Wide string evaluator
 
-class EvalWString : public Eval
+class EvalWString : public EvalStringBase
 {
 public:
 	EvalWString (Builder& builder) :
-		Eval (builder)
+		EvalStringBase (builder)
 	{}
 
 	virtual Variant literal_wstring (const std::string& s, const Location& loc, const Variant* append);

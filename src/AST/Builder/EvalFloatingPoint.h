@@ -1,18 +1,18 @@
-/// \file EvalDouble.h Double expression evaluiator.
-#ifndef NIDL_AST_EVALDOUBLE_H_
-#define NIDL_AST_EVALDOUBLE_H_
+/// \file EvalFloatingPoint.h Floating point expression evaluiator.
+#ifndef NIDL_AST_EVALFLOATINGPOINT_H_
+#define NIDL_AST_EVALFLOATINGPOINT_H_
 
-#include "Eval.h"
+#include "EvalIntegral.h"
 
 namespace AST {
 namespace Build {
 
-/// Double evaluator
-class EvalDouble : public Eval
+/// Floating point evaluator.
+class EvalFloatingPoint : public EvalIntegral
 {
 public:
-	EvalDouble (Builder& builder) :
-		Eval (builder)
+	EvalFloatingPoint (Builder& builder) :
+		EvalIntegral (builder)
 	{}
 
 	virtual Variant literal_float (const std::string& s, const Location& loc);
@@ -27,9 +27,6 @@ public:
 private:
 	void check_inexact (const Location& loc) const;
 };
-
-/// Long double is not yet supported
-typedef EvalDouble EvalLongDouble;
 
 }
 }

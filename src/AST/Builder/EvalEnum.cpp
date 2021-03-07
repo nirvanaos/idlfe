@@ -35,7 +35,7 @@ Variant EvalEnum::constant (const ScopedName& constant)
 
 Variant EvalEnum::cast (const Type& t, Variant&& v, const Location& loc)
 {
-	return move (v);
+	return v;
 }
 
 }

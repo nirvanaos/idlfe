@@ -27,10 +27,9 @@ class EnumItem :
 	public NamedItem
 {
 public:
-	EnumItem (const Build::Builder& builder, const Ptr <NamedItem>& enum_type, const Build::SimpleDeclarator& name, unsigned ord) :
+	EnumItem (const Build::Builder& builder, const Ptr <NamedItem>& enum_type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM_ITEM, builder, name),
-		enum_type_ (enum_type),
-		ordinal_ (ord)
+		enum_type_ (enum_type)
 	{}
 
 	const Ptr <NamedItem>& enum_type () const
@@ -38,14 +37,8 @@ public:
 		return enum_type_;
 	}
 
-	unsigned ordinal () const
-	{
-		return ordinal_;
-	}
-
 private:
 	const Ptr <NamedItem>& enum_type_;
-	unsigned ordinal_;
 };
 
 }

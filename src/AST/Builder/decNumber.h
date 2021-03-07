@@ -11,6 +11,6 @@ extern "C" {
 #error decNumber DECNUMDIGITS must be 62.
 #endif
 
-static_assert (sizeof (_decNumber::lsu) == sizeof (AST::Fixed::lsu), "Check decNumber library definitions.");
+static_assert (sizeof (_decNumber) == sizeof (AST::Fixed), "Check decNumber library definitions.");
 
 #endif

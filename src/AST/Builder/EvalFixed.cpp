@@ -63,12 +63,11 @@ Variant EvalFixed::constant (const ScopedName& constant)
 Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Location& loc)
 {
 	if (!l.empty () && !r.empty ()) {
-		assert (l.dereference_type ().kind () == Type::Kind::FIXED && r.dereference_type ().kind () == Type::Kind::FIXED);
 		try {
 			Context ctx;
-			decNumber lv, rv, ret;
-			l.as_decNumber (lv);
-			r.as_decNumber (rv);
+			decNumber ret;
+			const decNumber& lv = l.as_decNumber ();
+			const decNumber& rv = r.as_decNumber ();
 			switch (op) {
 				case '+':
 					decNumberAdd (&ret, &lv, &rv, &ctx);
@@ -98,14 +97,12 @@ Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Loca
 Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 {
 	if (!v.empty ()) {
-		assert (v.kind () == Type::Kind::FIXED);
 		try {
 			Context ctx;
-			decNumber dn;
-			v.as_decNumber (dn);
+			decNumber ret;
 			switch (op) {
 				case '-':
-					decNumberMinus (&dn, &dn, &ctx);
+					decNumberMinus (&ret, &v.as_decNumber (), &ctx);
 					break;
 				case '+':
 					break;
@@ -113,7 +110,7 @@ Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 					invalid_operation (op, loc);
 					return Variant ();
 			}
-			return dn;
+			return ret;
 		} catch (const exception& ex) {
 			error (loc, ex);
 		}
@@ -123,8 +120,8 @@ Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 
 Variant EvalFixed::cast (const Type& t, Variant&& v, const Location& loc)
 {
-	assert (t.kind () == Type::Kind::FIXED);
-	assert (v.kind () == Type::Kind::VOID || v.kind () == Type::Kind::FIXED);
+	assert (t.dereference_type ().kind () == Type::Kind::FIXED);
+	assert (v.empty () || v.dereference_const ().vtype () == Variant::VT::FIXED);
 	return v;
 }
 

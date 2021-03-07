@@ -30,6 +30,63 @@ public:
 		ARRAY
 	};
 
+	Kind kind () const noexcept
+	{
+		return kind_;
+	}
+
+	BasicType basic_type () const noexcept
+	{
+		assert (kind () == Kind::BASIC_TYPE);
+		return type_.basic_type;
+	}
+
+	const Ptr <NamedItem>* named_type () const noexcept
+	{
+		assert (kind () == Kind::NAMED_TYPE);
+		return type_.named_type;
+	}
+
+	// String
+
+	uint32_t string_size () const noexcept
+	{
+		assert (kind () == Kind::STRING || kind () == Kind::WSTRING);
+		return type_.string_size;
+	}
+
+	// Fixed
+
+	uint8_t fixed_digits () const noexcept
+	{
+		assert (kind () == Kind::FIXED);
+		return type_.fixed.digits;
+	}
+
+	uint8_t fixed_scale () const noexcept
+	{
+		assert (kind () == Kind::FIXED);
+		return type_.fixed.scale;
+	}
+
+	// Sequence
+
+	const Sequence& sequence () const noexcept
+	{
+		assert (kind () == Kind::SEQUENCE);
+		return *type_.sequence;
+	}
+
+	// Array
+
+	const Array& array () const noexcept
+	{
+		assert (kind () == Kind::ARRAY);
+		return *type_.array;
+	}
+
+	// Internals
+
 	~Type ()
 	{
 		clear ();
@@ -71,69 +128,7 @@ public:
 	Type& operator = (const Type& src);
 	Type& operator = (Type&& src) noexcept;
 
-	Kind kind () const noexcept
-	{
-		return kind_;
-	}
-
-	BasicType basic_type () const noexcept
-	{
-		assert (Kind::BASIC_TYPE == kind_);
-		return type_.basic_type;
-	}
-
-	static bool is_integer (BasicType bt) noexcept
-	{
-		return BasicType::BOOLEAN < bt && bt <= BasicType::LONGLONG;
-	}
-
-	bool is_integer () const  noexcept
-	{
-		const Type& t = dereference_type ();
-		return t.kind () == Kind::BASIC_TYPE && is_integer (t.basic_type ());
-	}
-
-	bool is_signed (BasicType bt) const noexcept
-	{
-		return BasicType::SHORT <= bt && bt <= BasicType::LONGDOUBLE;
-	}
-
-	bool is_signed () const noexcept;
-
-	static bool is_floating_pt (BasicType bt) noexcept
-	{
-		return (BasicType::FLOAT <= bt && bt <= BasicType::LONGDOUBLE);
-	}
-
-	bool is_floating_pt () const noexcept
-	{
-		const Type& t = dereference_type ();
-		return t.kind () == Kind::BASIC_TYPE && is_floating_pt (t.basic_type ());
-	}
-
 	const Type& dereference_type () const noexcept;
-
-	const Ptr <NamedItem>* named_type () const noexcept
-	{
-		assert (kind () == Kind::NAMED_TYPE);
-		return type_.named_type;
-	}
-
-	// Fixed
-
-	uint8_t fixed_digits () const noexcept
-	{
-		const Type& t = dereference_type ();
-		assert (t.kind () == Kind::FIXED);
-		return t.type_.fixed.digits;
-	}
-
-	uint8_t fixed_scale () const noexcept
-	{
-		const Type& t = dereference_type ();
-		assert (t.kind () == Kind::FIXED);
-		return t.type_.fixed.scale;
-	}
 
 protected:
 	void clear () noexcept;
@@ -170,8 +165,8 @@ private:
 		BasicType basic_type;              // BASIC_TYPE
 		const Ptr <NamedItem>* named_type; // NAMED_TYPE
 		Dim string_size;                   // STRING, WSTRING
-		Sequence* sequence;                // SEQUENCE
-		Array* array;                      // ARRAY
+		const Sequence* sequence;          // SEQUENCE
+		const Array* array;                // ARRAY
 		struct
 		{
 			uint8_t digits;
