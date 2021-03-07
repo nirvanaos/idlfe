@@ -729,18 +729,16 @@ void Builder::member (const Type& type, const Declarators& declarators)
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
 			Ptr <NamedItem> item;
 			if (decl->array_sizes ().empty ()) {
-				item = Ptr <Member>::make <Member> (ref (*this), ref (type), ref (*decl));
+				item = Ptr <NamedItem>::make <Member> (ref (*this), ref (type), ref (*decl));
 			} else {
 				Type arr = Type::make_array (type, decl->array_sizes ());
-				item = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
+				item = Ptr <NamedItem>::make <Member> (ref (*this), ref (arr), ref (*decl));
 			}
 			auto ins = static_cast <Symbols*> (parent)->insert (item);
 			if (!ins.second)
 				error_name_collision (*decl, **ins.first);
-			else {
-				if (is_main_file ())
-					container_stack_.top ()->append (item);
-			}
+			else if (is_main_file ())
+				container_stack_.top ()->append (item);
 		}
 	}
 }
@@ -859,30 +857,28 @@ void Builder::union_default (const Location& loc)
 		}
 	}
 }
-/*
+
 void Builder::union_element (const Type& type, const Build::Declarator& decl)
 {
 	assert (scope_stack_.size () > 1);
 	ItemScope* parent = static_cast <ItemScope*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::UNION);
-		Ptr <UnionElement> m;
+		Ptr <NamedItem> item;
 		if (decl.array_sizes ().empty ()) {
-			m = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
+			item = Ptr <NamedItem>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
 		} else {
 			Type arr = Type::make_array (type, decl.array_sizes ());
-			m = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
+			item = Ptr <NamedItem>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
 		}
-		auto ins = static_cast <Symbols*> (parent)->insert (m);
+		auto ins = static_cast <Symbols*> (parent)->insert (item);
 		if (!ins.second)
 			error_name_collision (decl, **ins.first);
-		else {
-			if (is_main_file ())
-				container_stack_.top ()->append (m);
-		}
+		else if (is_main_file ())
+			container_stack_.top ()->append (item);
 	}
 }
-*/
+
 const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
 {
 	assert (scope_stack_.size () > 1);
