@@ -561,7 +561,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
 		if (oneway && type.kind () != Type::Kind::VOID) {
-			message (name, MessageType::WARNING, "oneway operation must be void. oneway attribute will be ignored.");
+			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored.");
 			oneway = false;
 		}
 		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
@@ -614,7 +614,7 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 	Operation* op = interface_.operation.op;
 	if (op) {
 		if (att != Parameter::Attribute::IN && op->oneway ()) {
-			message (name, MessageType::WARNING, "oneway operation can not return data. oneway attribute will be ignored.");
+			message (name, MessageType::WARNING, "'oneway' operation can not return data. The 'oneway' attribute will be ignored.");
 			op->oneway_clear ();
 		}
 		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
@@ -796,9 +796,8 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 			} break;
 
 			case Type::Kind::NAMED_TYPE: {
-				const Ptr <NamedItem>* pt = t.named_type ();
-				if (pt && (*pt)->kind () == Item::Kind::ENUM) {
-					enum_type = switch_type.named_type ();
+				if (t.named_type ()->kind () == Item::Kind::ENUM) {
+					enum_type = &switch_type.named_type ();
 					type_OK = true;
 				}
 			}
@@ -839,28 +838,33 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 void Builder::union_label (const Variant& label, const Location& loc)
 {
-	if (!label.empty ()) {
-		auto ins = union_.all_labels.emplace (label.to_key (), loc);
-		if (!ins.second) {
-			message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used.");
-			message (ins.first->second, MessageType::MESSAGE, "See previous declaration.");
-		} else if (union_.element.is_default)
-			message (loc, MessageType::WARNING, "Default element, case is ignored.");
-		else
-			union_.element.labels.push_back (label);
+	if (scope_stack_.back ()) {
+		if (!label.empty ()) {
+			auto ins = union_.all_labels.emplace (label.to_key (), loc);
+			if (!ins.second) {
+				message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used.");
+				message (ins.first->second, MessageType::MESSAGE, "See previous declaration.");
+			} else if (union_.element.is_default)
+				message (loc, MessageType::WARNING, "Default element, case is ignored.");
+			else
+				union_.element.labels.push_back (label);
+		}
 	}
 }
 
 void Builder::union_default (const Location& loc)
 {
-	if (union_.has_default)
-		message (loc, MessageType::ERROR, "Union already has the default element.");
-	else {
-		union_.has_default = true;
-		union_.element.is_default = true;
-		if (!union_.element.labels.empty ()) {
-			message (loc, MessageType::WARNING, "Default element, other cases are ignored.");
-			union_.element.labels.clear ();
+	if (scope_stack_.back ()) {
+		if (union_.has_default)
+			message (loc, MessageType::ERROR, "Union already has the default element.");
+		else {
+			union_.has_default = true;
+			union_.default_loc = loc;
+			union_.element.is_default = true;
+			if (!union_.element.labels.empty ()) {
+				message (loc, MessageType::WARNING, "Default element, other cases are ignored.");
+				union_.element.labels.clear ();
+			}
 		}
 	}
 }
@@ -869,7 +873,7 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 {
 	assert (scope_stack_.size () > 1);
 	ItemScope* parent = static_cast <ItemScope*> (scope_stack_.back ());
-	if (parent) {
+	if (parent && (union_.element.is_default || !union_.element.labels.empty ())) {
 		assert (parent->kind () == Item::Kind::UNION);
 		Ptr <NamedItem> item;
 		if (decl.array_sizes ().empty ()) {
@@ -887,9 +891,25 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 	union_.element.clear ();
 }
 
+const Ptr <NamedItem>* Builder::union_end ()
+{
+	assert (scope_stack_.size () > 1);
+	Union* u = static_cast <Union*> (scope_stack_.back ());
+	if (u) {
+		// A union type can contain a default label only where the values given in the non-default labels
+		// do not cover the entire range of the union's discriminant type.
+		if (union_.has_default && union_.all_labels.size () > u->discriminator_type ().key_max ())
+			message (union_.default_loc, MessageType::ERROR, "Non-default labels cover the entire range of the union's discriminant type.");
+	}
+	union_.clear ();
+	eval_pop ();
+	return constr_type_end ();
+}
+
 const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
 {
 	assert (scope_stack_.size () > 1);
+	assert (!items.empty ());
 	Symbols* scope = scope_stack_.back ();
 	if (scope) {
 		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
@@ -952,12 +972,9 @@ void Builder::eval_push (const Type& t, const Location& loc)
 			eval = new EvalFixed (*this);
 			break;
 		case Type::Kind::NAMED_TYPE: {
-			const Ptr <NamedItem>* ptype = type.named_type ();
-			if (ptype) {
-				if ((*ptype)->kind () == Item::Kind::ENUM)
-					eval = new EvalEnum (*this, *ptype);
-			} else
-				eval = new Eval (*this);
+			const Ptr <NamedItem> nt = type.named_type ();
+			if (nt->kind () == Item::Kind::ENUM)
+				eval = new EvalEnum (*this, nt);
 		} break;
 	}
 

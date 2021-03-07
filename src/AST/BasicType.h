@@ -3,6 +3,7 @@
 
 namespace AST {
 
+/// Basic type enumeration.
 enum class BasicType
 {
 	BOOLEAN,

@@ -1,3 +1,4 @@
+/// \file Item.h
 #ifndef NIDL_AST_ITEM_H_
 #define NIDL_AST_ITEM_H_
 
@@ -7,33 +8,49 @@ namespace AST {
 
 template <class T> class Ptr;
 
+/// AST item.
 class Item
 {
 public:
+	/// The kind of item.
 	enum class Kind
 	{
-		AST,
-		INCLUDE,
-		MODULE,
-		MODULE_ITEMS,
-		NATIVE,
-		INTERFACE,
-		INTERFACE_DECL,
-		TYPEDEF,
-		STRUCT,
-		STRUCT_DECL,
-		UNION,
-		UNION_DECL,
-		ENUM,
-		ENUM_ITEM,
-		OPERATION,
-		ATTRIBUTE,
-		PARAMETER,
-		CONSTANT,
-		EXCEPTION,
-		MEMBER,
-		UNION_ELEMENT
+		AST, /// class AST
+		INCLUDE, /// class Include
+		MODULE, /// class Module
+		MODULE_ITEMS, /// class ModuleItems
+		NATIVE, /// class Native
+		INTERFACE, /// class Interface
+		INTERFACE_DECL, /// class InterfaceDecl
+		TYPEDEF, /// class TypeDef
+		STRUCT, /// class Struct
+		STRUCT_DECL, /// class StructDecl
+		UNION, /// class Union
+		UNION_DECL, /// class UnionDecl
+		ENUM, /// class Enum
+		ENUM_ITEM, /// class EnumItem
+		OPERATION, /// class Operation
+		ATTRIBUTE, /// class Attribute
+		PARAMETER, /// class Parameter
+		CONSTANT, /// class Constant
+		EXCEPTION, /// class Exception
+		MEMBER, /// class Member
+		UNION_ELEMENT /// class UnionElement
 	};
+
+	/// \returns The kind of item.
+	Kind kind () const
+	{
+		return kind_;
+	}
+
+	/// \returns `true` if the item represents a type.
+	bool is_type () const
+	{
+		return Kind::NATIVE <= kind_ && kind_ <= Kind::ENUM;
+	}
+
+	/// \internals
 
 	Item (Kind kind) :
 		kind_ (kind),
@@ -45,16 +62,6 @@ public:
 	virtual ~Item () {}
 
 	Item& operator = (const Item& src) = delete;
-
-	Kind kind () const
-	{
-		return kind_;
-	}
-
-	bool is_type () const
-	{
-		return Kind::NATIVE <= kind_ && kind_ <= Kind::ENUM;
-	}
 
 private:
 	template <class T> friend class Ptr;
@@ -78,8 +85,12 @@ private:
 private:
 	const Kind kind_;
 	unsigned ref_cnt_;
+	/// \endinternals
 };
 
+/// Item smart pointer.
+/// 
+/// \tparam T the item type.
 template <class T>
 class Ptr
 {

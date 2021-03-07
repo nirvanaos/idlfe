@@ -150,13 +150,7 @@ public:
 	void union_label (const Variant& label, const Location& loc);
 	void union_default (const Location& loc);
 	void union_element (const Type& type, const Build::Declarator& decl);
-
-	const Ptr <NamedItem>* union_end ()
-	{
-		union_.clear ();
-		eval_pop ();
-		return constr_type_end ();
-	}
+	const Ptr <NamedItem>* union_end ();
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
@@ -246,6 +240,7 @@ private:
 	{
 		std::map <Variant::Key, Location> all_labels;
 		bool has_default;
+		Location default_loc;
 
 		UnionData () :
 			has_default (false)

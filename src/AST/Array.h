@@ -6,22 +6,27 @@
 
 namespace AST {
 
-class Array
+/// The array type.
+class Array :
+	public Type
 {
 public:
-	Array (const Type& type, std::vector <Dim>&& dimensions) :
-		type_ (type),
-		dimensions_ (std::move (dimensions))
-	{}
-
+	/// Returns the vector of array dimensions.
 	const std::vector <Dim>& dimensions () const
 	{
 		return dimensions_;
 	}
 
+	/// \internal
+
+	Array (const Type& type, std::vector <Dim>&& dimensions) :
+		Type (type),
+		dimensions_ (std::move (dimensions))
+	{}
+
 private:
-	Type type_;
 	std::vector <Dim> dimensions_;
+	/// \endinternal
 };
 
 }

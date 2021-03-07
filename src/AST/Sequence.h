@@ -5,16 +5,25 @@
 
 namespace AST {
 
-class Sequence
+/// Sequence type.
+class Sequence :
+	public Type
 {
 public:
+	/// Returns the size limit or 0.
+	Dim size () const
+	{
+		return size_;
+	}
+
+	// Internals
+
 	Sequence (const Type& type, Dim size = 0) :
-		type_ (type),
+		Type (type),
 		size_ (size)
 	{}
 
 private:
-	Type type_;
 	Dim size_;
 };
 

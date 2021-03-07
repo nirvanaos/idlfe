@@ -1,4 +1,3 @@
-/// \file Fixed.h
 #ifndef NIDL_AST_FIXED_H_
 #define NIDL_AST_FIXED_H_
 

@@ -21,13 +21,13 @@ public:
 	enum class Kind
 	{
 		VOID,
-		BASIC_TYPE,
-		NAMED_TYPE,
-		STRING,
-		WSTRING,
-		FIXED,
-		SEQUENCE,
-		ARRAY
+		BASIC_TYPE, ///< basic_type ()
+		NAMED_TYPE, ///< named_type ()
+		STRING, ///< string_size ()
+		WSTRING, ///< string_size ()
+		FIXED, ///< fixed_digits (), fixed_scale ()
+		SEQUENCE, ///< sequence ()
+		ARRAY ///< array ()
 	};
 
 	Kind kind () const noexcept
@@ -41,10 +41,10 @@ public:
 		return type_.basic_type;
 	}
 
-	const Ptr <NamedItem>* named_type () const noexcept
+	const Ptr <NamedItem>& named_type () const noexcept
 	{
 		assert (kind () == Kind::NAMED_TYPE);
-		return type_.named_type;
+		return *type_.named_type;
 	}
 
 	// String
@@ -130,7 +130,9 @@ public:
 
 	const Type& dereference_type () const noexcept;
 
-protected:
+	size_t key_max () const noexcept;
+
+private:
 	void clear () noexcept;
 
 	void reset ()

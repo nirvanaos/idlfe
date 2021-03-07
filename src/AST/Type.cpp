@@ -2,6 +2,7 @@
 #include "Sequence.h"
 #include "Array.h"
 #include "TypeDef.h"
+#include "Enum.h"
 #include <stdexcept>
 
 using namespace std;
@@ -14,7 +15,7 @@ Type::Type (BasicType bt) :
 {}
 
 Type::Type (const Ptr <NamedItem>* named) :
-	kind_ (Kind::NAMED_TYPE),
+	kind_ (named ? Kind::NAMED_TYPE : Kind::VOID),
 	type_ (named)
 {
 	assert (!named || (*named)->is_type ());
@@ -90,7 +91,7 @@ Type& Type::operator = (Type&& src) noexcept
 const Type& Type::dereference_type () const noexcept
 {
 	const Type* t = this;
-	while (t->kind_ == Kind::NAMED_TYPE && t->type_.named_type) {
+	while (t->kind_ == Kind::NAMED_TYPE) {
 		const NamedItem* p = *(t->type_.named_type);
 		if (Item::Kind::TYPEDEF == p->kind ())
 			t = static_cast <const TypeDef*> (p);
@@ -109,6 +110,40 @@ Type Type::make_array (const Type& type, const FixedArraySizes& sizes)
 {
 	std::vector <Dim> dimensions (sizes.begin (), sizes.end ());
 	return Type (new Array (type, move (dimensions)));
+}
+
+size_t Type::key_max () const noexcept
+{
+	const Type& t = dereference_type ();
+	if (t.kind () == Kind::BASIC_TYPE) {
+		switch (t.basic_type ()) {
+			case BasicType::BOOLEAN:
+				return 1;
+			case BasicType::OCTET:
+			case BasicType::CHAR:
+				return 255;
+			case BasicType::WCHAR:
+			case BasicType::USHORT:
+			case BasicType::SHORT:
+				return numeric_limits <uint16_t>::max ();
+			case BasicType::ULONG:
+			case BasicType::LONG:
+				return numeric_limits <uint32_t>::max ();
+			case BasicType::ULONGLONG:
+			case BasicType::LONGLONG:
+				return numeric_limits <size_t>::max ();
+		}
+	} else if (t.kind () == Kind::NAMED_TYPE) {
+		const Ptr <NamedItem>& en = named_type ();
+		if (en->kind () == Item::Kind::ENUM) {
+			size_t item_cnt = static_cast <const Enum&> (*en).size ();
+			if (item_cnt > 0)
+				--item_cnt;
+			return item_cnt;
+		}
+	}
+	assert (false);
+	return 0;
 }
 
 }

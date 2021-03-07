@@ -17,39 +17,34 @@ public:
 	/// Value vtype. 
 	enum class VT
 	{
-		EMPTY,
+		EMPTY, ///< In the valid AST, Variant never has this type.
 
-		BOOLEAN,
-		OCTET,
-		CHAR,
-		WCHAR,
-		USHORT,
-		ULONG,
-		ULONGLONG,
-		SHORT,
-		LONG,
-		LONGLONG,
-		FLOAT,
-		DOUBLE,
-		LONGDOUBLE,
+		BOOLEAN, ///< as_bool ()
+		OCTET, ///< as_octet ()
+		CHAR, ///< as_char ()
+		WCHAR, ///< as_wchar ()
+		USHORT, ///< as_unsigned_short ()
+		ULONG, ///< as_unsigned_long ()
+		ULONGLONG, ///< as_unsigned_long_long ()
+		SHORT, ///< as_short ()
+		LONG, ///< as_long ()
+		LONGLONG, ///< as_long_long ()
+		FLOAT, ///< as_float ()
+		DOUBLE, ///< as_double ()
+		LONGDOUBLE, ///< as_long_double ()
 
-		STRING,
-		WSTRING,
-		FIXED,
+		STRING, ///< as_string ()
+		WSTRING, ///< as_wstring ()
+		FIXED, ///< fixed_digits (); fixed_scale ();
 
-		ENUM_ITEM,
-		CONSTANT
+		ENUM_ITEM, ///< as_enum_item ()
+		CONSTANT ///< as_constant ()
 	};
 
-	/// Returns the value vtype.
+	/// \returns The value vtype.
 	VT vtype () const noexcept
 	{
 		return type_;
-	}
-
-	bool empty () const noexcept
-	{
-		return vtype () == VT::EMPTY;
 	}
 
 	// Integer
@@ -162,11 +157,30 @@ public:
 		return *val_.u.constant;
 	}
 
+	// Fixed
+
+	uint16_t fixed_digits () const noexcept
+	{
+		assert (vtype () == VT::FIXED);
+		return (uint16_t)val_.u.fixed.digits;
+	}
+
+	uint16_t fixed_scale () const noexcept
+	{
+		assert (vtype () == VT::FIXED);
+		return (uint16_t)-val_.u.fixed.exponent;
+	}
+
 	/// Converts value to std::string.
 	/// This method escapes character and string values accordingly to C constant escape rules.
 	std::string to_string () const;
 
-	// Internals
+	/// internal
+
+	bool empty () const noexcept
+	{
+		return vtype () == VT::EMPTY;
+	}
 
 	const Variant& dereference_const () const noexcept;
 
@@ -289,16 +303,16 @@ public:
 	double to_double () const;
 	long double to_long_double () const;
 
-	typedef int64_t Key;
+	typedef uint64_t Key;
 
 	Key to_key () const noexcept
 	{
 		const Variant& v = dereference_const ();
 		if (v.is_integral ())
-			return val_.u.i;
+			return val_.u.ui;
 		else {
 			assert (VT::ENUM_ITEM == type_);
-			return (int64_t)val_.u.enum_item;
+			return (Key)val_.u.enum_item;
 		}
 	}
 
@@ -419,6 +433,7 @@ private:
 		{}
 
 	} val_;
+	/// \endinternal
 };
 
 namespace Build {

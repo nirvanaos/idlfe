@@ -7,6 +7,7 @@
 * Any
 * Interfaces Basic
 * Interfaces Full
+* CORBA-Specific Interfaces (except for `import`)
 * Anonimous Types
 
 ## Compile
