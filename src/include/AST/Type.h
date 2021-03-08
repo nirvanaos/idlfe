@@ -1,3 +1,27 @@
+/// \file Type.h
+/*
+* Nirvana IDL Front End Library.
+*
+* This is a part of the Nirvana project.
+*
+* Copyright (c) 2021 Igor Popov.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Send comments and/or bug reports to:
+*  silver.popov@google.com
+*/
 #ifndef NIDL_AST_TYPE_H_
 #define NIDL_AST_TYPE_H_
 
@@ -15,9 +39,11 @@ typedef uint32_t Dim;
 class Sequence;
 class Array;
 
+/// An IDL type.
 class Type
 {
 public:
+	/// The kind of type.
 	enum class Kind
 	{
 		VOID,
@@ -30,17 +56,22 @@ public:
 		ARRAY ///< array ()
 	};
 
+	/// \returns The kind of type.
 	Kind kind () const noexcept
 	{
 		return kind_;
 	}
 
+	/// \returns The BasicType.
+	/// \invariant `kind () == Kind::BASIC_TYPE`.
 	BasicType basic_type () const noexcept
 	{
 		assert (kind () == Kind::BASIC_TYPE);
 		return type_.basic_type;
 	}
 
+	/// \returns `const Ptr <NamedItem>&`.
+	/// \invariant `kind () == Kind::NAMED_TYPE`.
 	const Ptr <NamedItem>& named_type () const noexcept
 	{
 		assert (kind () == Kind::NAMED_TYPE);
@@ -49,24 +80,11 @@ public:
 
 	// String
 
+	/// \returns The string size limit if string has limited size.
 	uint32_t string_size () const noexcept
 	{
 		assert (kind () == Kind::STRING || kind () == Kind::WSTRING);
 		return type_.string_size;
-	}
-
-	// Fixed
-
-	uint8_t fixed_digits () const noexcept
-	{
-		assert (kind () == Kind::FIXED);
-		return type_.fixed.digits;
-	}
-
-	uint8_t fixed_scale () const noexcept
-	{
-		assert (kind () == Kind::FIXED);
-		return type_.fixed.scale;
 	}
 
 	// Sequence
@@ -85,7 +103,21 @@ public:
 		return *type_.array;
 	}
 
-	// Internals
+	// Fixed
+
+	uint8_t fixed_digits () const noexcept
+	{
+		assert (kind () == Kind::FIXED);
+		return type_.fixed.digits;
+	}
+
+	uint8_t fixed_scale () const noexcept
+	{
+		assert (kind () == Kind::FIXED);
+		return type_.fixed.scale;
+	}
+
+	/// \internal
 
 	~Type ()
 	{
@@ -200,6 +232,7 @@ private:
 
 		~U () {}
 	} type_;
+	/// \endinternal
 };
 
 }
