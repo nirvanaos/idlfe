@@ -35,11 +35,6 @@ public:
 		prefix_stack_.emplace ();
 	}
 
-	Ptr <AST> tree () const
-	{
-		return tree_;
-	}
-
 	unsigned err_cnt () const
 	{
 		return err_cnt_;
@@ -73,12 +68,9 @@ public:
 
 	void message (const Location& l, MessageType mt, const std::string& err);
 
-	const std::string& prefix () const
-	{
-		return prefix_stack_.top ();
-	}
+	const std::string& prefix () const;
 
-	const ItemScope* cur_scope () const;
+	ItemScope* cur_scope () const;
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
 	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
@@ -181,10 +173,39 @@ public:
 			return Type::make_fixed (digits, scale);
 	}
 
+	void type_id (const ScopedName& name, const Variant& id, const Location& id_loc)
+	{
+		if (!id.empty ())
+			type_id (name, id.as_string (), id_loc);
+	}
+
+	void type_prefix (const ScopedName& name, const Variant& s, const Location& id_loc);
+
+	void see_prev_declaration (const Location& loc);
+	void see_declaration_of (const Location& loc, const std::string& name);
+
+	Ptr <AST> finalize ()
+	{
+		if (!err_cnt_ && tree_) {
+			try {
+				std::map <std::string, const NamedItem*> ids;
+				tree_->check_rep_ids_unique (*this, ids);
+			} catch (const std::exception& ex) {
+				err_out_ << ex.what () << std::endl;
+			}
+			if (err_cnt_)
+				tree_ = nullptr;
+		}
+		return std::move (tree_);
+	}
+
 private:
-	static bool get_quoted_string (const char*& s, std::string& qs);
-	static bool get_scoped_name (const char*& s, ScopedName& sn);
-	RepositoryId* lookup_rep_id (const ScopedName& sn);
+	bool prefix_valid (const std::string& pref, const Location& loc);
+	void prefix (const std::string& pref, const Location& loc);
+	bool get_quoted_string (const char*& s, std::string& qs, const Location& loc);
+	static bool get_scoped_name (const char*& s, ScopedName& name);
+	RepositoryId* lookup_rep_id (const ScopedName& name);
+	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
 	bool scope_begin ();
 	void scope_push (ItemContainer* scope);
@@ -199,7 +220,6 @@ private:
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
-	void error_symbol_not_found (const ScopedName& sn);
 
 private:
 	unsigned err_cnt_;

@@ -1,3 +1,4 @@
+/// \file Module.h
 #ifndef NIDL_AST_MODULE_H_
 #define NIDL_AST_MODULE_H_
 
@@ -6,32 +7,40 @@
 
 namespace AST {
 
+/// Module scope.
 class Module :
 	public ItemScope
 {
 public:
+	/// \internal
 	Module (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (Kind::MODULE, builder, name)
 	{}
+	/// \endinternal
 };
 
+/// The seqence of items in a module.
 class ModuleItems :
 	public Item,
 	public Container
 {
 public:
-	ModuleItems (const Module& mod) :
-		Item (Item::Kind::MODULE_ITEMS),
-		module_ (mod)
-	{}
-
+	/// \returns The module name.
 	const std::string& name () const
 	{
 		return module_.name ();
 	}
 
+	/// \internal
+
+	ModuleItems (const Module& mod) :
+		Item (Item::Kind::MODULE_ITEMS),
+		module_ (mod)
+	{}
+
 private:
 	const Module& module_;
+	/// \endinternal
 };
 
 }

@@ -39,6 +39,11 @@ public:
 		return line_;
 	}
 
+	operator bool () const
+	{
+		return file_ != nullptr;
+	}
+
 private:
 	const std::string* file_;
 	unsigned line_;

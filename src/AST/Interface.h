@@ -22,18 +22,18 @@ public:
 	};
 
 	/// \returns The kind of interface.
-	Kind interface_kind () const
+	Kind interface_kind () const noexcept
 	{
 		return kind_;
 	}
 
 	/// \internals
 
-	InterfaceKind (Kind kind = UNCONSTRAINED) :
+	InterfaceKind (Kind kind = UNCONSTRAINED) noexcept :
 		kind_ (kind)
 	{}
 
-	const char* interface_kind_name () const;
+	const char* interface_kind_name () const noexcept;
 
 private:
 	Kind kind_;
@@ -42,9 +42,8 @@ private:
 
 /// The interface definition.
 class Interface :
-	public InterfaceKind,
 	public ItemContainer,
-	public RepositoryId
+	public InterfaceKind
 {
 public:
 	/// \returns The 
@@ -63,14 +62,18 @@ public:
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
-		ItemContainer (Item::Kind::INTERFACE, builder, name),
-		RepositoryId (*this, builder)
+		ItemContainer (Item::Kind::INTERFACE, builder, name)
 	{}
 
 	void add_base (const Interface* base)
 	{
 		bases_.push_back (base);
 	}
+
+	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const std::string& name, const Location&) const;
+
+private:
+	void base_find (const std::string& name, std::set <const Ptr <NamedItem>*>& found) const;
 
 private:
 	std::vector <const Interface*> bases_;
@@ -79,8 +82,8 @@ private:
 
 /// Interface forward declaration.
 class InterfaceDecl :
-	public InterfaceKind,
 	public NamedItem,
+	public InterfaceKind,
 	public RepositoryId
 {
 public:

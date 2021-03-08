@@ -1,3 +1,4 @@
+/// \file Struct.h
 #ifndef NIDL_AST_STRUCT_H_
 #define NIDL_AST_STRUCT_H_
 
@@ -18,14 +19,14 @@ public:
 };
 
 class Struct :
-	public ItemContainer,
-	public RepositoryId
+	public ItemContainer
 {
 public:
+	/// \internals
 	Struct (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::STRUCT, builder, name),
-		RepositoryId (*this, builder)
+		ItemContainer (Item::Kind::STRUCT, builder, name)
 	{}
+	/// \endinternals
 };
 
 }

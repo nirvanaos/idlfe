@@ -36,6 +36,8 @@ public:
 
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 
+	static char unescape_char (const char*& p);
+
 protected:
 	[[noreturn]] static void invalid_escape_seq ();
 	[[noreturn]] static void invalid_char_const ();
@@ -44,7 +46,6 @@ protected:
 	[[noreturn]] void zero_divide (char op);
 
 	static wchar_t unescape_wchar (const char*& p);
-	static char unescape_char (const char*& p);
 	void invalid_literal_type (const Location& loc) const;
 	void invalid_operation (char op, const Location& loc) const;
 	void error (const Location& loc, const std::exception& ex) const;

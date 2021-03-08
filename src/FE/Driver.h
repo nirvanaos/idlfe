@@ -39,8 +39,8 @@ private:
 
 	AST::Ptr <AST::AST> parse ()
 	{
-		if (!parser_.parse () && !err_cnt ())
-			return tree ();
+		if (!parser_.parse ())
+			return finalize ();
 		else
 			return AST::Ptr <AST::AST> ();
 	}

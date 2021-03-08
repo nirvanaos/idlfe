@@ -337,6 +337,8 @@ public:
 		return VT::FLOAT <= type_ && type_ <= VT::LONGDOUBLE;
 	}
 
+	static void append (std::string& s, unsigned c);
+
 private:
 	void reset () noexcept
 	{
@@ -347,8 +349,6 @@ private:
 	void copy (const Variant& src);
 
 	static void check_fp ();
-
-	static void append (std::string& s, unsigned c);
 
 private:
 	[[noreturn]] static void throw_out_of_range ();

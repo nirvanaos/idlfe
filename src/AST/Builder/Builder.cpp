@@ -55,16 +55,14 @@ void Builder::pragma (const char* s, const Location& loc)
 			s = end + 1;
 			ScopedName name (loc);
 			string id;
-			if (get_scoped_name (s, name) && get_quoted_string (s, id) && !id.empty ()) {
-				RepositoryId* rep_id = lookup_rep_id (name);
-				if (rep_id)
-					rep_id->pragma_id (*this, id, loc);
+			if (get_scoped_name (s, name) && get_quoted_string (s, id, loc) && !id.empty ()) {
+				type_id (name, id, loc);
 				return;
 			}
 		} else if (pr == "prefix") {
-			string prefix;
-			if (get_quoted_string (s, prefix)) {
-				prefix_stack_.top () = move (prefix);
+			string pref;
+			if (get_quoted_string (s, pref, loc)) {
+				prefix (pref, loc);
 				return;
 			}
 		} else if (pr == "version") {
@@ -105,34 +103,77 @@ void Builder::pragma (const char* s, const Location& loc)
 	message (loc, MessageType::ERROR, "Invalid pragma syntax.");
 }
 
-RepositoryId* Builder::lookup_rep_id (const ScopedName& sn)
+void Builder::type_id (const ScopedName& name, const std::string& id, const Location& id_loc)
+{
+	if (id.empty ())
+		message (id_loc, MessageType::ERROR, "The repository id must not be empty.");
+	else {
+		RepositoryId* rep_id = lookup_rep_id (name);
+		if (rep_id)
+			rep_id->type_id (*this, id, name);
+	}
+}
+
+RepositoryId* Builder::lookup_rep_id (const ScopedName& name)
 {
 	RepositoryId* rep_id = nullptr;
-	const Ptr <NamedItem>* it = lookup (sn);
+	const Ptr <NamedItem>* it = lookup (name);
 	if (it) {
 		NamedItem* item = *it;
 		rep_id = RepositoryId::cast (item);
 		if (!rep_id) {
-			message (sn, MessageType::ERROR, sn.stringize () + " has not repository id.");
-			message (*item, MessageType::MESSAGE, string ("See declaration of ") + item->qualified_name () + '.');
+			message (name, MessageType::ERROR, name.stringize () + " has not repository id.");
+			see_declaration_of (*item, item->qualified_name ());
 		}
 	}
 	return rep_id;
 }
 
-bool Builder::get_quoted_string (const char*& s, std::string& qs)
+void Builder::type_prefix (const ScopedName& name, const Variant& s, const Location& id_loc)
 {
-	const char* begin = s;
-	while (isspace (*begin))
-		++begin;
-	if ('\"' == *begin) {
-		++begin;
-		const char* end = strchr (begin, '\"');
-		if (end) {
-			qs.assign (begin, end - begin);
-			s = end + 1;
-			return true;
+	if (!s.empty ()) {
+		const string& pref = s.as_string ();
+		if (name.empty ())
+			prefix (pref, name);
+		else {
+			const Ptr <NamedItem>* item = lookup (name);
+			if (item) {
+				ItemScope* scope = ItemScope::cast (*item);
+				if (scope) {
+					if (prefix_valid (pref, id_loc))
+						scope->prefix (*this, pref, name);
+				} else {
+					message (name, MessageType::ERROR, name.stringize () + " can not have a prefix.");
+					see_declaration_of (**item, (*item)->qualified_name ());
+				}
+			}
 		}
+	}
+}
+
+bool Builder::get_quoted_string (const char*& s, std::string& qs, const Location& loc)
+{
+	const char* p = s;
+	while (isspace (*p))
+		++p;
+	if ('"' == *p) {
+		++p;
+		string s;
+		while ('"' != *p) {
+			try {
+				char c = Eval::unescape_char (p);
+				if (!c)
+					break;
+				s += c;
+			} catch (const exception& ex) {
+				message (loc, MessageType::ERROR, ex.what ());
+				return false;
+			}
+		}
+		if ('"' == *p)
+			return true;
+		else
+			message (loc, MessageType::ERROR, "Invalid string.");
 	}
 	return false;
 }
@@ -210,55 +251,54 @@ void Builder::file (const std::string& name, const Location& loc)
 void Builder::error_name_collision (const SimpleDeclarator& name, const Location& prev_loc)
 {
 	message (name, MessageType::ERROR, name + " is already declared.");
-	message (prev_loc, MessageType::MESSAGE, "See previous declaration.");
+	see_prev_declaration (prev_loc);
 }
 
-void Builder::error_symbol_not_found (const ScopedName& sn)
+void Builder::see_prev_declaration (const Location& loc)
 {
-	message (sn, MessageType::ERROR, string ("Symbol not found: ") + sn.stringize ());
+	message (loc, MessageType::MESSAGE, "See previous declaration.");
+}
+
+void Builder::see_declaration_of (const Location& loc, const string& name)
+{
+	message (loc, MessageType::MESSAGE, string ("See declaration of ") + name + '.');
 }
 
 const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 {
 	auto name = scoped_name.begin ();
-	Symbols::const_iterator f;
+	pair <bool, const Ptr <NamedItem>*> f = { false, nullptr };
 	if (scoped_name.from_root) {
 		const Symbols* scope = scope_stack_.front ();
-		f = scope->find (*name);
-		if (f == scope->end ()) {
-			error_symbol_not_found (scoped_name);
-			return nullptr;
-		}
+		const Ptr <NamedItem>* p = scope->find (*name);
+		f = make_pair (p, p);
 	} else {
 		ScopeStack::const_iterator it = scope_stack_.end () - 1;
 		for (;;) {
 			const Symbols* scope = *it;
-			f = scope->find (*name);
-			if (f != scope->end ())
+			f = scope->find (*this, *name, scoped_name);
+			if (f.first)
 				break;
-			if (it == scope_stack_.begin ()) {
-				error_symbol_not_found (scoped_name);
-				return nullptr;
-			}
+			if (it == scope_stack_.begin ())
+				break;
 			--it;
 		}
 	}
 
-	while (scoped_name.end () != ++name) {
-		const ItemScope* scope = ItemScope::cast (*f);
+	while (f.second && scoped_name.end () != ++name) {
+		const ItemScope* scope = ItemScope::cast (*f.second);
 		if (scope) {
-			f = scope->find (*name);
-			if (f == scope->end ()) {
-				error_symbol_not_found (scoped_name);
-				return nullptr;
-			}
-		} else {
-			error_symbol_not_found (scoped_name);
-			return nullptr;
-		}
+			f = scope->find (*this, *name, scoped_name);
+			if (!f.first)
+				break;
+		} else
+			break;
 	}
 
-	return &*f;
+	if (!f.first)
+		message (scoped_name, MessageType::ERROR, string ("Symbol not found: ") + scoped_name.stringize ());
+
+	return f.second;
 }
 
 unsigned Builder::positive_int (const Variant& v, const Location& loc)
@@ -288,10 +328,10 @@ const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name)
 	return item;
 }
 
-const ItemScope* Builder::cur_scope () const
+ItemScope* Builder::cur_scope () const
 {
 	if (scope_stack_.size () > 1)
-		return static_cast <const ItemScope*> (scope_stack_.back ());
+		return static_cast <ItemScope*> (scope_stack_.back ());
 	else
 		return nullptr;
 }
@@ -325,6 +365,68 @@ void Builder::scope_end ()
 		container_stack_.pop ();
 	}
 }
+
+const string& Builder::prefix () const
+{
+	const ItemScope* scope = cur_scope ();
+	if (scope)
+		return scope->prefix ();
+	else
+		return prefix_stack_.top ();
+}
+
+void Builder::prefix (const std::string& pref, const Location& loc)
+{
+	if (prefix_valid (pref, loc)) {
+		ItemScope* scope = cur_scope ();
+		if (scope)
+			scope->prefix (*this, pref, loc);
+		else
+			prefix_stack_.top () = pref;
+	}
+}
+
+bool Builder::prefix_valid (const std::string& pref, const Location& loc)
+{
+	bool valid = true;
+	if (!pref.empty ()) {
+		switch (pref.front ()) {
+			case '_':
+			case '-':
+			case '.':
+				valid = false;
+				message (loc, MessageType::ERROR, "The prefix shall not begin with the characters underscore (_), hyphen (-) or period (.).");
+		}
+		if (valid) {
+			if (pref.back () == '/') {
+				valid = false;
+				message (loc, MessageType::ERROR, "The prefix shall not contain a trailing slash (/).");
+			} else {
+				for (auto c : pref) {
+					switch (c) {
+						case '_':
+						case '-':
+						case '.':
+						case '/':
+							break;
+						default:
+							if (!isalnum (c)) {
+								valid = false;
+								string msg = "Invalid character '";
+								Variant::append (msg, c);
+								msg += "' in the prefix.";
+								message (loc, MessageType::ERROR, msg);
+							}
+					}
+					if (!valid)
+						break;
+				}
+			}
+		}
+	}
+	return valid;
+}
+
 const Ptr <NamedItem>* Builder::constr_type_end ()
 {
 	ItemScope* type = static_cast <ItemScope*> (scope_stack_.back ());
@@ -347,8 +449,8 @@ const Ptr <NamedItem>* Builder::constr_type_end ()
 	if (type) {
 		const Symbols& scope = *scope_stack_.back ();
 		auto f = scope.find (type->name ());
-		assert (f != scope.end ());
-		return &*f;
+		assert (f);
+		return f;
 	} else
 		return nullptr;
 }
@@ -403,7 +505,7 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 void Builder::error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc)
 {
 	message (name, MessageType::ERROR, string (new_kind.interface_kind_name ()) + " interface " + name + " is already defined as " + prev_kind.interface_kind_name () + ".");
-	message (prev_loc, MessageType::MESSAGE, "See previous declaration.");
+	see_prev_declaration (prev_loc);
 }
 
 void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
@@ -433,13 +535,10 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				return;
 			}
 
-			if (prev_ik.interface_kind () != ik.interface_kind ()) {
+			if (prev_ik.interface_kind () != ik.interface_kind ())
 				error_interface_kind (name, ik, prev_ik, item);
-				return;
-			}
 
-			if (!rid->check_prefix (*this, name))
-				return;
+			rid->check_prefix (*this, name);
 		}
 
 		if (is_main_file ())
@@ -511,7 +610,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 						auto ins = direct_bases.emplace (base, *base_name);
 						if (!ins.second) {
 							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + itf->name () + ".");
-							message (ins.first->second, MessageType::MESSAGE, "See the previous declaration.");
+							see_prev_declaration (ins.first->second);
 							continue;
 						}
 						{
@@ -547,7 +646,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 				}
 				if (err) {
 					message (*base_name, MessageType::ERROR, err);
-					message (*base, MessageType::MESSAGE, "See declaration of " + base_name->stringize ());
+					see_declaration_of (*base, base_name->stringize ());
 				}
 			}
 		}
@@ -637,12 +736,12 @@ void Builder::operation_raises (const ScopedNames& raises)
 				const NamedItem* item = *l;
 				if (item->kind () != Item::Kind::EXCEPTION) {
 					message (*name, MessageType::ERROR, name->stringize () + " is not an exception type.");
-					message (*item, MessageType::MESSAGE, string ("See declaration of ") + item->qualified_name () + ".");
+					see_declaration_of (*item, item->qualified_name ());
 				} else {
 					auto ins = unique.emplace (item, *name);
 					if (!ins.second) {
 						message (*name, MessageType::ERROR, string ("Duplicated exception specification ") + name->stringize () + ".");
-						message (ins.first->second, MessageType::MESSAGE, string ("See previous specification of ") + item->qualified_name () + ".");
+						see_prev_declaration (ins.first->second);
 					} else
 						op->add_exception (static_cast <const Exception*> (item));
 				}
@@ -680,8 +779,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 				return;
 			}
 
-			if (!rid->check_prefix (*this, name))
-				return;
+			rid->check_prefix (*this, name);
 		}
 
 		if (is_main_file ())
@@ -772,8 +870,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 				return;
 			}
 
-			if (!rid->check_prefix (*this, name))
-				return;
+			rid->check_prefix (*this, name);
 		}
 
 		if (is_main_file ())
@@ -843,7 +940,7 @@ void Builder::union_label (const Variant& label, const Location& loc)
 			auto ins = union_.all_labels.emplace (label.to_key (), loc);
 			if (!ins.second) {
 				message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used.");
-				message (ins.first->second, MessageType::MESSAGE, "See previous declaration.");
+				see_prev_declaration (ins.first->second);
 			} else if (union_.element.is_default)
 				message (loc, MessageType::WARNING, "Default element, case is ignored.");
 			else

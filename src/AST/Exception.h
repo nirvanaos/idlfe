@@ -9,15 +9,12 @@ namespace AST {
 
 /// The `exception` declaration.
 class Exception :
-	public ItemContainer,
-	public RepositoryId
+	public ItemContainer
 {
 public:
 	/// \internal
-
 	Exception (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::EXCEPTION, builder, name),
-		RepositoryId (*this, builder)
+		ItemContainer (Item::Kind::EXCEPTION, builder, name)
 	{}
 	/// \endinternal
 };

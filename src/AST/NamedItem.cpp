@@ -22,4 +22,15 @@ std::string NamedItem::qualified_name () const
 	return qn;
 }
 
+ScopedName NamedItem::scoped_name () const
+{
+	ScopedName sn;
+	if (parent_) {
+		sn = parent_->scoped_name ();
+		sn.push_back (name_);
+	} else
+		sn = ScopedName (*this, true, name_);
+	return sn;
+}
+
 }

@@ -1,10 +1,13 @@
 #include "Interface.h"
+#include "Builder/Builder.h"
 
 using namespace std;
 
 namespace AST {
 
-const char* InterfaceKind::interface_kind_name () const
+using namespace Build;
+
+const char* InterfaceKind::interface_kind_name () const noexcept
 {
 	switch (kind_) {
 		case Kind::ABSTRACT:
@@ -16,7 +19,7 @@ const char* InterfaceKind::interface_kind_name () const
 	}
 }
 
-void Interface::get_all_interfaces (std::vector <const Interface*>& all) const
+void Interface::get_all_interfaces (vector <const Interface*>& all) const
 {
 	all.reserve (all.size () + bases_.size () + 1);
 	all.push_back (this);
@@ -25,11 +28,48 @@ void Interface::get_all_interfaces (std::vector <const Interface*>& all) const
 		base->get_all_interfaces (all);
 }
 
-void Interface::get_all_bases (std::set <const Interface*>& bases) const
+void Interface::get_all_bases (set <const Interface*>& bases) const
 {
 	for (const Interface* base : bases_) {
 		if (bases.insert (base).second)
 			base->get_all_bases (bases);
+	}
+}
+
+pair <bool, const Ptr <NamedItem>*> Interface::find (Builder& builder, const string& name, const Location& loc) const
+{
+	const Ptr <NamedItem>* p = ItemScope::find (name);
+	if (p)
+		return make_pair (true, p);
+
+	set <const Ptr <NamedItem>*> found;
+	for (auto base = bases_.begin (); base != bases_.end (); ++base) {
+		(*base)->base_find (name, found);
+	}
+
+	if (found.empty ())
+		return make_pair (false, nullptr);
+
+	if (found.size () > 1) {
+		// Ambiguous
+		builder.message (loc, Builder::MessageType::ERROR, string ("Ambiguous name ") + name + '.');
+		for (auto item : found) {
+			builder.message (**item, Builder::MessageType::MESSAGE, string ("Could be ") + (*item)->qualified_name () + '.');
+		}
+		return make_pair (true, nullptr);
+	} else
+		return make_pair (true, *found.begin ());
+}
+
+void Interface::base_find (const std::string& name, std::set <const Ptr <NamedItem>*>& found) const
+{
+	const Ptr <NamedItem>* p = ItemScope::find (name);
+	if (p) {
+		found.insert (p);
+	} else {
+		for (auto base = bases_.begin (); base != bases_.end (); ++base) {
+			(*base)->base_find (name, found);
+		}
 	}
 }
 

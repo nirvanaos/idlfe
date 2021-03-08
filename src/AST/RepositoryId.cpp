@@ -44,7 +44,7 @@ RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
 				p = static_cast <Native*> (item);
 				break;
 			case Item::Kind::EXCEPTION:
-				p = static_cast <Native*> (item);
+				p = static_cast <Exception*> (item);
 				break;
 		}
 	}
@@ -58,57 +58,99 @@ RepositoryId::RepositoryId (const NamedItem& item, const Builder& builder) :
 
 bool RepositoryId::check_prefix (Builder& builder, const Location& loc) const
 {
-	if (Definition::ID != definition_) {
+	if (!explicit_ [EXPLICIT_ID] && !explicit_ [EXPLICIT_PREFIX]) {
 		const string& pref = builder.prefix ();
 		if (prefix_or_id_ != pref) {
 			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different prefix \"" + prefix_or_id_
 				+ "\". Current prefix is \"" + pref + "\".");
-			see_prev_declaration (builder, item ());
+			builder.see_prev_declaration (item ());
 			return false;
 		}
 	}
 	return true;
 }
 
-void RepositoryId::pragma_id (Builder& builder, const std::string& id, const Location& loc)
+bool RepositoryId::prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 {
-	switch (definition_) {
-		case Definition::VERSION:
-			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
-			see_prev_declaration (builder, pragma_loc_);
-			return;
-		case Definition::ID:
-			if (prefix_or_id_ != id) {
-				builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma ID \"" + prefix_or_id_ + "\".");
-				see_prev_declaration (builder, pragma_loc_);
+	if (!explicit_ [EXPLICIT_ID]) {
+		if (explicit_ [EXPLICIT_PREFIX]) {
+			if (prefix_or_id_ != pref) {
+				builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different prefix \"" + prefix_or_id_
+					+ "\". Current prefix is \"" + pref + "\".");
+				builder.see_prev_declaration (explicit_ [EXPLICIT_PREFIX]);
+				return false;
 			}
-			return;
+		} else {
+			prefix_or_id_ = pref;
+			explicit_ [EXPLICIT_PREFIX] = loc;
+		}
 	}
-	prefix_or_id_ = id;
-	definition_ = Definition::ID;
-	pragma_loc_ = loc;
+	return true;
+}
+
+void RepositoryId::type_id (Builder& builder, const std::string& id, const Location& loc)
+{
+	if (explicit_ [EXPLICIT_ID]) {
+		if (prefix_or_id_ != id) {
+			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different repository ID \"" + prefix_or_id_ + "\".");
+			builder.see_prev_declaration (explicit_ [EXPLICIT_ID]);
+		}
+	} else if (explicit_ [EXPLICIT_VERSION]) {
+		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
+		builder.see_prev_declaration (explicit_ [EXPLICIT_VERSION]);
+	} else {
+		prefix_or_id_ = id;
+		explicit_ [EXPLICIT_ID] = loc;
+	}
 }
 
 void RepositoryId::pragma_version (Builder& builder, const Version v, const Location& loc)
 {
-	switch (definition_) {
-		case Definition::VERSION:
-			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
-			see_prev_declaration (builder, pragma_loc_);
-			return;
-		case Definition::ID:
-			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma ID \"" + prefix_or_id_ + "\".");
-			see_prev_declaration (builder, pragma_loc_);
-			return;
+	if (explicit_ [EXPLICIT_ID]) {
+		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with repository ID.");
+		builder.see_prev_declaration (explicit_ [EXPLICIT_ID]);
+	} else if (explicit_ [EXPLICIT_VERSION]) {
+		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
+		builder.see_prev_declaration (explicit_ [EXPLICIT_VERSION]);
+	} else {
+		version_ = v;
+		explicit_ [EXPLICIT_VERSION] = loc;
 	}
-	version_ = v;
-	definition_ = Definition::VERSION;
-	pragma_loc_ = loc;
 }
 
-void RepositoryId::see_prev_declaration (Builder& builder, const Location& loc)
+string RepositoryId::repository_id () const
 {
-	builder.message (loc, Builder::MessageType::MESSAGE, "See previous declaration.");
+	if (explicit_ [EXPLICIT_ID])
+		return prefix_or_id_;
+	string id;
+	id.reserve (5 + prefix_or_id_.length ());
+	id = "IDL:";
+	if (!prefix_or_id_.empty ()) {
+		id += prefix_or_id_;
+		id += '/';
+	}
+	ScopedName sn = item ().scoped_name ();
+	auto it = sn.begin ();
+	id += *(it++);
+	for (; it != sn.end (); ++it) {
+		id += '/';
+		id += *it;
+	}
+	id += ':';
+	id += to_string (version_.major);
+	id += '.';
+	id += to_string (version_.minor);
+	return id;
+}
+
+bool RepositoryId::check_unique (Build::Builder& builder, map <std::string, const NamedItem*>& ids) const
+{
+	auto ins = ids.emplace (repository_id (), &item ());
+	if (!ins.second) {
+		builder.message (item (), Builder::MessageType::ERROR, string ("Repository ID ") + ins.first->first + " is duplicated.");
+		builder.see_declaration_of (*ins.first->second, ins.first->second->qualified_name ());
+	}
+	return ins.second;
 }
 
 }

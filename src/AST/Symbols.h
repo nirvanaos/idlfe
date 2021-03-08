@@ -3,6 +3,7 @@
 
 #include "NamedItem.h"
 #include <set>
+#include <map>
 
 namespace AST {
 
@@ -33,7 +34,12 @@ class Symbols :
 public:
 	// Methods made outline to reduce size.
 	std::pair <iterator, bool> insert (NamedItem* item);
-	const iterator find (const std::string& name) const;
+	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const std::string& name, const Location&) const;
+
+	const Ptr <NamedItem>* find (const std::string& name) const;
+
+	// Check for repository is uniquness
+	void check_rep_ids_unique (Build::Builder& builder, std::map <std::string, const NamedItem*>& ids) const;
 };
 
 }

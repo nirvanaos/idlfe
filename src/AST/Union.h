@@ -25,8 +25,7 @@ public:
 
 /// `union` definition.
 class Union :
-	public ItemContainer,
-	public RepositoryId
+	public ItemContainer
 {
 public:
 	const Type& discriminator_type () const
@@ -36,7 +35,6 @@ public:
 
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& discriminator_type) :
 		ItemContainer (Item::Kind::UNION, builder, name),
-		RepositoryId (*this, builder),
 		discriminator_type_ (discriminator_type)
 	{}
 

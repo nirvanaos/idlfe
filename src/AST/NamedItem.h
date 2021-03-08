@@ -12,6 +12,7 @@ class SimpleDeclarator;
 }
 
 class ItemScope;
+struct ScopedName;
 
 class NamedItem :
 	public Item,
@@ -31,6 +32,7 @@ public:
 	}
 
 	std::string qualified_name () const;
+	ScopedName scoped_name () const;
 
 private:
 	const ItemScope* parent_;

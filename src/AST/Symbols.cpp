@@ -1,4 +1,6 @@
 #include "Symbols.h"
+#include "RepositoryId.h"
+#include "ItemScope.h"
 #include <algorithm>
 
 using namespace std;
@@ -20,9 +22,35 @@ std::pair <Symbols::iterator, bool> Symbols::insert (NamedItem* item)
 	return Base::insert (item);
 }
 
-const Symbols::iterator Symbols::find (const std::string& name) const
+pair <bool, const Ptr <NamedItem>*> Symbols::find (Build::Builder&, const std::string& name, const Location&) const
 {
-	return Base::find (name);
+	auto p = find (name);
+	if (p)
+		return make_pair (true, p);
+	else
+		return make_pair (false, nullptr);
+}
+
+const Ptr <NamedItem>* Symbols::find (const std::string& name) const
+{
+	auto f = Base::find (name);
+	if (f != end ())
+		return &*f;
+	else
+		return nullptr;
+}
+
+void Symbols::check_rep_ids_unique (Build::Builder& builder, map <string, const NamedItem*>& ids) const
+{
+	for (auto it = begin (); it != end (); ++it) {
+		NamedItem* item = *it;
+		const RepositoryId* rid = RepositoryId::cast (item);
+		if (rid)
+			rid->check_unique (builder, ids);
+		const ItemScope* child = ItemScope::cast (item);
+		if (child)
+			child->check_rep_ids_unique (builder, ids);
+	}
 }
 
 }

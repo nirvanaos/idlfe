@@ -785,7 +785,7 @@ param_type_spec
 
 fixed_pt_type
 	: T_FIXED T_LESS_THAN_SIGN positive_int_const T_COMMA
-	positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1); }
+		positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1); }
 	;
 
 fixed_pt_const_type
@@ -797,10 +797,11 @@ value_base_type
 	;
 
 type_id_dcl
-	: T_TYPEID scoped_name T_string_literal
+	: T_TYPEID scoped_name T_string_literal { drv.type_id ($2, $3, @3); }
 
 type_prefix_dcl
-	: T_TYPEPREFIX scoped_name T_string_literal
+	: T_TYPEPREFIX scoped_name T_string_literal { drv.type_prefix ($2, $3, @3); }
+	| T_TYPEPREFIX T_SCOPE T_string_literal { drv.type_prefix (AST::ScopedName (@2), $3, @3); }
 
 %%
 
