@@ -2,7 +2,7 @@
 #ifndef NIDL_AST_EVAL_H_
 #define NIDL_AST_EVAL_H_
 
-#include "../Variant.h"
+#include "../../include/AST/Variant.h"
 
 namespace AST {
 

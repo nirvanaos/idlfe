@@ -40,9 +40,9 @@ namespace FE {
 class Driver;
 }
 #include "../AST/Builder/Declarators.h"
-#include "../AST/ScopedName.h"
-#include "../AST/Variant.h"
-#include "../AST/Parameter.h"
+#include "../include/AST/ScopedName.h"
+#include "../include/AST/Variant.h"
+#include "../include/AST/Parameter.h"
 }
 
 %param {FE::Driver& drv}

@@ -2,7 +2,7 @@
 #define NIDL_AST_DECLARATORS_H_
 
 #include <string>
-#include "../Location.h"
+#include "../../include/AST/Location.h"
 #include <forward_list>
 
 namespace AST {

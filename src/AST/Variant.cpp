@@ -1,5 +1,5 @@
-#include "Constant.h"
-#include "Enum.h"
+#include "../include/AST/Constant.h"
+#include "../include/AST/Enum.h"
 #include "Builder/SafeInt/SafeInt.hpp"
 #include "Builder/decNumber.h"
 #include <stdexcept>

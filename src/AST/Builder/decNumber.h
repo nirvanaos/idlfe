@@ -5,7 +5,7 @@
 extern "C" {
 #include <decNumber/decNumber.h>
 }
-#include "../Fixed.h"
+#include "../../include/AST/Fixed.h"
 
 #if DECNUMDIGITS != 62
 #error decNumber DECNUMDIGITS must be 62.

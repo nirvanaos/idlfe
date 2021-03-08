@@ -1,9 +1,9 @@
-#include "ItemScope.h"
-#include "Module.h"
-#include "Interface.h"
-#include "Struct.h"
-#include "Union.h"
-#include "Exception.h"
+#include "../include/AST/ItemScope.h"
+#include "../include/AST/Module.h"
+#include "../include/AST/Interface.h"
+#include "../include/AST/Struct.h"
+#include "../include/AST/Union.h"
+#include "../include/AST/Exception.h"
 #include "Builder/Builder.h"
 
 namespace AST {

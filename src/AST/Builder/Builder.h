@@ -1,10 +1,10 @@
 #ifndef NIDL_AST_BUILDER_H_
 #define NIDL_AST_BUILDER_H_
 
-#include "../AST.h"
-#include "../Interface.h"
-#include "../Parameter.h"
-#include "../ScopedName.h"
+#include "../../include/AST/AST.h"
+#include "../../include/AST/Interface.h"
+#include "../../include/AST/Parameter.h"
+#include "../../include/AST/ScopedName.h"
 #include "Eval.h"
 #include "Declarators.h"
 #include <ostream>

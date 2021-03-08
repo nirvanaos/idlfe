@@ -1,6 +1,6 @@
-#include "Symbols.h"
-#include "RepositoryId.h"
-#include "ItemScope.h"
+#include "../include/AST/Symbols.h"
+#include "../include/AST/RepositoryId.h"
+#include "../include/AST/ItemScope.h"
 #include <algorithm>
 
 using namespace std;

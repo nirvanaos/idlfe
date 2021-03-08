@@ -1,7 +1,7 @@
 #include "EvalEnum.h"
 #include "Builder.h"
-#include "../Enum.h"
-#include "../Constant.h"
+#include "../../include/AST/Enum.h"
+#include "../../include/AST/Constant.h"
 
 using namespace std;
 

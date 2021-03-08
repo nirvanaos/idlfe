@@ -1,7 +1,7 @@
 /// \file EvalString.cpp String expression evaluiator.
 #include "EvalString.h"
 #include "Builder.h"
-#include "../Constant.h"
+#include "../../include/AST/Constant.h"
 #include <stdexcept>
 
 using namespace std;

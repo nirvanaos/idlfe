@@ -1,7 +1,7 @@
 /// \file EvalFixed.cpp Fixed expression evaluiator.
 #include "EvalFixed.h"
 #include "Builder.h"
-#include "../Constant.h"
+#include "../../include/AST/Constant.h"
 #include "decNumber.h"
 #include <stdexcept>
 

@@ -1,8 +1,8 @@
-#include "Type.h"
-#include "Sequence.h"
-#include "Array.h"
-#include "TypeDef.h"
-#include "Enum.h"
+#include "../include/AST/Type.h"
+#include "../include/AST/Sequence.h"
+#include "../include/AST/Array.h"
+#include "../include/AST/TypeDef.h"
+#include "../include/AST/Enum.h"
 #include <stdexcept>
 
 using namespace std;

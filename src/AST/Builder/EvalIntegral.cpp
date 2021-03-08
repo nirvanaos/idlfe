@@ -1,7 +1,7 @@
 /// \file EvalLong.cpp Integer expression evaluiator.
 #include "EvalIntegral.h"
 #include "Builder.h"
-#include "../Constant.h"
+#include "../../include/AST/Constant.h"
 #include "SafeInt/SafeInt.hpp"
 #include <stdexcept>
 

@@ -1,4 +1,4 @@
-#include "Interface.h"
+#include "../include/AST/Interface.h"
 #include "Builder/Builder.h"
 
 using namespace std;

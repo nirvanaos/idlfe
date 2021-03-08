@@ -1,10 +1,10 @@
 #include "Builder/Builder.h"
-#include "Struct.h"
-#include "Union.h"
-#include "Enum.h"
-#include "TypeDef.h"
-#include "Native.h"
-#include "Exception.h"
+#include "../include/AST/Struct.h"
+#include "../include/AST/Union.h"
+#include "../include/AST/Enum.h"
+#include "../include/AST/TypeDef.h"
+#include "../include/AST/Native.h"
+#include "../include/AST/Exception.h"
 
 using namespace std;
 using namespace AST::Build;
