@@ -53,15 +53,26 @@ pair <bool, const Ptr <NamedItem>*> Interface::find (Builder& builder, const str
 	if (found.size () > 1) {
 		// Ambiguous
 		builder.message (loc, Builder::MessageType::ERROR, string ("Ambiguous name ") + name + '.');
-		for (auto item : found) {
-			builder.message (**item, Builder::MessageType::MESSAGE, string ("Could be ") + (*item)->qualified_name () + '.');
+		auto it = found.begin ();
+		const Ptr <NamedItem>* p = *it;
+		builder.message (**p, Builder::MessageType::MESSAGE, string ("Could be ") + (*p)->qualified_name ());
+		++it;
+		for (;;) {
+			p = *it;
+			string msg = string ("or ") + (*p)->qualified_name ();
+			if (found.end () == ++it) {
+				msg += '.';
+				builder.message (**p, Builder::MessageType::MESSAGE, msg);
+				break;
+			} else
+				builder.message (**p, Builder::MessageType::MESSAGE, msg);
 		}
 		return make_pair (true, nullptr);
 	} else
 		return make_pair (true, *found.begin ());
 }
 
-void Interface::base_find (const std::string& name, std::set <const Ptr <NamedItem>*>& found) const
+void Interface::base_find (const std::string& name, set <const Ptr <NamedItem>*>& found) const
 {
 	const Ptr <NamedItem>* p = ItemScope::find (name);
 	if (p) {
