@@ -1,7 +1,7 @@
 #include "compile.h"
 #include "Options.h"
-#include "simplecpp/simplecpp.h"
-#include "FE/Driver.h"
+#include "../src/simplecpp/simplecpp.h"
+#include "../src/FE/Driver.h"
 #include <fstream>
 #include <sstream>
 

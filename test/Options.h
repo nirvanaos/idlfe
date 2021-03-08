@@ -1,7 +1,7 @@
 #ifndef NIDL_OPTIONS_H_
 #define NIDL_OPTIONS_H_
 
-#include "simplecpp/simplecpp.h"
+#include "../src/simplecpp/simplecpp.h"
 
 struct Options
 {
