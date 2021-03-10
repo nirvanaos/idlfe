@@ -26,7 +26,7 @@
 #define NIDL_AST_INCLUDE_H_
 
 #include "Item.h"
-#include <string>
+#include <filesystem>
 
 namespace AST {
 
@@ -36,19 +36,19 @@ class Include :
 {
 public:
 	/// Returns the name of included IDL file.
-	const std::string& file () const
+	const std::filesystem::path& file () const
 	{
-		return name_;
+		return file_;
 	}
 
 	/// \internals
-	Include (const std::string& name) :
+	Include (std::filesystem::path&& file) :
 		Item (Kind::INCLUDE),
-		name_ (name)
+		file_ (std::move (file))
 	{}
 
 private:
-	std::string name_;
+	std::filesystem::path file_;
 	/// \endinternals
 };
 

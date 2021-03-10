@@ -53,7 +53,7 @@ public:
 	{
 		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
-		file_stack_.emplace_back (tree_->file ());
+		file_stack_.emplace_back (*tree_->add_file (file).first);
 	}
 
 	unsigned err_cnt () const

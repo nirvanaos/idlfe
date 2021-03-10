@@ -39,7 +39,6 @@
 #include "../../include/AST/Exception.h"
 #include "../../include/AST/Member.h"
 #include "../../include/AST/Constant.h"
-#include <assert.h>
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -54,7 +53,7 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 {
 	static const char* const msg_types [4] = { "error", "error", "warning", "message" };
 
-	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << " : " << err << endl;
+	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
 		throw runtime_error ("Too many errors, compilation aborted.");
@@ -254,19 +253,26 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 void Builder::file (const std::string& name, const Location& loc)
 {
 	auto ins = tree_->add_file (name);
-	const string& file = *ins.first;
-	auto it = file_stack_.end () - 1;
-	for (; it != file_stack_.begin (); --it) {
-		if (it->file == &file)
-			break;
+	if (!ins.second) {
+		const string& file = *ins.first;
+		auto it = file_stack_.end () - 1;
+		for (; it != file_stack_.begin (); --it) {
+			if (it->file == &file)
+				break;
+		}
+		if (it->file == &file) {
+			file_stack_.erase (it + 1, file_stack_.end ());
+			return;
+		}
 	}
-	if (it->file == &file)
-		file_stack_.erase (it + 1, file_stack_.end ());
-	else {
-		file_stack_.emplace_back (*ins.first);
-		if (is_main_file ())
-			tree_->append (Ptr <Item>::make <Include> (ref (*ins.first)));
+	if (is_main_file ()) {
+		try {
+			tree_->append (Ptr <Item>::make <Include> (filesystem::relative (name, tree_->file ().parent_path ())));
+		} catch (const filesystem::filesystem_error& ex) {
+			message (loc, MessageType::ERROR, ex.what ());
+		}
 	}
+	file_stack_.emplace_back (*ins.first);
 }
 
 void Builder::error_name_collision (const SimpleDeclarator& name, const Location& prev_loc)
@@ -680,7 +686,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
-		if (oneway && type.kind () != Type::Kind::VOID) {
+		if (oneway && type.tkind () != Type::Kind::VOID) {
 			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored.");
 			oneway = false;
 		}
@@ -697,7 +703,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 				interface_.operation.op = op;
 				// We always append operation to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
-				container_stack_.top ()->append (op);
+				static_cast <Interface*> (itf)->append (op);
 			}
 		}
 	}
@@ -742,7 +748,7 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 		if (!ins.second)
 			message (name, MessageType::ERROR, string ("Duplicated parameter ") + name + ".");
 		else if (is_main_file ())
-			op->append (op);
+			op->push_back (par);
 	}
 }
 
@@ -906,7 +912,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 		bool type_OK = false;
 		const Ptr <NamedItem>* enum_type = nullptr;
-		switch (t.kind ()) {
+		switch (t.tkind ()) {
 			case Type::Kind::BASIC_TYPE: {
 				BasicType bt = t.basic_type ();
 				if (is_integral (bt))
@@ -1073,7 +1079,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 {
 	const Type& type = t.dereference_type ();
 	Eval* eval = nullptr;
-	switch (type.kind ()) {
+	switch (type.tkind ()) {
 		case Type::Kind::BASIC_TYPE:
 			if (is_integral (type.basic_type ()))
 				eval = new EvalIntegral (*this);

@@ -42,7 +42,7 @@ const char* InterfaceKind::interface_kind_name () const noexcept
 	}
 }
 
-void Interface::get_all_interfaces (vector <const Interface*>& all) const
+void Interface::get_all_interfaces (Interfaces& all) const
 {
 	all.reserve (all.size () + bases_.size () + 1);
 	all.push_back (this);

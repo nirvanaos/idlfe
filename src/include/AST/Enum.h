@@ -33,24 +33,6 @@ namespace AST {
 
 class EnumItem;
 
-typedef std::vector <Ptr <EnumItem>> EnumItems;
-
-/// The `enum` declaration.
-class Enum :
-	public NamedItem,
-	public RepositoryId,
-	public EnumItems
-{
-public:
-	/// \internal
-
-	Enum (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::ENUM, builder, name),
-		RepositoryId (*this, builder)
-	{}
-	/// \endinternal
-};
-
 /// The enumerator.
 class EnumItem :
 	public NamedItem
@@ -71,6 +53,25 @@ public:
 
 private:
 	const Ptr <NamedItem>& enum_type_;
+	/// \endinternal
+};
+
+/// The container of the EnumItem elements.
+typedef std::vector <Ptr <EnumItem>> EnumItems;
+
+/// The `enum` declaration.
+class Enum :
+	public NamedItem,
+	public RepositoryId,
+	public EnumItems
+{
+public:
+	/// \internal
+
+	Enum (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		NamedItem (Item::Kind::ENUM, builder, name),
+		RepositoryId (*this, builder)
+	{}
 	/// \endinternal
 };
 

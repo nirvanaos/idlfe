@@ -28,6 +28,7 @@
 #include "Item.h"
 #include "Symbols.h"
 #include "Container.h"
+#include <filesystem>
 
 namespace AST {
 
@@ -39,9 +40,9 @@ class AST :
 {
 public:
 	/// \returns The name of compiled IDL file.
-	const std::string& file () const
+	const std::filesystem::path& file () const
 	{
-		return *main_file_;
+		return main_file_;
 	}
 
 	/// Visit all items for the code generation.
@@ -51,11 +52,9 @@ public:
 	/// \internal
 
 	AST (const std::string& file) :
-		Item (Item::Kind::AST)
-	{
-		main_file_ = &*files_.insert (file).first;
-		
-	}
+		Item (Item::Kind::AST),
+		main_file_ (file)
+	{}
 
 	std::pair <std::set <std::string>::iterator, bool> add_file (const std::string& name)
 	{
@@ -64,7 +63,7 @@ public:
 
 private:
 	std::set <std::string> files_;
-	const std::string* main_file_;
+	std::filesystem::path main_file_;
 	/// \endinternal
 };
 

@@ -11,4 +11,4 @@
 * Anonimous Types
 
 ## Compile
-Requires C++11 compilant compiler.
+Requires a C++17 compilant compiler.

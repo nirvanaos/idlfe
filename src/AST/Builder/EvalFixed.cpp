@@ -72,7 +72,7 @@ Variant EvalFixed::constant (const ScopedName& constant)
 {
 	const Constant* pc = lookup_const (constant);
 	if (pc) {
-		if (pc->dereference_type ().kind () == Type::Kind::FIXED)
+		if (pc->dereference_type ().tkind () == Type::Kind::FIXED)
 			return Variant (*pc);
 		else {
 			invalid_constant_type (constant);
@@ -142,7 +142,7 @@ Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 
 Variant EvalFixed::cast (const Type& t, Variant&& v, const Location& loc)
 {
-	assert (t.dereference_type ().kind () == Type::Kind::FIXED);
+	assert (t.dereference_type ().tkind () == Type::Kind::FIXED);
 	assert (v.empty () || v.dereference_const ().vtype () == Variant::VT::FIXED);
 	return v;
 }

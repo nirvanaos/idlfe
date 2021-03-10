@@ -32,10 +32,10 @@ bool IDL_Print::parse_command_line (CmdLine& args)
 
 void IDL_Print::generate_code (const AST::AST& tree)
 {
-	path filename = out_dir_ / tree.file ();
-	filename.replace_extension (".txt");
-	create_directories (filename.parent_path ());
-	Printer printer (filename);
+	path file = out_dir_ / tree.file ().filename ();
+	file.replace_extension (".txt");
+	create_directories (file.parent_path ());
+	Printer printer (file);
 	if (tree.visit (printer))
 		cerr << "Warning, some unsupported Building Blocks were ignored.\n";
 }

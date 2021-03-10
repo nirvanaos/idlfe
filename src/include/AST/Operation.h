@@ -26,17 +26,20 @@
 #define NIDL_AST_OPERATION_H_
 
 #include "NamedItem.h"
-#include "Type.h"
+#include "Parameter.h"
 #include "Exception.h"
 #include "Variant.h"
 
 namespace AST {
 
+/// The container of the Parameter elements.
+typedef std::vector <Ptr <Parameter>> Parameters;
+
 /// The operation.
 class Operation :
 	public NamedItem,
 	public Type,
-	public Container
+	public Parameters
 {
 public:
 	/// \returns `true` if this is an `onevay` operation.

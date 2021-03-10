@@ -65,14 +65,17 @@ private:
 	/// \endinternals
 };
 
+/// The sequence of interfaces.
+typedef std::vector <const Interface*> Interfaces;
+
 /// The interface definition.
 class Interface :
 	public ItemContainer,
 	public InterfaceKind
 {
 public:
-	/// \returns The 
-	const std::vector <const Interface*>& bases () const
+	/// \returns The base interfaces.
+	const Interfaces& bases () const
 	{
 		return bases_;
 	}
@@ -83,7 +86,7 @@ public:
 
 	/// \internals
 
-	void get_all_interfaces (std::vector <const Interface*>& all) const;
+	void get_all_interfaces (Interfaces& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
@@ -101,7 +104,7 @@ private:
 	void base_find (const std::string& name, std::set <const Ptr <NamedItem>*>& found) const;
 
 private:
-	std::vector <const Interface*> bases_;
+	Interfaces bases_;
 	/// \endinternals
 };
 

@@ -138,7 +138,7 @@ Type Type::make_array (const Type& type, const FixedArraySizes& sizes)
 size_t Type::key_max () const noexcept
 {
 	const Type& t = dereference_type ();
-	if (t.kind () == Kind::BASIC_TYPE) {
+	if (t.tkind () == Kind::BASIC_TYPE) {
 		switch (t.basic_type ()) {
 			case BasicType::BOOLEAN:
 				return 1;
@@ -156,7 +156,7 @@ size_t Type::key_max () const noexcept
 			case BasicType::LONGLONG:
 				return numeric_limits <size_t>::max ();
 		}
-	} else if (t.kind () == Kind::NAMED_TYPE) {
+	} else if (t.tkind () == Kind::NAMED_TYPE) {
 		const Ptr <NamedItem>& en = named_type ();
 		if (en->kind () == Item::Kind::ENUM) {
 			size_t item_cnt = static_cast <const Enum&> (*en).size ();

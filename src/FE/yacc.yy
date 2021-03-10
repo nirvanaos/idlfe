@@ -745,8 +745,8 @@ param_dcl
 
 param_attribute
 	: T_IN { $$ = AST::Parameter::Attribute::IN; }
-	| T_OUT { $$ = AST::Parameter::Attribute::IN; }
-	| T_INOUT { $$ = AST::Parameter::Attribute::IN; }
+	| T_OUT { $$ = AST::Parameter::Attribute::OUT; }
+	| T_INOUT { $$ = AST::Parameter::Attribute::INOUT; }
 	;
 
 raises_expr

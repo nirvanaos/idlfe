@@ -28,7 +28,6 @@
 #include <stdexcept>
 #include <limits>
 #include <cfenv>
-#include <assert.h>
 
 using namespace std;
 

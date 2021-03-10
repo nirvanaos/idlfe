@@ -96,7 +96,7 @@ Variant EvalIntegral::constant (const ScopedName& constant)
 	const Constant* pc = lookup_const (constant);
 	if (pc) {
 		const Type& t = pc->dereference_type ();
-		if (t.kind () == Type::Kind::BASIC_TYPE && is_integral (t.basic_type ()))
+		if (t.tkind () == Type::Kind::BASIC_TYPE && is_integral (t.basic_type ()))
 			return Variant (*pc);
 		else {
 			invalid_constant_type (constant);

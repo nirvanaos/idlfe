@@ -27,10 +27,10 @@ protected:
 
 	virtual void interface_decl (const AST::InterfaceDecl& item);
 	virtual void interface_begin (const AST::Interface& item);
-	virtual void operation (const AST::Operation& item);
-	virtual void parameter (const AST::Parameter& item);
-	virtual void attribute (const AST::Attribute& item);
 	virtual void interface_end (const AST::Interface& item);
+
+	virtual void operation (const AST::Operation& item);
+	virtual void attribute (const AST::Attribute& item);
 
 	virtual void exception_begin (const AST::Exception& item);
 	virtual void exception_end (const AST::Exception& item);
@@ -51,6 +51,9 @@ protected:
 private:
 	void indent ();
 	void print_type (const AST::Type& t);
+	void print_param (const AST::Parameter& p);
+	void constructed_begin (const char* type, const AST::NamedItem& item);
+	void complex_end ();
 
 private:
 	std::ofstream out_;

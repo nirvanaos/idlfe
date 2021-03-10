@@ -26,6 +26,7 @@
 #define NIDL_AST_ITEM_H_
 
 #include <utility>
+#include <assert.h>
 
 namespace AST {
 
@@ -256,6 +257,7 @@ public:
 
 	T* operator -> () const
 	{
+		assert (p_);
 		return p_;
 	}
 
@@ -266,6 +268,7 @@ public:
 
 	T& operator * () const
 	{
+		assert (p_);
 		return *p_;
 	}
 

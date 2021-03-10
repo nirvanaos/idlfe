@@ -73,10 +73,10 @@ public:
 
 	virtual void interface_decl (const InterfaceDecl& item) = 0;
 	virtual void interface_begin (const Interface& item) = 0;
-	virtual void operation (const Operation& item) = 0;
-	virtual void parameter (const Parameter& item) = 0;
-	virtual void attribute (const Attribute& item) = 0;
 	virtual void interface_end (const Interface& item) = 0;
+
+	virtual void operation (const Operation& item) = 0;
+	virtual void attribute (const Attribute& item) = 0;
 
 	virtual void exception_begin (const Exception& item) = 0;
 	virtual void exception_end (const Exception& item) = 0;

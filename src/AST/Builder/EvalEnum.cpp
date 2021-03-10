@@ -46,7 +46,7 @@ Variant EvalEnum::constant (const ScopedName& constant)
 			case Item::Kind::CONSTANT: {
 				const Constant& c = static_cast <const Constant&> (item);
 				const Type& t = c.dereference_type ();
-				if (t.kind () == Type::Kind::NAMED_TYPE && &t.named_type () == &type_)
+				if (t.tkind () == Type::Kind::NAMED_TYPE && &t.named_type () == &type_)
 					return c;
 			} break;
 		}

@@ -65,9 +65,6 @@ bool Container::visit (CodeGen& cg) const
 			case Item::Kind::OPERATION:
 				cg.operation (static_cast <const Operation&> (*item));
 				break;
-			case Item::Kind::PARAMETER:
-				cg.parameter (static_cast <const Parameter&> (*item));
-				break;
 			case Item::Kind::ATTRIBUTE:
 				cg.attribute (static_cast <const Attribute&> (*item));
 				break;

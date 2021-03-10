@@ -28,7 +28,6 @@
 #include "BasicType.h"
 #include "NamedItem.h"
 #include <forward_list>
-#include <assert.h>
 
 namespace AST {
 
@@ -57,7 +56,7 @@ public:
 	};
 
 	/// \returns The kind of type.
-	Kind kind () const noexcept
+	Kind tkind () const noexcept
 	{
 		return kind_;
 	}
@@ -66,7 +65,7 @@ public:
 	/// \invariant `kind () == Kind::BASIC_TYPE`.
 	BasicType basic_type () const noexcept
 	{
-		assert (kind () == Kind::BASIC_TYPE);
+		assert (tkind () == Kind::BASIC_TYPE);
 		return type_.basic_type;
 	}
 
@@ -74,7 +73,7 @@ public:
 	/// \invariant `kind () == Kind::NAMED_TYPE`.
 	const Ptr <NamedItem>& named_type () const noexcept
 	{
-		assert (kind () == Kind::NAMED_TYPE);
+		assert (tkind () == Kind::NAMED_TYPE);
 		return *type_.named_type;
 	}
 
@@ -83,7 +82,7 @@ public:
 	/// \returns The string size limit if string has limited size.
 	uint32_t string_size () const noexcept
 	{
-		assert (kind () == Kind::STRING || kind () == Kind::WSTRING);
+		assert (tkind () == Kind::STRING || tkind () == Kind::WSTRING);
 		return type_.string_size;
 	}
 
@@ -91,7 +90,7 @@ public:
 
 	const Sequence& sequence () const noexcept
 	{
-		assert (kind () == Kind::SEQUENCE);
+		assert (tkind () == Kind::SEQUENCE);
 		return *type_.sequence;
 	}
 
@@ -99,7 +98,7 @@ public:
 
 	const Array& array () const noexcept
 	{
-		assert (kind () == Kind::ARRAY);
+		assert (tkind () == Kind::ARRAY);
 		return *type_.array;
 	}
 
@@ -107,13 +106,13 @@ public:
 
 	uint8_t fixed_digits () const noexcept
 	{
-		assert (kind () == Kind::FIXED);
+		assert (tkind () == Kind::FIXED);
 		return type_.fixed.digits;
 	}
 
 	uint8_t fixed_scale () const noexcept
 	{
-		assert (kind () == Kind::FIXED);
+		assert (tkind () == Kind::FIXED);
 		return type_.fixed.scale;
 	}
 

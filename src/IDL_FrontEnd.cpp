@@ -177,37 +177,45 @@ bool IDL_FrontEnd::compile (const string& file)
 		simplecpp::preprocess (output_tokens, rawtokens, files, included, arguments_->preprocessor, &output_list);
 
 		if (!output_list.empty ()) {
+			bool fatal = false;
 			for (const simplecpp::Output& output : output_list) {
-				cerr << output.location.file () << ':' << output.location.line << ": ";
+				cerr << output.location.file () << '(' << output.location.line << "): ";
 				switch (output.type) {
 					case simplecpp::Output::ERROR:
-						cerr << "#error: ";
+						cerr << "error: #error: ";
+						fatal = true;
 						break;
 					case simplecpp::Output::WARNING:
-						cerr << "#warning: ";
+						cerr << "warning: #warning: ";
 						break;
 					case simplecpp::Output::MISSING_HEADER:
-						cerr << "Missing header: ";
+						cerr << "error: Missing header: ";
+						fatal = true;
 						break;
 					case simplecpp::Output::INCLUDE_NESTED_TOO_DEEPLY:
-						cerr << "Include nested too deeply: ";
+						cerr << "error: Include nested too deeply: ";
+						fatal = true;
 						break;
 					case simplecpp::Output::SYNTAX_ERROR:
-						cerr << "Syntax error: ";
+						cerr << "error: Syntax error: ";
+						fatal = true;
 						break;
 					case simplecpp::Output::PORTABILITY_BACKSLASH:
-						cerr << "Portability: ";
+						cerr << "warning: Portability: ";
 						break;
 					case simplecpp::Output::UNHANDLED_CHAR_ERROR:
-						cerr << "Unhandled char error: ";
+						cerr << "error: Unhandled char error: ";
+						fatal = true;
 						break;
 					case simplecpp::Output::EXPLICIT_INCLUDE_NOT_FOUND:
-						cerr << "Explicit include not found: ";
+						cerr << "error: Explicit include not found: ";
+						fatal = true;
 						break;
 				}
 				cerr << output.msg << endl;
 			}
-			return false;
+			if (fatal)
+				return false;
 		}
 
 		preprocessed.str (output_tokens.stringify ());
