@@ -1,5 +1,5 @@
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -40,15 +40,15 @@ ItemScope* ItemScope::cast (NamedItem* item) noexcept
 {
 	if (item) {
 		switch (item->kind ()) {
-			case Item::Kind::MODULE:
+			case Kind::MODULE:
 				return static_cast <Module*> (item);
-			case Item::Kind::INTERFACE:
+			case Kind::INTERFACE:
 				return static_cast <Interface*> (item);
-			case Item::Kind::STRUCT:
+			case Kind::STRUCT:
 				return static_cast <Struct*> (item);
-			case Item::Kind::UNION:
+			case Kind::UNION:
 				return static_cast <Union*> (item);
-			case Item::Kind::EXCEPTION:
+			case Kind::EXCEPTION:
 				return static_cast <Exception*> (item);
 		}
 	}

@@ -1,6 +1,6 @@
 /// \file Item.h
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -40,25 +40,25 @@ public:
 	{
 		AST, /// class AST
 		INCLUDE, /// class Include
+		NATIVE, /// class Native
+		TYPEDEF, /// class TypeDef
+		CONSTANT, /// class Constant
 		MODULE, /// class Module
 		MODULE_ITEMS, /// class ModuleItems
-		NATIVE, /// class Native
-		INTERFACE, /// class Interface
 		INTERFACE_DECL, /// class InterfaceDecl
-		TYPEDEF, /// class TypeDef
-		STRUCT, /// class Struct
-		STRUCT_DECL, /// class StructDecl
-		UNION, /// class Union
-		UNION_DECL, /// class UnionDecl
-		ENUM, /// class Enum
-		ENUM_ITEM, /// class EnumItem
+		INTERFACE, /// class Interface
 		OPERATION, /// class Operation
-		ATTRIBUTE, /// class Attribute
 		PARAMETER, /// class Parameter
-		CONSTANT, /// class Constant
+		ATTRIBUTE, /// class Attribute
 		EXCEPTION, /// class Exception
+		STRUCT_DECL, /// class StructDecl
+		STRUCT, /// class Struct
 		MEMBER, /// class Member
-		UNION_ELEMENT /// class UnionElement
+		UNION_DECL, /// class UnionDecl
+		UNION, /// class Union
+		UNION_ELEMENT, /// class UnionElement
+		ENUM, /// class Enum
+		ENUM_ITEM /// class EnumItem
 	};
 
 	/// \returns The kind of item.

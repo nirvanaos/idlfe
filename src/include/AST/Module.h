@@ -7,7 +7,7 @@
 
 namespace AST {
 
-/// Module scope.
+/// Module as a scope.
 class Module :
 	public ItemScope
 {
@@ -29,6 +29,12 @@ public:
 	const std::string& name () const
 	{
 		return module_.name ();
+	}
+
+	/// Returns module as a scope.
+	const Module& module () const
+	{
+		return module_;
 	}
 
 	/// \internal

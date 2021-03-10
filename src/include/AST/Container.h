@@ -1,6 +1,6 @@
 /// \file Container.h
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -30,13 +30,19 @@
 
 namespace AST {
 
+class CodeGen;
+
 /// Sequential container of the AST items.
 class Container :
 	public std::vector <Ptr <Item>>
 {
-	/// \internal
 	typedef std::vector <Ptr <Item>> Base;
 public:
+	/// Visit all items for the code generation.
+	/// \returns `true` if unsuppported building blocks were occurred.
+	bool visit (CodeGen& cg) const;
+
+	/// \internal
 	void append (Item* item);
 	/// \endinternal
 };

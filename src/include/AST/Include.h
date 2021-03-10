@@ -1,6 +1,6 @@
 /// \file Include.h
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -36,7 +36,7 @@ class Include :
 {
 public:
 	/// Returns the name of included IDL file.
-	const std::string& name () const
+	const std::string& file () const
 	{
 		return name_;
 	}

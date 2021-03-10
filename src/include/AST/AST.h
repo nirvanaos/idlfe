@@ -1,6 +1,6 @@
 /// \file AST.h
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -43,6 +43,10 @@ public:
 	{
 		return *main_file_;
 	}
+
+	/// Visit all items for the code generation.
+	/// \returns `true` if unsuppported building blocks were occurred.
+	bool visit (CodeGen& cg) const;
 
 	/// \internal
 

@@ -1,6 +1,6 @@
 /// \file Interface.h
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -50,13 +50,15 @@ public:
 		return kind_;
 	}
 
+	/// \returns The interface kind keyword. 
+	///          Returns the empty string for the UNCONSTRAINED interface.
+	const char* interface_kind_name () const noexcept;
+
 	/// \internals
 
 	InterfaceKind (Kind kind = UNCONSTRAINED) noexcept :
 		kind_ (kind)
 	{}
-
-	const char* interface_kind_name () const noexcept;
 
 private:
 	Kind kind_;

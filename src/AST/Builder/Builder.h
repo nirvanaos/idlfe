@@ -1,5 +1,5 @@
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -49,13 +49,11 @@ public:
 	Builder (const std::string& file, std::ostream& err_out) :
 		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
-		tree_ (Ptr <AST>::make <AST> (file)),
-		is_main_file_ (true)
+		tree_ (Ptr <AST>::make <AST> (file))
 	{
-		cur_file_ = &tree_->file ();
 		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
-		prefix_stack_.emplace ();
+		file_stack_.emplace_back (tree_->file ());
 	}
 
 	unsigned err_cnt () const
@@ -74,12 +72,12 @@ public:
 
 	const std::string& file () const
 	{
-		return *cur_file_;
+		return *file_stack_.back ().file;
 	}
 
 	bool is_main_file () const
 	{
-		return is_main_file_;
+		return file_stack_.size () == 1;
 	}
 
 	enum class MessageType
@@ -248,13 +246,22 @@ private:
 	unsigned err_cnt_;
 	std::ostream err_out_;
 	Ptr <AST> tree_;
-	const std::string* cur_file_;
-	bool is_main_file_;
 	typedef std::vector <Symbols*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
 	std::stack <std::unique_ptr <Eval>> eval_stack_;
-	std::stack <std::string> prefix_stack_;
+
+	struct File
+	{
+		const std::string* file;
+		std::string prefix;
+
+		File (const std::string& f) :
+			file (&f)
+		{}
+	};
+
+	std::vector <File> file_stack_;
 
 	struct InterfaceData
 	{

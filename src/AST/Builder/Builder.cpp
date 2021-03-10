@@ -1,5 +1,5 @@
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -43,6 +43,7 @@
 #include <stdexcept>
 #include <map>
 #include <set>
+#include <algorithm>
 
 using namespace std;
 
@@ -252,22 +253,19 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 
 void Builder::file (const std::string& name, const Location& loc)
 {
-	if (*cur_file_ != name) {
-		if (tree_->file () == name) {
-			cur_file_ = &tree_->file ();
-			is_main_file_ = true;
-			prefix_stack_.pop ();
-		} else {
-			auto ins = tree_->add_file (name);
-			if (is_main_file ())
-				tree_->append (Ptr <Item>::make <Include> (name));
-			cur_file_ = &*ins.first;
-			is_main_file_ = false;
-			if (ins.second)
-				prefix_stack_.emplace ();
-			else
-				prefix_stack_.pop ();
-		}
+	auto ins = tree_->add_file (name);
+	const string& file = *ins.first;
+	auto it = file_stack_.end () - 1;
+	for (; it != file_stack_.begin (); --it) {
+		if (it->file == &file)
+			break;
+	}
+	if (it->file == &file)
+		file_stack_.erase (it + 1, file_stack_.end ());
+	else {
+		file_stack_.emplace_back (*ins.first);
+		if (is_main_file ())
+			tree_->append (Ptr <Item>::make <Include> (ref (*ins.first)));
 	}
 }
 
@@ -395,7 +393,7 @@ const string& Builder::prefix () const
 	if (scope)
 		return scope->prefix ();
 	else
-		return prefix_stack_.top ();
+		return file_stack_.back ().prefix;
 }
 
 void Builder::prefix (const std::string& pref, const Location& loc)
@@ -405,7 +403,7 @@ void Builder::prefix (const std::string& pref, const Location& loc)
 		if (scope)
 			scope->prefix (*this, pref, loc);
 		else
-			prefix_stack_.top () = pref;
+			file_stack_.back ().prefix = pref;
 	}
 }
 

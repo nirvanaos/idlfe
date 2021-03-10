@@ -1,6 +1,6 @@
 /// \file Type.h
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -49,11 +49,11 @@ public:
 		VOID,
 		BASIC_TYPE, ///< basic_type ()
 		NAMED_TYPE, ///< named_type ()
-		STRING, ///< string_size ()
-		WSTRING, ///< string_size ()
-		FIXED, ///< fixed_digits (), fixed_scale ()
-		SEQUENCE, ///< sequence ()
-		ARRAY ///< array ()
+		STRING,     ///< string_size ()
+		WSTRING,    ///< string_size ()
+		FIXED,      ///< fixed_digits (), fixed_scale ()
+		SEQUENCE,   ///< sequence ()
+		ARRAY       ///< array ()
 	};
 
 	/// \returns The kind of type.

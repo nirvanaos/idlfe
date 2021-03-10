@@ -1,4 +1,4 @@
-# Nirvana IDL compiler front end
+# Nirvana IDL compiler front-end library
 
 ## Implemented Building Blocks
 

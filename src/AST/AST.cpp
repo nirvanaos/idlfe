@@ -1,5 +1,5 @@
 /*
-* Nirvana IDL Front End Library.
+* Nirvana IDL front-end library.
 *
 * This is a part of the Nirvana project.
 *
@@ -22,9 +22,16 @@
 *  silver.popov@google.com
 */
 #include "../include/AST/AST.h"
-
-using namespace std;
+#include "../include/AST/CodeGen.h"
 
 namespace AST {
+
+bool AST::visit (CodeGen& cg) const
+{
+	cg.begin ();
+	bool ret = Container::visit (cg);
+	cg.end ();
+	return ret;
+}
 
 }
