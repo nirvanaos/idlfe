@@ -46,22 +46,42 @@ void Driver::preprocessor_directive (const char* const dir)
 			s += 4;
 			char* end;
 			unsigned long l = strtoul (s, &end, 10);
-			if (l > 0) {
-				s = end;
+			if (isspace (*end)) {
+				if (!l)
+					l = 1;
+				s = end + 1;
 				while (isspace (*s))
 					++s;
 				if (*s == '\"') {
-					const char* end = s + strlen (s);
-					while (isspace (*(--end)))
-						;
-					if (*end == '\"')
-						file (string (s + 1, end - s - 1), location ());
-					else
-						parser_error (location (), string ("Invalid file name: ") + string (s, end - s));
+					const char* end = strchr (s + 1, '\"');
+					if (end) {
+						file (string (s + 1, end - s - 1), AST::Location (file (), lineno () - 1));
+						yylineno = l;
+						return;
+					}
 				}
-				yylineno = l;
 			}
-			return;
+		} else {
+			char* numend;
+			unsigned long l = strtoul (s, &numend, 10);
+			if (isspace (*numend)) {
+				s = numend + 1;
+				while (isspace (*s))
+					++s;
+				if (*s == '\"') {
+					const char* nameend = strchr (s + 1, '\"');
+					if (nameend) {
+						unsigned long flag = strtoul (nameend + 1, &numend, 10);
+						if (isspace (*numend) || !*numend) {
+							if (flag == 1) {
+								file (string (s + 1, nameend - s - 1), AST::Location (file (), lineno () - 1));
+								yylineno = l;
+							}
+						}
+						return;
+					}
+				}
+			}
 		}
 	}
 	parser_error (location (), string ("Invalid preprocessor directive: ") + dir);
