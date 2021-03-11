@@ -1,6 +1,3 @@
-#ifndef IDL_TEST_I3_H_
-#define IDL_TEST_I3_H_
-
 #include "Test_I1.idl"
 #include "Test_I2.idl"
 
@@ -12,5 +9,3 @@ interface I3 : I1, I2
 };
 
 };
-
-#endif

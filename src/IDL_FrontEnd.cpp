@@ -22,13 +22,20 @@
 *  silver.popov@google.com
 */
 #include "include/IDL_FrontEnd.h"
-#include "simplecpp/simplecpp.h"
 #include "FE/Driver.h"
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
 #include <string.h>
+
+#if __cplusplus < 201103L
+#ifdef _MSC_BUILD
+#error Use MSVC option /Zc:__cplusplus.
+#endif
+#endif
+
+#include "simplecpp/simplecpp.h"
 
 using namespace std;
 
@@ -161,18 +168,21 @@ bool IDL_FrontEnd::compile (const string& file)
 	istringstream preprocessed;
 
 	{ // Perform preprocessing
-		simplecpp::OutputList output_list;
+		using namespace simplecpp;
+		OutputList output_list;
 		vector<string> files;
 		ifstream f (file);
 		if (!f.is_open ()) {
 			cerr << "Can not open file " << file << endl;
 			return false;
 		}
-		simplecpp::TokenList rawtokens (f, files, file, &output_list);
+		TokenList rawtokens (f, files, file, &output_list);
+
 		rawtokens.removeComments ();
 		map<string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
 		for (auto i = included.begin (); i != included.end (); ++i)
 			i->second->removeComments ();
+
 		simplecpp::TokenList output_tokens (files);
 		simplecpp::preprocess (output_tokens, rawtokens, files, included, arguments_->preprocessor, &output_list);
 
@@ -180,39 +190,19 @@ bool IDL_FrontEnd::compile (const string& file)
 			bool fatal = false;
 			for (const simplecpp::Output& output : output_list) {
 				cerr << output.location.file () << '(' << output.location.line << "): ";
+				const char* type = "warning: ";
 				switch (output.type) {
 					case simplecpp::Output::ERROR:
-						cerr << "error: #error: ";
-						fatal = true;
-						break;
-					case simplecpp::Output::WARNING:
-						cerr << "warning: #warning: ";
-						break;
 					case simplecpp::Output::MISSING_HEADER:
-						cerr << "error: Missing header: ";
-						fatal = true;
-						break;
 					case simplecpp::Output::INCLUDE_NESTED_TOO_DEEPLY:
-						cerr << "error: Include nested too deeply: ";
-						fatal = true;
-						break;
 					case simplecpp::Output::SYNTAX_ERROR:
-						cerr << "error: Syntax error: ";
-						fatal = true;
-						break;
-					case simplecpp::Output::PORTABILITY_BACKSLASH:
-						cerr << "warning: Portability: ";
-						break;
 					case simplecpp::Output::UNHANDLED_CHAR_ERROR:
-						cerr << "error: Unhandled char error: ";
-						fatal = true;
-						break;
 					case simplecpp::Output::EXPLICIT_INCLUDE_NOT_FOUND:
-						cerr << "error: Explicit include not found: ";
 						fatal = true;
+						type = "error: ";
 						break;
 				}
-				cerr << output.msg << endl;
+				cerr << type << output.msg << endl;
 			}
 			if (fatal)
 				return false;
