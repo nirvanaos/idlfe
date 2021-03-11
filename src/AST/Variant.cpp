@@ -38,7 +38,8 @@ Variant::~Variant ()
 	clear ();
 }
 
-Variant::Variant (Variant&& src) noexcept
+Variant::Variant (Variant&& src) noexcept :
+	type_ (src.type_)
 {
 	val_.plain = src.val_.plain;
 	src.reset ();
@@ -54,6 +55,7 @@ Variant& Variant::operator = (const Variant& src)
 Variant& Variant::operator = (Variant&& src) noexcept
 {
 	clear ();
+	type_ = src.type_;
 	val_.plain = src.val_.plain;
 	src.reset ();
 	return *this;
@@ -106,7 +108,7 @@ uint8_t Variant::to_octet () const
 	assert (is_integral ());
 	const Variant& v = dereference_const ();
 	uint8_t ret;
-	if (is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret))
+	if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -116,7 +118,7 @@ uint16_t Variant::to_unsigned_short () const
 	assert (is_integral ());
 	const Variant& v = dereference_const ();
 	uint16_t ret;
-	if (is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret))
+	if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -126,7 +128,7 @@ int16_t Variant::to_short () const
 	assert (is_integral ());
 	const Variant& v = dereference_const ();
 	int16_t ret;
-	if (is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret))
+	if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -136,7 +138,7 @@ uint32_t Variant::to_unsigned_long () const
 	assert (is_integral ());
 	const Variant& v = dereference_const ();
 	uint32_t ret;
-if (is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret))
+if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -146,7 +148,7 @@ int32_t Variant::to_long () const
 	assert (is_integral ());
 	const Variant& v = dereference_const ();
 	int32_t ret;
-if (is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret))
+if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -157,7 +159,7 @@ uint64_t Variant::to_unsigned_long_long () const
 	const Variant& v = dereference_const ();
 	uint64_t ret;
 	if (is_signed ()) {
-		if (SafeCast (v.val_.u.i, ret))
+		if (!SafeCast (v.val_.u.i, ret))
 			throw_out_of_range ();
 	} else
 		ret = v.val_.u.ui;
@@ -170,7 +172,7 @@ int64_t Variant::to_long_long () const
 	const Variant& v = dereference_const ();
 	int64_t ret;
 	if (!is_signed ()) {
-		if (SafeCast (v.val_.u.ui, ret))
+		if (!SafeCast (v.val_.u.ui, ret))
 			throw_out_of_range ();
 	} else
 		ret = v.val_.u.i;
@@ -194,7 +196,7 @@ float Variant::to_float () const
 		feclearexcept (FE_ALL_EXCEPT);
 		ret = (float)val_.u.d;
 		check_fp ();
-	} else if (is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret))
+	} else if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -207,7 +209,7 @@ double Variant::to_double () const
 		feclearexcept (FE_ALL_EXCEPT);
 		ret = (double)val_.u.d;
 		check_fp ();
-	} else if (is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret))
+	} else if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -218,7 +220,7 @@ long double Variant::to_long_double () const
 	long double ret;
 	if (is_floating_point ())
 		ret = val_.u.d;
-	else if (is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret))
+	else if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }

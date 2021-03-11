@@ -131,23 +131,23 @@ Variant EvalIntegral::expr (const Variant& l, char op, const Variant& r, const L
 							ret = lv & rv;
 							break;
 						case '+':
-							if (SafeAdd (lv, rv, ret))
+							if (!SafeAdd (lv, rv, ret))
 								overflow (op);
 							break;
 						case '-':
-							if (SafeSubtract (lv, rv, ret))
+							if (!SafeSubtract (lv, rv, ret))
 								overflow (op);
 							break;
 						case '*':
-							if (SafeMultiply (lv, rv, ret))
+							if (!SafeMultiply (lv, rv, ret))
 								overflow (op);
 							break;
 						case '/':
-							if (SafeDivide (lv, rv, ret))
+							if (!SafeDivide (lv, rv, ret))
 								zero_divide (op);
 							break;
 						case '%':
-							if (SafeModulus (lv, rv, ret))
+							if (!SafeModulus (lv, rv, ret))
 								zero_divide (op);
 							break;
 						default:
@@ -176,23 +176,23 @@ Variant EvalIntegral::expr (const Variant& l, char op, const Variant& r, const L
 							ret = lv & rv;
 							break;
 						case '+':
-							if (SafeAdd (lv, rv, ret))
+							if (!SafeAdd (lv, rv, ret))
 								overflow (op);
 							break;
 						case '-':
-							if (SafeSubtract (lv, rv, ret))
+							if (!SafeSubtract (lv, rv, ret))
 								overflow (op);
 							break;
 						case '*':
-							if (SafeMultiply (lv, rv, ret))
+							if (!SafeMultiply (lv, rv, ret))
 								overflow (op);
 							break;
 						case '/':
-							if (SafeDivide (lv, rv, ret))
+							if (!SafeDivide (lv, rv, ret))
 								zero_divide (op);
 							break;
 						case '%':
-							if (SafeModulus (lv, rv, ret))
+							if (!SafeModulus (lv, rv, ret))
 								zero_divide (op);
 							break;
 						default:
@@ -234,7 +234,7 @@ Variant EvalIntegral::expr (char op, const Variant& v, const Location& loc)
 				switch (op) {
 					case '-': {
 						int64_t i;
-						if (SafeCast (u, i))
+						if (!SafeCast (u, i))
 							overflow (op);
 						return -i;
 					}
