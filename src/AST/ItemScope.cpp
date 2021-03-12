@@ -19,7 +19,7 @@
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 *
 * Send comments and/or bug reports to:
-*  silver.popov@google.com
+*  popov.nirvana@gmail.com
 */
 #include "../include/AST/ItemScope.h"
 #include "../include/AST/Module.h"

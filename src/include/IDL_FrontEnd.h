@@ -20,7 +20,7 @@
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 *
 * Send comments and/or bug reports to:
-*  silver.popov@google.com
+*  popov.nirvana@gmail.com
 */
 #ifndef NIDL_IDL_FRONTEND_H_
 #define NIDL_IDL_FRONTEND_H_

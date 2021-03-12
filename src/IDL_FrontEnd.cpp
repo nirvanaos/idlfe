@@ -19,7 +19,7 @@
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 *
 * Send comments and/or bug reports to:
-*  silver.popov@google.com
+*  popov.nirvana@gmail.com
 */
 #include "include/IDL_FrontEnd.h"
 #include "FE/Driver.h"
@@ -93,6 +93,27 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				ret = -1;
 			}
 
+			{
+				const char* inc = getenv ("INCLUDE");
+				if (inc) {
+					const char* end = inc + strlen (inc);
+					for (;;) {
+						while (isspace (*inc))
+							++inc;
+						const char* sem = strchr (inc, ';');
+						const char* endi = sem ? sem : end;
+						while (isspace (*(endi - 1)))
+							--endi;
+						if (inc < endi)
+							arguments_->preprocessor.includePaths.emplace_back (inc, endi);
+						if (sem)
+							inc = sem + 1;
+						else
+							break;
+					}
+				}
+			}
+
 			for (const auto& file : arguments_->files) {
 				cout << file << endl;
 				compile (file);
@@ -134,17 +155,17 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 		++arg;
 		switch (*arg) {
 			case 'D': // D Define
-				arguments_->preprocessor.defines.push_back (args.parameter (arg + 1));
+				arguments_->preprocessor.defines.emplace_back (args.parameter (arg + 1));
 				break;
 			case 'U': // U Undefine
-				arguments_->preprocessor.undefined.insert (args.parameter (arg + 1));
+				arguments_->preprocessor.undefined.emplace (args.parameter (arg + 1));
 				break;
 			case 'I': // I Include path
-				arguments_->preprocessor.includePaths.push_back (args.parameter (arg + 1));
+				arguments_->preprocessor.includePaths.emplace_back (args.parameter (arg + 1));
 				break;
 			case 'F':
 				if (arg [1] == 'I') // FI Include file
-					arguments_->preprocessor.includes.push_back (args.parameter (arg + 2));
+					arguments_->preprocessor.includes.emplace_back (args.parameter (arg + 2));
 				else
 					recognized = false;
 				break;
