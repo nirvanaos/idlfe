@@ -25,5 +25,6 @@ To create an IDL compiler, the user just derives his own compiler class from `cl
 * CORBA-Specific Interfaces (except for `import`)
 * Anonimous Types
 
-## How to compile
+## How to build
 Requires a C++17 compilant compiler.
+To build with MS Visual Studio use supermodule https://github.com/nirvanaos/idlfe.vc.git
