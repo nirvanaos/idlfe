@@ -1,5 +1,20 @@
 # IDL compiler front-end library
 
+This is a part of the Nirvana project.
+
+## Purpose
+
+This library is intended for the easy creation of the CORBA IDL compilers.
+
+It performs:
+
+* Command line parsing
+* Preprocessing
+* Parsing IDL files
+* Building the Abstract Syntax Tree
+
+To create an IDL compiler, the user just derives his own compiler class from `class IDL_FrontEnd`.
+
 ## Implemented Building Blocks
 
 * Core Data Types
@@ -10,5 +25,5 @@
 * CORBA-Specific Interfaces (except for `import`)
 * Anonimous Types
 
-## Compile
+## How to compile
 Requires a C++17 compilant compiler.
