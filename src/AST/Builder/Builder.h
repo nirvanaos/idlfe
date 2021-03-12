@@ -66,7 +66,9 @@ public:
 		message (loc, MessageType::ERROR, msg);
 	}
 
-	void file (const std::string& name, const Location& loc);
+	static const int FILE_FLAG_START = 0x1;
+	static const int FILE_FLAG_SYSTEM = 0x2;
+	void file (const std::string& name, const Location& loc, int flags = 0);
 
 	void pragma (const char*, const Location& loc);
 

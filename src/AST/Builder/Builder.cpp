@@ -250,10 +250,10 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 	return true;
 }
 
-void Builder::file (const std::string& name, const Location& loc)
+void Builder::file (const std::string& name, const Location& loc, int flags)
 {
 	auto ins = tree_->add_file (name);
-	if (!ins.second) {
+	if (!ins.second && !(flags & FILE_FLAG_START)) {
 		const string& file = *ins.first;
 		auto it = file_stack_.end () - 1;
 		for (; it != file_stack_.begin (); --it) {
@@ -265,9 +265,14 @@ void Builder::file (const std::string& name, const Location& loc)
 			return;
 		}
 	}
-	if (is_main_file ()) {
+	if ((flags & FILE_FLAG_START) && is_main_file ()) {
 		try {
-			tree_->append (Ptr <Item>::make <Include> (filesystem::relative (name, tree_->file ().parent_path ())));
+			filesystem::path file;
+			if (flags & FILE_FLAG_SYSTEM)
+				file = name;
+			else
+				file = filesystem::relative (name, tree_->file ().parent_path ());
+			tree_->append (Ptr <Item>::make <Include> (move (file), flags & FILE_FLAG_SYSTEM));
 		} catch (const filesystem::filesystem_error& ex) {
 			message (loc, MessageType::ERROR, ex.what ());
 		}

@@ -69,15 +69,29 @@ void Driver::preprocessor_directive (const char* const dir)
 				while (isspace (*s))
 					++s;
 				if (*s == '\"') {
-					const char* nameend = strchr (s + 1, '\"');
+					const char* name = s + 1;
+					const char* nameend = strchr (name, '\"');
 					if (nameend) {
-						unsigned long flag = strtoul (nameend + 1, &numend, 10);
-						if (isspace (*numend) || !*numend) {
-							if (flag == 1) {
-								file (string (s + 1, nameend - s - 1), AST::Location (file (), lineno () - 1));
-								yylineno = l;
-							}
+						s = nameend + 1;
+						int flags = 0;
+						while (*s) {
+							while (isspace (*s))
+								++s;
+							if (isdigit (s [0]) && isspace (s [1])) {
+								switch (*s) {
+									case '1':
+										flags |= FILE_FLAG_START;
+										break;
+									case '3':
+										flags |= FILE_FLAG_SYSTEM;
+										break;
+								}
+								s += 2;
+							} else
+								break;
 						}
+						file (string (name, nameend - name), AST::Location (file (), lineno () - 1), flags);
+						yylineno = l;
 						return;
 					}
 				}

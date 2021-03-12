@@ -41,14 +41,22 @@ public:
 		return file_;
 	}
 
+	/// \returns `true` for includes in angle brackets.
+	bool system () const
+	{
+		return system_;
+	}
+
 	/// \internals
-	Include (std::filesystem::path&& file) :
+	Include (std::filesystem::path&& file, bool system) :
 		Item (Kind::INCLUDE),
-		file_ (std::move (file))
+		file_ (std::move (file)),
+		system_ (system)
 	{}
 
 private:
 	std::filesystem::path file_;
+	bool system_;
 	/// \endinternals
 };
 

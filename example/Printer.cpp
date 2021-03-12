@@ -71,7 +71,10 @@ void Printer::print_type (const Type& t)
 
 void Printer::include (const Include& item)
 {
-	out_ << "#include " << item.file () << "\n";
+	if (item.system ())
+		out_ << "#include <" << item.file ().string () << ">\n";
+	else
+		out_ << "#include \"" << item.file ().string () << "\"\n";
 }
 
 void Printer::native (const Native& item)
