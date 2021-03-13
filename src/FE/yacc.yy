@@ -1,24 +1,26 @@
 /*
- *  MICO --- a free CORBA implementation
- *  Copyright (C) 1997-98 Kay Roemer & Arno Puder
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- *  Send comments and/or bug reports to:
- *                 mico@informatik.uni-frankfurt.de
- */
+* Nirvana IDL front-end library.
+*
+* This is a part of the Nirvana project.
+*
+* Copyright (c) 2021 Igor Popov.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Send comments and/or bug reports to:
+*  popov.nirvana@gmail.com
+*/
 
 %{
 #include "Driver.h"
@@ -53,92 +55,92 @@ class Driver;
 %define parse.lac full
 
 %token T_AMPERSAND
-%token T_ANY
+%token T_any
 %token T_ASTERISK
-%token T_ATTRIBUTE
-%token T_BOOLEAN
-%token T_CASE
-%token T_CHAR
-%token <std::string> T_CHARACTER_LITERAL
-%token <std::string> T_WCHARACTER_LITERAL
+%token T_attribute
+%token T_boolean
+%token T_case
+%token T_char
+%token <std::string> T_character_literal
+%token <std::string> T_wide_character_literal
 %token T_CIRCUMFLEX
 %token T_COLON
 %token T_COMMA
-%token T_CONST
-%token T_CONTEXT
-%token T_DEFAULT
-%token T_DOUBLE
-%token T_ENUM
+%token T_const
+%token T_context
+%token T_default
+%token T_double
+%token T_enum
 %token T_EQUAL
-%token T_EXCEPTION
+%token T_exception
 %token T_FALSE
-%token T_FIXED
-%token <std::string> T_FIXED_PT_LITERAL
-%token T_FLOAT
-%token <std::string> T_FLOATING_PT_LITERAL
+%token T_fixed
+%token <std::string> T_fixed_point_literal
+%token T_float
+%token <std::string> T_floating_point_literal
 %token T_GREATER_THAN_SIGN
-%token <AST::Identifier> T_IDENTIFIER
-%token T_IN
-%token T_INOUT
-%token <std::string> T_INTEGER_LITERAL
-%token T_INTERFACE
+%token <AST::Identifier> T_identifier
+%token T_in
+%token T_inout
+%token <std::string> T_integer_literal
+%token T_interface
 %token T_LEFT_CURLY_BRACKET
 %token T_LEFT_PARANTHESIS
 %token T_LEFT_SQUARE_BRACKET
 %token T_LESS_THAN_SIGN
-%token T_LONG
+%token T_long
 %token T_MINUS_SIGN
-%token T_MODULE
-%token T_OCTET
-%token T_ONEWAY
-%token T_OUT
+%token T_module
+%token T_octet
+%token T_oneway
+%token T_out
 %token T_PERCENT_SIGN
 %token T_PLUS_SIGN
-%token T_RAISES
-%token T_READONLY
+%token T_raises
+%token T_readonly
 %token T_RIGHT_CURLY_BRACKET
 %token T_RIGHT_PARANTHESIS
 %token T_RIGHT_SQUARE_BRACKET
 %token T_SCOPE
 %token T_SEMICOLON
-%token T_SEQUENCE
+%token T_sequence
 %token T_SHIFTLEFT
 %token T_SHIFTRIGHT
-%token T_SHORT
+%token T_short
 %token T_SOLIDUS
-%token T_STRING
-%token <std::string> T_STRING_LITERAL
-%token <std::string> T_WSTRING_LITERAL
+%token T_string
+%token <std::string> T_string_literal
+%token <std::string> T_wide_string_literal
 %token <std::string> T_PRAGMA
-%token T_STRUCT
-%token T_SWITCH
+%token T_struct
+%token T_switch
 %token T_TILDE
 %token T_TRUE
-%token T_OBJECT
-%token T_TYPEDEF
-%token T_UNION
-%token T_UNSIGNED
+%token T_Object
+%token T_typedef
+%token T_union
+%token T_unsigned
 %token T_VERTICAL_LINE
-%token T_VOID
-%token T_WCHAR
-%token T_WSTRING
+%token T_void
+%token T_wchar
+%token T_wstring
 %token T_UNKNOWN
-%token T_ABSTRACT
-%token T_LOCAL
-%token T_VALUETYPE
-%token T_TRUNCATABLE
-%token T_SUPPORTS
-%token T_CUSTOM
-%token T_PUBLIC
-%token T_PRIVATE
-%token T_FACTORY
-%token T_NATIVE
-%token T_VALUEBASE
-%token T_TYPEID
-%token T_TYPEPREFIX
+%token T_abstract
+%token T_local
+%token T_valuetype
+%token T_truncatable
+%token T_supports
+%token T_custom
+%token T_public
+%token T_private
+%token T_factory
+%token T_native
+%token T_ValueBase
+%token T_typeid
+%token T_typeprefix
 
-%nterm <AST::Variant> T_string_literal;
-%nterm <AST::Variant> T_wstring_literal;
+%nterm <AST::Variant> string_literal;
+%nterm <AST::Variant> wide_string_literal;
 
 %nterm <AST::ScopedName> scoped_name;
 %nterm <AST::ScopedNames> scoped_names;
@@ -220,7 +222,7 @@ definition
 	;
 
 module
-	: T_MODULE simple_declarator { drv.module_begin ($2); }
+	: T_module simple_declarator { drv.module_begin ($2); }
 	T_LEFT_CURLY_BRACKET
 		definitions 
 	T_RIGHT_CURLY_BRACKET { drv.module_end (); }
@@ -239,18 +241,18 @@ interface_dcl
 	;
 
 forward_dcl
-	: T_INTERFACE simple_declarator { drv.interface_decl ($2); }
-	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::ABSTRACT); }
-	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::LOCAL); }
+	: T_interface simple_declarator { drv.interface_decl ($2); }
+	| T_abstract T_interface simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::ABSTRACT); }
+	| T_local T_interface simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::LOCAL); }
 	;
 
 interface_header
-	: T_INTERFACE simple_declarator { drv.interface_begin ($2); }
-	| T_INTERFACE simple_declarator { drv.interface_begin ($2); } interface_inheritance_spec
-	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); }
-	| T_ABSTRACT T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
-	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); }
-	| T_LOCAL T_INTERFACE simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
+	: T_interface simple_declarator { drv.interface_begin ($2); }
+	| T_interface simple_declarator { drv.interface_begin ($2); } interface_inheritance_spec
+	| T_abstract T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); }
+	| T_abstract T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
+	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); }
+	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	;
 
 interface_body
@@ -283,9 +285,9 @@ scoped_names
 	;
 
 scoped_name
-	: T_IDENTIFIER { $$ = AST::ScopedName (@1, false, $1); }
-	| T_SCOPE T_IDENTIFIER { $$ = AST::ScopedName (@2, true, $2); }
-	| scoped_name T_SCOPE T_IDENTIFIER { $$ = $1; $$.push_back ($3); }
+	: T_identifier { $$ = AST::ScopedName (@1, false, $1); }
+	| T_SCOPE T_identifier { $$ = AST::ScopedName (@2, true, $2); }
+	| scoped_name T_SCOPE T_identifier { $$ = $1; $$.push_back ($3); }
 	;
 
 value
@@ -296,18 +298,18 @@ value
 	;
 
 value_forward_dcl
-	: T_VALUETYPE T_IDENTIFIER
-	| T_ABSTRACT T_VALUETYPE T_IDENTIFIER
+	: T_valuetype T_identifier
+	| T_abstract T_valuetype T_identifier
 	;
 
 value_box_dcl
-	: T_VALUETYPE T_IDENTIFIER type_spec
+	: T_valuetype T_identifier type_spec
 	;
 
 value_abs_dcl
-	: T_ABSTRACT T_VALUETYPE T_IDENTIFIER
+	: T_abstract T_valuetype T_identifier
 		T_LEFT_CURLY_BRACKET value_body T_RIGHT_CURLY_BRACKET
-	| T_ABSTRACT T_VALUETYPE T_IDENTIFIER value_inheritance_spec
+	| T_abstract T_valuetype T_identifier value_inheritance_spec
 		T_LEFT_CURLY_BRACKET value_body T_RIGHT_CURLY_BRACKET
 	;
 
@@ -328,23 +330,23 @@ value_elements
 	;
 
 value_header
-	: T_VALUETYPE T_IDENTIFIER value_inheritance_spec
-	| T_CUSTOM T_VALUETYPE T_IDENTIFIER value_inheritance_spec
-	| T_VALUETYPE T_IDENTIFIER
-	| T_CUSTOM T_VALUETYPE T_IDENTIFIER
+	: T_valuetype T_identifier value_inheritance_spec
+	| T_custom T_valuetype T_identifier value_inheritance_spec
+	| T_valuetype T_identifier
+	| T_custom T_valuetype T_identifier
 	;
 
 value_inheritance_spec
 	: T_COLON value_inheritance_bases
-	| T_COLON value_inheritance_bases T_SUPPORTS scoped_names
-	| T_SUPPORTS scoped_names
+	| T_COLON value_inheritance_bases T_supports scoped_names
+	| T_supports scoped_names
 	;
 
 value_inheritance_bases
 	: value_name
 	| value_name T_COMMA value_names
-	| T_TRUNCATABLE value_name
-	| T_TRUNCATABLE value_name T_COMMA value_names
+	| T_truncatable value_name
+	| T_truncatable value_name T_COMMA value_names
 	;
 
 value_names
@@ -362,12 +364,12 @@ value_element
 	;
 
 state_member
-	: T_PUBLIC type_spec declarators T_SEMICOLON
-	| T_PRIVATE type_spec declarators T_SEMICOLON
+	: T_public type_spec declarators T_SEMICOLON
+	| T_private type_spec declarators T_SEMICOLON
 	;
 
 init_dcl
-	: T_FACTORY T_IDENTIFIER
+	: T_factory T_identifier
 		T_LEFT_PARANTHESIS init_param_decls T_RIGHT_PARANTHESIS
 		T_SEMICOLON
 	;
@@ -382,11 +384,11 @@ init_param_decl
 	;
 
 init_param_attribute
-	: T_IN
+	: T_in
 	;
 
 const_dcl
-	: T_CONST const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant ($2, $3, std::move ($6), @6); }
+	: T_const const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant ($2, $3, std::move ($6), @6); }
 	;
 
 const_type
@@ -454,13 +456,13 @@ primary_expr
 	;
 
 literal
-	: T_INTEGER_LITERAL { $$ = drv.eval ().literal_int ($1, @1); }
-	| T_string_literal { $$ = $1; }
-	| T_wstring_literal { $$ = $1; }
-	| T_CHARACTER_LITERAL { $$ = drv.eval ().literal_char ($1, @1); }
-	| T_WCHARACTER_LITERAL { $$ = drv.eval ().literal_wchar ($1, @1); }
-	| T_FIXED_PT_LITERAL { $$ = drv.eval ().literal_fixed ($1, @1); }
-	| T_FLOATING_PT_LITERAL { $$ = drv.eval ().literal_float ($1, @1); }
+	: T_integer_literal { $$ = drv.eval ().literal_int ($1, @1); }
+	| string_literal { $$ = $1; }
+	| wide_string_literal { $$ = $1; }
+	| T_character_literal { $$ = drv.eval ().literal_char ($1, @1); }
+	| T_wide_character_literal { $$ = drv.eval ().literal_wchar ($1, @1); }
+	| T_fixed_point_literal { $$ = drv.eval ().literal_fixed ($1, @1); }
+	| T_floating_point_literal { $$ = drv.eval ().literal_float ($1, @1); }
 	| T_TRUE { $$ = drv.eval ().literal_boolean (true, @1); }
 	| T_FALSE { $$ = drv.eval ().literal_boolean (false, @1); }
 	;
@@ -470,11 +472,11 @@ positive_int_const
 	;
 
 type_dcl
-	: T_TYPEDEF type_spec declarators { drv.type_def ($2, $3); }
+	: T_typedef type_spec declarators { drv.type_def ($2, $3); }
 	| struct_type
 	| union_type
 	| enum_type
-	| T_NATIVE simple_declarator { drv.native ($2); }
+	| T_native simple_declarator { drv.native ($2); }
 	;
 
 type_spec
@@ -524,7 +526,7 @@ declarator
 	;
 
 simple_declarator
-	: T_IDENTIFIER { $$ = AST::Build::SimpleDeclarator ($1, @1); }
+	: T_identifier { $$ = AST::Build::SimpleDeclarator ($1, @1); }
 	;
 
 complex_declarator
@@ -532,9 +534,9 @@ complex_declarator
 	;
 
 floating_pt_type
-	: T_FLOAT { $$ = AST::BasicType::FLOAT; }
-	| T_DOUBLE { $$ = AST::BasicType::DOUBLE; }
-	| T_LONG T_DOUBLE { $$ = AST::BasicType::LONGDOUBLE; }
+	: T_float { $$ = AST::BasicType::FLOAT; }
+	| T_double { $$ = AST::BasicType::DOUBLE; }
+	| T_long T_double { $$ = AST::BasicType::LONGDOUBLE; }
 	;
 
 integer_type
@@ -549,15 +551,15 @@ signed_int
 	;
 
 signed_short_int
-	: T_SHORT
+	: T_short
 	;
 
 signed_long_int
-	: T_LONG
+	: T_long
 	;
 
 signed_longlong_int
-	: T_LONG T_LONG
+	: T_long T_long
 	;
 
 unsigned_int
@@ -567,48 +569,48 @@ unsigned_int
 	;
 
 unsigned_short_int
-	: T_UNSIGNED T_SHORT
+	: T_unsigned T_short
 	;
 
 unsigned_long_int
-	: T_UNSIGNED T_LONG
+	: T_unsigned T_long
 	;
 
 unsigned_longlong_int
-	: T_UNSIGNED T_LONG T_LONG
+	: T_unsigned T_long T_long
 	;
 
 char_type
-	: T_CHAR
+	: T_char
 	;
 
 wide_char_type
-	: T_WCHAR
+	: T_wchar
 	;
 
 boolean_type
-	: T_BOOLEAN
+	: T_boolean
 	;
 
 octet_type
-	: T_OCTET
+	: T_octet
 	;
 
 any_type
-	: T_ANY
+	: T_any
 	;
 
 object_type
-	: T_OBJECT
+	: T_Object
 	;
 
 struct_type
-	: T_STRUCT simple_declarator
+	: T_struct simple_declarator
 	T_LEFT_CURLY_BRACKET { drv.struct_begin ($2); }
 		member_list
 	T_RIGHT_CURLY_BRACKET
 	{ $$ = drv.struct_end (); }
-	| T_STRUCT simple_declarator { drv.struct_decl ($2); }
+	| T_struct simple_declarator { drv.struct_decl ($2); }
 	;
 
 member_list
@@ -621,11 +623,11 @@ member
 	;
 
 union_type
-	: T_UNION simple_declarator T_SWITCH T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5, @5); }
+	: T_union simple_declarator T_switch T_LEFT_PARANTHESIS switch_type_spec T_RIGHT_PARANTHESIS { drv.union_begin ($2, $5, @5); }
 	T_LEFT_CURLY_BRACKET
 		switch_body
 	T_RIGHT_CURLY_BRACKET { $$ = drv.union_end (); }
-	| T_UNION simple_declarator { drv.union_decl ($2); }
+	| T_union simple_declarator { drv.union_decl ($2); }
 	; 
 
 switch_type_spec
@@ -647,8 +649,8 @@ case
 	;
 
 case_label
-	: T_CASE const_exp T_COLON { drv.union_label ($2, @2); }
-	| T_DEFAULT T_COLON { drv.union_default (@1); }
+	: T_case const_exp T_COLON { drv.union_label ($2, @2); }
+	| T_default T_COLON { drv.union_default (@1); }
 	;
 
 element_spec
@@ -657,30 +659,30 @@ element_spec
 
 /*78*/
 enum_type
-	: T_ENUM simple_declarator
+	: T_enum simple_declarator
 	T_LEFT_CURLY_BRACKET
 		simple_declarators
 	T_RIGHT_CURLY_BRACKET { $$ = drv.enum_type ($2, $4); }
 	;
 
 sequence_type
-	: T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_COMMA
+	: T_sequence T_LESS_THAN_SIGN simple_type_spec T_COMMA
 		positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3, $5); }
-	| T_SEQUENCE T_LESS_THAN_SIGN simple_type_spec T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3); }
+	| T_sequence T_LESS_THAN_SIGN simple_type_spec T_GREATER_THAN_SIGN { $$ = AST::Type::make_sequence ($3); }
 	;
 
 string_type
-	: T_STRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_string (); }
-	| T_STRING { $$ = AST::Type::make_string (); }
+	: T_string T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_string (); }
+	| T_string { $$ = AST::Type::make_string (); }
 	;
 
 wide_string_type
-	: T_WSTRING T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_wstring (); }
-	| T_WSTRING { $$ = AST::Type::make_wstring (); }
+	: T_wstring T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_wstring (); }
+	| T_wstring { $$ = AST::Type::make_wstring (); }
 	;
 
 array_declarator
-	: T_IDENTIFIER fixed_array_sizes { $$ = AST::Build::Declarator ($1, @1, $2); }
+	: T_identifier fixed_array_sizes { $$ = AST::Build::Declarator ($1, @1, $2); }
 	;
 
 fixed_array_sizes
@@ -693,8 +695,8 @@ fixed_array_size
 	;
 
 attr_dcl
-	: T_ATTRIBUTE param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
-	| T_READONLY T_ATTRIBUTE param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
+	: T_attribute param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
+	| T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
 	; 
 
 simple_declarators
@@ -703,7 +705,7 @@ simple_declarators
 	;
 
 except_dcl
-	: T_EXCEPTION simple_declarator
+	: T_exception simple_declarator
 	T_LEFT_CURLY_BRACKET { drv.exception_begin ($2); }
 		members
 	T_RIGHT_CURLY_BRACKET { drv.exception_end (); }
@@ -721,12 +723,12 @@ op_dcl
 
 op_attribute
 	: /*empty*/ { $$ = false; }
-	| T_ONEWAY{ $$ = true; }
+	| T_oneway{ $$ = true; }
 	;
 
 op_type_spec	
 	: param_type_spec { $$ = $1; }
-	| T_VOID { $$ = AST::Type (); }
+	| T_void { $$ = AST::Type (); }
 	;
 
 parameter_dcls
@@ -744,36 +746,36 @@ param_dcl
 	;
 
 param_attribute
-	: T_IN { $$ = AST::Parameter::Attribute::IN; }
-	| T_OUT { $$ = AST::Parameter::Attribute::OUT; }
-	| T_INOUT { $$ = AST::Parameter::Attribute::INOUT; }
+	: T_in { $$ = AST::Parameter::Attribute::IN; }
+	| T_out { $$ = AST::Parameter::Attribute::OUT; }
+	| T_inout { $$ = AST::Parameter::Attribute::INOUT; }
 	;
 
 raises_expr
 	: /*empty*/
-	| T_RAISES T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.operation_raises ($3); }
+	| T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.operation_raises ($3); }
 	;
 
 context_expr
 	: /*empty*/
-	| T_CONTEXT T_LEFT_PARANTHESIS { drv.eval_push (AST::Type::make_string (), AST::Location ()); }
+	| T_context T_LEFT_PARANTHESIS { drv.eval_push (AST::Type::make_string (), AST::Location ()); }
 			string_literals
 		T_RIGHT_PARANTHESIS { drv.eval_pop (); drv.operation_context ($4); }
 	;
 
 string_literals
-	: T_string_literal { $$ = AST::Build::Variants (1, $1); }
-	| T_string_literal T_COMMA string_literals { $$ = $3; $$.push_front ($1); }
+	: string_literal { $$ = AST::Build::Variants (1, $1); }
+	| string_literal T_COMMA string_literals { $$ = $3; $$.push_front ($1); }
 	;
 
-T_string_literal
-	: T_STRING_LITERAL { $$ = drv.eval ().literal_string ($1, @1);  }
-	| T_STRING_LITERAL T_string_literal { $$ = drv.eval ().literal_string ($1, @1, &$2); }
+string_literal
+	: T_string_literal { $$ = drv.eval ().literal_string ($1, @1);  }
+	| T_string_literal string_literal { $$ = drv.eval ().literal_string ($1, @1, &$2); }
 	;
 
-T_wstring_literal
-	: T_WSTRING_LITERAL { $$ = drv.eval ().literal_wstring ($1, @1); }
-	| T_WSTRING_LITERAL T_wstring_literal { $$ = drv.eval ().literal_wstring ($1, @1, &$2); }
+wide_string_literal
+	: T_wide_string_literal { $$ = drv.eval ().literal_wstring ($1, @1); }
+	| T_wide_string_literal wide_string_literal { $$ = drv.eval ().literal_wstring ($1, @1, &$2); }
 	;
 
 param_type_spec
@@ -784,24 +786,24 @@ param_type_spec
 	;
 
 fixed_pt_type
-	: T_FIXED T_LESS_THAN_SIGN positive_int_const T_COMMA
+	: T_fixed T_LESS_THAN_SIGN positive_int_const T_COMMA
 		positive_int_const T_GREATER_THAN_SIGN { $$ = drv.fixed_pt_type ($3, $5, @1); }
 	;
 
 fixed_pt_const_type
-	: T_FIXED
+	: T_fixed
 	;
 
 value_base_type
-	: T_VALUEBASE
+	: T_ValueBase
 	;
 
 type_id_dcl
-	: T_TYPEID scoped_name T_string_literal { drv.type_id ($2, $3, @3); }
+	: T_typeid scoped_name string_literal { drv.type_id ($2, $3, @3); }
 
 type_prefix_dcl
-	: T_TYPEPREFIX scoped_name T_string_literal { drv.type_prefix ($2, $3, @3); }
-	| T_TYPEPREFIX T_SCOPE T_string_literal { drv.type_prefix (AST::ScopedName (@2), $3, @3); }
+	: T_typeprefix scoped_name string_literal { drv.type_prefix ($2, $3, @3); }
+	| T_typeprefix T_SCOPE string_literal { drv.type_prefix (AST::ScopedName (@2), $3, @3); }
 
 %%
 

@@ -130,7 +130,8 @@ void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
 		{ "T_CIRCUMFLEX", "^" },
 		{ "T_AMPERSAND", "&" },
 		{ "T_LESS_THAN_SIGN", "<" },
-		{ "T_GREATER_THAN_SIGN", ">" }
+		{ "T_GREATER_THAN_SIGN", ">" },
+		{ "T_SCOPE", "::" }
 	};
 
 	string msg = cmsg;
