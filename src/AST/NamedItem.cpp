@@ -22,11 +22,22 @@
 *  popov.nirvana@gmail.com
 */
 #include "Builder/Builder.h"
+#include <algorithm>
 
 using namespace std;
 using namespace AST::Build;
 
 namespace AST {
+
+inline bool ci_compare (char l, char r)
+{
+	return std::tolower (l) < std::tolower (r);
+}
+
+bool ci_less (const string& l, const string& r)
+{
+	return lexicographical_compare (l.begin (), l.end (), r.begin (), r.end (), ci_compare);
+}
 
 NamedItem::NamedItem (Kind kind, const Builder& builder, const SimpleDeclarator& name) :
 	Item (kind),

@@ -46,7 +46,7 @@ class IDL_FrontEnd
 {
 public:
 
-	/// The main method.
+	/// Call this method from the main() function.
 	/// 
 	/// \param argc Count of command line arguments.
 	/// \param argv Command line arguments.
@@ -118,7 +118,7 @@ protected:
 
 	/// Parse command line parameter.
 	/// 
-	/// User can override this method.
+	/// User can override this method to parse additional parameters.
 	/// The user method must call IDL_FrontEnd::parse_command_line () first to let the IDL_FrontEnd parse
 	/// it's arguments. If the IDL_FrontEnd::parse_command_line () returns `false`, user method may parse
 	/// it's own arguments.
@@ -136,6 +136,11 @@ protected:
 	/// \throw std::invalid_argument If the argument was recognized but the syntax is invalid.
 	virtual bool parse_command_line (CmdLine& args);
 
+	/// Prints usage information to std::cout.
+	/// 
+	/// User can override this method to print additional information.
+	/// 
+	/// \param exe_name The name of program executable file obtained from argv[0].
 	virtual void print_usage_info (const char* exe_name);
 
 	/// Generate user code from AST.

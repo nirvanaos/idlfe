@@ -46,13 +46,13 @@ public:
 	enum class Kind
 	{
 		VOID,
-		BASIC_TYPE, ///< basic_type ()
-		NAMED_TYPE, ///< named_type ()
-		STRING,     ///< string_size ()
-		WSTRING,    ///< string_size ()
-		FIXED,      ///< fixed_digits (), fixed_scale ()
-		SEQUENCE,   ///< sequence ()
-		ARRAY       ///< array ()
+		BASIC_TYPE, ///< `BasicType Type::basic_type ();`
+		NAMED_TYPE, ///< `named_type ()`
+		STRING,     ///< `string_size ()`
+		WSTRING,    ///< `string_size ()`
+		FIXED,      ///< `fixed_digits (), fixed_scale ()`
+		SEQUENCE,   ///< `sequence ()`
+		ARRAY       ///< `array ()`
 	};
 
 	/// \returns The kind of type.
@@ -62,40 +62,39 @@ public:
 	}
 
 	/// \returns The BasicType.
-	/// \invariant `kind () == Kind::BASIC_TYPE`.
+	/// \invariant `Type::tkind () == Kind::BASIC_TYPE`.
 	BasicType basic_type () const noexcept
 	{
 		assert (tkind () == Kind::BASIC_TYPE);
 		return type_.basic_type;
 	}
 
-	/// \returns `const Ptr <NamedItem>&`.
-	/// \invariant `kind () == Kind::NAMED_TYPE`.
+	/// \returns Reference to a named type.
+	/// \invariant `tkind () == Kind::NAMED_TYPE`.
 	const Ptr <NamedItem>& named_type () const noexcept
 	{
 		assert (tkind () == Kind::NAMED_TYPE);
 		return *type_.named_type;
 	}
 
-	// String
-
 	/// \returns The string size limit if string has limited size.
+	/// \invariant `tkind () == Kind::STRING || tkind () == Kind::WSTRING`
 	uint32_t string_size () const noexcept
 	{
 		assert (tkind () == Kind::STRING || tkind () == Kind::WSTRING);
 		return type_.string_size;
 	}
 
-	// Sequence
-
+	/// \returns The sequence descriptor.
+	/// \invariant `tkind () == Kind::SEQUENCE`
 	const Sequence& sequence () const noexcept
 	{
 		assert (tkind () == Kind::SEQUENCE);
 		return *type_.sequence;
 	}
 
-	// Array
-
+	/// \returns The array descriptor.
+	/// \invariant `tkind () == Kind::ARRAY`
 	const Array& array () const noexcept
 	{
 		assert (tkind () == Kind::ARRAY);
@@ -104,12 +103,16 @@ public:
 
 	// Fixed
 
+	/// \returns Number of digits for fixed type.
+	/// \invariant `tkind () == Kind::FIXED`
 	uint8_t fixed_digits () const noexcept
 	{
 		assert (tkind () == Kind::FIXED);
 		return type_.fixed.digits;
 	}
 
+	/// \returns Scale for fixed type.
+	/// \invariant `tkind () == Kind::FIXED`
 	uint8_t fixed_scale () const noexcept
 	{
 		assert (tkind () == Kind::FIXED);
