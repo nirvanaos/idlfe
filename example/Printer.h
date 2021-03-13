@@ -1,4 +1,4 @@
-// Printer.h Demonstrates the code generator class.
+// Printer.h Demonstrates the back-end code generator class.
 #ifndef NIDLFE_EXAMPLE_PRINTER_H_
 #define NIDLFE_EXAMPLE_PRINTER_H_
 

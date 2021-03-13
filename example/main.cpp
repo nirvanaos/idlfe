@@ -1,4 +1,4 @@
-/// \file main.cpp Demonstrates the usage of the NIDLFE library.
+/// main.cpp Demonstrates the usage of the idlfe library.
 #include "IDL_Print.h"
 
 int main (int argc, char* argv [])

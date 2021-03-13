@@ -1,4 +1,4 @@
-// Printer.cpp Demonstrates the code generator.
+// Printer.cpp Demonstrates the back-end code generator class.
 #include "Printer.h"
 
 using namespace std;

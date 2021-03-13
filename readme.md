@@ -13,7 +13,10 @@ It performs:
 * Parsing IDL files
 * Building the Abstract Syntax Tree
 
-To create an IDL compiler, the user just derives his own compiler class from `class IDL_FrontEnd`.
+To create an IDL compiler:
+
+* Derive your compiler class from `class IDL_FrontEnd`.
+* Derive your back-end code generator from `class AST::CodeGen`.
 
 ## Implemented Building Blocks
 
@@ -25,6 +28,10 @@ To create an IDL compiler, the user just derives his own compiler class from `cl
 * CORBA-Specific Interfaces (except for `import`)
 * Anonimous Types
 
+## How to use
+
+Install nirvanaos.idlfe NuGet package.
+
 ## How to build
-Requires a C++17 compilant compiler.
+Requires a C++17 compilant compiler and Flex + Bison.
 To build with MS Visual Studio use supermodule https://github.com/nirvanaos/idlfe.vc.git
