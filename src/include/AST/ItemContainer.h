@@ -44,11 +44,6 @@ public:
 		RepositoryId (*this, builder)
 	{}
 
-	std::pair <ItemScope::iterator, bool> insert (NamedItem* item)
-	{
-		return ItemScope::insert (item);
-	}
-
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 	{
 		if (RepositoryId::prefix (builder, pref, loc))

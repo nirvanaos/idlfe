@@ -26,6 +26,7 @@
 #define NIDL_AST_NAMEDITEM_H_
 
 #include "Item.h"
+#include "Identifier.h"
 #include "Location.h"
 
 namespace AST {
@@ -44,8 +45,8 @@ class NamedItem :
 	public Location
 {
 public:
-	/// \returns The name of item.
-	const std::string& name () const
+	/// \returns The name of item. TODO: Remove
+	const Identifier& name () const
 	{
 		return name_;
 	}
@@ -68,30 +69,29 @@ public:
 
 private:
 	const ItemScope* parent_;
-	const std::string name_;
+	const Identifier name_;
 	/// \endinternal
 };
 
-// CORBA IDL identifiers are case-insensitive.
-
-bool ci_less (const std::string& l, const std::string& r);
-
+/// Comparator
 inline
-bool operator < (const Ptr <NamedItem>& l, const std::string& r)
+bool operator < (const Ptr <NamedItem>& l, const Identifier& r)
 {
-	return ci_less (l->name (), r);
+	return l->name () < r;
 }
 
+/// Comparator
 inline
-bool operator < (const std::string& l, const Ptr <NamedItem>& r)
+bool operator < (const Identifier& l, const Ptr <NamedItem>& r)
 {
-	return ci_less (l, r->name ());
+	return l < r->name ();
 }
 
+/// Comparator
 inline
 bool operator < (const Ptr <NamedItem>& l, const Ptr <NamedItem>& r)
 {
-	return ci_less (l->name (), r->name ());
+	return l->name () < r->name ();
 }
 
 }

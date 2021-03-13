@@ -26,7 +26,7 @@ class ModuleItems :
 {
 public:
 	/// \returns The module name.
-	const std::string& name () const
+	const Identifier& name () const
 	{
 		return module_.name ();
 	}

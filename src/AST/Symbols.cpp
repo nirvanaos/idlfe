@@ -29,12 +29,12 @@ using namespace std;
 
 namespace AST {
 
-std::pair <Symbols::iterator, bool> Symbols::insert (NamedItem* item)
+std::pair <Symbols::iterator, bool> Symbols::emplace (NamedItem* item)
 {
-	return Base::insert (item);
+	return Base::emplace (item);
 }
 
-pair <bool, const Ptr <NamedItem>*> Symbols::find (Build::Builder&, const std::string& name, const Location&) const
+pair <bool, const Ptr <NamedItem>*> Symbols::find (Build::Builder&, const Identifier& name, const Location&) const
 {
 	auto p = find (name);
 	if (p)
@@ -43,7 +43,7 @@ pair <bool, const Ptr <NamedItem>*> Symbols::find (Build::Builder&, const std::s
 		return make_pair (false, nullptr);
 }
 
-const Ptr <NamedItem>* Symbols::find (const std::string& name) const
+const Ptr <NamedItem>* Symbols::find (const Identifier& name) const
 {
 	auto f = Base::find (name);
 	if (f != end ())

@@ -98,10 +98,10 @@ public:
 		bases_.push_back (base);
 	}
 
-	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const std::string& name, const Location&) const;
+	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
 
 private:
-	void base_find (const std::string& name, std::set <const Ptr <NamedItem>*>& found) const;
+	void base_find (const Identifier& name, std::set <const Ptr <NamedItem>*>& found) const;
 
 private:
 	Interfaces bases_;

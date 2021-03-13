@@ -77,7 +77,7 @@ class Driver;
 %token T_FLOAT
 %token <std::string> T_FLOATING_PT_LITERAL
 %token T_GREATER_THAN_SIGN
-%token <std::string> T_IDENTIFIER
+%token <AST::Identifier> T_IDENTIFIER
 %token T_IN
 %token T_INOUT
 %token <std::string> T_INTEGER_LITERAL

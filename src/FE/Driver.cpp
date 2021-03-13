@@ -98,7 +98,76 @@ void Driver::preprocessor_directive (const char* const dir)
 			}
 		}
 	}
-	parser_error (location (), string ("Invalid preprocessor directive: ") + dir);
+	message (AST::Location (file (), lineno () - 1), MessageType::ERROR, string ("invalid preprocessor directive: ") + dir);
+}
+
+void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
+{
+	static const struct Punct
+	{
+		const char* name;
+		const char* value;
+	} punctuators [] = {
+		{ "T_LEFT_CURLY_BRACKET", "{" },
+		{ "T_RIGHT_CURLY_BRACKET", "}" },
+		{ "T_LEFT_SQUARE_BRACKET", "[" },
+		{ "T_RIGHT_SQUARE_BRACKET", "]" },
+		{ "T_LEFT_PARANTHESIS", "(" },
+		{ "T_RIGHT_PARANTHESIS", ")" },
+		{ "T_COLON", ":" },
+		{ "T_COMMA", "," },
+		{ "T_SEMICOLON", ";" },
+		{ "T_EQUAL", "=" },
+		{ "T_SHIFTRIGHT", ">>" },
+		{ "T_SHIFTLEFT", "<<" },
+		{ "T_PLUS_SIGN", "+" },
+		{ "T_MINUS_SIGN", "-" },
+		{ "T_ASTERISK", "*" },
+		{ "T_SOLIDUS", "/" },
+		{ "T_PERCENT_SIGN", "%" },
+		{ "T_TILDE", "~" },
+		{ "T_VERTICAL_LINE", "|" },
+		{ "T_CIRCUMFLEX", "^" },
+		{ "T_AMPERSAND", "&" },
+		{ "T_LESS_THAN_SIGN", "<" },
+		{ "T_GREATER_THAN_SIGN", ">" }
+	};
+
+	string msg = cmsg;
+
+	for (size_t pos = 0; (pos = msg.find ('_')) != msg.npos;) {
+		if ((pos > 0) && (pos == 1 || (' ' == msg [pos - 2])) && ('T' == msg [pos - 1]) && isalpha (msg [pos + 1])) {
+			// T_ prefix.
+			if (isupper (msg [pos + 1])) {
+				// Punctuator
+				size_t nameend = msg.find (' ', pos + 1);
+				if (nameend == string::npos)
+					nameend = msg.length ();
+				string name = msg.substr (pos - 1, nameend - pos + 1);
+				const Punct* punct = nullptr;
+				for (const Punct* p = punctuators; p < end (punctuators); ++p) {
+					if (name == p->name) {
+						punct = p;
+						break;
+					}
+				}
+				if (punct) {
+					string val = "'";
+					val += punct->value;
+					val += '\'';
+					msg.replace (pos - 1, name.length (), val);
+					pos = pos - 1 + val.length ();
+					continue;
+				}
+			}
+
+			// Erase prefix
+			msg.erase (--pos, 2);
+		} else
+			msg [pos++] = ' ';
+	}
+
+	message (loc, MessageType::ERROR, msg);
 }
 
 }

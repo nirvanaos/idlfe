@@ -1,4 +1,4 @@
-/// \file Symbols.h
+/// \file Identifier.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,33 +22,31 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_SYMBOLS_H_
-#define NIDL_AST_SYMBOLS_H_
+#ifndef NIDL_AST_IDENTIFIER_H_
+#define NIDL_AST_IDENTIFIER_H_
 
-#include "NamedItem.h"
-#include <set>
-#include <map>
+#include <string>
 
 namespace AST {
 
-/// The ordered container of pointers to NamedItem.
-class Symbols :
-	public std::set <Ptr <NamedItem>, std::less <>>
+/// An identifier.
+class Identifier : public std::string
 {
-	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
 public:
-	// Methods made outline to reduce size.
-	std::pair <iterator, bool> emplace (NamedItem* item);
-	std::pair <iterator, bool> insert (NamedItem* item)
-	{
-		return emplace (item);
-	}
-	const Ptr <NamedItem>* find (const Identifier& name) const;
+	/// CORBA IDL identifiers are case-insensitive.
+	bool operator < (const Identifier& r) const;
 
-	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
+	Identifier () {}
 
-	// Check for repository is uniquness
-	void check_rep_ids_unique (Build::Builder& builder, std::map <std::string, const NamedItem*>& ids) const;
+	// Unescape identifier.
+	Identifier (const char* s, size_t len) :
+		std::string ('_' == *s ? s + 1 : s, '_' == *s ? len - 1 : len)
+	{}
+
+	Identifier (const Identifier&) = default;
+	Identifier (Identifier&&) = default;
+	Identifier& operator = (const Identifier&) = default;
+	Identifier& operator = (Identifier&&) = default;
 };
 
 }

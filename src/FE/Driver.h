@@ -51,6 +51,8 @@ public:
 
 	void preprocessor_directive (const char*);
 
+	void parser_error (const yy::location& loc, const std::string& msg);
+
 private:
 	/// Returns reference to FlexLexer.
 	virtual Driver& driver ()

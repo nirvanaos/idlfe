@@ -1,4 +1,3 @@
-/// \file Symbols.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,35 +21,21 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_SYMBOLS_H_
-#define NIDL_AST_SYMBOLS_H_
+#include "../include/AST/Identifier.h"
+#include <algorithm>
 
-#include "NamedItem.h"
-#include <set>
-#include <map>
+using namespace std;
 
 namespace AST {
 
-/// The ordered container of pointers to NamedItem.
-class Symbols :
-	public std::set <Ptr <NamedItem>, std::less <>>
+inline bool ci_compare (char l, char r)
 {
-	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
-public:
-	// Methods made outline to reduce size.
-	std::pair <iterator, bool> emplace (NamedItem* item);
-	std::pair <iterator, bool> insert (NamedItem* item)
-	{
-		return emplace (item);
-	}
-	const Ptr <NamedItem>* find (const Identifier& name) const;
-
-	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
-
-	// Check for repository is uniquness
-	void check_rep_ids_unique (Build::Builder& builder, std::map <std::string, const NamedItem*>& ids) const;
-};
-
+	return tolower (l) < tolower (r);
 }
 
-#endif
+bool Identifier::operator < (const Identifier& r) const
+{
+	return lexicographical_compare (begin (), end (), r.begin (), r.end (), ci_compare);
+}
+
+}

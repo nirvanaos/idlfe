@@ -118,18 +118,18 @@ void Builder::pragma (const char* s, const Location& loc)
 				}
 			}
 		} else {
-			message (loc, MessageType::WARNING, string ("Unknown pragma \'") + pr + "\'.");
+			message (loc, MessageType::WARNING, string ("unknown pragma ") + pr);
 			return;
 		}
 	}
 
-	message (loc, MessageType::ERROR, "Invalid pragma syntax.");
+	message (loc, MessageType::ERROR, "invalid pragma syntax");
 }
 
 void Builder::type_id (const ScopedName& name, const std::string& id, const Location& id_loc)
 {
 	if (id.empty ())
-		message (id_loc, MessageType::ERROR, "The repository id must not be empty.");
+		message (id_loc, MessageType::ERROR, "the repository id must not be empty");
 	else {
 		RepositoryId* rep_id = lookup_rep_id (name);
 		if (rep_id)
@@ -145,7 +145,7 @@ RepositoryId* Builder::lookup_rep_id (const ScopedName& name)
 		NamedItem* item = *it;
 		rep_id = RepositoryId::cast (item);
 		if (!rep_id) {
-			message (name, MessageType::ERROR, name.stringize () + " has not repository id.");
+			message (name, MessageType::ERROR, name.stringize () + " has not repository id");
 			see_declaration_of (*item, item->qualified_name ());
 		}
 	}
@@ -166,7 +166,7 @@ void Builder::type_prefix (const ScopedName& name, const Variant& s, const Locat
 					if (prefix_valid (pref, id_loc))
 						scope->prefix (*this, pref, name);
 				} else {
-					message (name, MessageType::ERROR, name.stringize () + " can not have a prefix.");
+					message (name, MessageType::ERROR, name.stringize () + " can not have a prefix");
 					see_declaration_of (**item, (*item)->qualified_name ());
 				}
 			}
@@ -174,9 +174,9 @@ void Builder::type_prefix (const ScopedName& name, const Variant& s, const Locat
 	}
 }
 
-bool Builder::get_quoted_string (const char*& s, std::string& qs, const Location& loc)
+bool Builder::get_quoted_string (const char*& ps, std::string& qs, const Location& loc)
 {
-	const char* p = s;
+	const char* p = ps;
 	while (isspace (*p))
 		++p;
 	if ('"' == *p) {
@@ -193,10 +193,11 @@ bool Builder::get_quoted_string (const char*& s, std::string& qs, const Location
 				return false;
 			}
 		}
-		if ('"' == *p)
+		if ('"' == *p) {
+			ps = p + 1;
 			return true;
-		else
-			message (loc, MessageType::ERROR, "Invalid string.");
+		} else
+			message (loc, MessageType::ERROR, string ("invalid string: ") + ps);
 	}
 	return false;
 }
@@ -234,7 +235,7 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 			else
 				break;
 		}
-		sn.push_back (string (begin, end - begin));
+		sn.push_back (Identifier (begin, end - begin));
 		begin = end;
 		while ((c = isspace (*begin)))
 			++begin;
@@ -282,18 +283,18 @@ void Builder::file (const std::string& name, const Location& loc, int flags)
 
 void Builder::error_name_collision (const SimpleDeclarator& name, const Location& prev_loc)
 {
-	message (name, MessageType::ERROR, name + " is already declared.");
+	message (name, MessageType::ERROR, name + " is already declared");
 	see_prev_declaration (prev_loc);
 }
 
 void Builder::see_prev_declaration (const Location& loc)
 {
-	message (loc, MessageType::MESSAGE, "See previous declaration.");
+	message (loc, MessageType::MESSAGE, "see previous declaration");
 }
 
 void Builder::see_declaration_of (const Location& loc, const string& name)
 {
-	message (loc, MessageType::MESSAGE, string ("See declaration of ") + name + '.');
+	message (loc, MessageType::MESSAGE, string ("see declaration of ") + name);
 }
 
 const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
@@ -328,7 +329,7 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 	}
 
 	if (!f.first)
-		message (scoped_name, MessageType::ERROR, string ("Symbol not found: ") + scoped_name.stringize ());
+		message (scoped_name, MessageType::ERROR, string ("symbol not found: ") + scoped_name.stringize ());
 
 	return f.second;
 }
@@ -340,7 +341,7 @@ unsigned Builder::positive_int (const Variant& v, const Location& loc)
 		uint32_t i = v.to_unsigned_long ();
 		if (i)
 			return i;
-		message (loc, Builder::MessageType::ERROR, "Expected positive integer.");
+		message (loc, Builder::MessageType::ERROR, "expected positive integer");
 	} catch (const exception& ex) {
 		message (loc, Builder::MessageType::ERROR, ex.what ());
 	}
@@ -353,7 +354,7 @@ const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name)
 	if (item) {
 		const NamedItem* p = *item;
 		if (!p->is_type ()) {
-			message (scoped_name, MessageType::ERROR, scoped_name.stringize () + " is not a type.");
+			message (scoped_name, MessageType::ERROR, scoped_name.stringize () + " is not a type");
 			item = nullptr;
 		}
 	}
@@ -427,12 +428,12 @@ bool Builder::prefix_valid (const std::string& pref, const Location& loc)
 			case '-':
 			case '.':
 				valid = false;
-				message (loc, MessageType::ERROR, "The prefix shall not begin with the characters underscore (_), hyphen (-) or period (.).");
+				message (loc, MessageType::ERROR, "the prefix shall not begin with the characters underscore (_), hyphen (-) or period (.)");
 		}
 		if (valid) {
 			if (pref.back () == '/') {
 				valid = false;
-				message (loc, MessageType::ERROR, "The prefix shall not contain a trailing slash (/).");
+				message (loc, MessageType::ERROR, "the prefix shall not contain a trailing slash (/)");
 			} else {
 				for (auto c : pref) {
 					switch (c) {
@@ -444,9 +445,9 @@ bool Builder::prefix_valid (const std::string& pref, const Location& loc)
 						default:
 							if (!isalnum (c)) {
 								valid = false;
-								string msg = "Invalid character '";
+								string msg = "invalid character '";
 								Variant::append (msg, c);
-								msg += "' in the prefix.";
+								msg += "' in the prefix";
 								message (loc, MessageType::ERROR, msg);
 							}
 					}
@@ -536,7 +537,7 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 
 void Builder::error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc)
 {
-	message (name, MessageType::ERROR, string (new_kind.interface_kind_name ()) + " interface " + name + " is already defined as " + prev_kind.interface_kind_name () + ".");
+	message (name, MessageType::ERROR, string (new_kind.interface_kind_name ()) + " interface " + name + " is already defined as " + prev_kind.interface_kind_name ());
 	see_prev_declaration (prev_loc);
 }
 
@@ -619,29 +620,29 @@ void Builder::interface_bases (const ScopedNames& bases)
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::INTERFACE)
 					if (base->kind () == Item::Kind::INTERFACE_DECL)
-						err = "Incomplete interface is not allowed.";
+						err = "incomplete interface is not allowed";
 					else
-						err = "Invalid base type.";
+						err = "invalid base type";
 				else {
 					const Interface* base_itf = static_cast <const Interface*> (base);
 					if (itf == base_itf) {
-						message (*base_name, MessageType::ERROR, "May not derive from itself.");
+						message (*base_name, MessageType::ERROR, "may not derive from itself");
 						continue;
 					}
 					switch (itf->interface_kind ()) {
 						case InterfaceKind::UNCONSTRAINED:
 							if (InterfaceKind::LOCAL == base_itf->interface_kind ())
-								err = "Unconstrained interface may not derive local interface.";
+								err = "unconstrained interface may not derive local interface";
 							break;
 						case InterfaceKind::ABSTRACT:
 							if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
-								err = "An abstract interface may only inherit from abstract interfaces.";
+								err = "an abstract interface may only inherit from abstract interfaces";
 							break;
 					}
 					if (!err) {
 						auto ins = direct_bases.emplace (base, *base_name);
 						if (!ins.second) {
-							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + itf->name () + ".");
+							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + itf->name ());
 							see_prev_declaration (ins.first->second);
 							continue;
 						}
@@ -660,8 +661,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 												NamedItem* op = static_cast <NamedItem*> (const_cast <Item*> (member));
 												auto ins = interface_.all_operations.insert (op);
 												if (!ins.second) {
-													string opatt = member->kind () == Item::Kind::OPERATION ? "Operation name " : "Attribute name ";
-													message (*base_name, MessageType::ERROR, opatt + op->name () + " collision.");
+													string opatt = member->kind () == Item::Kind::OPERATION ? "operation name " : "attribute name ";
+													message (*base_name, MessageType::ERROR, opatt + op->name () + " collision");
 													message (**ins.first, MessageType::MESSAGE, (*ins.first)->qualified_name ());
 													message (*op, MessageType::MESSAGE, op->qualified_name ());
 													continue;
@@ -692,14 +693,14 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
 		if (oneway && type.tkind () != Type::Kind::VOID) {
-			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored.");
+			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored");
 			oneway = false;
 		}
 		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
 		auto ins = interface_.all_operations.insert (op);
 		if (!ins.second) {
-			message (name, MessageType::ERROR, string ("Operation name ") + name + " collision.");
-			message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
+			message (name, MessageType::ERROR, string ("operation name ") + name + " collision");
+			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
 		} else {
 			ins = itf->insert (op);
 			if (!ins.second)
@@ -724,8 +725,8 @@ void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarator
 			Ptr <NamedItem> item = Ptr <NamedItem>::make <Attribute> (ref (*this), readonly, ref (type), ref (*name));
 			auto ins = interface_.all_operations.insert (item);
 			if (!ins.second) {
-				message (*name, MessageType::ERROR, string ("Attribute name ") + *name + " collision.");
-				message (**ins.first, MessageType::MESSAGE, string ("See ") + (*ins.first)->qualified_name () + ".");
+				message (*name, MessageType::ERROR, string ("attribute name ") + *name + " collision");
+				message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
 			} else {
 				ins = itf->insert (item);
 				if (!ins.second)
@@ -745,13 +746,13 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 	Operation* op = interface_.operation.op;
 	if (op) {
 		if (att != Parameter::Attribute::IN && op->oneway ()) {
-			message (name, MessageType::WARNING, "'oneway' operation can not return data. The 'oneway' attribute will be ignored.");
+			message (name, MessageType::WARNING, "'oneway' operation can not return data. The 'oneway' attribute will be ignored");
 			op->oneway_clear ();
 		}
 		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
 		auto ins = interface_.operation.params.insert (par);
 		if (!ins.second)
-			message (name, MessageType::ERROR, string ("Duplicated parameter ") + name + ".");
+			message (name, MessageType::ERROR, string ("duplicated parameter ") + name);
 		else if (is_main_file ())
 			op->push_back (par);
 	}
@@ -767,12 +768,12 @@ void Builder::operation_raises (const ScopedNames& raises)
 			if (l) {
 				const NamedItem* item = *l;
 				if (item->kind () != Item::Kind::EXCEPTION) {
-					message (*name, MessageType::ERROR, name->stringize () + " is not an exception type.");
+					message (*name, MessageType::ERROR, name->stringize () + " is not an exception type");
 					see_declaration_of (*item, item->qualified_name ());
 				} else {
 					auto ins = unique.emplace (item, *name);
 					if (!ins.second) {
-						message (*name, MessageType::ERROR, string ("Duplicated exception specification ") + name->stringize () + ".");
+						message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
 						see_prev_declaration (ins.first->second);
 					} else
 						op->add_exception (static_cast <const Exception*> (item));
@@ -933,7 +934,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 		}
 
 		if (!type_OK) {
-			message (type_loc, MessageType::ERROR, "Invalid switch type.");
+			message (type_loc, MessageType::ERROR, "invalid switch type");
 			eval_stack_.push (move (make_unique <Eval> (*this)));
 			scope_push (nullptr);
 			return;
@@ -971,10 +972,10 @@ void Builder::union_label (const Variant& label, const Location& loc)
 		if (!label.empty ()) {
 			auto ins = union_.all_labels.emplace (label.to_key (), loc);
 			if (!ins.second) {
-				message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used.");
+				message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used");
 				see_prev_declaration (ins.first->second);
 			} else if (union_.element.is_default)
-				message (loc, MessageType::WARNING, "Default element, case is ignored.");
+				message (loc, MessageType::WARNING, "default element, case is ignored");
 			else
 				union_.element.labels.push_back (label);
 		}
@@ -985,13 +986,13 @@ void Builder::union_default (const Location& loc)
 {
 	if (scope_stack_.back ()) {
 		if (union_.has_default)
-			message (loc, MessageType::ERROR, "Union already has the default element.");
+			message (loc, MessageType::ERROR, "union already has the default element");
 		else {
 			union_.has_default = true;
 			union_.default_loc = loc;
 			union_.element.is_default = true;
 			if (!union_.element.labels.empty ()) {
-				message (loc, MessageType::WARNING, "Default element, other cases are ignored.");
+				message (loc, MessageType::WARNING, "default element, other cases are ignored");
 				union_.element.labels.clear ();
 			}
 		}
@@ -1028,7 +1029,7 @@ const Ptr <NamedItem>* Builder::union_end ()
 		// A union type can contain a default label only where the values given in the non-default labels
 		// do not cover the entire range of the union's discriminant type.
 		if (union_.has_default && union_.all_labels.size () > u->discriminator_type ().key_max ())
-			message (union_.default_loc, MessageType::ERROR, "Non-default labels cover the entire range of the union's discriminant type.");
+			message (union_.default_loc, MessageType::ERROR, "non-default labels cover the entire range of the union's discriminant type");
 	}
 	union_.clear ();
 	eval_pop ();
@@ -1055,7 +1056,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 					error_name_collision (*item, **ins.first);
 				else {
 					if (def->size () == numeric_limits <uint32_t>::max ()) {
-						message (*item, MessageType::ERROR, "Too many enumerators.");
+						message (*item, MessageType::ERROR, "too many enumerators");
 						break;
 					}
 					def->push_back (enumerator);
@@ -1108,7 +1109,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	}
 
 	if (!eval) {
-		message (loc, MessageType::ERROR, "Invalid constant type.");
+		message (loc, MessageType::ERROR, "invalid constant type");
 		eval = new Eval (*this);
 	}
 	eval_stack_.push (unique_ptr <Eval> (eval));

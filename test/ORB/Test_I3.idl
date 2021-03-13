@@ -3,7 +3,7 @@
 
 #include "Test_I1.idl"
 #include "Test_I2.idl"
-
+{}
 module Test {
 
 interface I3 : I1, I2

@@ -50,7 +50,7 @@ Variant EvalEnum::constant (const ScopedName& constant)
 					return c;
 			} break;
 		}
-		builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a valid enumerator for " + type_->qualified_name () + '.');
+		builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a valid enumerator for " + type_->qualified_name ());
 		see_definition (item);
 	}
 	return Variant ();

@@ -64,7 +64,7 @@ Variant EvalFloatingPoint::constant (const ScopedName& constant)
 void EvalFloatingPoint::check_inexact (const Location& loc) const
 {
 	if (fetestexcept (FE_INEXACT))
-		builder_.message (loc, Builder::MessageType::WARNING, "Precision lost in conversion.");
+		builder_.message (loc, Builder::MessageType::WARNING, "precision lost in conversion");
 }
 
 Variant EvalFloatingPoint::expr (const Variant& l, char op, const Variant& r, const Location& loc)

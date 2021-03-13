@@ -61,11 +61,6 @@ public:
 		return err_cnt_;
 	}
 
-	void parser_error (const Location& loc, const std::string& msg)
-	{
-		message (loc, MessageType::ERROR, msg);
-	}
-
 	static const int FILE_FLAG_START = 0x1;
 	static const int FILE_FLAG_SYSTEM = 0x2;
 	void file (const std::string& name, const Location& loc, int flags = 0);
@@ -210,15 +205,11 @@ public:
 	Ptr <AST> finalize ()
 	{
 		if (!err_cnt_ && tree_) {
-			try {
-				std::map <std::string, const NamedItem*> ids;
-				tree_->check_rep_ids_unique (*this, ids);
-			} catch (const std::exception& ex) {
-				err_out_ << ex.what () << std::endl;
-			}
-			if (err_cnt_)
-				tree_ = nullptr;
+			std::map <std::string, const NamedItem*> ids;
+			tree_->check_rep_ids_unique (*this, ids);
 		}
+		if (err_cnt_)
+			tree_ = nullptr;
 		return std::move (tree_);
 	}
 

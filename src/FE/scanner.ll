@@ -155,7 +155,7 @@ typeprefix  return yy::parser::make_T_TYPEPREFIX (driver ().location ());
 Object      return yy::parser::make_T_OBJECT (driver ().location ());
 
 
-{CORBA_Identifier} return yy::parser::make_T_IDENTIFIER (std::string (YYText (), YYLeng ()), driver ().location ());
+{CORBA_Identifier} return yy::parser::make_T_IDENTIFIER (AST::Identifier (YYText (), YYLeng ()), driver ().location ());
 {Float_Literal1} |
 {Float_Literal2} |
 {Float_Literal3} |

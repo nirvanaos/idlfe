@@ -115,11 +115,11 @@ void RepositoryId::type_id (Builder& builder, const std::string& id, const Locat
 {
 	if (explicit_ [EXPLICIT_ID]) {
 		if (prefix_or_id_ != id) {
-			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different repository ID \"" + prefix_or_id_ + "\".");
+			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different repository ID \"" + prefix_or_id_ + '\"');
 			builder.see_prev_declaration (explicit_ [EXPLICIT_ID]);
 		}
 	} else if (explicit_ [EXPLICIT_VERSION]) {
-		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
+		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version");
 		builder.see_prev_declaration (explicit_ [EXPLICIT_VERSION]);
 	} else {
 		prefix_or_id_ = id;
@@ -130,10 +130,10 @@ void RepositoryId::type_id (Builder& builder, const std::string& id, const Locat
 void RepositoryId::pragma_version (Builder& builder, const Version v, const Location& loc)
 {
 	if (explicit_ [EXPLICIT_ID]) {
-		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with repository ID.");
+		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with repository ID");
 		builder.see_prev_declaration (explicit_ [EXPLICIT_ID]);
 	} else if (explicit_ [EXPLICIT_VERSION]) {
-		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version.");
+		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version");
 		builder.see_prev_declaration (explicit_ [EXPLICIT_VERSION]);
 	} else {
 		version_ = v;
@@ -170,7 +170,7 @@ bool RepositoryId::check_unique (Build::Builder& builder, map <std::string, cons
 {
 	auto ins = ids.emplace (repository_id (), &item ());
 	if (!ins.second) {
-		builder.message (item (), Builder::MessageType::ERROR, string ("Repository ID ") + ins.first->first + " is duplicated.");
+		builder.message (item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
 		builder.see_declaration_of (*ins.first->second, ins.first->second->qualified_name ());
 	}
 	return ins.second;
