@@ -30,7 +30,7 @@ bool IDL_Print::parse_command_line (CmdLine& args)
 }
 
 
-void IDL_Print::generate_code (const AST::AST& tree)
+void IDL_Print::generate_code (const AST::Root& tree)
 {
 	path file = out_dir_ / tree.file ().filename ();
 	file.replace_extension (".txt");

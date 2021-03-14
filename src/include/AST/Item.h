@@ -39,7 +39,7 @@ public:
 	/// The kind of item.
 	enum class Kind
 	{
-		AST, ///< class AST
+		ROOT, ///< class Root
 		INCLUDE, ///< class Include
 		NATIVE, ///< class Native
 		TYPEDEF, ///< class TypeDef

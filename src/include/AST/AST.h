@@ -32,8 +32,8 @@
 
 namespace AST {
 
-/// \brief Abstract Syntax Tree.
-class AST :
+/// \brief Abstract Syntax Tree root.
+class Root :
 	public Item,
 	public Symbols,
 	public Container
@@ -51,8 +51,8 @@ public:
 
 	/// \internal
 
-	AST (const std::string& file) :
-		Item (Item::Kind::AST),
+	Root (const std::string& file) :
+		Item (Item::Kind::ROOT),
 		main_file_ (file)
 	{}
 

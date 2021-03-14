@@ -37,7 +37,7 @@
 
 namespace AST {
 
-class AST;
+class Root;
 class Operation;
 class Attribute;
 
@@ -51,7 +51,7 @@ public:
 	Builder (const std::string& file, std::ostream& err_out) :
 		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
-		tree_ (Ptr <AST>::make <AST> (file))
+		tree_ (Ptr <Root>::make <Root> (file))
 	{
 		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
@@ -215,7 +215,7 @@ public:
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
 
-	Ptr <AST> finalize ();
+	Ptr <Root> finalize ();
 
 private:
 	bool prefix_valid (const std::string& pref, const Location& loc);
@@ -246,7 +246,7 @@ private:
 private:
 	unsigned err_cnt_;
 	std::ostream err_out_;
-	Ptr <AST> tree_;
+	Ptr <Root> tree_;
 	typedef std::vector <Symbols*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;

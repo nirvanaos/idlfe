@@ -1096,8 +1096,8 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 			if (is_main_file ())
 				container_stack_.top ()->append (*def);
 			for (auto item = items.begin (); item != items.end (); ++item) {
-				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*def), ref (name));
-				ins = scope->insert (*enumerator);
+				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*def), ref (*item));
+				auto ins = scope->insert (*enumerator);
 				if (!ins.second)
 					error_name_collision (*item, **ins.first);
 				else {
@@ -1161,7 +1161,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (unique_ptr <Eval> (eval));
 }
 
-Ptr <AST> Builder::finalize ()
+Ptr <Root> Builder::finalize ()
 {
 	if (!err_cnt_ && tree_) {
 		try {

@@ -38,7 +38,7 @@ class Driver :
 	public AST::Build::Builder
 {
 public:
-	static AST::Ptr <AST::AST> parse (const std::string& file, std::istream& yyin)
+	static AST::Ptr <AST::Root> parse (const std::string& file, std::istream& yyin)
 	{
 		Driver drv (file, yyin);
 		return drv.parse ();
@@ -62,12 +62,12 @@ private:
 
 	Driver (const std::string& file, std::istream& yyin);
 
-	AST::Ptr <AST::AST> parse ()
+	AST::Ptr <AST::Root> parse ()
 	{
 		if (!parser_.parse ())
 			return finalize ();
 		else
-			return AST::Ptr <AST::AST> ();
+			return AST::Ptr <AST::Root> ();
 	}
 
 private:

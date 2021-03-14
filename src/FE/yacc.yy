@@ -660,7 +660,6 @@ element_spec
 	: type_spec declarator { drv.union_element ($1, $2); }
 	;
 
-/*78*/
 enum_type
 	: T_enum simple_declarator
 	T_LEFT_CURLY_BRACKET

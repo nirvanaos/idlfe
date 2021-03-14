@@ -16,7 +16,7 @@ private:
 	virtual bool parse_command_line (CmdLine& args);
 
 	// Override generate_code to build output from the AST.
-	virtual void generate_code (const AST::AST& tree);
+	virtual void generate_code (const AST::Root& tree);
 
 private:
 	std::filesystem::path out_dir_;

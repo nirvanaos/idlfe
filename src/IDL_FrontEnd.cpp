@@ -232,7 +232,7 @@ bool IDL_FrontEnd::compile (const string& file)
 		preprocessed.str (output_tokens.stringify ());
 	}
 
-	AST::Ptr <AST::AST> ast = FE::Driver::parse (file, preprocessed);
+	AST::Ptr <AST::Root> ast = FE::Driver::parse (file, preprocessed);
 
 	if (ast)
 		try {
