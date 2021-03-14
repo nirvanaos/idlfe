@@ -152,7 +152,8 @@ public:
 	}
 
 	static Type make_sequence (const Type& type, Dim size = 0);
-	static Type make_array (const Type& type, const FixedArraySizes& sizes);
+
+	Type (const Type& type, const FixedArraySizes& sizes);
 
 	static Type make_fixed (unsigned digits, unsigned scale)
 	{
@@ -165,6 +166,8 @@ public:
 	const Type& dereference_type () const noexcept;
 
 	size_t key_max () const noexcept;
+
+	bool is_complete_or_ref () const noexcept;
 
 private:
 	void clear () noexcept;
@@ -189,25 +192,20 @@ private:
 		type_ (seq)
 	{}
 
-	Type (Array* arr) :
-		kind_ (Kind::ARRAY),
-		type_ (arr)
-	{}
-
 private:
 	Kind kind_;
 	union U
 	{
-		BasicType basic_type;              // BASIC_TYPE
-		const Ptr <NamedItem>* named_type; // NAMED_TYPE
-		Dim string_size;                   // STRING, WSTRING
-		const Sequence* sequence;          // SEQUENCE
-		const Array* array;                // ARRAY
+		BasicType basic_type;              // `Kind::BASIC_TYPE`
+		const Ptr <NamedItem>* named_type; // `Kind::NAMED_TYPE`
+		Dim string_size;                   // `Kind::STRING, Kind::WSTRING`
+		const Sequence* sequence;          // `Kind::SEQUENCE`
+		const Array* array;                // `Kind::ARRAY`
 		struct
 		{
 			uint8_t digits;
 			uint8_t scale;
-		} fixed;                           // FIXED
+		} fixed;                           // `Kind::FIXED`
 
 		U ()
 		{}
@@ -224,11 +222,11 @@ private:
 			string_size (ssize)
 		{}
 
-		U (Sequence* pseq) :
+		U (const Sequence* pseq) :
 			sequence (pseq)
 		{}
 
-		U (Array* parr) :
+		U (const Array* parr) :
 			array (parr)
 		{}
 

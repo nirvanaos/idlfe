@@ -38,11 +38,13 @@ class Symbols :
 	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
 public:
 	// Methods made outline to reduce size.
-	std::pair <iterator, bool> emplace (NamedItem* item);
-	std::pair <iterator, bool> insert (NamedItem* item)
+	std::pair <iterator, bool> emplace (const NamedItem&);
+
+	std::pair <iterator, bool> insert (const NamedItem& item)
 	{
 		return emplace (item);
 	}
+
 	const Ptr <NamedItem>* find (const Identifier& name) const;
 
 	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;

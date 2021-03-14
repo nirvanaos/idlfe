@@ -63,16 +63,16 @@ public:
 	};
 
 	/// \returns The kind of item.
-	Kind kind () const
+	Kind kind () const noexcept
 	{
 		return kind_;
 	}
 
 	/// \returns `true` if the item represents a type.
-	bool is_type () const
-	{
-		return Kind::NATIVE <= kind_ && kind_ <= Kind::ENUM;
-	}
+	bool is_type () const noexcept;
+
+	/// \returns `true` if the item is a forward declaration.
+	bool is_forward_decl () const noexcept;
 
 	/// \internals
 

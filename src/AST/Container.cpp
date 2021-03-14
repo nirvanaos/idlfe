@@ -25,9 +25,9 @@
 
 namespace AST {
 
-void Container::append (Item* item)
+void Container::append (Item& item)
 {
-	Base::emplace_back (item);
+	Base::append (item);
 }
 
 bool Container::visit (CodeGen& cg) const

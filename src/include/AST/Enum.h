@@ -27,7 +27,7 @@
 
 #include "NamedItem.h"
 #include "RepositoryId.h"
-#include <vector>
+#include "Container.h"
 
 namespace AST {
 
@@ -39,31 +39,28 @@ class EnumItem :
 {
 public:
 	/// \returns The pointer to enumerated type.
-	const Ptr <NamedItem>& enum_type () const
+	const NamedItem& enum_type () const
 	{
 		return enum_type_;
 	}
 
 	/// \internal
 
-	EnumItem (const Build::Builder& builder, const Ptr <NamedItem>& enum_type, const Build::SimpleDeclarator& name) :
+	EnumItem (const Build::Builder& builder, const NamedItem& enum_type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM_ITEM, builder, name),
 		enum_type_ (enum_type)
 	{}
 
 private:
-	const Ptr <NamedItem>& enum_type_;
+	const NamedItem& enum_type_;
 	/// \endinternal
 };
-
-/// The container of the EnumItem elements.
-typedef std::vector <Ptr <EnumItem>> EnumItems;
 
 /// The `enum` declaration.
 class Enum :
 	public NamedItem,
 	public RepositoryId,
-	public EnumItems
+	public ContainerT <EnumItem>
 {
 public:
 	/// \internal

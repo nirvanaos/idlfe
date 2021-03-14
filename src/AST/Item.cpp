@@ -1,4 +1,3 @@
-/// \file Container.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,46 +21,33 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_CONTAINER_H_
-#define NIDL_AST_CONTAINER_H_
+#include "../include/AST/Item.h"
+#include <algorithm>
 
-#include "Item.h"
-#include <vector>
+using namespace std;
 
 namespace AST {
 
-template <class T>
-class ContainerT :
-	public std::vector <Ptr <T>>
+bool Item::is_type () const noexcept
 {
-	/// \internal
-protected:
-	typedef std::vector <Ptr <T>> Base;
-public:
-	void append (T& item)
-	{
-		Base::emplace_back (&item);
-	}
-	/// \endinternal
-};
+	static const Kind kinds [] = {
+		Kind::NATIVE,
+		Kind::TYPEDEF,
+		Kind::INTERFACE_DECL,
+		Kind::INTERFACE,
+		Kind::STRUCT_DECL,
+		Kind::STRUCT,
+		Kind::UNION_DECL,
+		Kind::UNION,
+		Kind::ENUM
+	};
 
-class CodeGen;
-
-/// Sequential container of the AST items.
-class Container :
-	public ContainerT <Item>
-{
-	typedef ContainerT <Item> Base;
-public:
-	/// Visit all items for the code generation.
-	/// \returns `true` if unsuppported building blocks were occurred.
-	bool visit (CodeGen& cg) const;
-
-	/// \internal
-	void append (Item& item);
-	/// \endinternal
-};
-
+	return find (kinds, end (kinds), kind_) != end (kinds);
 }
 
-#endif
+bool Item::is_forward_decl () const noexcept
+{
+	return Kind::INTERFACE_DECL == kind_ || Kind::STRUCT_DECL == kind_ || Kind::UNION_DECL == kind_;
+}
+
+}

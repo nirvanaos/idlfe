@@ -29,9 +29,9 @@ using namespace std;
 
 namespace AST {
 
-std::pair <Symbols::iterator, bool> Symbols::emplace (NamedItem* item)
+std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
 {
-	return Base::emplace (item);
+	return Base::emplace (&const_cast <NamedItem&> (item));
 }
 
 pair <bool, const Ptr <NamedItem>*> Symbols::find (Build::Builder&, const Identifier& name, const Location&) const

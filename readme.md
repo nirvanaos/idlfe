@@ -33,5 +33,15 @@ To create an IDL compiler:
 Install nirvanaos.idlfe NuGet package.
 
 ## How to build
-Requires a C++17 compilant compiler and Flex + Bison.
+
+### MS Visual Studio
+
 To build with MS Visual Studio use supermodule https://github.com/nirvanaos/idlfe.vc.git
+
+### Other compilers
+
+To create own compilation project you must have:
+
+* C++17 compilant compiler
+* Flex + Bison
+* Fixed point arithmetic library https://github.com/nirvanaos/decNumber

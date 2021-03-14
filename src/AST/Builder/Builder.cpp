@@ -273,7 +273,7 @@ void Builder::file (const std::string& name, const Location& loc, int flags)
 				file = name;
 			else
 				file = filesystem::relative (name, tree_->file ().parent_path ());
-			tree_->append (Ptr <Item>::make <Include> (move (file), flags & FILE_FLAG_SYSTEM));
+			tree_->append (*Ptr <Item>::make <Include> (move (file), flags & FILE_FLAG_SYSTEM));
 		} catch (const filesystem::filesystem_error& ex) {
 			message (loc, MessageType::ERROR, ex.what ());
 		}
@@ -374,7 +374,7 @@ void Builder::scope_push (ItemContainer* scope)
 	scope_stack_.push_back (scope);
 	if (is_main_file ()) {
 		if (scope)
-			container_stack_.top ()->append (scope);
+			container_stack_.top ()->append (*scope);
 		container_stack_.push (scope);
 	}
 }
@@ -492,7 +492,7 @@ void Builder::module_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
 		Ptr <Module> mod = Ptr <Module>::make <Module> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (mod);
+		auto ins = scope_stack_.back ()->insert (*mod);
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::MODULE) {
 			error_name_collision (name, **ins.first);
 			scope_push (nullptr);
@@ -501,7 +501,7 @@ void Builder::module_begin (const SimpleDeclarator& name)
 			scope_stack_.push_back (mod);
 			if (is_main_file ()) {
 				Ptr <ModuleItems> cont = Ptr <ModuleItems>::make <ModuleItems> (std::ref (*mod));
-				container_stack_.top ()->append (cont);
+				container_stack_.top ()->append (*cont);
 				container_stack_.push (cont);
 			}
 		}
@@ -512,11 +512,11 @@ void Builder::native (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
 		Ptr <NamedItem> def = Ptr <NamedItem>::make <Native> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (def);
+		auto ins = scope_stack_.back ()->insert (*def);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
 		else if (is_main_file ())
-			container_stack_.top ()->append (def);
+			container_stack_.top ()->append (*def);
 	}
 }
 
@@ -525,12 +525,18 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 	Symbols* scope = scope_stack_.back ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			Ptr <NamedItem> def = Ptr <NamedItem>::make <TypeDef> (ref (*this), ref (*decl), ref (type));
-			auto ins = scope->insert (def);
+			Ptr <NamedItem> def;
+			if (decl->array_sizes ().empty ())
+				def = Ptr <NamedItem>::make <TypeDef> (ref (*this), ref (*decl), ref (type));
+			else {
+				Type arr (type, decl->array_sizes ());
+				def = Ptr <NamedItem>::make <TypeDef> (ref (*this), ref (*decl), ref (arr));
+			}
+			auto ins = scope->insert (*def);
 			if (!ins.second)
 				error_name_collision (*decl, **ins.first);
 			else if (is_main_file ())
-				container_stack_.top ()->append (def);
+				container_stack_.top ()->append (*def);
 		}
 	}
 }
@@ -545,7 +551,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	if (scope_stack_.back ()) {
 		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (ref (*this), name, ik);
-		auto ins = scope_stack_.back ()->insert (decl);
+		auto ins = scope_stack_.back ()->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			const RepositoryId* rid = nullptr;
@@ -575,7 +581,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 		}
 
 		if (is_main_file ())
-			container_stack_.top ()->append (decl);
+			container_stack_.top ()->append (*decl);
 	}
 }
 
@@ -583,7 +589,7 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	if (scope_begin ()) {
 		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (ref (*this), ref (name), ik);
-		auto ins = scope_stack_.back ()->insert (itf);
+		auto ins = scope_stack_.back ()->insert (*itf);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			if ((*ins.first)->kind () != Item::Kind::INTERFACE_DECL) {
@@ -659,7 +665,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 											case Item::Kind::OPERATION:
 											case Item::Kind::ATTRIBUTE:
 												NamedItem* op = static_cast <NamedItem*> (const_cast <Item*> (member));
-												auto ins = interface_.all_operations.insert (op);
+												auto ins = interface_.all_operations.insert (*op);
 												if (!ins.second) {
 													string opatt = member->kind () == Item::Kind::OPERATION ? "operation name " : "attribute name ";
 													message (*base_name, MessageType::ERROR, opatt + op->name () + " collision");
@@ -697,19 +703,19 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			oneway = false;
 		}
 		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
-		auto ins = interface_.all_operations.insert (op);
+		auto ins = interface_.all_operations.insert (*op);
 		if (!ins.second) {
 			message (name, MessageType::ERROR, string ("operation name ") + name + " collision");
 			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
 		} else {
-			ins = itf->insert (op);
+			ins = itf->insert (*op);
 			if (!ins.second)
 				error_name_collision (name, **ins.first); // Op name collides with nested type.
 			else {
 				interface_.operation.op = op;
 				// We always append operation to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
-				static_cast <Interface*> (itf)->append (op);
+				static_cast <Interface*> (itf)->append (*op);
 			}
 		}
 	}
@@ -723,18 +729,18 @@ void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarator
 		assert (itf->kind () == Item::Kind::INTERFACE);
 		for (auto name = declarators.begin (); name != declarators.end (); ++name) {
 			Ptr <NamedItem> item = Ptr <NamedItem>::make <Attribute> (ref (*this), readonly, ref (type), ref (*name));
-			auto ins = interface_.all_operations.insert (item);
+			auto ins = interface_.all_operations.insert (*item);
 			if (!ins.second) {
 				message (*name, MessageType::ERROR, string ("attribute name ") + *name + " collision");
 				message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
 			} else {
-				ins = itf->insert (item);
+				ins = itf->insert (*item);
 				if (!ins.second)
 					error_name_collision (*name, **ins.first); // Op name collides with nested type.
 				else {
 					// We always append attribute to the container, whatever it is the main file or not.
 					// We need it to build all_operations for derived interfaces.
-					container_stack_.top ()->append (item);
+					container_stack_.top ()->append (*item);
 				}
 			}
 		}
@@ -750,7 +756,7 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 			op->oneway_clear ();
 		}
 		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
-		auto ins = interface_.operation.params.insert (par);
+		auto ins = interface_.operation.params.insert (*par);
 		if (!ins.second)
 			message (name, MessageType::ERROR, string ("duplicated parameter ") + name);
 		else if (is_main_file ())
@@ -794,7 +800,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
 		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (decl);
+		auto ins = scope_stack_.back ()->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			const RepositoryId* rid = nullptr;
@@ -816,7 +822,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 		}
 
 		if (is_main_file ())
-			container_stack_.top ()->append (decl);
+			container_stack_.top ()->append (*decl);
 	}
 }
 
@@ -824,7 +830,7 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
 		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (def);
+		auto ins = scope_stack_.back ()->insert (*def);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			if (item.kind () != Item::Kind::STRUCT_DECL) {
@@ -847,7 +853,7 @@ void Builder::exception_begin (const SimpleDeclarator& name)
 {
 	if (scope_begin ()) {
 		Ptr <Exception> def = Ptr <Exception>::make <Exception> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (def);
+		auto ins = scope_stack_.back ()->insert (*def);
 		if (!ins.second) {
 			error_name_collision (name, **ins.first);
 			scope_push (nullptr);
@@ -864,19 +870,23 @@ void Builder::member (const Type& type, const Declarators& declarators)
 	ItemScope* parent = static_cast <ItemScope*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::STRUCT || parent->kind () == Item::Kind::EXCEPTION);
+
+		if (!type.is_complete_or_ref ())
+			message (declarators.front (), MessageType::ERROR, "incomplete type is not allowed");
+
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
 			Ptr <NamedItem> item;
 			if (decl->array_sizes ().empty ()) {
 				item = Ptr <NamedItem>::make <Member> (ref (*this), ref (type), ref (*decl));
 			} else {
-				Type arr = Type::make_array (type, decl->array_sizes ());
+				Type arr (type, decl->array_sizes ());
 				item = Ptr <NamedItem>::make <Member> (ref (*this), ref (arr), ref (*decl));
 			}
-			auto ins = static_cast <Symbols*> (parent)->insert (item);
+			auto ins = static_cast <Symbols*> (parent)->insert (*item);
 			if (!ins.second)
 				error_name_collision (*decl, **ins.first);
 			else if (is_main_file ())
-				container_stack_.top ()->append (item);
+				container_stack_.top ()->append (*item);
 		}
 	}
 }
@@ -885,7 +895,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 {
 	if (scope_stack_.back ()) {
 		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (ref (*this), ref (name));
-		auto ins = scope_stack_.back ()->insert (decl);
+		auto ins = scope_stack_.back ()->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			const RepositoryId* rid = nullptr;
@@ -907,7 +917,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 		}
 
 		if (is_main_file ())
-			container_stack_.top ()->append (decl);
+			container_stack_.top ()->append (*decl);
 	}
 }
 
@@ -917,7 +927,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 		const Type& t = switch_type.dereference_type ();
 
 		bool type_OK = false;
-		const Ptr <NamedItem>* enum_type = nullptr;
+		const NamedItem* enum_type = nullptr;
 		switch (t.tkind ()) {
 			case Type::Kind::BASIC_TYPE: {
 				BasicType bt = t.basic_type ();
@@ -927,7 +937,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 			case Type::Kind::NAMED_TYPE: {
 				if (t.named_type ()->kind () == Item::Kind::ENUM) {
-					enum_type = &switch_type.named_type ();
+					enum_type = switch_type.named_type ();
 					type_OK = true;
 				}
 			}
@@ -942,7 +952,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 			eval_push (switch_type, type_loc);
 
 		Ptr <Union> def = Ptr <Union>::make <Union> (ref (*this), ref (name), ref (switch_type));
-		auto ins = scope_stack_.back ()->insert (def);
+		auto ins = scope_stack_.back ()->insert (*def);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			if (item.kind () != Item::Kind::UNION_DECL) {
@@ -1009,14 +1019,14 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 		if (decl.array_sizes ().empty ()) {
 			item = Ptr <NamedItem>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
 		} else {
-			Type arr = Type::make_array (type, decl.array_sizes ());
+			Type arr (type, decl.array_sizes ());
 			item = Ptr <NamedItem>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
 		}
-		auto ins = static_cast <Symbols*> (parent)->insert (item);
+		auto ins = static_cast <Symbols*> (parent)->insert (*item);
 		if (!ins.second)
 			error_name_collision (decl, **ins.first);
 		else if (is_main_file ())
-			container_stack_.top ()->append (item);
+			container_stack_.top ()->append (*item);
 	}
 	union_.element.clear ();
 }
@@ -1043,15 +1053,15 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 	Symbols* scope = scope_stack_.back ();
 	if (scope) {
 		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
-		auto ins = scope->insert (def);
+		auto ins = scope->insert (*def);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
 		else {
 			if (is_main_file ())
-				container_stack_.top ()->append (def);
+				container_stack_.top ()->append (*def);
 			for (auto item = items.begin (); item != items.end (); ++item) {
-				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*ins.first), ref (name));
-				ins = scope->insert (enumerator);
+				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*def), ref (name));
+				ins = scope->insert (*enumerator);
 				if (!ins.second)
 					error_name_collision (*item, **ins.first);
 				else {
@@ -1059,7 +1069,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 						message (*item, MessageType::ERROR, "too many enumerators");
 						break;
 					}
-					def->push_back (enumerator);
+					def->append (*enumerator);
 				}
 			}
 		}
@@ -1072,11 +1082,11 @@ void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& v
 {
 	if (scope_stack_.back ()) {
 		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (t), ref (name), move (eval ().cast (t, move (val), loc)));
-		auto ins = scope_stack_.back ()->insert (item);
+		auto ins = scope_stack_.back ()->insert (*item);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
 		else if (is_main_file ())
-			container_stack_.top ()->append (item);
+			container_stack_.top ()->append (*item);
 	}
 	eval_pop ();
 }
@@ -1102,8 +1112,8 @@ void Builder::eval_push (const Type& t, const Location& loc)
 			eval = new EvalFixed (*this);
 			break;
 		case Type::Kind::NAMED_TYPE: {
-			const Ptr <NamedItem> nt = type.named_type ();
-			if (nt->kind () == Item::Kind::ENUM)
+			const NamedItem& nt = *type.named_type ();
+			if (nt.kind () == Item::Kind::ENUM)
 				eval = new EvalEnum (*this, nt);
 		} break;
 	}

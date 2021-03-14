@@ -32,14 +32,11 @@
 
 namespace AST {
 
-/// The container of the Parameter elements.
-typedef std::vector <Ptr <Parameter>> Parameters;
-
 /// The operation.
 class Operation :
 	public NamedItem,
 	public Type,
-	public Parameters
+	public ContainerT <Parameter>
 {
 public:
 	/// \returns `true` if this is an `onevay` operation.

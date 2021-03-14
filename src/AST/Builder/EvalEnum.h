@@ -36,7 +36,7 @@ namespace Build {
 class EvalEnum : public Eval
 {
 public:
-	EvalEnum (Builder& builder, const Ptr <NamedItem>& type) :
+	EvalEnum (Builder& builder, const NamedItem& type) :
 		Eval (builder),
 		type_ (type)
 	{}
@@ -46,7 +46,7 @@ public:
 	virtual Variant cast (const Type& t, Variant&& v, const Location& loc);
 
 private:
-	const Ptr <NamedItem>& type_;
+	const NamedItem& type_;
 };
 
 }
