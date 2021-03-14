@@ -138,12 +138,15 @@ class Driver;
 %token T_ValueBase
 %token T_typeid
 %token T_typeprefix
+%token T_getraises
+%token T_setraises
 
 %nterm <AST::Variant> string_literal;
 %nterm <AST::Variant> wide_string_literal;
 
 %nterm <AST::ScopedName> scoped_name;
 %nterm <AST::ScopedNames> scoped_names;
+%nterm <AST::ScopedNames> raises_expr;
 
 %nterm <AST::BasicType> base_type_spec;
 %nterm <AST::BasicType> floating_pt_type;
@@ -216,7 +219,7 @@ definition
 	| except_dcl T_SEMICOLON
 	| interface T_SEMICOLON
 	| module T_SEMICOLON
-	| value T_SEMICOLON
+// Value types disabled in current version	| value T_SEMICOLON
 	| type_id_dcl T_SEMICOLON
 	| type_prefix_dcl T_SEMICOLON
 	;
@@ -695,9 +698,33 @@ fixed_array_size
 	;
 
 attr_dcl
+	: readonly_attr_spec
+	| attr_spec
+	;
+
+readonly_attr_spec
+	: T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
+| T_readonly T_attribute param_type_spec simple_declarator raises_expr { drv.attribute_begin (true, $3, $4); drv.getraises ($5); drv.attribute_end (); }
+	;
+
+attr_spec
 	: T_attribute param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
-	| T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
-	; 
+| T_attribute param_type_spec simple_declarator { drv.attribute_begin (false, $2, $3); } attr_raises_expr { drv.attribute_end (); }
+	;
+
+attr_raises_expr
+	: get_excep_expr set_excep_expr
+	| get_excep_expr
+	| set_excep_expr
+	;
+
+get_excep_expr
+	: T_getraises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.getraises ($3); }
+	;
+
+set_excep_expr
+	: T_setraises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.setraises ($3); }
+	;
 
 simple_declarators
 	: simple_declarator { $$ = AST::Build::SimpleDeclarators (1, $1); }
@@ -718,7 +745,7 @@ members
 
 op_dcl
 	: op_attribute op_type_spec simple_declarator { drv.operation_begin ($1, $2, $3); }
-	parameter_dcls raises_expr context_expr { drv.operation_end (); }
+		parameter_dcls raises_expr context_expr { drv.operation_raises ($6); drv.operation_end (); }
 	;
 
 op_attribute
@@ -753,7 +780,7 @@ param_attribute
 
 raises_expr
 	: /*empty*/
-	| T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.operation_raises ($3); }
+	| T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { $$ = $3; }
 	;
 
 context_expr

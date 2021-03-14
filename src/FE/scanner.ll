@@ -150,6 +150,8 @@ raises      return yy::parser::make_T_raises (driver ().location ());
 context     return yy::parser::make_T_context (driver ().location ());
 typeid      return yy::parser::make_T_typeid (driver ().location ());
 typeprefix  return yy::parser::make_T_typeprefix (driver ().location ());
+getraises   return yy::parser::make_T_getraises (driver ().location ());
+setraises   return yy::parser::make_T_setraises (driver ().location ());
 
 {CORBA_Identifier} return yy::parser::make_T_identifier (AST::Identifier (YYText (), YYLeng ()), driver ().location ());
 {Float_Literal1} |

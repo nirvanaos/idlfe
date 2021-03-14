@@ -26,7 +26,6 @@
 #define NIDL_AST_STRUCT_H_
 
 #include "ItemContainer.h"
-#include "RepositoryId.h"
 
 namespace AST {
 

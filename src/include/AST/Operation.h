@@ -25,10 +25,8 @@
 #ifndef NIDL_AST_OPERATION_H_
 #define NIDL_AST_OPERATION_H_
 
-#include "NamedItem.h"
 #include "Parameter.h"
 #include "Exception.h"
-#include "Variant.h"
 
 namespace AST {
 
@@ -44,9 +42,6 @@ public:
 	{
 		return oneway_;
 	}
-
-	/// The user exceptions.
-	typedef std::vector <const Exception*> Raises;
 
 	/// \returns The possible user exceptions for the operation.
 	const Raises& raises () const
@@ -76,19 +71,14 @@ public:
 		oneway_ = false;
 	}
 
-	void add_exception (const Exception* ex)
+	void raises (Raises&& exceptions)
 	{
-		raises_.push_back (ex);
+		raises_ = std::move (exceptions);
 	}
 
-	void context (const Build::Variants& strings)
+	void context (Context&& strings)
 	{
-		for (auto it = strings.begin (); it != strings.end (); ++it) {
-			if (!it->empty ()) {
-				assert (it->vtype () == Variant::VT::STRING);
-				context_.push_back (it->as_string ());
-			}
-		}
+		context_ = std::move (strings);
 	}
 
 private:

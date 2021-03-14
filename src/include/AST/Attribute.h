@@ -25,7 +25,7 @@
 #ifndef NIDL_AST_ATTRIBUTE_H_
 #define NIDL_AST_ATTRIBUTE_H_
 
-#include "NamedItem.h"
+#include "Exception.h"
 #include "Type.h"
 
 namespace AST {
@@ -42,6 +42,18 @@ public:
 		return readonly_;
 	}
 
+	/// \returns Potential user exceptions may be raised when the attribute is read.
+	const Raises& getraises () const
+	{
+		return getraises_;
+	}
+
+	/// \returns Potential user exceptions may be raised when the attribute is written.
+	const Raises& setraises () const
+	{
+		return setraises_;
+	}
+
 	/// \internal
 
 	Attribute (const Build::Builder& builder, bool readonly, const Type& type, const Build::SimpleDeclarator& name) :
@@ -50,8 +62,20 @@ public:
 		readonly_ (readonly)
 	{}
 
+	void getraises (Raises&& raises)
+	{
+		getraises_ = std::move (raises);
+	}
+
+	void setraises (Raises&& raises)
+	{
+		setraises_ = std::move (raises);
+	}
+
 private:
 	bool readonly_;
+	Raises getraises_;
+	Raises setraises_;
 	/// \endinternal
 };
 

@@ -723,28 +723,49 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 
 void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators)
 {
+	for (auto name = declarators.begin (); name != declarators.end (); ++name) {
+		attribute_begin (readonly, type, *name);
+		attribute_end ();
+	}
+}
+
+void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name)
+{
 	assert (scope_stack_.size () > 1);
 	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
-		for (auto name = declarators.begin (); name != declarators.end (); ++name) {
-			Ptr <NamedItem> item = Ptr <NamedItem>::make <Attribute> (ref (*this), readonly, ref (type), ref (*name));
-			auto ins = interface_.all_operations.insert (*item);
-			if (!ins.second) {
-				message (*name, MessageType::ERROR, string ("attribute name ") + *name + " collision");
-				message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
-			} else {
-				ins = itf->insert (*item);
-				if (!ins.second)
-					error_name_collision (*name, **ins.first); // Op name collides with nested type.
-				else {
-					// We always append attribute to the container, whatever it is the main file or not.
-					// We need it to build all_operations for derived interfaces.
-					container_stack_.top ()->append (*item);
-				}
+		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
+		auto ins = interface_.all_operations.insert (*item);
+		if (!ins.second) {
+			message (name, MessageType::ERROR, string ("attribute name ") + name + " collision");
+			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
+		} else {
+			ins = itf->insert (*item);
+			if (!ins.second)
+				error_name_collision (name, **ins.first); // Op name collides with nested type.
+			else {
+				interface_.attribute.att = item;
+				// We always append attribute to the container, whatever it is the main file or not.
+				// We need it to build all_operations for derived interfaces.
+				container_stack_.top ()->append (*item);
 			}
 		}
 	}
+}
+
+void Builder::getraises (const ScopedNames& names)
+{
+	Attribute* att = interface_.attribute.att;
+	if (att)
+		att->getraises (raises (names));
+}
+
+void Builder::setraises (const ScopedNames& names)
+{
+	Attribute* att = interface_.attribute.att;
+	if (att)
+		att->setraises (raises (names));
 }
 
 void Builder::operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name)
@@ -764,36 +785,51 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 	}
 }
 
-void Builder::operation_raises (const ScopedNames& raises)
-{
-	Operation* op = interface_.operation.op;
-	if (op) {
-		map <const Item*, Location> unique;
-		for (auto name = raises.begin (); name != raises.end (); ++name) {
-			const Ptr <NamedItem>* l = lookup (*name);
-			if (l) {
-				const NamedItem* item = *l;
-				if (item->kind () != Item::Kind::EXCEPTION) {
-					message (*name, MessageType::ERROR, name->stringize () + " is not an exception type");
-					see_declaration_of (*item, item->qualified_name ());
-				} else {
-					auto ins = unique.emplace (item, *name);
-					if (!ins.second) {
-						message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
-						see_prev_declaration (ins.first->second);
-					} else
-						op->add_exception (static_cast <const Exception*> (item));
-				}
-			}
-		}
-	}
-}
-
-void Builder::operation_context (const Variants& context)
+void Builder::operation_raises (const ScopedNames& names)
 {
 	Operation* op = interface_.operation.op;
 	if (op)
-		op->context (context);
+		op->raises (raises (names));
+}
+
+Raises Builder::raises (const ScopedNames& names)
+{
+	map <const Item*, Location> unique;
+	Raises exceptions;
+	for (auto name = names.begin (); name != names.end (); ++name) {
+		const Ptr <NamedItem>* l = lookup (*name);
+		if (l) {
+			const NamedItem* item = *l;
+			if (item->kind () != Item::Kind::EXCEPTION) {
+				message (*name, MessageType::ERROR, name->stringize () + " is not an exception type");
+				see_declaration_of (*item, item->qualified_name ());
+			} else {
+				auto ins = unique.emplace (item, *name);
+				if (!ins.second) {
+					message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
+					see_prev_declaration (ins.first->second);
+				} else
+					exceptions.push_back (static_cast <const Exception*> (item));
+			}
+		}
+	}
+	return exceptions;
+}
+
+void Builder::operation_context (const Variants& strings)
+{
+	Operation* op = interface_.operation.op;
+	if (op) {
+		Operation::Context ctx;
+		for (auto it = strings.begin (); it != strings.end (); ++it) {
+			if (!it->empty ()) {
+				assert (it->vtype () == Variant::VT::STRING);
+				ctx.push_back (it->as_string ());
+			}
+		}
+
+		op->context (move (ctx));
+	}
 }
 
 void Builder::struct_decl (const SimpleDeclarator& name)

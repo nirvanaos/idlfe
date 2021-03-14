@@ -28,6 +28,7 @@
 #include "../../include/AST/Interface.h"
 #include "../../include/AST/Parameter.h"
 #include "../../include/AST/ScopedName.h"
+#include "../../include/AST/Exception.h"
 #include "Eval.h"
 #include "Declarators.h"
 #include <ostream>
@@ -38,6 +39,7 @@ namespace AST {
 
 class AST;
 class Operation;
+class Attribute;
 
 namespace Build {
 
@@ -108,8 +110,9 @@ public:
 
 	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
 	void operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
-	void operation_raises (const ScopedNames& raises);
-	void operation_context (const Variants& context);
+	
+	void operation_raises (const ScopedNames& names);
+	void operation_context (const Variants& strings);
 
 	void operation_end ()
 	{
@@ -117,6 +120,16 @@ public:
 	}
 
 	void attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators);
+
+	void attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name);
+	
+	void getraises (const ScopedNames& names);
+	void setraises (const ScopedNames& names);
+
+	void attribute_end ()
+	{
+		interface_.attribute.clear ();
+	}
 
 	void interface_end ()
 	{
@@ -218,6 +231,8 @@ private:
 
 	const Ptr <NamedItem>* constr_type_end ();
 
+	Raises raises (const ScopedNames& names);
+
 	typedef std::map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
 	void check_unique (RepIdMap& ids, const RepositoryId& rid);
@@ -263,12 +278,26 @@ private:
 			Operation* op;
 			Symbols params;
 
+			OperationData () :
+				op (nullptr)
+			{}
+
 			void clear ()
 			{
 				op = nullptr;
 				params.clear ();
 			}
 		} operation;
+
+		struct AttributeData
+		{
+			Attribute* att;
+
+			void clear ()
+			{
+				att = nullptr;
+			}
+		} attribute;
 
 	} interface_;
 

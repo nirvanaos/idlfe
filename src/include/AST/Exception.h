@@ -26,7 +26,6 @@
 #define NIDL_AST_EXCEPTION_H_
 
 #include "ItemContainer.h"
-#include "RepositoryId.h"
 
 namespace AST {
 
@@ -41,6 +40,9 @@ public:
 	{}
 	/// \endinternal
 };
+
+/// The user exceptions.
+typedef std::vector <const Exception*> Raises;
 
 }
 
