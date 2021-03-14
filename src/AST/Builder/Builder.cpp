@@ -1125,5 +1125,42 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (unique_ptr <Eval> (eval));
 }
 
+Ptr <AST> Builder::finalize ()
+{
+	if (!err_cnt_ && tree_) {
+		try {
+			RepIdMap ids;
+			check_rep_ids_unique (ids, *tree_);
+		} catch (const runtime_error& err) {
+			err_out_ << err.what () << endl;
+		}
+	}
+	if (err_cnt_)
+		tree_ = nullptr;
+	return std::move (tree_);
+}
+
+void Builder::check_rep_ids_unique (RepIdMap& ids, const Symbols& sym)
+{
+	for (auto it = sym.begin (); it != sym.end (); ++it) {
+		NamedItem* item = *it;
+		const RepositoryId* rid = RepositoryId::cast (item);
+		if (rid)
+			check_unique (ids, *rid);
+		const ItemScope* child = ItemScope::cast (item);
+		if (child)
+			check_rep_ids_unique (ids, *child);
+	}
+}
+
+void Builder::check_unique (RepIdMap& ids, const RepositoryId& rid)
+{
+	auto ins = ids.emplace (rid.repository_id (), rid.item ());
+	if (!ins.second) {
+		message (rid.item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
+		see_declaration_of (ins.first->second, ins.first->second.qualified_name ());
+	}
+}
+
 }
 }

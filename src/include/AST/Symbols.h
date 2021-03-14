@@ -27,7 +27,6 @@
 
 #include "NamedItem.h"
 #include <set>
-#include <map>
 
 namespace AST {
 
@@ -37,6 +36,7 @@ class Symbols :
 {
 	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
 public:
+	/// \internal
 	// Methods made outline to reduce size.
 	std::pair <iterator, bool> emplace (const NamedItem&);
 
@@ -48,9 +48,7 @@ public:
 	const Ptr <NamedItem>* find (const Identifier& name) const;
 
 	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
-
-	// Check for repository is uniquness
-	void check_rep_ids_unique (Build::Builder& builder, std::map <std::string, const NamedItem*>& ids) const;
+	/// \endinternal
 };
 
 }

@@ -202,16 +202,7 @@ public:
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
 
-	Ptr <AST> finalize ()
-	{
-		if (!err_cnt_ && tree_) {
-			std::map <std::string, const NamedItem*> ids;
-			tree_->check_rep_ids_unique (*this, ids);
-		}
-		if (err_cnt_)
-			tree_ = nullptr;
-		return std::move (tree_);
-	}
+	Ptr <AST> finalize ();
 
 private:
 	bool prefix_valid (const std::string& pref, const Location& loc);
@@ -227,13 +218,12 @@ private:
 
 	const Ptr <NamedItem>* constr_type_end ();
 
-	static bool is_scope (Item::Kind ik)
-	{
-		return Item::Kind::MODULE == ik || Item::Kind::INTERFACE == ik;
-	}
-
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
+
+	typedef std::map <std::string, const NamedItem&> RepIdMap;
+	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
+	void check_unique (RepIdMap& ids, const RepositoryId& rid);
 
 private:
 	unsigned err_cnt_;

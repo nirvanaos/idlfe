@@ -52,17 +52,4 @@ const Ptr <NamedItem>* Symbols::find (const Identifier& name) const
 		return nullptr;
 }
 
-void Symbols::check_rep_ids_unique (Build::Builder& builder, map <string, const NamedItem*>& ids) const
-{
-	for (auto it = begin (); it != end (); ++it) {
-		NamedItem* item = *it;
-		const RepositoryId* rid = RepositoryId::cast (item);
-		if (rid)
-			rid->check_unique (builder, ids);
-		const ItemScope* child = ItemScope::cast (item);
-		if (child)
-			child->check_rep_ids_unique (builder, ids);
-	}
-}
-
 }

@@ -166,14 +166,4 @@ string RepositoryId::repository_id () const
 	return id;
 }
 
-bool RepositoryId::check_unique (Build::Builder& builder, map <std::string, const NamedItem*>& ids) const
-{
-	auto ins = ids.emplace (repository_id (), &item ());
-	if (!ins.second) {
-		builder.message (item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
-		builder.see_declaration_of (*ins.first->second, ins.first->second->qualified_name ());
-	}
-	return ins.second;
-}
-
 }

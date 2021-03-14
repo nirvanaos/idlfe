@@ -27,7 +27,6 @@
 
 #include "Location.h"
 #include <stdint.h>
-#include <map>
 
 namespace AST {
 
@@ -97,8 +96,6 @@ public:
 	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
-
-	bool check_unique (Build::Builder& builder, std::map <std::string, const NamedItem*>& ids) const;
 
 protected:
 	RepositoryId (const NamedItem& item, const Build::Builder& builder);
