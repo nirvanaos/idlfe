@@ -39,27 +39,27 @@ public:
 	/// The kind of item.
 	enum class Kind
 	{
-		AST, /// `class AST`
-		INCLUDE, /// `class Include`
-		NATIVE, /// `class Native`
-		TYPEDEF, /// `class TypeDef`
-		CONSTANT, /// `class Constant`
-		MODULE, /// `class Module`
-		MODULE_ITEMS, /// `class ModuleItems`
-		INTERFACE_DECL, /// `class InterfaceDecl`
-		INTERFACE, /// `class Interface`
-		OPERATION, /// `class Operation`
-		PARAMETER, /// `class Parameter`
-		ATTRIBUTE, /// `class Attribute`
-		EXCEPTION, /// `class Exception`
-		STRUCT_DECL, /// `class StructDecl`
-		STRUCT, /// `class Struct`
-		MEMBER, /// `class Member`
-		UNION_DECL, /// `class UnionDecl`
-		UNION, /// `class Union`
-		UNION_ELEMENT, /// `class UnionElement`
-		ENUM, /// `class Enum`
-		ENUM_ITEM /// `class EnumItem`
+		AST, ///< class AST
+		INCLUDE, ///< class Include
+		NATIVE, ///< class Native
+		TYPEDEF, ///< class TypeDef
+		CONSTANT, ///< class Constant
+		MODULE, ///< class Module
+		MODULE_ITEMS, ///< class ModuleItems
+		INTERFACE_DECL, ///< class InterfaceDecl
+		INTERFACE, ///< class Interface
+		OPERATION, ///< class Operation
+		PARAMETER, ///< class Parameter
+		ATTRIBUTE, ///< class Attribute
+		EXCEPTION, ///< class Exception
+		STRUCT_DECL, ///< class StructDecl
+		STRUCT, ///< class Struct
+		MEMBER, ///< class Member
+		UNION_DECL, ///< class UnionDecl
+		UNION, ///< class Union
+		UNION_ELEMENT, ///< class UnionElement
+		ENUM, ///< class Enum
+		ENUM_ITEM ///< class EnumItem
 	};
 
 	/// \returns The kind of item.

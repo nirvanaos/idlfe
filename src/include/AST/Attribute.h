@@ -30,7 +30,7 @@
 
 namespace AST {
 
-/// `attribute` specification.
+/// \brief The `attribute` specification.
 class Attribute :
 	public NamedItem,
 	public Type

@@ -182,13 +182,8 @@ void Printer::operation (const Operation& item)
 	}
 	out_ << ')';
 	if (!item.raises ().empty ()) {
-		out_ << " raises (";
-		auto ex = item.raises ().begin ();
-		out_ << (*ex)->name ();
-		for (++ex; ex != item.raises ().end (); ++ex) {
-			out_ << ", " << (*ex)->name ();
-		}
-		out_ << ')';
+		out_ << " raises ";
+		print_raises (item.raises ());
 	}
 	if (!item.context ().empty ()) {
 		out_ << " context (\"";
@@ -200,6 +195,16 @@ void Printer::operation (const Operation& item)
 		out_ << "\")";
 	}
 	out_ << ";\n";
+}
+
+void Printer::print_raises (const Raises& raises)
+{
+	auto ex = raises.begin ();
+	out_ << '(' << (*ex)->name ();
+	for (++ex; ex != raises.end (); ++ex) {
+		out_ << ", " << (*ex)->name ();
+	}
+	out_ << ')';
 }
 
 void Printer::print_param (const Parameter& p)
@@ -221,11 +226,28 @@ void Printer::print_param (const Parameter& p)
 void Printer::attribute (const Attribute& item)
 {
 	indent ();
-	if (item.readonly ())
+	if (item.readonly ()) {
 		out_ << "readonly ";
-	out_ << "attribute ";
-	print_type (item);
-	out_ << ' ' << item.name () << ";\n";
+		print_type (item);
+		out_ << ' ' << item.name ();
+		if (!item.getraises ().empty ()) {
+			out_ << " raises ";
+			print_raises (item.getraises ());
+		}
+	} else {
+		out_ << "attribute ";
+		print_type (item);
+		out_ << ' ' << item.name ();
+		if (!item.getraises ().empty ()) {
+			out_ << " getraises ";
+			print_raises (item.getraises ());
+		}
+		if (!item.setraises ().empty ()) {
+			out_ << " setraises ";
+			print_raises (item.setraises ());
+		}
+	}
+	out_ << ";\n";
 }
 
 void Printer::exception_begin (const Exception& item)

@@ -54,6 +54,7 @@ private:
 	void print_param (const AST::Parameter& p);
 	void constructed_begin (const char* type, const AST::NamedItem& item);
 	void complex_end ();
+	void print_raises (const AST::Raises& raises);
 
 private:
 	std::ofstream out_;

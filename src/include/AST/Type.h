@@ -46,7 +46,7 @@ public:
 	enum class Kind
 	{
 		VOID,
-		BASIC_TYPE, ///< `BasicType Type::basic_type ();`
+		BASIC_TYPE, ///< `Type::basic_type ();`
 		NAMED_TYPE, ///< `named_type ()`
 		STRING,     ///< `string_size ()`
 		WSTRING,    ///< `string_size ()`

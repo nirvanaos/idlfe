@@ -30,12 +30,12 @@
 
 namespace AST {
 
-/// The array type.
+/// \brief The array type descriptor.
 class Array :
 	public Type
 {
 public:
-	/// Returns the vector of array dimensions.
+	/// \returns The vector of the array dimensions.
 	const std::vector <Dim>& dimensions () const
 	{
 		return dimensions_;

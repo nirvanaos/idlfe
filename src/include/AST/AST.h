@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// Abstract Syntax Tree.
+/// \brief Abstract Syntax Tree.
 class AST :
 	public Item,
 	public Symbols,
@@ -45,7 +45,7 @@ public:
 		return main_file_;
 	}
 
-	/// Visit all items for the code generation.
+	/// \brief Visit all items for the code generation.
 	/// \returns `true` if unsuppported building blocks were occurred.
 	bool visit (CodeGen& cg) const;
 

@@ -42,26 +42,26 @@ public:
 	{
 		EMPTY, ///< In the valid AST, Variant never has this type.
 
-		BOOLEAN, ///< as_bool ()
-		OCTET, ///< as_octet ()
-		CHAR, ///< as_char ()
-		WCHAR, ///< as_wchar ()
-		USHORT, ///< as_unsigned_short ()
-		ULONG, ///< as_unsigned_long ()
-		ULONGLONG, ///< as_unsigned_long_long ()
-		SHORT, ///< as_short ()
-		LONG, ///< as_long ()
-		LONGLONG, ///< as_long_long ()
-		FLOAT, ///< as_float ()
-		DOUBLE, ///< as_double ()
-		LONGDOUBLE, ///< as_long_double ()
+		BOOLEAN, ///< Variant::as_bool ()
+		OCTET, ///< Variant::as_octet ()
+		CHAR, ///< Variant::as_char ()
+		WCHAR, ///< Variant::as_wchar ()
+		USHORT, ///< Variant::as_unsigned_short ()
+		ULONG, ///< Variant::as_unsigned_long ()
+		ULONGLONG, ///< Variant::as_unsigned_long_long ()
+		SHORT, ///< Variant::as_short ()
+		LONG, ///< Variant::as_long ()
+		LONGLONG, ///< Variant::as_long_long ()
+		FLOAT, ///< Variant::as_float ()
+		DOUBLE, ///< Variant::as_double ()
+		LONGDOUBLE, ///< Variant::as_long_double ()
 
-		STRING, ///< as_string ()
-		WSTRING, ///< as_wstring ()
-		FIXED, ///< fixed_digits (); fixed_scale ();
+		STRING, ///< Variant::as_string ()
+		WSTRING, ///< Variant::as_wstring ()
+		FIXED, ///< Variant::fixed_digits (); Variant::fixed_scale ();
 
-		ENUM_ITEM, ///< as_enum_item ()
-		CONSTANT ///< as_constant ()
+		ENUM_ITEM, ///< Variant::as_enum_item ()
+		CONSTANT ///< Variant::as_constant ()
 	};
 
 	/// \returns The value type.
@@ -72,60 +72,80 @@ public:
 
 	// Integral
 
+	/// \returns `boolean` value.
+	/// \invariant vtype () == VT::BOOLEAN
 	bool as_bool () const noexcept
 	{
 		assert (vtype () == VT::BOOLEAN);
 		return val_.u.i != 0;
 	}
 
+	/// \returns `octet` value.
+	/// \invariant vtype () == VT::OCTET
 	uint8_t as_octet () const noexcept
 	{
 		assert (vtype () == VT::OCTET);
 		return (uint8_t)val_.u.ui;
 	}
 
+	/// \returns `char` value.
+	/// \invariant vtype () == VT::CHAR
 	char as_char () const noexcept
 	{
 		assert (vtype () == VT::CHAR);
 		return (char)val_.u.ui;
 	}
 
+	/// \returns `wchar` value.
+	/// \invariant vtype () == VT::WCHAR
 	wchar_t as_wchar () const noexcept
 	{
 		assert (vtype () == VT::WCHAR);
 		return (wchar_t)val_.u.ui;
 	}
 
+	/// \returns `unsigned short` value.
+	/// \invariant vtype () == VT::USHORT
 	uint16_t as_unsigned_short () const noexcept
 	{
 		assert (vtype () == VT::USHORT);
 		return (uint16_t)val_.u.ui;
 	}
 
+	/// \returns `short` value.
+	/// \invariant vtype () == VT::SHORT
 	int16_t as_short () const noexcept
 	{
 		assert (vtype () == VT::SHORT);
 		return (int16_t)val_.u.i;
 	}
 
+	/// \returns `unsigned long` value.
+	/// \invariant vtype () == VT::ULONG
 	uint32_t as_unsigned_long () const noexcept
 	{
 		assert (vtype () == VT::ULONG);
 		return (uint32_t)val_.u.ui;
 	}
 
+	/// \returns `long` value.
+	/// \invariant vtype () == VT::LONG
 	int32_t as_long () const noexcept
 	{
 		assert (vtype () == VT::LONG);
 		return (int32_t)val_.u.i;
 	}
 
+	/// \returns `unsigned long long` value.
+	/// \invariant vtype () == VT::ULONGLONG
 	uint64_t as_unsigned_long_long () const noexcept
 	{
 		assert (vtype () == VT::ULONGLONG);
 		return val_.u.ui;
 	}
 
+	/// \returns `long long` value.
+	/// \invariant vtype () == VT::LONGLONG
 	int64_t as_long_long () const noexcept
 	{
 		assert (vtype () == VT::LONGLONG);
@@ -134,18 +154,24 @@ public:
 
 	// Floating point
 
+	/// \returns `float` value.
+	/// \invariant vtype () == VT::FLOAT
 	float as_float () const noexcept
 	{
 		assert (vtype () == VT::FLOAT);
 		return (float)val_.u.d;
 	}
 
+	/// \returns `double` value.
+	/// \invariant vtype () == VT::DOUBLE
 	double as_double () const noexcept
 	{
 		assert (vtype () == VT::DOUBLE);
 		return (double)val_.u.d;
 	}
 
+	/// \returns `long double` value.
+	/// \invariant vtype () == VT::LONGDOUBLE
 	long double as_long_double () const noexcept
 	{
 		assert (vtype () == VT::LONGDOUBLE);
@@ -154,26 +180,32 @@ public:
 
 	// String
 
+	/// \returns `string` value.
+	/// \invariant vtype () == VT::STRING
 	const std::string& as_string () const noexcept
 	{
 		assert (vtype () == VT::STRING);
 		return val_.u.s;
 	}
 
+	/// \returns `wstring` value.
+	/// \invariant vtype () == VT::WSTRING
 	const std::wstring& as_wstring () const noexcept
 	{
 		assert (vtype () == VT::WSTRING);
 		return val_.u.ws;
 	}
 
-	/// Returns enumerator reference.
+	/// \returns Enumerator reference.
+	/// \invariant vtype () == VT::ENUM_ITEM
 	const EnumItem& as_enum_item () const noexcept
 	{
 		assert (vtype () == VT::ENUM_ITEM);
 		return *val_.u.enum_item;
 	}
 
-	/// Returns constant reference.
+	/// \returns Constant reference.
+	/// \invariant vtype () == VT::CONSTANT
 	const Constant& as_constant () const noexcept
 	{
 		assert (vtype () == VT::CONSTANT);
@@ -182,12 +214,16 @@ public:
 
 	// Fixed
 
+	/// \returns Number of digits for `fixed` type.
+	/// \invariant vtype () == VT::FIXED
 	uint16_t fixed_digits () const noexcept
 	{
 		assert (vtype () == VT::FIXED);
 		return (uint16_t)val_.u.fixed.digits;
 	}
 
+	/// \returns Scale for `fixed` type.
+	/// \invariant vtype () == VT::FIXED
 	uint16_t fixed_scale () const noexcept
 	{
 		assert (vtype () == VT::FIXED);
