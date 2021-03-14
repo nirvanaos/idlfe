@@ -74,6 +74,7 @@ public:
 	const Ptr <NamedItem>& named_type () const noexcept
 	{
 		assert (tkind () == Kind::NAMED_TYPE);
+		assert (type_.named_type);
 		return *type_.named_type;
 	}
 

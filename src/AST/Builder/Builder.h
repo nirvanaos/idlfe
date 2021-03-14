@@ -218,12 +218,15 @@ private:
 
 	const Ptr <NamedItem>* constr_type_end ();
 
-	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
-	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
-
 	typedef std::map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
 	void check_unique (RepIdMap& ids, const RepositoryId& rid);
+
+	void check_complete (const Container& items);
+	bool check_complete (const Type& type, const Location& loc);
+
+	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
+	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 
 private:
 	unsigned err_cnt_;

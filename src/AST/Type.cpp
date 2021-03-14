@@ -171,9 +171,23 @@ size_t Type::key_max () const noexcept
 bool Type::is_complete_or_ref () const noexcept
 {
 	const Type& t = dereference_type ();
-	if (t.tkind () == Type::Kind::NAMED_TYPE) {
+	if (t.tkind () == Kind::NAMED_TYPE) {
 		const NamedItem& item = *named_type ();
 		return !item.is_forward_decl ();
+	}
+	return true;
+}
+
+bool Type::is_complete () const noexcept
+{
+	const Type& t = dereference_type ();
+	switch (t.tkind ()) {
+		case Kind::NAMED_TYPE:
+			return !t.named_type ()->is_forward_decl ();
+		case Kind::SEQUENCE:
+			return sequence ().is_complete ();
+		case Kind::ARRAY:
+			return array ().is_complete ();
 	}
 	return true;
 }

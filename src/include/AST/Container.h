@@ -30,6 +30,7 @@
 
 namespace AST {
 
+/// Sequential container of the AST items.
 template <class T>
 class ContainerT :
 	public std::vector <Ptr <T>>

@@ -1129,6 +1129,7 @@ Ptr <AST> Builder::finalize ()
 {
 	if (!err_cnt_ && tree_) {
 		try {
+			check_complete (*tree_);
 			RepIdMap ids;
 			check_rep_ids_unique (ids, *tree_);
 		} catch (const runtime_error& err) {
@@ -1138,6 +1139,58 @@ Ptr <AST> Builder::finalize ()
 	if (err_cnt_)
 		tree_ = nullptr;
 	return std::move (tree_);
+}
+
+void Builder::check_complete (const Container& items)
+{
+	for (auto it = items.begin (); it != items.end (); ++it) {
+		const Item& item = **it;
+		bool complete = true;
+		switch (item.kind ()) {
+			case Item::Kind::TYPEDEF: {
+				const TypeDef& t = static_cast <const TypeDef&> (item);
+				check_complete (t, t);
+			} break;
+			case Item::Kind::INTERFACE:
+				check_complete (static_cast <const Interface&> (item));
+				break;
+			case Item::Kind::OPERATION: {
+				const Operation& op = static_cast <const Operation&> (item);
+				check_complete (op, op);
+				for (auto par = op.begin (); par != op.end (); ++par) {
+					const Parameter& param = **par;
+					check_complete (param, param);
+				}
+			} break;
+			case Item::Kind::ATTRIBUTE: {
+				const Attribute& att = static_cast <const Attribute&> (item);
+				check_complete (att, att);
+			} break;
+			case Item::Kind::EXCEPTION:
+				check_complete (static_cast <const Exception&> (item));
+				break;
+			case Item::Kind::STRUCT:
+				check_complete (static_cast <const Struct&> (item));
+				break;
+			case Item::Kind::MEMBER: {
+				const Member& m = static_cast <const Member&> (item);
+				check_complete (m, m);
+			} break;
+			case Item::Kind::UNION:
+				check_complete (static_cast <const Union&> (item));
+				break;
+		}
+	}
+}
+
+bool Builder::check_complete (const Type& type, const Location& loc)
+{
+	if (!type.is_complete ()) {
+		message (loc, MessageType::ERROR, "incomplete type is not allowed");
+		message (*type.named_type (), MessageType::MESSAGE, "see declaration");
+		return false;
+	}
+	return true;
 }
 
 void Builder::check_rep_ids_unique (RepIdMap& ids, const Symbols& sym)
