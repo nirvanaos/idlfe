@@ -140,13 +140,13 @@ class Driver;
 %token T_typeprefix
 %token T_getraises
 %token T_setraises
+%token T_pseudo
 
 %nterm <AST::Variant> string_literal;
 %nterm <AST::Variant> wide_string_literal;
 
 %nterm <AST::ScopedName> scoped_name;
 %nterm <AST::ScopedNames> scoped_names;
-%nterm <AST::ScopedNames> raises_expr;
 
 %nterm <AST::BasicType> base_type_spec;
 %nterm <AST::BasicType> floating_pt_type;
@@ -219,7 +219,7 @@ definition
 	| except_dcl T_SEMICOLON
 	| interface T_SEMICOLON
 	| module T_SEMICOLON
-// Value types disabled in current version	| value T_SEMICOLON
+	| value T_SEMICOLON
 	| type_id_dcl T_SEMICOLON
 	| type_prefix_dcl T_SEMICOLON
 	;
@@ -256,6 +256,7 @@ interface_header
 	| T_abstract T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::ABSTRACT); } interface_inheritance_spec
 	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); }
 	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
+	| T_pseudo T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::PSEUDO); }
 	;
 
 interface_body
@@ -702,13 +703,13 @@ attr_dcl
 	;
 
 readonly_attr_spec
-	: T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
-| T_readonly T_attribute param_type_spec simple_declarator raises_expr { drv.attribute_begin (true, $3, $4); drv.getraises ($5); drv.attribute_end (); }
+	: T_readonly T_attribute param_type_spec simple_declarator { drv.attribute_begin (true, $3, $4); } raises_expr { drv.attribute_end (); }
+	| T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
 	;
 
 attr_spec
-	: T_attribute param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
-| T_attribute param_type_spec simple_declarator { drv.attribute_begin (false, $2, $3); } attr_raises_expr { drv.attribute_end (); }
+	: T_attribute param_type_spec simple_declarator { drv.attribute_begin (false, $2, $3); } attr_raises_expr { drv.attribute_end (); }
+	| T_attribute param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
 	;
 
 attr_raises_expr
@@ -744,7 +745,7 @@ members
 
 op_dcl
 	: op_attribute op_type_spec simple_declarator { drv.operation_begin ($1, $2, $3); }
-		parameter_dcls raises_expr context_expr { drv.operation_raises ($6); drv.operation_end (); }
+			parameter_dcls operation_raises context_expr { drv.operation_end (); }
 	;
 
 op_attribute
@@ -777,10 +778,13 @@ param_attribute
 	| T_inout { $$ = AST::Parameter::Attribute::INOUT; }
 	;
 
-raises_expr
+operation_raises
 	: /*empty*/
-	| T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { $$ = $3; }
+	| raises_expr
 	;
+
+raises_expr
+	: T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS{ drv.raises ($3); }
 
 context_expr
 	: /*empty*/
@@ -828,8 +832,8 @@ type_id_dcl
 	: T_typeid scoped_name string_literal { drv.type_id ($2, $3, @3); }
 
 type_prefix_dcl
-	: T_typeprefix scoped_name string_literal { drv.type_prefix ($2, $3, @3); }
-	| T_typeprefix T_SCOPE string_literal { drv.type_prefix (AST::ScopedName (@2), $3, @3); }
+	: T_typeprefix scoped_name { drv.eval_push (AST::Type::make_string (), AST::Location ()); } string_literal { drv.type_prefix ($2, $4, @4); }
+	| T_typeprefix T_SCOPE { drv.eval_push (AST::Type::make_string (), AST::Location ()); } string_literal { drv.type_prefix (AST::ScopedName (@2), $4, @4); }
 
 %%
 

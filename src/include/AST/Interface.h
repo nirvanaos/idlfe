@@ -40,7 +40,8 @@ public:
 	{
 		UNCONSTRAINED,
 		ABSTRACT,
-		LOCAL
+		LOCAL,
+		PSEUDO
 	};
 
 	/// \returns The kind of interface.
@@ -53,7 +54,7 @@ public:
 	///          Returns the empty string for the UNCONSTRAINED interface.
 	const char* interface_kind_name () const noexcept;
 
-	/// \internals
+	/// \internal
 
 	InterfaceKind (Kind kind = UNCONSTRAINED) noexcept :
 		kind_ (kind)
@@ -61,7 +62,7 @@ public:
 
 private:
 	Kind kind_;
-	/// \endinternals
+	/// \endinternal
 };
 
 /// The sequence of interfaces.
@@ -83,7 +84,7 @@ public:
 	/// \param bases All bases.
 	void get_all_bases (std::set <const Interface*>& bases) const;
 
-	/// \internals
+	/// \internal
 
 	void get_all_interfaces (Interfaces& all) const;
 
@@ -104,7 +105,7 @@ private:
 
 private:
 	Interfaces bases_;
-	/// \endinternals
+	/// \endinternal
 };
 
 /// Interface forward declaration.
@@ -114,13 +115,13 @@ class InterfaceDecl :
 	public RepositoryId
 {
 public:
-	/// \internals
+	/// \internal
 	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
 		RepositoryId (*this, builder)
 	{}
-	/// \endinternals
+	/// \endinternal
 };
 
 }

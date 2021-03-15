@@ -28,7 +28,7 @@
 #include <string>
 #include <assert.h>
 
-/// Support for the Bison location.
+// Support for the Bison location.
 namespace yy {
 class location;
 }
@@ -39,6 +39,21 @@ namespace AST {
 class Location
 {
 public:
+	/// \returns The file name.
+	const std::string& file () const
+	{
+		assert (file_);
+		return *file_;
+	}
+
+	/// \returns The line number.
+	unsigned line () const
+	{
+		return line_;
+	}
+
+	/// \internal
+
 	Location () :
 		file_ (nullptr),
 		line_ (0)
@@ -51,17 +66,6 @@ public:
 
 	Location (const yy::location&);
 
-	const std::string& file () const
-	{
-		assert (file_);
-		return *file_;
-	}
-
-	unsigned line () const
-	{
-		return line_;
-	}
-
 	operator bool () const
 	{
 		return file_ != nullptr;
@@ -70,6 +74,7 @@ public:
 private:
 	const std::string* file_;
 	unsigned line_;
+	/// \endinternal
 };
 
 }

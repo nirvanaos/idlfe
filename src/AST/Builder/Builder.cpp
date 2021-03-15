@@ -615,6 +615,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 	Interface* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
+		assert (itf->interface_kind () != InterfaceKind::PSEUDO);
 
 		// Process bases
 		map <const Item*, Location> direct_bases;
@@ -695,6 +696,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name)
 {
 	assert (scope_stack_.size () > 1);
+	assert (!interface_.operation.op); // operation_end () must be called
+
 	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
@@ -721,53 +724,6 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 	}
 }
 
-void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators)
-{
-	for (auto name = declarators.begin (); name != declarators.end (); ++name) {
-		attribute_begin (readonly, type, *name);
-		attribute_end ();
-	}
-}
-
-void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name)
-{
-	assert (scope_stack_.size () > 1);
-	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
-	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE);
-		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
-		auto ins = interface_.all_operations.insert (*item);
-		if (!ins.second) {
-			message (name, MessageType::ERROR, string ("attribute name ") + name + " collision");
-			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
-		} else {
-			ins = itf->insert (*item);
-			if (!ins.second)
-				error_name_collision (name, **ins.first); // Op name collides with nested type.
-			else {
-				interface_.attribute.att = item;
-				// We always append attribute to the container, whatever it is the main file or not.
-				// We need it to build all_operations for derived interfaces.
-				container_stack_.top ()->append (*item);
-			}
-		}
-	}
-}
-
-void Builder::getraises (const ScopedNames& names)
-{
-	Attribute* att = interface_.attribute.att;
-	if (att)
-		att->getraises (raises (names));
-}
-
-void Builder::setraises (const ScopedNames& names)
-{
-	Attribute* att = interface_.attribute.att;
-	if (att)
-		att->setraises (raises (names));
-}
-
 void Builder::operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name)
 {
 	Operation* op = interface_.operation.op;
@@ -785,14 +741,15 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 	}
 }
 
-void Builder::operation_raises (const ScopedNames& names)
+void Builder::raises (const ScopedNames& names)
 {
-	Operation* op = interface_.operation.op;
-	if (op)
-		op->raises (raises (names));
+	if (interface_.operation.op)
+		interface_.operation.op->raises (lookup_exceptions (names));
+	else if (interface_.attribute.att)
+		interface_.attribute.att->getraises (lookup_exceptions (names));
 }
 
-Raises Builder::raises (const ScopedNames& names)
+Raises Builder::lookup_exceptions (const ScopedNames& names)
 {
 	map <const Item*, Location> unique;
 	Raises exceptions;
@@ -830,6 +787,55 @@ void Builder::operation_context (const Variants& strings)
 
 		op->context (move (ctx));
 	}
+}
+
+void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators)
+{
+	for (auto name = declarators.begin (); name != declarators.end (); ++name) {
+		attribute_begin (readonly, type, *name);
+		attribute_end ();
+	}
+}
+
+void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name)
+{
+	assert (scope_stack_.size () > 1);
+	assert (!interface_.attribute.att); // attribute_end () must be called
+
+	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
+	if (itf) {
+		assert (itf->kind () == Item::Kind::INTERFACE);
+		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
+		auto ins = interface_.all_operations.insert (*item);
+		if (!ins.second) {
+			message (name, MessageType::ERROR, string ("attribute name ") + name + " collision");
+			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
+		} else {
+			ins = itf->insert (*item);
+			if (!ins.second)
+				error_name_collision (name, **ins.first); // Op name collides with nested type.
+			else {
+				interface_.attribute.att = item;
+				// We always append attribute to the container, whatever it is the main file or not.
+				// We need it to build all_operations for derived interfaces.
+				container_stack_.top ()->append (*item);
+			}
+		}
+	}
+}
+
+void Builder::getraises (const ScopedNames& names)
+{
+	Attribute* att = interface_.attribute.att;
+	if (att)
+		att->getraises (lookup_exceptions (names));
+}
+
+void Builder::setraises (const ScopedNames& names)
+{
+	Attribute* att = interface_.attribute.att;
+	if (att)
+		att->setraises (lookup_exceptions (names));
 }
 
 void Builder::struct_decl (const SimpleDeclarator& name)

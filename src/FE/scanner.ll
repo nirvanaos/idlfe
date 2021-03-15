@@ -152,6 +152,7 @@ typeid      return yy::parser::make_T_typeid (driver ().location ());
 typeprefix  return yy::parser::make_T_typeprefix (driver ().location ());
 getraises   return yy::parser::make_T_getraises (driver ().location ());
 setraises   return yy::parser::make_T_setraises (driver ().location ());
+pseudo      return yy::parser::make_T_pseudo (driver ().location ());
 
 {CORBA_Identifier} return yy::parser::make_T_identifier (AST::Identifier (YYText (), YYLeng ()), driver ().location ());
 {Float_Literal1} |

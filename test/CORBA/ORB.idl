@@ -1,98 +1,116 @@
+// File: orb.idl
+// From CORBA 3.0
+#ifndef _ORB_IDL_
+#define _ORB_IDL_
+
+#ifdef _PRE_3_0_COMPILER_
+#pragma prefix "omg.org"
+#else
+typeprefix :: "omg.org";
+#endif
+
+#ifdef _PRE_3_0_COMPILER_ 
+#ifdef _NO_LOCAL_
+#define local
+#endif
+#endif
+
+// This module brings together many files defining the CORBA module
+//   (It really ought to be called CORBA.idl, but that's history.)
+// This file includes only the "real" interfaces that are included
+//   in the "orb.idl" interface supplied by every ORB and that can be
+//   brought into an IDL compilation by "import ::CORBA"
+//   or in pre-3.0 IDL compilers by the include directive
+//   "#include <orb.idl>".
+
 module CORBA {
-interface NVList; // forward declaration
-interface OperationDef; // forward declaration
-interface TypeCode; // forward declaration
-typedef short PolicyErrorCode;
-// for the definition of consts see PolicyErrorCode on page 125
-typedef unsigned long PolicyType;
-interface Request; // forward declaration
-typedef sequence <Request> RequestSeq;
-native AbstractBase;
-exception PolicyError {PolicyErrorCode reason; };
-typedef string RepositoryId;
-typedef string Identifier;
-// StructMemberSeq defined in Chapter 10
-// UnionMemberSeq defined in Chapter 10
-// EnumMemberSeq defined in Chapter 10
-typedef unsigned short ServiceType;
-typedef unsigned long ServiceOption;
-typedef unsigned long ServiceDetailType;
-typedef CORBA::OctetSeq ServiceDetailData;
-typedef sequence<ServiceOption> ServiceOptionSeq;
-const ServiceType Security = 1;
-struct ServiceDetail
- {
-	ServiceDetailType service_detail_type;
-	ServiceDetailData service_detail;
+
+// The following forward references list *all* the interfaces and valuetypes
+//   defined in the CORBA module. This serves two purposes: documentation
+//   and compilability. Documentation is nice: since some of the interfaces
+//   must be declared as forward references, it is more consistent to
+//   declare them all.
+//
+//   As far as compilability, it might be possible to avoid having to declare
+//   many of the forward reference by rearranging the order of the interface 
+//   declarations, but there's no reason to do bother doing that. After all,
+//   that's the reason for the design of forward references. Doing a forward
+//   reference allows the definition order to be relatively logical.In 
+//   particular, it allows the "include"s to be done in chapter order 
+//   (almost), the only exception being the InterfaceRepository (Chapter 10). 
+//   It contains some data definitions needed by Chapter 4 interfaces.
+//   The other reason not to try to rearrange the order is that it's hard.
+
+// Forward references, alphabetically
+    interface ConstructionPolicy;        // Chapter  4, CORBA_DomainManager.idl
+    local interface Current;             // Chapter  4, CORBA_Current.idl
+    interface DomainManager;             // Chapter  4, CORBA_DomainManager.idl
+    interface Policy;                    // Chapter  4, CORBA_Policy.idl
+    local interface PollableSet;         // Chapter  7, CORBA_Pollable.idl
+    abstract valuetype CustomMarshal;    // Chapter  5, CORBA_valuetype.idl
+    abstract valuetype DataInputStream;  // Chapter  5, CORBA_Stream.idl
+    abstract valuetype DataOutputStream; // Chapter  5, CORBA_Stream.idl
+
+// Forward references to Chapter 10, CORBA_InterfaceRepository.idl
+    interface AbstractInterfaceDef;
+    interface AliasDef;
+    interface ArrayDef;
+    interface AttributeDef;
+    interface ConstantDef;
+    interface Contained;
+    interface Container;
+    interface EnumDef;
+    interface ExceptionDef;
+    interface ExtInterfaceDef;
+    interface ExtValueDef;
+    interface ExtAbstractInterfaceDef;
+    interface ExtLocalInterfaceDef;
+    interface FixedDef;
+    interface IDLType;
+    interface InterfaceDef;
+    interface IRObject;
+    interface LocalInterfaceDef;
+    interface ModuleDef;
+    interface NativeDef;
+    interface OperationDef;
+    interface PrimitiveDef; 
+    interface Repository;
+    interface SequenceDef;
+    interface StringDef;
+    interface StructDef;
+    interface TypeCode;
+    interface TypedefDef;
+    interface UnionDef;
+    interface ValueDef;
+    interface ValueBoxDef;
+    interface ValueMemberDef;
+    interface WstringDef;
+
+    typedef string Identifier;
+
+// Chapter 3: IDL Syntax and Semantics
+#include <CORBA_StandardExceptions.idl>
+
+// Chapter 4: ORB Interface
+#include <CORBA_Current.idl>
+#include <CORBA_Policy.idl>
+#include <CORBA_DomainManager.idl>
+
+// Chapter 7: Pollable
+#include <CORBA_Pollable.idl>
+
+// Chapter 10: The Interface Repository
+#include <CORBA_InterfaceRepository.idl>
+
+// more Chapter 4: ORB Interface
+// CORBA_TypeCode.idl depends on CORBA_InterfaceRepository.idl
+#include <CORBA_TypeCode.idl>
+
+// Chapter 5: Value Type Semantics
+#include <CORBA_CustomMarshal.idl>
+#include <CORBA_Stream.idl>
+
 };
-typedef sequence<ServiceDetail> ServiceDetailSeq;
-struct ServiceInformation
- {
-	ServiceOptionSeq service_options;
-	ServiceDetailSeq service_details;
-};
-native ValueFactory;
-typedef string ORBid;
-interface ORB
- {
-	typedef string ObjectId;
-	typedef sequence <ObjectId> ObjectIdList;
-	exception InvalidName {};
-	ORBid id();
-	string object_to_string (in Object obj);
-	Object string_to_object (in string str);
-	// Dynamic Invocation related operations
-	void create_list (in long count, out NVList new_list);
-	void create_operation_list (in OperationDef oper, out NVList new_list);
-	void get_default_context (out Context ctx);
-	void send_multiple_requests_oneway (in RequestSeq req);
-	void send_multiple_requests_deferred (in RequestSeq req);
-	boolean poll_next_response ();
-	void get_next_response (out Request req) raises (WrongTransaction);
-	// Service information operations
-	boolean get_service_information (in ServiceType service_type, out ServiceInformation service_information);
-	ObjectIdList list_initial_services ();
-	// Initial reference operation
-	Object resolve_initial_references (in ObjectId identifier) raises (InvalidName);
-	// Type code creation operations
-	TypeCode create_struct_tc (in RepositoryId id, in Identifier name, in StructMemberSeq members);
-	TypeCode create_union_tc (in RepositoryId id, in Identifier name, in TypeCode discriminator_type, in UnionMemberSeq members	);
-	TypeCode create_enum_tc (in RepositoryId id, in Identifier name, in EnumMemberSeq members);
-	TypeCode create_alias_tc (in RepositoryId id, in Identifier name, in TypeCode original_type);
-	TypeCode create_exception_tc (in RepositoryId id, in Identifier name, in StructMemberSeq members);
-	TypeCode create_interface_tc (in RepositoryId id, in Identifier name);
-	TypeCode create_string_tc (in unsigned long bound);
-	TypeCode create_wstring_tc (in unsigned long bound);
-	TypeCode create_fixed_tc (in unsigned short digits, in short scale);
-	TypeCode create_sequence_tc (in unsigned long bound, in TypeCode element type);
-	TypeCode create_recursive_sequence_tc (// deprecated
-		in unsigned long bound,
-		in unsigned long offset
-	);
-	TypeCode create_array_tc (in unsigned long length, in TypeCode element_type);
-	TypeCode create_value_tc (in RepositoryId id, in Identifier name, in ValueModifier type_modifier, in TypeCode concrete_base, in ValueMemberSeq members);
-	TypeCode create_value_box_tc (in RepositoryId id, in Identifier name, in TypeCode boxed_type);
-	TypeCode create_native_tc (in RepositoryId id, in Identifier name);
-	TypeCode create_recursive_tc (in RepositoryId id);
-	TypeCode create_abstract_interface_tc (in RepositoryId id, in Identifier name);
-	TypeCode create_local_interface_tc (in RepositoryId id, in Identifier name);
-	TypeCode create_component_tc (in RepositoryId id, in Identifier name);
-	TypeCode create_home_tc (in RepositoryId id, in Identifier name);
-	TypeCode create_event_tc (in RepositoryId id, in Identifier name, in ValueModifier type_modifier, in TypeCode concrete_base, in ValueMemberSeq members);
-	// Thread related operations
-	boolean work_pending ();
-	void perform_work ();
-	void run ();
-	void shutdown (in boolean wait_for_completion);
-	void destroy ();
-	// Policy related operations
-	Policy create_policy (in PolicyType type, in any val) raises (PolicyError);
-	// Dynamic Any related operations deprecated and removed
-	// from primary list of ORB operations
-	// Value factory operations
-	ValueFactory register_value_factory (in RepositoryId id, in ValueFactory_factory);
-	void unregister_value_factory (in RepositoryId id);
-	ValueFactory lookup_value_factory (in RepositoryId id);
-	void register_initial_reference (in ObjectId id, in Object obj) raises (InvalidName);
-};
-};
+
+#endif // _ORB_IDL_
+

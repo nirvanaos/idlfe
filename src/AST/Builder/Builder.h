@@ -24,7 +24,7 @@
 #ifndef NIDL_AST_BUILDER_H_
 #define NIDL_AST_BUILDER_H_
 
-#include "../../include/AST/AST.h"
+#include "../../include/AST/Root.h"
 #include "../../include/AST/Interface.h"
 #include "../../include/AST/Parameter.h"
 #include "../../include/AST/ScopedName.h"
@@ -111,7 +111,7 @@ public:
 	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
 	void operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
 	
-	void operation_raises (const ScopedNames& names);
+	void raises (const ScopedNames& names);
 	void operation_context (const Variants& strings);
 
 	void operation_end ()
@@ -231,7 +231,7 @@ private:
 
 	const Ptr <NamedItem>* constr_type_end ();
 
-	Raises raises (const ScopedNames& names);
+	Raises lookup_exceptions (const ScopedNames& names);
 
 	typedef std::map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);

@@ -69,7 +69,7 @@ class UnionElement :
 	public Member
 {
 public:
-	/// \returns The vector of `case` labels for this element. Empty for the `default` case,
+	/// \returns The vector of `case` labels for this element. Empty for the `default` case.
 	const std::vector <Variant>& labels () const
 	{
 		return labels_;

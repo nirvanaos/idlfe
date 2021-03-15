@@ -58,7 +58,7 @@ public:
 		return context_;
 	}
 
-	/// \internals
+	/// \internal
 
 	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::OPERATION, builder, name),
@@ -85,7 +85,7 @@ private:
 	bool oneway_;
 	Raises raises_;
 	Context context_;
-	/// \endinternals
+	/// \endinternal
 };
 
 }

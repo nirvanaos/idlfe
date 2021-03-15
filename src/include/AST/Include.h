@@ -47,7 +47,7 @@ public:
 		return system_;
 	}
 
-	/// \internals
+	/// \internal
 	Include (std::filesystem::path&& file, bool system) :
 		Item (Kind::INCLUDE),
 		file_ (std::move (file)),
@@ -57,7 +57,7 @@ public:
 private:
 	std::filesystem::path file_;
 	bool system_;
-	/// \endinternals
+	/// \endinternal
 };
 
 }

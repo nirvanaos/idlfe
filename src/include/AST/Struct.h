@@ -46,11 +46,11 @@ class Struct :
 	public ItemContainer
 {
 public:
-	/// \internals
+	/// \internal
 	Struct (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemContainer (Item::Kind::STRUCT, builder, name)
 	{}
-	/// \endinternals
+	/// \endinternal
 };
 
 }

@@ -141,9 +141,12 @@ void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
 			// T_ prefix.
 			if (isupper (msg [pos + 1])) {
 				// Punctuator
-				size_t nameend = msg.find (' ', pos + 1);
-				if (nameend == string::npos)
-					nameend = msg.length ();
+				size_t nameend = pos + 2;
+				for (;; ++nameend) {
+					char c = msg [nameend];
+					if (!isupper (c) && '_' != c)
+						break;
+				}
 				string name = msg.substr (pos - 1, nameend - pos + 1);
 				const Punct* punct = nullptr;
 				for (const Punct* p = punctuators; p < end (punctuators); ++p) {

@@ -28,6 +28,7 @@
 #include <utility>
 #include <assert.h>
 
+/// Abstract Syntax Tree
 namespace AST {
 
 template <class T> class Ptr;
@@ -74,7 +75,7 @@ public:
 	/// \returns `true` if the item is a forward declaration.
 	bool is_forward_decl () const noexcept;
 
-	/// \internals
+	/// \internal
 
 	Item (Kind kind) :
 		kind_ (kind),
@@ -109,7 +110,7 @@ private:
 private:
 	const Kind kind_;
 	unsigned ref_cnt_;
-	/// \endinternals
+	/// \endinternal
 };
 
 /// Item smart pointer.

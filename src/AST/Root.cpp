@@ -21,7 +21,7 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "../include/AST/AST.h"
+#include "../include/AST/Root.h"
 #include "../include/AST/CodeGen.h"
 
 namespace AST {

@@ -25,7 +25,9 @@ To create an IDL compiler:
 * Any
 * Interfaces Basic
 * Interfaces Full
-* CORBA-Specific Interfaces (except for `import`)
+* CORBA-Specific - Interfaces (except for `import`)
+* Value Types
+* CORBA-Specific - Value Types
 * Anonimous Types
 
 ## How to use

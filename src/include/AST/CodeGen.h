@@ -25,7 +25,7 @@
 #ifndef NIDL_AST_CODEGEN_H_
 #define NIDL_AST_CODEGEN_H_
 
-#include "AST.h"
+#include "Root.h"
 #include "Include.h"
 #include "Native.h"
 #include "TypeDef.h"

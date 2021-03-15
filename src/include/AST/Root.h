@@ -1,4 +1,4 @@
-/// \file AST.h
+/// \file Root.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,8 +22,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_AST_H_
-#define NIDL_AST_AST_H_
+#ifndef NIDL_AST_ROOT_H_
+#define NIDL_AST_ROOT_H_
 
 #include "Item.h"
 #include "Symbols.h"

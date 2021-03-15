@@ -30,7 +30,7 @@ extern "C" struct _decNumber;
 
 namespace AST {
 
-/// This structure is completely equivalent to decNumber.
+// This structure is completely equivalent to decNumber.
 struct Fixed
 {
 	int32_t digits;

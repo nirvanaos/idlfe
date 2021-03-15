@@ -32,14 +32,14 @@ using namespace Build;
 
 const char* InterfaceKind::interface_kind_name () const noexcept
 {
-	switch (kind_) {
-		case Kind::ABSTRACT:
-			return "abstract";
-		case Kind::LOCAL:
-			return "local";
-		default:
-			return "";
-	}
+	static const char* const names [] = {
+		"",
+		"abstract",
+		"local",
+		"pseudo"
+	};
+
+	return names [(size_t)kind_];
 }
 
 void Interface::get_all_interfaces (Interfaces& all) const
