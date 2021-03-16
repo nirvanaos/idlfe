@@ -68,7 +68,7 @@ private:
 /// The sequence of interfaces.
 typedef std::vector <const Interface*> Interfaces;
 
-/// The interface definition.
+/// Interface definition.
 class Interface :
 	public ItemContainer,
 	public InterfaceKind

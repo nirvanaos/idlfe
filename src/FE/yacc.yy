@@ -247,6 +247,7 @@ forward_dcl
 	: T_interface simple_declarator { drv.interface_decl ($2); }
 	| T_abstract T_interface simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::ABSTRACT); }
 	| T_local T_interface simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::LOCAL); }
+	| T_pseudo T_interface simple_declarator { drv.interface_decl ($3, AST::InterfaceKind::PSEUDO); }
 	;
 
 interface_header
@@ -302,19 +303,24 @@ value
 	;
 
 value_forward_dcl
-	: T_valuetype T_identifier
-	| T_abstract T_valuetype T_identifier
+	: T_valuetype simple_declarator { drv.value_decl (false, $2); }
+	| T_abstract T_valuetype simple_declarator{ drv.value_decl (false, $3); }
 	;
 
 value_box_dcl
-	: T_valuetype T_identifier type_spec
+	: T_valuetype simple_declarator type_spec { drv.value_box ($2, $3); }
 	;
 
 value_abs_dcl
-	: T_abstract T_valuetype T_identifier
-		T_LEFT_CURLY_BRACKET value_body T_RIGHT_CURLY_BRACKET
-	| T_abstract T_valuetype T_identifier value_inheritance_spec
-		T_LEFT_CURLY_BRACKET value_body T_RIGHT_CURLY_BRACKET
+	: T_abstract T_valuetype simple_declarator { drv.value_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
+		T_LEFT_CURLY_BRACKET
+			value_body
+		T_RIGHT_CURLY_BRACKET
+	| T_abstract T_valuetype simple_declarator{ drv.value_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
+		value_inheritance_spec
+		T_LEFT_CURLY_BRACKET
+			value_body
+		T_RIGHT_CURLY_BRACKET
 	;
 
 value_body
@@ -334,31 +340,21 @@ value_elements
 	;
 
 value_header
-	: T_valuetype T_identifier value_inheritance_spec
-	| T_custom T_valuetype T_identifier value_inheritance_spec
-	| T_valuetype T_identifier
-	| T_custom T_valuetype T_identifier
+	: T_valuetype simple_declarator { drv.value_begin ($2); } value_inheritance_spec
+	| T_custom T_valuetype simple_declarator { drv.value_begin ($3, AST::ValueType::Modifier::CUSTOM); } value_inheritance_spec
+	| T_valuetype simple_declarator { drv.value_begin ($2); }
+	| T_custom T_valuetype simple_declarator { drv.value_begin ($3, AST::ValueType::Modifier::CUSTOM); }
 	;
 
 value_inheritance_spec
 	: T_COLON value_inheritance_bases
 	| T_COLON value_inheritance_bases T_supports scoped_names
-	| T_supports scoped_names
+	| T_supports scoped_names { drv.value_supports ($2); }
 	;
 
 value_inheritance_bases
-	: value_name
-	| value_name T_COMMA value_names
-	| T_truncatable value_name
-	| T_truncatable value_name T_COMMA value_names
-	;
-
-value_names
-	: scoped_names
-	;
-
-value_name
-	: scoped_name
+	: scoped_names { drv.value_bases (false, $1); }
+	| T_truncatable scoped_names { drv.value_bases (true, $2); }
 	;
 
 value_element

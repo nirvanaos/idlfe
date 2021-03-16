@@ -28,6 +28,7 @@
 #include "../include/AST/TypeDef.h"
 #include "../include/AST/Native.h"
 #include "../include/AST/Exception.h"
+#include "../include/AST/ValueType.h"
 
 using namespace std;
 using namespace AST::Build;
@@ -68,6 +69,15 @@ RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
 				break;
 			case Item::Kind::EXCEPTION:
 				p = static_cast <Exception*> (item);
+				break;
+			case Item::Kind::VALUETYPE_DECL:
+				p = static_cast <ValueTypeDecl*> (item);
+				break;
+			case Item::Kind::VALUETYPE:
+				p = static_cast <ValueType*> (item);
+				break;
+			case Item::Kind::VALUEBOX:
+				p = static_cast <ValueBox*> (item);
 				break;
 		}
 	}

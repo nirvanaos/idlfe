@@ -60,7 +60,10 @@ public:
 		UNION, ///< class Union
 		UNION_ELEMENT, ///< class UnionElement
 		ENUM, ///< class Enum
-		ENUM_ITEM ///< class EnumItem
+		ENUM_ITEM, ///< class EnumItem
+		VALUETYPE_DECL, ///< class ValueTypeDecl
+		VALUETYPE, ///< class ValueType
+		VALUEBOX ///< class ValueBox
 	};
 
 	/// \returns The kind of item.

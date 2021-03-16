@@ -263,10 +263,14 @@ void Builder::file (const std::string& name, const Location& loc, int flags)
 		}
 		if (it->file == &file) {
 			file_stack_.erase (it + 1, file_stack_.end ());
+			if (file_stack_.size () == 1)
+				is_main_file_ = true;
 			return;
 		}
 	}
-	if ((flags & FILE_FLAG_START) && is_main_file ()) {
+	// Use #include at global scope only.
+	if ((flags & FILE_FLAG_START) && is_main_file () && container_stack_.size () == 1) {
+		is_main_file_ = false;
 		try {
 			filesystem::path file;
 			if (flags & FILE_FLAG_SYSTEM)

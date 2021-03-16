@@ -25,7 +25,7 @@
 #define NIDL_AST_BUILDER_H_
 
 #include "../../include/AST/Root.h"
-#include "../../include/AST/Interface.h"
+#include "../../include/AST/ValueType.h"
 #include "../../include/AST/Parameter.h"
 #include "../../include/AST/ScopedName.h"
 #include "../../include/AST/Exception.h"
@@ -51,7 +51,8 @@ public:
 	Builder (const std::string& file, std::ostream& err_out) :
 		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
-		tree_ (Ptr <Root>::make <Root> (file))
+		tree_ (Ptr <Root>::make <Root> (file)),
+		is_main_file_ (true)
 	{
 		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
@@ -76,7 +77,7 @@ public:
 
 	bool is_main_file () const
 	{
-		return file_stack_.size () == 1;
+		return is_main_file_;
 	}
 
 	enum class MessageType
@@ -177,6 +178,13 @@ public:
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
+	void value_decl (bool abstract, const SimpleDeclarator& name);
+	void value_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
+	void value_bases (bool truncatable, const ScopedNames& bases);
+	void value_supports (const ScopedNames& bases);
+	void value_end ();
+	void value_box (const SimpleDeclarator& name, const Type& type);
+
 	void eval_push (const Type& t, const Location& loc);
 
 	void eval_pop ()
@@ -263,6 +271,7 @@ private:
 	};
 
 	std::vector <File> file_stack_;
+	bool is_main_file_;
 
 	struct InterfaceData
 	{

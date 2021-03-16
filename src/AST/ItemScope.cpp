@@ -27,6 +27,7 @@
 #include "../include/AST/Struct.h"
 #include "../include/AST/Union.h"
 #include "../include/AST/Exception.h"
+#include "../include/AST/ValueType.h"
 #include "Builder/Builder.h"
 
 namespace AST {
@@ -50,6 +51,8 @@ ItemScope* ItemScope::cast (NamedItem* item) noexcept
 				return static_cast <Union*> (item);
 			case Kind::EXCEPTION:
 				return static_cast <Exception*> (item);
+			case Kind::VALUETYPE:
+				return static_cast <ValueType*> (item);
 		}
 	}
 	return nullptr;

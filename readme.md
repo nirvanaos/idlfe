@@ -20,6 +20,8 @@ To create an IDL compiler:
 
 ## Implemented Building Blocks
 
+See: https://www.omg.org/spec/IDL/4.2/
+
 * Core Data Types
 * Extended Data Types
 * Any
@@ -47,3 +49,8 @@ To create own compilation project you must have:
 * C++17 compilant compiler
 * Flex + Bison
 * Fixed point arithmetic library https://github.com/nirvanaos/decNumber
+
+## Used submodules
+
+Simple C/C++ preprocessor https://github.com/danmar/simplecpp
+SafeInt library https://github.com/dcleblanc/SafeInt.git
