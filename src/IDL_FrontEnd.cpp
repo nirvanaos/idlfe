@@ -102,7 +102,7 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 							++inc;
 						const char* sem = strchr (inc, ';');
 						const char* endi = sem ? sem : end;
-						while (isspace (*(endi - 1)))
+						while (inc < endi && isspace (*(endi - 1)))
 							--endi;
 						if (inc < endi)
 							arguments_->preprocessor.includePaths.emplace_back (inc, endi);

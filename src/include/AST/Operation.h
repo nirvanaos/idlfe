@@ -25,28 +25,20 @@
 #ifndef NIDL_AST_OPERATION_H_
 #define NIDL_AST_OPERATION_H_
 
-#include "Parameter.h"
-#include "Exception.h"
+#include "OPerationBase.h"
 
 namespace AST {
 
 /// The operation.
 class Operation :
-	public NamedItem,
-	public Type,
-	public ContainerT <Parameter>
+	public OperationBase,
+	public Type
 {
 public:
 	/// \returns `true` if this is an `onevay` operation.
 	bool oneway () const
 	{
 		return oneway_;
-	}
-
-	/// \returns The possible user exceptions for the operation.
-	const Raises& raises () const
-	{
-		return raises_;
 	}
 
 	/// The context.
@@ -61,7 +53,7 @@ public:
 	/// \internal
 
 	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::OPERATION, builder, name),
+		OperationBase (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)
 	{}
@@ -71,11 +63,6 @@ public:
 		oneway_ = false;
 	}
 
-	void raises (Raises&& exceptions)
-	{
-		raises_ = std::move (exceptions);
-	}
-
 	void context (Context&& strings)
 	{
 		context_ = std::move (strings);
@@ -83,7 +70,6 @@ public:
 
 private:
 	bool oneway_;
-	Raises raises_;
 	Context context_;
 	/// \endinternal
 };

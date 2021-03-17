@@ -1,4 +1,4 @@
-/// \file ItemContainer.h
+/// \file UnionElement.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,38 +22,44 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMCONTAINER_H_
-#define NIDL_AST_ITEMCONTAINER_H_
+#ifndef NIDL_AST_UNIONELEMENT_H_
+#define NIDL_AST_UNIONELEMENT_H_
 
-#include "ItemScope.h"
-#include "Container.h"
-#include "RepositoryId.h"
+#include "Member.h"
+#include "Variant.h"
+#include <vector>
 
 namespace AST {
 
-/// The container of AST items.
-class ItemContainer :
-	public ItemScope,
-	public RepositoryId,
-	public Container
+/// Union element definition.
+class UnionElement :
+	public Member
 {
 public:
-	/// \internal
-	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemScope (kind, builder, name),
-		RepositoryId (*this, builder)
-	{}
+	/// The vector of `case` labels.
+	typedef std::vector <Variant> Labels;
 
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+	/// \returns The vector of `case` labels for this element. Empty for the `default` case.
+	const Labels& labels () const
 	{
-		if (RepositoryId::prefix (builder, pref, loc))
-			return ItemScope::prefix (builder, pref, loc);
-		else
-			return false;
+		return labels_;
 	}
 
-	using ItemScope::insert;
+	/// \returns `true` if this is the `default` element.
+	bool is_default () const
+	{
+		return labels_.empty ();
+	}
 
+	/// \internal
+
+	UnionElement (const Build::Builder& builder, std::vector <Variant>&& labels, const Type& t, const Build::SimpleDeclarator& name) :
+		Member (builder, t, name, Item::Kind::UNION_ELEMENT),
+		labels_ (std::move (labels))
+	{}
+
+private:
+	const std::vector <Variant> labels_;
 	/// \endinternal
 };
 

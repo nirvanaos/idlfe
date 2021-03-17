@@ -1,4 +1,4 @@
-/// \file ItemContainer.h
+/// \file ValueFactory.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,39 +22,21 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMCONTAINER_H_
-#define NIDL_AST_ITEMCONTAINER_H_
+#ifndef NIDL_AST_VALUEFACTORY_H_
+#define NIDL_AST_VALUEFACTORY_H_
 
-#include "ItemScope.h"
-#include "Container.h"
-#include "RepositoryId.h"
+#include "OperationBase.h"
 
 namespace AST {
 
-/// The container of AST items.
-class ItemContainer :
-	public ItemScope,
-	public RepositoryId,
-	public Container
+/// Value type `factory` operation.
+class ValueFactory :
+	public OperationBase
 {
 public:
-	/// \internal
-	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemScope (kind, builder, name),
-		RepositoryId (*this, builder)
+	ValueFactory (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		OperationBase (Item::Kind::VALUE_FACTORY, builder, name)
 	{}
-
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
-	{
-		if (RepositoryId::prefix (builder, pref, loc))
-			return ItemScope::prefix (builder, pref, loc);
-		else
-			return false;
-	}
-
-	using ItemScope::insert;
-
-	/// \endinternal
 };
 
 }

@@ -43,7 +43,7 @@ public:
 		ROOT, ///< class Root
 		INCLUDE, ///< class Include
 		NATIVE, ///< class Native
-		TYPEDEF, ///< class TypeDef
+		TYPE_DEF, ///< class TypeDef
 		CONSTANT, ///< class Constant
 		MODULE, ///< class Module
 		MODULE_ITEMS, ///< class ModuleItems
@@ -61,9 +61,11 @@ public:
 		UNION_ELEMENT, ///< class UnionElement
 		ENUM, ///< class Enum
 		ENUM_ITEM, ///< class EnumItem
-		VALUETYPE_DECL, ///< class ValueTypeDecl
-		VALUETYPE, ///< class ValueType
-		VALUEBOX ///< class ValueBox
+		VALUE_TYPE_DECL, ///< class ValueTypeDecl
+		VALUE_TYPE, ///< class ValueType
+		VALUE_BOX, ///< class ValueBox
+		STATE_MEMBER, ///< class StateMember
+		VALUE_FACTORY ///< class ValueFactory
 	};
 
 	/// \returns The kind of item.

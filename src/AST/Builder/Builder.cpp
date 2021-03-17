@@ -37,8 +37,10 @@
 #include "../../include/AST/Union.h"
 #include "../../include/AST/Enum.h"
 #include "../../include/AST/Exception.h"
-#include "../../include/AST/Member.h"
+#include "../../include/AST/UnionElement.h"
 #include "../../include/AST/Constant.h"
+#include "../../include/AST/StateMember.h"
+#include "../../include/AST/ValueFactory.h"
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -582,6 +584,46 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				error_interface_kind (name, ik, prev_ik, item);
 
 			rid->check_prefix (*this, name);
+			static_cast <RepositoryIdData&> (*decl) = *rid;
+		}
+
+		if (is_main_file ())
+			container_stack_.top ()->append (*decl);
+	}
+}
+
+void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
+{
+	if (scope_stack_.back ()) {
+		Ptr <ValueTypeDecl> decl = Ptr <ValueTypeDecl>::make <ValueTypeDecl> (ref (*this), name, is_abstract);
+		auto ins = scope_stack_.back ()->insert (*decl);
+		if (!ins.second) {
+			const NamedItem& item = **ins.first;
+			const RepositoryId* rid = nullptr;
+			bool prev_abstract;
+			switch (item.kind ()) {
+				case Item::Kind::VALUE_TYPE_DECL: {
+					const ValueTypeDecl& val = static_cast <const ValueTypeDecl&> (item);
+					rid = &val;
+					prev_abstract = val.is_abstract ();
+				} break;
+				case Item::Kind::VALUE_TYPE: {
+					const ValueType& val = static_cast <const ValueType&> (item);
+					rid = &val;
+					prev_abstract = val.modifier () == ValueType::Modifier::ABSTRACT;
+				} break;
+			}
+
+			if (!rid) {
+				error_name_collision (name, **ins.first);
+				return;
+			}
+
+			if (prev_abstract != is_abstract)
+				error_valuetype_mod (name, is_abstract, item);
+
+			rid->check_prefix (*this, name);
+			static_cast <RepositoryIdData&> (*decl) = *rid;
 		}
 
 		if (is_main_file ())
@@ -611,6 +653,32 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 		}
 
 		scope_push (itf);
+	}
+}
+
+void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod)
+{
+	if (scope_begin ()) {
+		Ptr <ValueType> val = Ptr <ValueType>::make <ValueType> (ref (*this), ref (name), mod);
+		auto ins = scope_stack_.back ()->insert (*val);
+		if (!ins.second) {
+			const NamedItem& item = **ins.first;
+			if ((*ins.first)->kind () != Item::Kind::VALUE_TYPE_DECL) {
+				error_name_collision (name, item);
+				scope_push (nullptr);
+				return;
+			} else {
+				const ValueTypeDecl& decl = static_cast <const ValueTypeDecl&> (item);
+				bool is_abstract = ValueType::Modifier::ABSTRACT == mod;
+				if (is_abstract != decl.is_abstract ())
+					error_valuetype_mod (name, is_abstract, decl);
+				decl.check_prefix (*this, name);
+				static_cast <RepositoryIdData&> (*val) = decl;
+				const_cast <Ptr <NamedItem>&> (*ins.first) = val;
+			}
+		}
+
+		scope_push (val);
 	}
 }
 
@@ -700,11 +768,11 @@ void Builder::interface_bases (const ScopedNames& bases)
 void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name)
 {
 	assert (scope_stack_.size () > 1);
-	assert (!interface_.operation.op); // operation_end () must be called
+	assert (!operation_.op); // operation_end () must be called
 
-	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
+	ItemContainer* itf = static_cast <ItemContainer*> (scope_stack_.back ());
 	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE);
+		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
 		if (oneway && type.tkind () != Type::Kind::VOID) {
 			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored");
 			oneway = false;
@@ -719,25 +787,29 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			if (!ins.second)
 				error_name_collision (name, **ins.first); // Op name collides with nested type.
 			else {
-				interface_.operation.op = op;
+				operation_.op = op;
 				// We always append operation to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
-				static_cast <Interface*> (itf)->append (*op);
+				itf->append (*op);
 			}
 		}
 	}
 }
 
-void Builder::operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name)
+void Builder::parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name)
 {
-	Operation* op = interface_.operation.op;
+	OperationBase* op = operation_.op;
 	if (op) {
-		if (att != Parameter::Attribute::IN && op->oneway ()) {
-			message (name, MessageType::WARNING, "'oneway' operation can not return data. The 'oneway' attribute will be ignored");
-			op->oneway_clear ();
+		if (att != Parameter::Attribute::IN) {
+			assert (op->kind () == Item::Kind::OPERATION);
+			Operation* itf_op = static_cast <Operation*> (op);
+			if (itf_op->oneway ()) {
+				message (name, MessageType::WARNING, "'oneway' operation can not return data. The 'oneway' attribute will be ignored");
+				itf_op->oneway_clear ();
+			}
 		}
 		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
-		auto ins = interface_.operation.params.insert (*par);
+		auto ins = operation_.params.insert (*par);
 		if (!ins.second)
 			message (name, MessageType::ERROR, string ("duplicated parameter ") + name);
 		else if (is_main_file ())
@@ -747,10 +819,10 @@ void Builder::operation_parameter (Parameter::Attribute att, const Type& type, c
 
 void Builder::raises (const ScopedNames& names)
 {
-	if (interface_.operation.op)
-		interface_.operation.op->raises (lookup_exceptions (names));
-	else if (interface_.attribute.att)
-		interface_.attribute.att->getraises (lookup_exceptions (names));
+	if (operation_.op)
+		operation_.op->raises (lookup_exceptions (names));
+	else if (attribute_.att)
+		attribute_.att->getraises (lookup_exceptions (names));
 }
 
 Raises Builder::lookup_exceptions (const ScopedNames& names)
@@ -779,8 +851,9 @@ Raises Builder::lookup_exceptions (const ScopedNames& names)
 
 void Builder::operation_context (const Variants& strings)
 {
-	Operation* op = interface_.operation.op;
+	OperationBase* op = operation_.op;
 	if (op) {
+		assert (op->kind () == Item::Kind::OPERATION);
 		Operation::Context ctx;
 		for (auto it = strings.begin (); it != strings.end (); ++it) {
 			if (!it->empty ()) {
@@ -789,7 +862,7 @@ void Builder::operation_context (const Variants& strings)
 			}
 		}
 
-		op->context (move (ctx));
+		static_cast <Operation*> (op)->context (move (ctx));
 	}
 }
 
@@ -804,11 +877,11 @@ void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarator
 void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name)
 {
 	assert (scope_stack_.size () > 1);
-	assert (!interface_.attribute.att); // attribute_end () must be called
+	assert (!attribute_.att); // attribute_end () must be called
 
-	ItemScope* itf = static_cast <Interface*> (scope_stack_.back ());
+	ItemContainer* itf = static_cast <ItemContainer*> (scope_stack_.back ());
 	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE);
+		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
 		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
 		auto ins = interface_.all_operations.insert (*item);
 		if (!ins.second) {
@@ -819,10 +892,10 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 			if (!ins.second)
 				error_name_collision (name, **ins.first); // Op name collides with nested type.
 			else {
-				interface_.attribute.att = item;
+				attribute_.att = item;
 				// We always append attribute to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
-				container_stack_.top ()->append (*item);
+				itf->append (*item);
 			}
 		}
 	}
@@ -830,16 +903,34 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 
 void Builder::getraises (const ScopedNames& names)
 {
-	Attribute* att = interface_.attribute.att;
+	Attribute* att = attribute_.att;
 	if (att)
 		att->getraises (lookup_exceptions (names));
 }
 
 void Builder::setraises (const ScopedNames& names)
 {
-	Attribute* att = interface_.attribute.att;
+	Attribute* att = attribute_.att;
 	if (att)
 		att->setraises (lookup_exceptions (names));
+}
+
+void Builder::interface_end ()
+{
+	// Delete all operations and attributes from scope
+	Symbols* scope = scope_stack_.back ();
+	for (auto it = scope->begin (); it != scope->end ();) {
+		switch ((*it)->kind ()) {
+			case Item::Kind::OPERATION:
+			case Item::Kind::ATTRIBUTE:
+				it = scope->erase (it);
+				break;
+			default:
+				++it;
+		}
+	}
+	scope_end ();
+	interface_.clear ();
 }
 
 void Builder::struct_decl (const SimpleDeclarator& name)
@@ -1193,7 +1284,7 @@ void Builder::check_complete (const Container& items)
 		const Item& item = **it;
 		bool complete = true;
 		switch (item.kind ()) {
-			case Item::Kind::TYPEDEF: {
+			case Item::Kind::TYPE_DEF: {
 				const TypeDef& t = static_cast <const TypeDef&> (item);
 				check_complete (t, t);
 			} break;
@@ -1203,10 +1294,7 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::OPERATION: {
 				const Operation& op = static_cast <const Operation&> (item);
 				check_complete (op, op);
-				for (auto par = op.begin (); par != op.end (); ++par) {
-					const Parameter& param = **par;
-					check_complete (param, param);
-				}
+				check_complete (op);
 			} break;
 			case Item::Kind::ATTRIBUTE: {
 				const Attribute& att = static_cast <const Attribute&> (item);
@@ -1218,12 +1306,24 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::STRUCT:
 				check_complete (static_cast <const Struct&> (item));
 				break;
-			case Item::Kind::MEMBER: {
+			case Item::Kind::MEMBER:
+			case Item::Kind::UNION_ELEMENT:
+			case Item::Kind::STATE_MEMBER: {
 				const Member& m = static_cast <const Member&> (item);
 				check_complete (m, m);
 			} break;
 			case Item::Kind::UNION:
 				check_complete (static_cast <const Union&> (item));
+				break;
+			case Item::Kind::VALUE_TYPE:
+				check_complete (static_cast <const ValueType&> (item));
+				break;
+			case Item::Kind::VALUE_BOX: {
+				const ValueBox& vb = static_cast <const ValueBox&> (item);
+				check_complete (vb, vb);
+			}
+			case Item::Kind::VALUE_FACTORY:
+				check_complete (static_cast <const ValueFactory&> (item));
 				break;
 		}
 	}
@@ -1237,6 +1337,14 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 		return false;
 	}
 	return true;
+}
+
+void Builder::check_complete (const OperationBase& op)
+{
+	for (auto par = op.begin (); par != op.end (); ++par) {
+		const Parameter& param = **par;
+		check_complete (param, param);
+	}
 }
 
 void Builder::check_rep_ids_unique (RepIdMap& ids, const Symbols& sym)

@@ -1,4 +1,4 @@
-/// \file ItemContainer.h
+/// \file OperationBase.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,41 +22,44 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMCONTAINER_H_
-#define NIDL_AST_ITEMCONTAINER_H_
+#ifndef NIDL_AST_OPERATIONBASE_H_
+#define NIDL_AST_OPERATIONBASE_H_
 
-#include "ItemScope.h"
-#include "Container.h"
-#include "RepositoryId.h"
+#include "Parameter.h"
+#include "Exception.h"
 
-namespace AST {
+namespace AST{
 
-/// The container of AST items.
-class ItemContainer :
-	public ItemScope,
-	public RepositoryId,
-	public Container
+/// The operation base.
+class OperationBase :
+	public NamedItem,
+	public ContainerT <Parameter>
 {
 public:
-	/// \internal
-	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemScope (kind, builder, name),
-		RepositoryId (*this, builder)
-	{}
-
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+	/// \returns The possible user exceptions for the operation.
+	const Raises& raises () const
 	{
-		if (RepositoryId::prefix (builder, pref, loc))
-			return ItemScope::prefix (builder, pref, loc);
-		else
-			return false;
+		return raises_;
 	}
 
-	using ItemScope::insert;
+	/// \internal
 
+	OperationBase (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		NamedItem (kind, builder, name)
+	{}
+
+	void raises (Raises&& exceptions)
+	{
+		raises_ = std::move (exceptions);
+	}
+
+private:
+	bool oneway_;
+	Raises raises_;
 	/// \endinternal
 };
 
 }
 
 #endif
+

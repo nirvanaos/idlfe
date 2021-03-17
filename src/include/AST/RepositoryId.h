@@ -80,14 +80,15 @@ public:
 		return item_;
 	}
 
-	/// \internal
-
-	static RepositoryId* cast (NamedItem* item) noexcept;
-
+	/// \returns RepositoryId pointer if item derives from RepositoryId.
 	static const RepositoryId* cast (const NamedItem* item) noexcept
 	{
 		return cast (const_cast <NamedItem*> (item));
 	}
+
+	/// \internal
+
+	static RepositoryId* cast (NamedItem* item) noexcept;
 
 	bool check_prefix (Build::Builder& builder, const Location& loc) const;
 

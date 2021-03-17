@@ -51,7 +51,7 @@ ItemScope* ItemScope::cast (NamedItem* item) noexcept
 				return static_cast <Union*> (item);
 			case Kind::EXCEPTION:
 				return static_cast <Exception*> (item);
-			case Kind::VALUETYPE:
+			case Kind::VALUE_TYPE:
 				return static_cast <ValueType*> (item);
 		}
 	}

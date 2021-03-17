@@ -61,7 +61,7 @@ RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
 			case Item::Kind::ENUM:
 				p = static_cast <Enum*> (item);
 				break;
-			case Item::Kind::TYPEDEF:
+			case Item::Kind::TYPE_DEF:
 				p = static_cast <TypeDef*> (item);
 				break;
 			case Item::Kind::NATIVE:
@@ -70,13 +70,13 @@ RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
 			case Item::Kind::EXCEPTION:
 				p = static_cast <Exception*> (item);
 				break;
-			case Item::Kind::VALUETYPE_DECL:
+			case Item::Kind::VALUE_TYPE_DECL:
 				p = static_cast <ValueTypeDecl*> (item);
 				break;
-			case Item::Kind::VALUETYPE:
+			case Item::Kind::VALUE_TYPE:
 				p = static_cast <ValueType*> (item);
 				break;
-			case Item::Kind::VALUEBOX:
+			case Item::Kind::VALUE_BOX:
 				p = static_cast <ValueBox*> (item);
 				break;
 		}

@@ -26,8 +26,7 @@
 #define NIDL_AST_UNION_H_
 
 #include "ItemContainer.h"
-#include "Member.h"
-#include "Variant.h"
+#include "Type.h"
 
 namespace AST {
 
@@ -62,35 +61,6 @@ public:
 
 private:
 	Type discriminator_type_;
-};
-
-/// Union element definition.
-class UnionElement :
-	public Member
-{
-public:
-	/// \returns The vector of `case` labels for this element. Empty for the `default` case.
-	const std::vector <Variant>& labels () const
-	{
-		return labels_;
-	}
-
-	/// \returns `true` if this is the `default` element.
-	bool is_default () const
-	{
-		return labels_.empty ();
-	}
-
-	/// \internal
-
-	UnionElement (const Build::Builder& builder, std::vector <Variant>&& labels, const Type& t, const Build::SimpleDeclarator& name) :
-		Member (builder, t, name, Item::Kind::UNION_ELEMENT),
-		labels_ (std::move (labels))
-	{}
-
-private:
-	const std::vector <Variant> labels_;
-	/// \endinternal
 };
 
 }

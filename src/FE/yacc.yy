@@ -303,20 +303,20 @@ value
 	;
 
 value_forward_dcl
-	: T_valuetype simple_declarator { drv.value_decl (false, $2); }
-	| T_abstract T_valuetype simple_declarator{ drv.value_decl (false, $3); }
+	: T_valuetype simple_declarator { drv.valuetype_decl ($2); }
+	| T_abstract T_valuetype simple_declarator{ drv.valuetype_decl ($3, true); }
 	;
 
 value_box_dcl
-	: T_valuetype simple_declarator type_spec { drv.value_box ($2, $3); }
+	: T_valuetype simple_declarator type_spec { drv.valuetype_box ($2, $3); }
 	;
 
 value_abs_dcl
-	: T_abstract T_valuetype simple_declarator { drv.value_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
+	: T_abstract T_valuetype simple_declarator { drv.valuetype_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
 		T_LEFT_CURLY_BRACKET
 			value_body
 		T_RIGHT_CURLY_BRACKET
-	| T_abstract T_valuetype simple_declarator{ drv.value_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
+	| T_abstract T_valuetype simple_declarator{ drv.valuetype_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
 		value_inheritance_spec
 		T_LEFT_CURLY_BRACKET
 			value_body
@@ -340,21 +340,21 @@ value_elements
 	;
 
 value_header
-	: T_valuetype simple_declarator { drv.value_begin ($2); } value_inheritance_spec
-	| T_custom T_valuetype simple_declarator { drv.value_begin ($3, AST::ValueType::Modifier::CUSTOM); } value_inheritance_spec
-	| T_valuetype simple_declarator { drv.value_begin ($2); }
-	| T_custom T_valuetype simple_declarator { drv.value_begin ($3, AST::ValueType::Modifier::CUSTOM); }
+	: T_valuetype simple_declarator { drv.valuetype_begin ($2); } value_inheritance_spec
+	| T_custom T_valuetype simple_declarator { drv.valuetype_begin ($3, AST::ValueType::Modifier::CUSTOM); } value_inheritance_spec
+	| T_valuetype simple_declarator { drv.valuetype_begin ($2); }
+	| T_custom T_valuetype simple_declarator { drv.valuetype_begin ($3, AST::ValueType::Modifier::CUSTOM); }
 	;
 
 value_inheritance_spec
 	: T_COLON value_inheritance_bases
 	| T_COLON value_inheritance_bases T_supports scoped_names
-	| T_supports scoped_names { drv.value_supports ($2); }
+	| T_supports scoped_names { drv.valuetype_supports ($2); }
 	;
 
 value_inheritance_bases
-	: scoped_names { drv.value_bases (false, $1); }
-	| T_truncatable scoped_names { drv.value_bases (true, $2); }
+	: scoped_names { drv.valuetype_bases (false, $1); }
+	| T_truncatable scoped_names { drv.valuetype_bases (true, $2); }
 	;
 
 value_element
@@ -364,14 +364,14 @@ value_element
 	;
 
 state_member
-	: T_public type_spec declarators T_SEMICOLON
-	| T_private type_spec declarators T_SEMICOLON
+	: T_public type_spec declarators T_SEMICOLON { drv.state_member (true, $2, $3); }
+	| T_private type_spec declarators T_SEMICOLON { drv.state_member (false, $2, $3); }
 	;
 
 init_dcl
-	: T_factory T_identifier
-		T_LEFT_PARANTHESIS init_param_decls T_RIGHT_PARANTHESIS
-		T_SEMICOLON
+	: T_factory simple_declarator { drv.valuetype_factory_begin ($2); }
+		T_LEFT_PARANTHESIS init_param_decls T_RIGHT_PARANTHESIS operation_raises
+		T_SEMICOLON { drv.valuetype_factory_end (); }
 	;
 
 init_param_decls
@@ -380,7 +380,7 @@ init_param_decls
 	;
 
 init_param_decl
-	: init_param_attribute param_type_spec simple_declarator
+	: init_param_attribute param_type_spec simple_declarator { drv.parameter (AST::Parameter::Attribute::IN, $2, $3); }
 	;
 
 init_param_attribute
@@ -765,7 +765,7 @@ param_dcls
 	;
 
 param_dcl
-	: param_attribute param_type_spec simple_declarator { drv.operation_parameter ($1, $2, $3); }
+	: param_attribute param_type_spec simple_declarator { drv.parameter ($1, $2, $3); }
 	;
 
 param_attribute
@@ -780,7 +780,7 @@ operation_raises
 	;
 
 raises_expr
-	: T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS{ drv.raises ($3); }
+	: T_raises T_LEFT_PARANTHESIS scoped_names T_RIGHT_PARANTHESIS { drv.raises ($3); }
 
 context_expr
 	: /*empty*/

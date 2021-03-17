@@ -49,8 +49,8 @@ public:
 		return modifier_;
 	}
 
-	ValueType (const Build::Builder& builder, Modifier modifier, const Build::SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::VALUETYPE, builder, name),
+	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
+		ItemContainer (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
 
@@ -66,7 +66,7 @@ class ValueBox :
 {
 public:
 	ValueBox (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
-		NamedItem (Item::Kind::VALUEBOX, builder, name),
+		NamedItem (Item::Kind::VALUE_BOX, builder, name),
 		Type (type),
 		RepositoryId (*this, builder)
 	{}
@@ -84,8 +84,8 @@ public:
 		return is_abstract_;
 	}
 
-	ValueTypeDecl (const Build::Builder& builder, bool abstr, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::VALUETYPE_DECL, builder, name),
+	ValueTypeDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, bool abstr) :
+		NamedItem (Item::Kind::VALUE_TYPE_DECL, builder, name),
 		RepositoryId (*this, builder),
 		is_abstract_ (abstr)
 	{}

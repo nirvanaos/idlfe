@@ -126,7 +126,7 @@ const Type& Type::dereference_type () const noexcept
 	const Type* t = this;
 	while (t->kind_ == Kind::NAMED_TYPE) {
 		const NamedItem* p = t->named_type ();
-		if (Item::Kind::TYPEDEF == p->kind ())
+		if (Item::Kind::TYPE_DEF == p->kind ())
 			t = static_cast <const TypeDef*> (p);
 		else
 			break;

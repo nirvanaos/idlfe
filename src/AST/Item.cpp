@@ -32,7 +32,7 @@ bool Item::is_type () const noexcept
 {
 	static const Kind kinds [] = {
 		Kind::NATIVE,
-		Kind::TYPEDEF,
+		Kind::TYPE_DEF,
 		Kind::INTERFACE_DECL,
 		Kind::INTERFACE,
 		Kind::STRUCT_DECL,
@@ -40,9 +40,9 @@ bool Item::is_type () const noexcept
 		Kind::UNION_DECL,
 		Kind::UNION,
 		Kind::ENUM,
-		Kind::VALUETYPE_DECL,
-		Kind::VALUETYPE,
-		Kind::VALUEBOX
+		Kind::VALUE_TYPE_DECL,
+		Kind::VALUE_TYPE,
+		Kind::VALUE_BOX
 	};
 
 	return find (kinds, end (kinds), kind_) != end (kinds);
@@ -54,7 +54,7 @@ bool Item::is_forward_decl () const noexcept
 		Kind::INTERFACE_DECL,
 		Kind::STRUCT_DECL,
 		Kind::UNION_DECL,
-		Kind::VALUETYPE_DECL
+		Kind::VALUE_TYPE_DECL
 	};
 
 	return find (kinds, end (kinds), kind_) != end (kinds);

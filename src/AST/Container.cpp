@@ -41,7 +41,7 @@ bool Container::visit (CodeGen& cg) const
 			case Item::Kind::NATIVE:
 				cg.native (static_cast <const Native&> (*item));
 				break;
-			case Item::Kind::TYPEDEF:
+			case Item::Kind::TYPE_DEF:
 				cg.type_def (static_cast <const TypeDef&> (*item));
 				break;
 			case Item::Kind::CONSTANT:

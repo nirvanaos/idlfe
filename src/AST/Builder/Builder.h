@@ -38,7 +38,7 @@
 namespace AST {
 
 class Root;
-class Operation;
+class OperationBase;
 class Attribute;
 
 namespace Build {
@@ -110,14 +110,15 @@ public:
 	void interface_bases (const ScopedNames& bases);
 
 	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
-	void operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
+
+	void parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
 	
 	void raises (const ScopedNames& names);
 	void operation_context (const Variants& strings);
 
 	void operation_end ()
 	{
-		interface_.operation.clear ();
+		operation_.clear ();
 	}
 
 	void attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators);
@@ -129,26 +130,10 @@ public:
 
 	void attribute_end ()
 	{
-		interface_.attribute.clear ();
+		attribute_.clear ();
 	}
 
-	void interface_end ()
-	{
-		// Delete all operations and attributes from scope
-		Symbols* scope = scope_stack_.back ();
-		for (auto it = scope->begin (); it != scope->end ();) {
-			switch ((*it)->kind ()) {
-				case Item::Kind::OPERATION:
-				case Item::Kind::ATTRIBUTE:
-					it = scope->erase (it);
-					break;
-				default:
-					++it;
-			}
-		}
-		scope_end ();
-		interface_.clear ();
-	}
+	void interface_end ();
 
 	void type_def (const Type& type, const Declarators& declarators);
 
@@ -178,12 +163,25 @@ public:
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
-	void value_decl (bool abstract, const SimpleDeclarator& name);
-	void value_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
-	void value_bases (bool truncatable, const ScopedNames& bases);
-	void value_supports (const ScopedNames& bases);
-	void value_end ();
-	void value_box (const SimpleDeclarator& name, const Type& type);
+	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
+	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
+	void valuetype_bases (bool truncatable, const ScopedNames& bases);
+	void valuetype_supports (const ScopedNames& bases);
+	void state_member (bool is_public, const Type& type, const Declarators& names);
+
+	void valuetype_factory_begin (const SimpleDeclarator& name);
+
+	void valuetype_factory_end ()
+	{
+		operation_end ();
+	}
+
+	void valuetype_end ()
+	{
+		interface_end ();
+	}
+
+	void valuetype_box (const SimpleDeclarator& name, const Type& type);
 
 	void eval_push (const Type& t, const Location& loc);
 
@@ -247,9 +245,11 @@ private:
 
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
+	void check_complete (const OperationBase& op);
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
+	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
 
 private:
 	unsigned err_cnt_;
@@ -273,6 +273,7 @@ private:
 	std::vector <File> file_stack_;
 	bool is_main_file_;
 
+	// Current interface data. Also used for value types.
 	struct InterfaceData
 	{
 		Symbols all_operations;
@@ -282,33 +283,37 @@ private:
 			all_operations.clear ();
 		}
 
-		struct OperationData
-		{
-			Operation* op;
-			Symbols params;
-
-			OperationData () :
-				op (nullptr)
-			{}
-
-			void clear ()
-			{
-				op = nullptr;
-				params.clear ();
-			}
-		} operation;
-
-		struct AttributeData
-		{
-			Attribute* att;
-
-			void clear ()
-			{
-				att = nullptr;
-			}
-		} attribute;
-
 	} interface_;
+
+	struct OperationData
+	{
+		OperationBase* op;
+		Symbols params;
+
+		OperationData () :
+			op (nullptr)
+		{}
+
+		void clear ()
+		{
+			op = nullptr;
+			params.clear ();
+		}
+	} operation_;
+
+	struct AttributeData
+	{
+		Attribute* att;
+
+		AttributeData () :
+			att (nullptr)
+		{}
+
+		void clear ()
+		{
+			att = nullptr;
+		}
+	} attribute_;
 
 	struct UnionData
 	{

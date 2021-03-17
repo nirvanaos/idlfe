@@ -37,11 +37,13 @@
 #include "Attribute.h"
 #include "Struct.h"
 #include "Union.h"
-#include "Member.h"
+#include "UnionElement.h"
 #include "Enum.h"
 #include "Exception.h"
 #include "Array.h"
 #include "Sequence.h"
+#include "ValueType.h"
+#include "StateMember.h"
 
 namespace AST {
 
