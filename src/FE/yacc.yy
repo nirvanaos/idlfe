@@ -348,7 +348,7 @@ value_header
 
 value_inheritance_spec
 	: T_COLON value_inheritance_bases
-	| T_COLON value_inheritance_bases T_supports scoped_names
+	| T_COLON value_inheritance_bases T_supports scoped_names { drv.valuetype_supports ($4); }
 	| T_supports scoped_names { drv.valuetype_supports ($2); }
 	;
 

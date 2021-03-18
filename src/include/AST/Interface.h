@@ -86,16 +86,16 @@ public:
 
 	/// \internal
 
-	void get_all_interfaces (Interfaces& all) const;
+	void get_all_containers (Containers& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		ItemContainer (Item::Kind::INTERFACE, builder, name)
 	{}
 
-	void add_base (const Interface* base)
+	void add_base (const Interface& base)
 	{
-		bases_.push_back (base);
+		bases_.push_back (&base);
 	}
 
 	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;

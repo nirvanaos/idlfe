@@ -53,9 +53,15 @@ public:
 	}
 
 	using ItemScope::insert;
+	using Container::begin;
+	using Container::end;
+	using Container::cbegin;
+	using Container::cend;
 
 	/// \endinternal
 };
+
+typedef std::vector <const ItemContainer*> Containers;
 
 }
 

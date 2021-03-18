@@ -603,14 +603,14 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 			bool prev_abstract;
 			switch (item.kind ()) {
 				case Item::Kind::VALUE_TYPE_DECL: {
-					const ValueTypeDecl& val = static_cast <const ValueTypeDecl&> (item);
-					rid = &val;
-					prev_abstract = val.is_abstract ();
+					const ValueTypeDecl& vt = static_cast <const ValueTypeDecl&> (item);
+					rid = &vt;
+					prev_abstract = vt.is_abstract ();
 				} break;
 				case Item::Kind::VALUE_TYPE: {
-					const ValueType& val = static_cast <const ValueType&> (item);
-					rid = &val;
-					prev_abstract = val.modifier () == ValueType::Modifier::ABSTRACT;
+					const ValueType& vt = static_cast <const ValueType&> (item);
+					rid = &vt;
+					prev_abstract = vt.modifier () == ValueType::Modifier::ABSTRACT;
 				} break;
 			}
 
@@ -659,8 +659,8 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod)
 {
 	if (scope_begin ()) {
-		Ptr <ValueType> val = Ptr <ValueType>::make <ValueType> (ref (*this), ref (name), mod);
-		auto ins = scope_stack_.back ()->insert (*val);
+		Ptr <ValueType> vt = Ptr <ValueType>::make <ValueType> (ref (*this), ref (name), mod);
+		auto ins = scope_stack_.back ()->insert (*vt);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
 			if ((*ins.first)->kind () != Item::Kind::VALUE_TYPE_DECL) {
@@ -673,17 +673,18 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 				if (is_abstract != decl.is_abstract ())
 					error_valuetype_mod (name, is_abstract, decl);
 				decl.check_prefix (*this, name);
-				static_cast <RepositoryIdData&> (*val) = decl;
-				const_cast <Ptr <NamedItem>&> (*ins.first) = val;
+				static_cast <RepositoryIdData&> (*vt) = decl;
+				const_cast <Ptr <NamedItem>&> (*ins.first) = vt;
 			}
 		}
 
-		scope_push (val);
+		scope_push (vt);
 	}
 }
 
 void Builder::interface_bases (const ScopedNames& bases)
 {
+	assert (!bases.empty ());
 	Interface* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
@@ -691,32 +692,35 @@ void Builder::interface_bases (const ScopedNames& bases)
 
 		// Process bases
 		map <const Item*, Location> direct_bases;
-		set <const Item*> all_bases;
 		for (auto base_name = bases.begin (); base_name != bases.end (); ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
 			if (pbase) {
 				const NamedItem* base = *pbase;
 				const char* err = nullptr;
-				if (base->kind () != Item::Kind::INTERFACE)
+				if (base->kind () != Item::Kind::INTERFACE) {
 					if (base->kind () == Item::Kind::INTERFACE_DECL)
-						err = "incomplete interface is not allowed";
+						err = "incomplete type is not allowed";
 					else
 						err = "invalid base type";
-				else {
+				} else {
 					const Interface* base_itf = static_cast <const Interface*> (base);
 					if (itf == base_itf) {
 						message (*base_name, MessageType::ERROR, "may not derive from itself");
 						continue;
 					}
-					switch (itf->interface_kind ()) {
-						case InterfaceKind::UNCONSTRAINED:
-							if (InterfaceKind::LOCAL == base_itf->interface_kind ())
-								err = "unconstrained interface may not derive local interface";
-							break;
-						case InterfaceKind::ABSTRACT:
-							if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
-								err = "an abstract interface may only inherit from abstract interfaces";
-							break;
+					if (InterfaceKind::PSEUDO == base_itf->interface_kind ())
+						err = "pseudo interfaces may not be derived";
+					else {
+						switch (itf->interface_kind ()) {
+							case InterfaceKind::UNCONSTRAINED:
+								if (InterfaceKind::LOCAL == base_itf->interface_kind ())
+									err = "unconstrained interface may not derive local interface";
+								break;
+							case InterfaceKind::ABSTRACT:
+								if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
+									err = "an abstract interface may only inherit from abstract interfaces";
+								break;
+						}
 					}
 					if (!err) {
 						auto ins = direct_bases.emplace (base, *base_name);
@@ -724,41 +728,112 @@ void Builder::interface_bases (const ScopedNames& bases)
 							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + itf->name ());
 							see_prev_declaration (ins.first->second);
 							continue;
-						}
-						{
-							vector <const Interface*> bases;
-							base_itf->get_all_interfaces (bases);
-							for (const Interface* itf : bases) {
-								if (all_bases.insert (itf).second) {
-									// Check operation names
-									const Container& members = *itf;
-									for (auto it = members.begin (); it != members.end (); ++it) {
-										const Item* member = *it;
-										switch (member->kind ()) {
-											case Item::Kind::OPERATION:
-											case Item::Kind::ATTRIBUTE:
-												NamedItem* op = static_cast <NamedItem*> (const_cast <Item*> (member));
-												auto ins = interface_.all_operations.insert (*op);
-												if (!ins.second) {
-													string opatt = member->kind () == Item::Kind::OPERATION ? "operation name " : "attribute name ";
-													message (*base_name, MessageType::ERROR, opatt + op->name () + " collision");
-													message (**ins.first, MessageType::MESSAGE, (*ins.first)->qualified_name ());
-													message (*op, MessageType::MESSAGE, op->qualified_name ());
-													continue;
-												}
-										}
-									}
-								}
-							}
+						} else {
+							Containers bases;
+							base_itf->get_all_containers (bases);
+							add_base_members (*base_name, bases);
 						}
 
 						// OK
-						itf->add_base (base_itf);
+						itf->add_base (*base_itf);
 					}
 				}
 				if (err) {
 					message (*base_name, MessageType::ERROR, err);
 					see_declaration_of (*base, base_name->stringize ());
+				}
+			}
+		}
+	}
+}
+
+void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
+{
+	assert (!bases.empty ());
+	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
+	if (vt) {
+		assert (vt->kind () == Item::Kind::VALUE_TYPE);
+		if (truncatable) {
+			if (vt->modifier () != ValueType::Modifier::NONE)
+				message (bases.front (), MessageType::ERROR, string (vt->modifier_name ()) + " valuetype may not be truncatable");
+			else
+				vt->set_truncatable ();
+		}
+
+		// Process bases
+		map <const Item*, Location> direct_bases;
+		bool first = true;
+		for (auto base_name = bases.begin (); base_name != bases.end (); first = false, ++base_name) {
+			const Ptr <NamedItem>* pbase = lookup (*base_name);
+			if (pbase) {
+				const NamedItem* base = *pbase;
+				const char* err = nullptr;
+				if (base->kind () != Item::Kind::VALUE_TYPE) {
+					if (base->kind () == Item::Kind::VALUE_TYPE_DECL)
+						err = "incomplete type is not allowed";
+					else
+						err = "invalid base type";
+				} else {
+					const ValueType* base_vt = static_cast <const ValueType*> (base);
+					if (vt == base_vt) {
+						message (*base_name, MessageType::ERROR, "may not derive from itself");
+						continue;
+					}
+
+					if (base_vt->modifier () != ValueType::Modifier::ABSTRACT) {
+						if (!first)
+							err = "concrete base must be first";
+						else if (vt->modifier () == ValueType::Modifier::ABSTRACT)
+							err = "concrete type is not allowed";
+					}
+					if (!err) {
+						auto ins = direct_bases.emplace (base, *base_name);
+						if (!ins.second) {
+							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + vt->name ());
+							see_prev_declaration (ins.first->second);
+							continue;
+						} else {
+							Containers bases;
+							base_vt->get_all_containers (bases);
+							add_base_members (*base_name, bases);
+						}
+
+						// OK
+						vt->add_base (*base_vt);
+					}
+				}
+				if (err) {
+					message (*base_name, MessageType::ERROR, err);
+					see_declaration_of (*base, base_name->stringize ());
+				}
+			}
+		}
+	}
+}
+
+void Builder::add_base_members (const Location& loc, const Containers& bases)
+{
+	for (const ItemContainer* base : bases) {
+		if (interface_.all_bases.insert (base).second) {
+			// Check member names
+			for (auto it = base->begin (); it != base->end (); ++it) {
+				const Item* item = *it;
+				switch (item->kind ()) {
+					case Item::Kind::STATE_MEMBER: {
+						const StateMember* member = static_cast <const StateMember*> (item);
+						if (!member->is_public ())
+							break; // Private members are not accessible via DynAny.
+					}
+					case Item::Kind::OPERATION:
+					case Item::Kind::ATTRIBUTE: {
+						NamedItem* member = static_cast <NamedItem*> (const_cast <Item*> (item));
+						auto ins = interface_.all_members.insert (*member);
+						if (!ins.second) {
+							message (loc, MessageType::ERROR, string ("member name collision: ") + member->name ());
+							message (**ins.first, MessageType::MESSAGE, (*ins.first)->qualified_name ());
+							message (*member, MessageType::MESSAGE, member->qualified_name ());
+						}
+					} break;
 				}
 			}
 		}
@@ -778,7 +853,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			oneway = false;
 		}
 		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
-		auto ins = interface_.all_operations.insert (*op);
+		auto ins = interface_.all_members.insert (*op);
 		if (!ins.second) {
 			message (name, MessageType::ERROR, string ("operation name ") + name + " collision");
 			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
@@ -883,7 +958,7 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
 		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
-		auto ins = interface_.all_operations.insert (*item);
+		auto ins = interface_.all_members.insert (*item);
 		if (!ins.second) {
 			message (name, MessageType::ERROR, string ("attribute name ") + name + " collision");
 			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());

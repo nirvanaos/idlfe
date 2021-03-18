@@ -30,11 +30,17 @@
 
 namespace AST {
 
+class ValueType;
+
+/// The sequence of value types.
+typedef std::vector <const ValueType*> ValueTypes;
+
 /// Value type definition.
 class ValueType :
 	public ItemContainer
 {
 public:
+	/// Value type modifier.
 	enum class Modifier
 	{
 		NONE,
@@ -43,10 +49,25 @@ public:
 		TRUNCATABLE ///< `truncatable`
 	};
 
-	/// \returns Value type modifier.
+	/// \returns The value type modifier.
 	Modifier modifier () const
 	{
 		return modifier_;
+	}
+
+	/// \returns The value type modifier name.
+	const char* modifier_name () const;
+
+	/// \returns The base value types.
+	const ValueTypes& bases () const
+	{
+		return bases_;
+	}
+
+	/// \returns The supported interfaces.
+	const Interfaces& supports () const
+	{
+		return supports_;
 	}
 
 	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
@@ -54,8 +75,30 @@ public:
 		modifier_ (modifier)
 	{}
 
+	void set_truncatable ()
+	{
+		assert (modifier_ == Modifier::NONE);
+		modifier_ = Modifier::TRUNCATABLE;
+	}
+
+	void add_base (const ValueType& vt)
+	{
+		bases_.push_back (&vt);
+	}
+
+	void add_support (const Interface& itf)
+	{
+		supports_.push_back (&itf);
+	}
+
+	void get_all_containers (Containers& all) const;
+
+	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
+
 private:
 	Modifier modifier_;
+	ValueTypes bases_;
+	Interfaces supports_;
 };
 
 /// Value box definition.

@@ -34,6 +34,7 @@
 #include <ostream>
 #include <stack>
 #include <map>
+#include <set>
 
 namespace AST {
 
@@ -251,6 +252,8 @@ private:
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
 
+	void add_base_members (const Location& loc, const Containers& bases);
+
 private:
 	unsigned err_cnt_;
 	std::ostream err_out_;
@@ -276,11 +279,13 @@ private:
 	// Current interface data. Also used for value types.
 	struct InterfaceData
 	{
-		Symbols all_operations;
+		Symbols all_members;
+		std::set <const Item*> all_bases;
 
 		void clear ()
 		{
-			all_operations.clear ();
+			all_members.clear ();
+			all_bases.clear ();
 		}
 
 	} interface_;
