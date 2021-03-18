@@ -98,8 +98,6 @@ public:
 		bases_.push_back (&base);
 	}
 
-	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
-
 private:
 	void base_find (const Identifier& name, std::set <const Ptr <NamedItem>*>& found) const;
 

@@ -34,15 +34,6 @@ std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
 	return Base::emplace (&const_cast <NamedItem&> (item));
 }
 
-pair <bool, const Ptr <NamedItem>*> Symbols::find (Build::Builder&, const Identifier& name, const Location&) const
-{
-	auto p = find (name);
-	if (p)
-		return make_pair (true, p);
-	else
-		return make_pair (false, nullptr);
-}
-
 const Ptr <NamedItem>* Symbols::find (const Identifier& name) const
 {
 	auto f = Base::find (name);

@@ -59,42 +59,6 @@ void Interface::get_all_bases (set <const Interface*>& bases) const
 	}
 }
 
-pair <bool, const Ptr <NamedItem>*> Interface::find (Builder& builder, const Identifier& name, const Location& loc) const
-{
-	const Ptr <NamedItem>* p = ItemScope::find (name);
-	if (p)
-		return make_pair (true, p);
-
-	set <const Ptr <NamedItem>*> found;
-	for (auto base = bases_.begin (); base != bases_.end (); ++base) {
-		(*base)->base_find (name, found);
-	}
-
-	if (found.empty ())
-		return make_pair (false, nullptr);
-
-	if (found.size () > 1) {
-		// Ambiguous
-		builder.message (loc, Builder::MessageType::ERROR, string ("ambiguous name ") + name);
-		auto it = found.begin ();
-		const Ptr <NamedItem>* p = *it;
-		builder.message (**p, Builder::MessageType::MESSAGE, string ("could be ") + (*p)->qualified_name ());
-		++it;
-		for (;;) {
-			p = *it;
-			string msg = string ("or ") + (*p)->qualified_name ();
-			if (found.end () == ++it) {
-				msg += '.';
-				builder.message (**p, Builder::MessageType::MESSAGE, msg);
-				break;
-			} else
-				builder.message (**p, Builder::MessageType::MESSAGE, msg);
-		}
-		return make_pair (true, nullptr);
-	} else
-		return make_pair (true, *found.begin ());
-}
-
 void Interface::base_find (const Identifier& name, set <const Ptr <NamedItem>*>& found) const
 {
 	const Ptr <NamedItem>* p = ItemScope::find (name);

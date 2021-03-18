@@ -153,7 +153,7 @@ public:
 		return scope_end ();
 	}
 
-	void member (const Type& type, const Declarators& declarators);
+	void member (const Type& type, const Declarators& names);
 
 	void union_decl (const SimpleDeclarator& name);
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
@@ -240,6 +240,17 @@ private:
 
 	Raises lookup_exceptions (const ScopedNames& names);
 
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const Containers& containers, const Identifier& name, const Location& loc);
+
+	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
+	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
+	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
+
+	void add_base_members (const Location& loc, const Containers& bases);
+	bool check_member_name (const NamedItem& item);
+	bool check_complete_or_ref (const Type& type, const Location& loc);
+
 	typedef std::map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
 	void check_unique (RepIdMap& ids, const RepositoryId& rid);
@@ -247,12 +258,6 @@ private:
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
 	void check_complete (const OperationBase& op);
-
-	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
-	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
-	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
-
-	void add_base_members (const Location& loc, const Containers& bases);
 
 private:
 	unsigned err_cnt_;

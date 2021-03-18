@@ -1,4 +1,4 @@
-/// \file Symbols.h
+/// \file ValueBox.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,32 +22,27 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_SYMBOLS_H_
-#define NIDL_AST_SYMBOLS_H_
+#ifndef NIDL_AST_VALUEBOX_H_
+#define NIDL_AST_VALUEBOX_H_
 
 #include "NamedItem.h"
-#include <set>
+#include "Type.h"
+#include "RepositoryId.h"
 
 namespace AST {
 
-/// The ordered container of pointers to NamedItem.
-class Symbols :
-	public std::set <Ptr <NamedItem>, std::less <>>
+/// Boxed value type.
+class ValueBox :
+	public NamedItem,
+	public Type,
+	public RepositoryId
 {
-	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
 public:
-	/// \internal
-	// Methods made outline to reduce size.
-	std::pair <iterator, bool> emplace (const NamedItem&);
-
-	std::pair <iterator, bool> insert (const NamedItem& item)
-	{
-		return emplace (item);
-	}
-
-	const Ptr <NamedItem>* find (const Identifier& name) const;
-
-	/// \endinternal
+	ValueBox (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
+		NamedItem (Item::Kind::VALUE_BOX, builder, name),
+		Type (type),
+		RepositoryId (*this, builder)
+	{}
 };
 
 }

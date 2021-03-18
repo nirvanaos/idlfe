@@ -86,14 +86,12 @@ public:
 		bases_.push_back (&vt);
 	}
 
-	void add_support (const Interface& itf)
+	void add_supports (const Interface& itf)
 	{
 		supports_.push_back (&itf);
 	}
 
 	void get_all_containers (Containers& all) const;
-
-	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const Identifier& name, const Location&) const;
 
 private:
 	Modifier modifier_;

@@ -315,7 +315,14 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 		ScopeStack::const_iterator it = scope_stack_.end () - 1;
 		for (;;) {
 			const Symbols* scope = *it;
-			f = scope->find (*this, *name, scoped_name);
+			while (!scope)
+				scope = *(--it);
+			if (it != scope_stack_.begin ())
+				f = lookup (static_cast <const ItemScope&> (*scope), *name, scoped_name);
+			else {
+				const Ptr <NamedItem>* p = scope->find (*name);
+				f = make_pair (p, p);
+			}
 			if (f.first)
 				break;
 			if (it == scope_stack_.begin ())
@@ -327,7 +334,7 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 	while (f.second && scoped_name.end () != ++name) {
 		const ItemScope* scope = ItemScope::cast (*f.second);
 		if (scope) {
-			f = scope->find (*this, *name, scoped_name);
+			f = lookup (*scope, *name, scoped_name);
 			if (!f.first)
 				break;
 		} else
@@ -338,6 +345,61 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 		message (scoped_name, MessageType::ERROR, string ("symbol not found: ") + scoped_name.stringize ());
 
 	return f.second;
+}
+
+pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, const Identifier& name, const Location& loc)
+{
+	switch (scope.kind ()) {
+
+		case Item::Kind::INTERFACE: {
+			Containers containers;
+			static_cast <const Interface&> (scope).get_all_containers (containers);
+			return lookup (containers, name, loc);
+		} break;
+
+		case Item::Kind::VALUE_TYPE: {
+			Containers containers;
+			static_cast <const ValueType&> (scope).get_all_containers (containers);
+			return lookup (containers, name, loc);
+		} break;
+
+		default: {
+			const Ptr <NamedItem>* p = scope.find (name);
+			return make_pair (p, p);
+		}
+	}
+}
+
+std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const Containers& containers, const Identifier& name, const Location& loc)
+{
+	set <const Ptr <NamedItem>*> found;
+	for (const ItemContainer* cont : containers) {
+		auto p = cont->find (name);
+		if (p)
+			found.insert (p);
+	}
+	if (found.size () > 1) {
+		// Ambiguous
+		message (loc, Builder::MessageType::ERROR, string ("ambiguous name ") + name);
+		auto it = found.begin ();
+		const NamedItem* p = **it;
+		message (*p, Builder::MessageType::MESSAGE, string ("could be ") + p->qualified_name ());
+		++it;
+		for (;;) {
+			p = **it;
+			string msg = string ("or ") + p->qualified_name ();
+			if (found.end () == ++it) {
+				msg += '.';
+				message (*p, Builder::MessageType::MESSAGE, msg);
+				break;
+			} else
+				message (*p, Builder::MessageType::MESSAGE, msg);
+		}
+		return make_pair (true, nullptr);
+	} else if (!found.empty ())
+		return make_pair (true, *found.begin ());
+	else
+		return make_pair (false, nullptr);
 }
 
 unsigned Builder::positive_int (const Variant& v, const Location& loc)
@@ -549,7 +611,35 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 
 void Builder::error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc)
 {
-	message (name, MessageType::ERROR, string (new_kind.interface_kind_name ()) + " interface " + name + " is already defined as " + prev_kind.interface_kind_name ());
+	string msg;
+	if (new_kind.interface_kind () != InterfaceKind::Kind::UNCONSTRAINED) {
+		msg += new_kind.interface_kind_name ();
+		msg += ' ';
+	}
+	msg += "interface ";
+	msg += name;
+	msg += " is already declared as ";
+	if (prev_kind.interface_kind () != InterfaceKind::Kind::UNCONSTRAINED)
+		msg += prev_kind.interface_kind_name ();
+	else
+		msg += "unconstrained";
+	message (name, MessageType::ERROR, msg);
+	see_prev_declaration (prev_loc);
+}
+
+void Builder::error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc)
+{
+	string msg;
+	if (is_abstract)
+		msg += "abstract ";
+	msg += "valuetype ";
+	msg += name;
+	msg += " is already declared as ";
+	if (is_abstract)
+		msg += "concrete";
+	else
+		msg += "abstract ";
+	message (name, MessageType::ERROR, msg);
 	see_prev_declaration (prev_loc);
 }
 
@@ -811,6 +901,56 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 	}
 }
 
+void Builder::valuetype_supports (const ScopedNames& bases)
+{
+	assert (!bases.empty ());
+	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
+	if (vt) {
+		assert (vt->kind () == Item::Kind::VALUE_TYPE);
+
+		// Process bases
+		map <const Item*, Location> direct_bases;
+		bool first = true;
+		for (auto base_name = bases.begin (); base_name != bases.end (); first = false, ++base_name) {
+			const Ptr <NamedItem>* pbase = lookup (*base_name);
+			if (pbase) {
+				const NamedItem* base = *pbase;
+				const char* err = nullptr;
+				if (base->kind () != Item::Kind::INTERFACE) {
+					if (base->kind () == Item::Kind::INTERFACE_DECL)
+						err = "incomplete type is not allowed";
+					else
+						err = "invalid base type";
+				} else {
+					const Interface* base_itf = static_cast <const Interface*> (base);
+
+					if (base_itf->interface_kind () != InterfaceKind::Kind::ABSTRACT && !first)
+						err = "concrete base must be first";
+					else {
+						auto ins = direct_bases.emplace (base, *base_name);
+						if (!ins.second) {
+							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + vt->name ());
+							see_prev_declaration (ins.first->second);
+							continue;
+						} else {
+							Containers bases;
+							base_itf->get_all_containers (bases);
+							add_base_members (*base_name, bases);
+						}
+
+						// OK
+						vt->add_supports (*base_itf);
+					}
+				}
+				if (err) {
+					message (*base_name, MessageType::ERROR, err);
+					see_declaration_of (*base, base_name->stringize ());
+				}
+			}
+		}
+	}
+}
+
 void Builder::add_base_members (const Location& loc, const Containers& bases)
 {
 	for (const ItemContainer* base : bases) {
@@ -830,8 +970,8 @@ void Builder::add_base_members (const Location& loc, const Containers& bases)
 						auto ins = interface_.all_members.insert (*member);
 						if (!ins.second) {
 							message (loc, MessageType::ERROR, string ("member name collision: ") + member->name ());
-							message (**ins.first, MessageType::MESSAGE, (*ins.first)->qualified_name ());
-							message (*member, MessageType::MESSAGE, member->qualified_name ());
+							message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
+							message (*member, MessageType::MESSAGE, string ("see ") + member->qualified_name ());
 						}
 					} break;
 				}
@@ -840,32 +980,62 @@ void Builder::add_base_members (const Location& loc, const Containers& bases)
 	}
 }
 
+bool Builder::check_member_name (const NamedItem& item)
+{
+#ifdef _DEBUG
+	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	assert (parent && parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
+#endif
+	auto ins = interface_.all_members.insert (item);
+	if (!ins.second) {
+		message (item, MessageType::ERROR, string ("member name collision: ") + item.name ());
+		message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
+	}
+	return ins.second;
+}
+
 void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name)
 {
 	assert (scope_stack_.size () > 1);
 	assert (!operation_.op); // operation_end () must be called
 
-	ItemContainer* itf = static_cast <ItemContainer*> (scope_stack_.back ());
-	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
+	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	if (parent) {
+		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 		if (oneway && type.tkind () != Type::Kind::VOID) {
 			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored");
 			oneway = false;
 		}
-		Ptr <Operation> op = Ptr <Operation>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
-		auto ins = interface_.all_members.insert (*op);
-		if (!ins.second) {
-			message (name, MessageType::ERROR, string ("operation name ") + name + " collision");
-			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
-		} else {
-			ins = itf->insert (*op);
+		Ptr <OperationBase> op = Ptr <OperationBase>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
+		if (check_member_name (*op)) {
+			auto ins = parent->insert (*op);
 			if (!ins.second)
 				error_name_collision (name, **ins.first); // Op name collides with nested type.
 			else {
 				operation_.op = op;
 				// We always append operation to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
-				itf->append (*op);
+				parent->append (*op);
+			}
+		}
+	}
+}
+
+void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
+{
+	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	if (parent) {
+		assert (parent->kind () == Item::Kind::VALUE_TYPE);
+		Ptr <OperationBase> op = Ptr <OperationBase>::make <ValueFactory> (ref (*this), ref (name));
+		if (check_member_name (*op)) {
+			auto ins = parent->insert (*op);
+			if (!ins.second)
+				error_name_collision (name, **ins.first); // Name collides with nested type.
+			else {
+				operation_.op = op;
+				// We always append operation to the container, whatever it is the main file or not.
+				// We need it to build all_operations for derived interfaces.
+				parent->append (*op);
 			}
 		}
 	}
@@ -954,23 +1124,19 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 	assert (scope_stack_.size () > 1);
 	assert (!attribute_.att); // attribute_end () must be called
 
-	ItemContainer* itf = static_cast <ItemContainer*> (scope_stack_.back ());
-	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
+	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	if (parent) {
+		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
-		auto ins = interface_.all_members.insert (*item);
-		if (!ins.second) {
-			message (name, MessageType::ERROR, string ("attribute name ") + name + " collision");
-			message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
-		} else {
-			ins = itf->insert (*item);
+		if (check_member_name (*item)) {
+			auto ins = parent->insert (*item);
 			if (!ins.second)
-				error_name_collision (name, **ins.first); // Op name collides with nested type.
+				error_name_collision (name, **ins.first); // Name collides with nested type.
 			else {
 				attribute_.att = item;
 				// We always append attribute to the container, whatever it is the main file or not.
 				// We need it to build all_operations for derived interfaces.
-				itf->append (*item);
+				parent->append (*item);
 			}
 		}
 	}
@@ -998,6 +1164,8 @@ void Builder::interface_end ()
 		switch ((*it)->kind ()) {
 			case Item::Kind::OPERATION:
 			case Item::Kind::ATTRIBUTE:
+			case Item::Kind::STATE_MEMBER:
+			case Item::Kind::VALUE_FACTORY:
 				it = scope->erase (it);
 				break;
 			default:
@@ -1076,29 +1244,60 @@ void Builder::exception_begin (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::member (const Type& type, const Declarators& declarators)
+bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
+{
+	if (!type.is_complete_or_ref ()) {
+		message (loc, MessageType::ERROR, "incomplete type is not allowed");
+		return false;
+	}
+	return true;
+}
+
+void Builder::member (const Type& type, const Declarators& names)
 {
 	assert (scope_stack_.size () > 1);
 	ItemScope* parent = static_cast <ItemScope*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::STRUCT || parent->kind () == Item::Kind::EXCEPTION);
 
-		if (!type.is_complete_or_ref ())
-			message (declarators.front (), MessageType::ERROR, "incomplete type is not allowed");
-
-		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			Ptr <NamedItem> item;
-			if (decl->array_sizes ().empty ()) {
-				item = Ptr <NamedItem>::make <Member> (ref (*this), ref (type), ref (*decl));
-			} else {
-				Type arr (type, decl->array_sizes ());
-				item = Ptr <NamedItem>::make <Member> (ref (*this), ref (arr), ref (*decl));
+		if (check_complete_or_ref (type, names.front ())) {
+			for (auto decl = names.begin (); decl != names.end (); ++decl) {
+				Ptr <NamedItem> item;
+				if (decl->array_sizes ().empty ()) {
+					item = Ptr <NamedItem>::make <Member> (ref (*this), ref (type), ref (*decl));
+				} else {
+					Type arr (type, decl->array_sizes ());
+					item = Ptr <NamedItem>::make <Member> (ref (*this), ref (arr), ref (*decl));
+				}
+				auto ins = static_cast <Symbols*> (parent)->insert (*item);
+				if (!ins.second)
+					error_name_collision (*decl, **ins.first);
+				else if (is_main_file ())
+					container_stack_.top ()->append (*item);
 			}
-			auto ins = static_cast <Symbols*> (parent)->insert (*item);
-			if (!ins.second)
-				error_name_collision (*decl, **ins.first);
-			else if (is_main_file ())
-				container_stack_.top ()->append (*item);
+		}
+	}
+}
+
+void Builder::state_member (bool is_public, const Type& type, const Declarators& names)
+{
+	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
+	if (vt) {
+		assert (vt->kind () == Item::Kind::VALUE_TYPE);
+		if (check_complete_or_ref (type, names.front ())) {
+			for (auto name = names.begin (); name != names.end (); ++name) {
+				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));
+				if (!is_public || check_member_name (*item)) {
+					auto ins = vt->insert (*item);
+					if (!ins.second)
+						error_name_collision (*name, **ins.first); // Name collides with nested type.
+					else {
+						// We always append member to the container, whatever it is the main file or not.
+						// We need it to build all_operations for derived interfaces.
+						vt->append (*item);
+					}
+				}
+			}
 		}
 	}
 }
@@ -1290,6 +1489,30 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 	return nullptr;
 }
 
+void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
+{
+	Symbols* scope = scope_stack_.back ();
+	if (scope) {
+		{
+			const Type& t = type.dereference_type ();
+			if (t.tkind () == Type::Kind::NAMED_TYPE) {
+				switch (t.named_type ()->kind ()) {
+					case Item::Kind::VALUE_TYPE:
+					case Item::Kind::VALUE_BOX:
+						message (name, MessageType::ERROR, "value types may not be boxed");
+						return;
+				}
+			}
+		}
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (ref (*this), ref (name), ref (type));
+		auto ins = scope->insert (*item);
+		if (!ins.second)
+			error_name_collision (name, **ins.first);
+		else if (is_main_file ())
+			container_stack_.top ()->append (*item);
+	}
+}
+
 void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc)
 {
 	if (scope_stack_.back ()) {
@@ -1396,9 +1619,9 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::VALUE_BOX: {
 				const ValueBox& vb = static_cast <const ValueBox&> (item);
 				check_complete (vb, vb);
-			}
+			} break;
 			case Item::Kind::VALUE_FACTORY:
-				check_complete (static_cast <const ValueFactory&> (item));
+				check_complete (static_cast <const OperationBase&> (item));
 				break;
 		}
 	}
