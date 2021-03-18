@@ -53,7 +53,7 @@ namespace Build {
 
 void Builder::message (const Location& l, MessageType mt, const string& err)
 {
-	static const char* const msg_types [4] = { "error", "error", "warning", "message" };
+	static const char* const msg_types [] = { "error", "warning", "message" };
 
 	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
 
