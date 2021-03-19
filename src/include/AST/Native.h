@@ -38,7 +38,7 @@ class Native :
 public:
 	Native (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Kind::NATIVE, builder, name),
-		RepositoryId (*this)
+		RepositoryId (*this, builder)
 	{}
 };
 

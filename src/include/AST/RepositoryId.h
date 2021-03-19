@@ -41,34 +41,8 @@ struct Version
 	uint16_t major, minor;
 };
 
-class RepositoryIdData
-{
-protected:
-	RepositoryIdData (const std::string& prefix) :
-		prefix_or_id_ (prefix)
-	{
-		version_.major = 1;
-		version_.minor = 0;
-	}
-
-	std::string prefix_or_id_;
-	Version version_;
-
-	enum
-	{
-		EXPLICIT_ID,
-		EXPLICIT_PREFIX,
-		EXPLICIT_VERSION,
-
-		EXPLICIT_SPECIFICATIONS
-	};
-
-	Location explicit_ [EXPLICIT_SPECIFICATIONS];
-};
-
 /// Items which have repository ids derives from this class.
-class RepositoryId :
-	public RepositoryIdData
+class RepositoryId
 {
 public:
 	/// \returns The repository id.
@@ -98,11 +72,43 @@ public:
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
 
+	RepositoryId& operator = (const RepositoryId& src)
+	{
+		data_ = src.data_;
+		return *this;
+	}
+
 protected:
 	RepositoryId (const NamedItem& item, const Build::Builder& builder);
+	RepositoryId (const RepositoryId&) = delete;
 
 private:
+	enum
+	{
+		EXPLICIT_ID,
+		EXPLICIT_PREFIX,
+		EXPLICIT_VERSION,
+
+		EXPLICIT_SPECIFICATIONS
+	};
+
+	struct Data
+	{
+		Data (const std::string& prefix) :
+			prefix_or_id (prefix)
+		{
+			version.major = 1;
+			version.minor = 0;
+		}
+
+		std::string prefix_or_id;
+		Version version;
+
+		Location explicit_ [EXPLICIT_SPECIFICATIONS];
+	};
+
 	const NamedItem& item_;
+	Data data_;
 	/// \endinternal
 };
 

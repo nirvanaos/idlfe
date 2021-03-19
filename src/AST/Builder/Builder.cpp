@@ -372,11 +372,14 @@ pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, con
 
 std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const Containers& containers, const Identifier& name, const Location& loc)
 {
+	set <const ItemContainer*> unique;
 	set <const Ptr <NamedItem>*> found;
 	for (const ItemContainer* cont : containers) {
-		auto p = cont->find (name);
-		if (p)
-			found.insert (p);
+		if (unique.insert (cont).second) {
+			auto p = cont->find (name);
+			if (p)
+				found.insert (p);
+		}
 	}
 	if (found.size () > 1) {
 		// Ambiguous
@@ -674,7 +677,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				error_interface_kind (name, ik, prev_ik, item);
 
 			rid->check_prefix (*this, name);
-			static_cast <RepositoryIdData&> (*decl) = *rid;
+			static_cast <RepositoryId&> (*decl) = *rid;
 		}
 
 		if (is_main_file ())
@@ -713,7 +716,7 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 				error_valuetype_mod (name, is_abstract, item);
 
 			rid->check_prefix (*this, name);
-			static_cast <RepositoryIdData&> (*decl) = *rid;
+			static_cast <RepositoryId&> (*decl) = *rid;
 		}
 
 		if (is_main_file ())
@@ -737,7 +740,7 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 				if (decl.interface_kind () != ik.interface_kind ())
 					error_interface_kind (name, ik, decl, decl);
 				decl.check_prefix (*this, name);
-				static_cast <RepositoryIdData&> (*itf) = decl;
+				static_cast <RepositoryId&> (*itf) = decl;
 				const_cast <Ptr <NamedItem>&> (*ins.first) = itf;
 			}
 		}
@@ -763,7 +766,7 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 				if (is_abstract != decl.is_abstract ())
 					error_valuetype_mod (name, is_abstract, decl);
 				decl.check_prefix (*this, name);
-				static_cast <RepositoryIdData&> (*vt) = decl;
+				static_cast <RepositoryId&> (*vt) = decl;
 				const_cast <Ptr <NamedItem>&> (*ins.first) = vt;
 			}
 		}
@@ -1221,7 +1224,7 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 
 			const StructDecl& decl = static_cast <const StructDecl&> (item);
 			decl.check_prefix (*this, name);
-			static_cast <RepositoryIdData&> (*def) = decl;
+			static_cast <RepositoryId&> (*def) = decl;
 			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
 
@@ -1248,6 +1251,7 @@ bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
 {
 	if (!type.is_complete_or_ref ()) {
 		message (loc, MessageType::ERROR, "incomplete type is not allowed");
+		see_declaration_of (*type.named_type (), type.named_type ()->qualified_name ());
 		return false;
 	}
 	return true;
@@ -1374,7 +1378,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 			const UnionDecl& decl = static_cast <const UnionDecl&> (item);
 			decl.check_prefix (*this, name);
-			static_cast <RepositoryIdData&> (*def) = decl;
+			static_cast <RepositoryId&> (*def) = decl;
 			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
 
@@ -1631,7 +1635,7 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 {
 	if (!type.is_complete ()) {
 		message (loc, MessageType::ERROR, "incomplete type is not allowed");
-		message (*type.named_type (), MessageType::MESSAGE, "see declaration");
+		see_declaration_of (*type.named_type (),  type.named_type ()->qualified_name ());
 		return false;
 	}
 	return true;

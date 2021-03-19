@@ -172,8 +172,8 @@ bool Type::is_complete_or_ref () const noexcept
 {
 	const Type& t = dereference_type ();
 	if (t.tkind () == Kind::NAMED_TYPE) {
-		const NamedItem& item = *named_type ();
-		return !item.is_forward_decl ();
+		Item::Kind k = named_type ()->kind ();
+		return k != Item::Kind::STRUCT_DECL && k != Item::Kind::UNION_DECL;
 	}
 	return true;
 }

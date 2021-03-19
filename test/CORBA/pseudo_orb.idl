@@ -91,6 +91,7 @@ module CORBA {
     valuetype ValueBase;                 // Chapter  4, CORBA_ValueBase.idl
 
     typedef unsigned long Flags;
+    typedef sequence<octet>              OctetSeq;
 
 // Chapter 4: ORB Interface
 #include <CORBA_Object.idl>
@@ -98,6 +99,7 @@ module CORBA {
 
 // Chapter 5: Value Type Semantics
 #include <CORBA_ValueBase.idl>
+#include <CORBA_CustomMarshal.idl>
 
 // Chapter 7: Dynamic Invocation Interface
 #include <CORBA_Request.idl>

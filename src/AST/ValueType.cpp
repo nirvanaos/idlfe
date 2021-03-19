@@ -47,6 +47,7 @@ void ValueType::get_all_containers (Containers& all) const
 	all.reserve (all.size () + bases_.size () + supports_.size () + 1);
 	all.push_back (this);
 	all.insert (all.end (), bases_.begin (), bases_.end ());
+	all.insert (all.end (), supports_.begin (), supports_.end ());
 	for (const ValueType* base : bases_) {
 		base->get_all_containers (all);
 	}

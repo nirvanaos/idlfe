@@ -5,7 +5,6 @@
     typedef sequence<boolean>            BooleanSeq;
     typedef sequence<char>               CharSeq;
     typedef sequence<wchar>              WCharSeq;
-    typedef sequence<octet>              OctetSeq;
     typedef sequence<short>              ShortSeq;
     typedef sequence<unsigned short>     UShortSeq;
     typedef sequence<long>               LongSeq;

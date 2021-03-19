@@ -106,10 +106,6 @@ module CORBA {
 // CORBA_TypeCode.idl depends on CORBA_InterfaceRepository.idl
 #include <CORBA_TypeCode.idl>
 
-// Chapter 5: Value Type Semantics
-#include <CORBA_CustomMarshal.idl>
-#include <CORBA_Stream.idl>
-
 };
 
 #endif // _ORB_IDL_

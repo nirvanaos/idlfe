@@ -315,12 +315,12 @@ value_abs_dcl
 	: T_abstract T_valuetype simple_declarator { drv.valuetype_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
 		T_LEFT_CURLY_BRACKET
 			value_body
-		T_RIGHT_CURLY_BRACKET
+		T_RIGHT_CURLY_BRACKET { drv.valuetype_end (); }
 	| T_abstract T_valuetype simple_declarator{ drv.valuetype_begin ($3, AST::ValueType::Modifier::ABSTRACT); }
 		value_inheritance_spec
 		T_LEFT_CURLY_BRACKET
 			value_body
-		T_RIGHT_CURLY_BRACKET
+		T_RIGHT_CURLY_BRACKET { drv.valuetype_end (); }
 	;
 
 value_body
@@ -330,8 +330,8 @@ value_body
 
 value_dcl
 	: value_header T_LEFT_CURLY_BRACKET value_elements
-		T_RIGHT_CURLY_BRACKET
-	| value_header T_LEFT_CURLY_BRACKET T_RIGHT_CURLY_BRACKET
+		T_RIGHT_CURLY_BRACKET { drv.valuetype_end (); }
+	| value_header T_LEFT_CURLY_BRACKET T_RIGHT_CURLY_BRACKET { drv.valuetype_end (); }
 	;
 
 value_elements
