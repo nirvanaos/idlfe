@@ -36,7 +36,7 @@ class Operation :
 {
 public:
 	/// \returns `true` if this is an `onevay` operation.
-	bool oneway () const
+	bool oneway () const noexcept
 	{
 		return oneway_;
 	}
@@ -45,18 +45,21 @@ public:
 	typedef std::vector <std::string> Context;
 
 	/// \returns The list of context values for the operation.
-	const Context context () const
+	const Context context () const noexcept
 	{
 		return context_;
 	}
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
 		OperationBase (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)
 	{}
+
+	friend class Build::Builder;
 
 	void oneway_clear ()
 	{
@@ -71,7 +74,6 @@ public:
 private:
 	bool oneway_;
 	Context context_;
-	/// \endinternal
 };
 
 }

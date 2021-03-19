@@ -54,15 +54,12 @@ public:
 	///          Returns the empty string for the UNCONSTRAINED interface.
 	const char* interface_kind_name () const noexcept;
 
-	/// \internal
-
 	InterfaceKind (Kind kind = UNCONSTRAINED) noexcept :
 		kind_ (kind)
 	{}
 
 private:
 	Kind kind_;
-	/// \endinternal
 };
 
 /// The sequence of interfaces.
@@ -75,16 +72,20 @@ class Interface :
 {
 public:
 	/// \returns The base interfaces.
-	const Interfaces& bases () const
+	const Interfaces& bases () const noexcept
 	{
 		return bases_;
 	}
 
-	/// \summary Get all direct and indirect bases.
+	/// Get all direct and indirect bases.
+	/// 
 	/// \param bases All bases.
 	void get_all_bases (std::set <const Interface*>& bases) const;
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
+	friend class Build::Builder;
+	friend class ValueType;
 
 	void get_all_containers (Containers& all) const;
 
@@ -99,11 +100,7 @@ public:
 	}
 
 private:
-	void base_find (const Identifier& name, std::set <const Ptr <NamedItem>*>& found) const;
-
-private:
 	Interfaces bases_;
-	/// \endinternal
 };
 
 /// Interface forward declaration.
@@ -112,14 +109,14 @@ class InterfaceDecl :
 	public InterfaceKind,
 	public RepositoryId
 {
-public:
-	/// \internal
+private:
+	template <class T> friend class Ptr;
+
 	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
 		RepositoryId (*this, builder)
 	{}
-	/// \endinternal
 };
 
 }

@@ -34,7 +34,7 @@ class Identifier : public std::string
 {
 public:
 	/// CORBA IDL identifiers are case-insensitive.
-	bool operator < (const Identifier& r) const;
+	bool operator < (const Identifier& r) const noexcept;
 
 	Identifier () {}
 

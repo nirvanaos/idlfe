@@ -37,7 +37,9 @@ class ValueBox :
 	public Type,
 	public RepositoryId
 {
-public:
+private:
+	template <class T> friend class Ptr;
+
 	ValueBox (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
 		NamedItem (Item::Kind::VALUE_BOX, builder, name),
 		Type (type),

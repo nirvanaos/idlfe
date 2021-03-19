@@ -50,30 +50,35 @@ public:
 	};
 
 	/// \returns The value type modifier.
-	Modifier modifier () const
+	Modifier modifier () const noexcept
 	{
 		return modifier_;
 	}
 
 	/// \returns The value type modifier name.
-	const char* modifier_name () const;
+	const char* modifier_name () const noexcept;
 
 	/// \returns The base value types.
-	const ValueTypes& bases () const
+	const ValueTypes& bases () const noexcept
 	{
 		return bases_;
 	}
 
 	/// \returns The supported interfaces.
-	const Interfaces& supports () const
+	const Interfaces& supports () const noexcept
 	{
 		return supports_;
 	}
+
+private:
+	template <class T> friend class Ptr;
 
 	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
 		ItemContainer (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
+
+	friend class Build::Builder;
 
 	void set_truncatable ()
 	{
@@ -99,20 +104,6 @@ private:
 	Interfaces supports_;
 };
 
-/// Value box definition.
-class ValueBox :
-	public NamedItem,
-	public Type,
-	public RepositoryId
-{
-public:
-	ValueBox (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
-		NamedItem (Item::Kind::VALUE_BOX, builder, name),
-		Type (type),
-		RepositoryId (*this, builder)
-	{}
-};
-
 /// Value type forward declaration.
 class ValueTypeDecl :
 	public NamedItem,
@@ -120,10 +111,13 @@ class ValueTypeDecl :
 {
 public:
 	/// \returns `true` if the value type declared `abstract`.
-	bool is_abstract () const
+	bool is_abstract () const noexcept
 	{
 		return is_abstract_;
 	}
+
+private:
+	template <class T> friend class Ptr;
 
 	ValueTypeDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, bool abstr) :
 		NamedItem (Item::Kind::VALUE_TYPE_DECL, builder, name),

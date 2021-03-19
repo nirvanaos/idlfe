@@ -35,13 +35,13 @@ class UnionDecl :
 	public NamedItem,
 	public RepositoryId
 {
-public:
-	/// \internal
+private:
+	template <class T> friend class Ptr;
+
 	UnionDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::UNION_DECL, builder, name),
 		RepositoryId (*this, builder)
 	{}
-	/// \endinternal
 };
 
 /// `union` definition.
@@ -49,10 +49,14 @@ class Union :
 	public ItemContainer
 {
 public:
-	const Type& discriminator_type () const
+	/// \returns The discriminator type.
+	const Type& discriminator_type () const noexcept
 	{
 		return discriminator_type_;
 	}
+
+private:
+	template <class T> friend class Ptr;
 
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& discriminator_type) :
 		ItemContainer (Item::Kind::UNION, builder, name),

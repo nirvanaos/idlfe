@@ -40,33 +40,31 @@ class Location
 {
 public:
 	/// \returns The file name.
-	const std::string& file () const
+	const std::string& file () const noexcept
 	{
 		assert (file_);
 		return *file_;
 	}
 
 	/// \returns The line number.
-	unsigned line () const
+	unsigned line () const noexcept
 	{
 		return line_;
 	}
 
-	/// \internal
-
-	Location () :
+	Location () noexcept :
 		file_ (nullptr),
 		line_ (0)
 	{}
 
-	Location (const std::string& file, unsigned line) :
+	Location (const std::string& file, unsigned line) noexcept :
 		file_ (&file),
 		line_ (line)
 	{}
 
-	Location (const yy::location&);
+	Location (const yy::location&) noexcept;
 
-	operator bool () const
+	operator bool () const noexcept
 	{
 		return file_ != nullptr;
 	}
@@ -74,7 +72,6 @@ public:
 private:
 	const std::string* file_;
 	unsigned line_;
-	/// \endinternal
 };
 
 }

@@ -46,13 +46,13 @@ class NamedItem :
 {
 public:
 	/// \returns The name of item. TODO: Remove
-	const Identifier& name () const
+	const Identifier& name () const noexcept
 	{
 		return name_;
 	}
 
 	/// \returns The parent scope or `nullptr`.
-	const ItemScope* parent () const
+	const ItemScope* parent () const noexcept
 	{
 		return parent_;
 	}
@@ -63,33 +63,31 @@ public:
 	/// \returns The fully qualified ScopedName of the item.
 	ScopedName scoped_name () const;
 
-	/// \internal
-
+protected:
 	NamedItem (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 private:
 	const ItemScope* parent_;
 	const Identifier name_;
-	/// \endinternal
 };
 
 /// Comparator
 inline
-bool operator < (const Ptr <NamedItem>& l, const Identifier& r)
+bool operator < (const Ptr <NamedItem>& l, const Identifier& r) noexcept
 {
 	return l->name () < r;
 }
 
 /// Comparator
 inline
-bool operator < (const Identifier& l, const Ptr <NamedItem>& r)
+bool operator < (const Identifier& l, const Ptr <NamedItem>& r) noexcept
 {
 	return l < r->name ();
 }
 
 /// Comparator
 inline
-bool operator < (const Ptr <NamedItem>& l, const Ptr <NamedItem>& r)
+bool operator < (const Ptr <NamedItem>& l, const Ptr <NamedItem>& r) noexcept
 {
 	return l->name () < r->name ();
 }

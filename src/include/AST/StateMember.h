@@ -39,6 +39,9 @@ public:
 		return is_public_;
 	}
 
+private:
+	template <class T> friend class Ptr;
+
 	StateMember (const Build::Builder& builder, bool is_public, const Type& t, const Build::SimpleDeclarator& name) :
 		Member (builder, t, name, Item::Kind::STATE_MEMBER),
 		is_public_ (is_public)

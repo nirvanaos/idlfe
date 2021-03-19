@@ -29,6 +29,7 @@
 #include "../include/AST/Native.h"
 #include "../include/AST/Exception.h"
 #include "../include/AST/ValueType.h"
+#include "../include/AST/ValueBox.h"
 
 using namespace std;
 using namespace AST::Build;
@@ -89,7 +90,7 @@ RepositoryId::RepositoryId (const NamedItem& item, const Builder& builder) :
 	data_ (builder.prefix ())
 {}
 
-bool RepositoryId::check_prefix (Builder& builder, const Location& loc) const
+bool RepositoryId::check_prefix (Builder& builder, const Location& loc) const noexcept
 {
 	if (!data_.explicit_ [EXPLICIT_ID] && !data_.explicit_ [EXPLICIT_PREFIX]) {
 		const string& pref = builder.prefix ();

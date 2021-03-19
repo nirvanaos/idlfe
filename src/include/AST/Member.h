@@ -35,7 +35,9 @@ class Member :
 	public NamedItem,
 	public Type
 {
-public:
+protected:
+	template <class T> friend class Ptr;
+
 	Member (const Build::Builder& builder, const Type& t, const Build::SimpleDeclarator& name, Item::Kind kind = Item::Kind::MEMBER) :
 		NamedItem (kind, builder, name),
 		Type (t)

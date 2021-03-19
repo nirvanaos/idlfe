@@ -28,12 +28,12 @@ using namespace std;
 
 namespace AST {
 
-inline bool ci_compare (char l, char r)
+inline bool ci_compare (char l, char r) noexcept
 {
 	return tolower (l) < tolower (r);
 }
 
-bool Identifier::operator < (const Identifier& r) const
+bool Identifier::operator < (const Identifier& r) const noexcept
 {
 	return lexicographical_compare (begin (), end (), r.begin (), r.end (), ci_compare);
 }

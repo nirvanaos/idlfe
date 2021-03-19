@@ -45,7 +45,7 @@ public:
 	/// The kind of type.
 	enum class Kind
 	{
-		VOID,
+		VOID,       ///< `void`
 		BASIC_TYPE, ///< `Type::basic_type ();`
 		NAMED_TYPE, ///< `named_type ()`
 		STRING,     ///< `string_size ()`
@@ -120,27 +120,36 @@ public:
 		return type_.fixed.scale;
 	}
 
-	/// \internal
+	/// \returns The referenced type.
+	const Type& dereference_type () const noexcept;
 
+	/// Destructor.
 	~Type ()
 	{
 		clear ();
 	}
 
+	/// Default constructor.
 	Type () :
 		kind_ (Kind::VOID)
 	{}
 
-	Type (BasicType bt);
-
-	Type (const Ptr <NamedItem>* named);
-
+	/// Copy constructor.
 	Type (const Type& src)
 	{
 		copy (src);
 	}
 
+	/// Move constructor.
 	Type (Type&& src) noexcept;
+
+	/// Copy assignment.
+	Type& operator = (const Type& src);
+
+	/// Move assignment.
+	Type& operator = (Type&& src) noexcept;
+
+	Type (BasicType bt);
 
 	static Type make_string (Dim size = 0)
 	{
@@ -161,10 +170,10 @@ public:
 		return Type (digits, scale);
 	}
 
-	Type& operator = (const Type& src);
-	Type& operator = (Type&& src) noexcept;
+	Type (const Ptr <NamedItem>* named);
 
-	const Type& dereference_type () const noexcept;
+private:
+	friend class Build::Builder;
 
 	size_t key_max () const noexcept;
 
@@ -234,7 +243,6 @@ private:
 
 		~U () {}
 	} type_;
-	/// \endinternal
 };
 
 }

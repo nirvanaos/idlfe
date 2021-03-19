@@ -35,15 +35,16 @@ template <class T>
 class ContainerT :
 	public std::vector <Ptr <T>>
 {
-	/// \internal
 protected:
 	typedef std::vector <Ptr <T>> Base;
-public:
+
+protected:
+	friend class Build::Builder;
+
 	void append (T& item)
 	{
 		Base::emplace_back (&item);
 	}
-	/// \endinternal
 };
 
 class CodeGen;
@@ -58,9 +59,10 @@ public:
 	/// \returns `true` if unsuppported building blocks were occurred.
 	bool visit (CodeGen& cg) const;
 
-	/// \internal
+private:
+	friend class Build::Builder;
+
 	void append (Item& item);
-	/// \endinternal
 };
 
 }

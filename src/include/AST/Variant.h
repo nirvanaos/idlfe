@@ -234,29 +234,38 @@ public:
 	/// This method escapes character and string values accordingly to C constant escape rules.
 	std::string to_string () const;
 
-	/// \internal
-
+	/// \returns `true` if Variant is empty.
+	/// In the valid AST, Variant never be empty.
 	bool empty () const noexcept
 	{
 		return vtype () == VT::EMPTY;
 	}
 
+	/// \returns The constant final value.
 	const Variant& dereference_const () const noexcept;
 
+	/// Destructor.
 	~Variant ();
 
+	/// Default constructor.
+	/// Creates empty Valriant.
 	Variant () :
 		type_ (VT::EMPTY)
 	{}
 
+	/// Copy constructor.
 	Variant (const Variant& src)
 	{
 		copy (src);
 	}
 
+	/// Move constructor.
 	Variant (Variant&& src) noexcept;
 
+	/// Copy assignment.
 	Variant& operator = (const Variant& src);
+
+	/// Move assignment.
 	Variant& operator = (Variant&& src) noexcept;
 
 	Variant (bool v) noexcept :
@@ -492,7 +501,6 @@ private:
 		{}
 
 	} val_;
-	/// \endinternal
 };
 
 namespace Build {

@@ -37,7 +37,7 @@ struct Fixed
 	int32_t exponent;
 	uint8_t lsu [31];
 
-	Fixed (const _decNumber& dn)
+	Fixed (const _decNumber& dn) noexcept
 	{
 		*this = reinterpret_cast <const Fixed&> (dn);
 	}

@@ -1,4 +1,4 @@
-/// \file RepositoryId
+/// \file RepositoryId.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -41,7 +41,7 @@ struct Version
 	uint16_t major, minor;
 };
 
-/// Items which have repository ids derives from this class.
+/// Items which have repository identifiers derive from this class.
 class RepositoryId
 {
 public:
@@ -49,38 +49,40 @@ public:
 	std::string repository_id () const;
 
 	/// \returns The NamedItem.
-	const NamedItem& item () const
+	const NamedItem& item () const noexcept
 	{
 		return item_;
 	}
 
-	/// \returns RepositoryId pointer if item derives from RepositoryId.
+	/// \returns RepositoryId const pointer if item derives from RepositoryId.
+	///          Otherwise returns `nullptr`.
 	static const RepositoryId* cast (const NamedItem* item) noexcept
 	{
 		return cast (const_cast <NamedItem*> (item));
 	}
 
-	/// \internal
+protected:
+	RepositoryId (const NamedItem& item, const Build::Builder& builder);
+	RepositoryId (const RepositoryId&) = delete;
+
+	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
+
+private:
+	friend class Build::Builder;
 
 	static RepositoryId* cast (NamedItem* item) noexcept;
 
-	bool check_prefix (Build::Builder& builder, const Location& loc) const;
+	bool check_prefix (Build::Builder& builder, const Location& loc) const noexcept;
 
 	void type_id (Build::Builder& builder, const std::string& id, const Location& loc);
 
 	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
-
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
 
 	RepositoryId& operator = (const RepositoryId& src)
 	{
 		data_ = src.data_;
 		return *this;
 	}
-
-protected:
-	RepositoryId (const NamedItem& item, const Build::Builder& builder);
-	RepositoryId (const RepositoryId&) = delete;
 
 private:
 	enum
@@ -109,7 +111,6 @@ private:
 
 	const NamedItem& item_;
 	Data data_;
-	/// \endinternal
 };
 
 }

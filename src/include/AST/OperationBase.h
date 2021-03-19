@@ -37,16 +37,18 @@ class OperationBase :
 {
 public:
 	/// \returns The possible user exceptions for the operation.
-	const Raises& raises () const
+	const Raises& raises () const noexcept
 	{
 		return raises_;
 	}
 
-	/// \internal
-
+protected:
 	OperationBase (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (kind, builder, name)
 	{}
+
+private:
+	friend class Build::Builder;
 
 	void raises (Raises&& exceptions)
 	{
@@ -54,9 +56,7 @@ public:
 	}
 
 private:
-	bool oneway_;
 	Raises raises_;
-	/// \endinternal
 };
 
 }

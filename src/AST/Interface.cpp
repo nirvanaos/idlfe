@@ -59,16 +59,4 @@ void Interface::get_all_bases (set <const Interface*>& bases) const
 	}
 }
 
-void Interface::base_find (const Identifier& name, set <const Ptr <NamedItem>*>& found) const
-{
-	const Ptr <NamedItem>* p = ItemScope::find (name);
-	if (p) {
-		found.insert (p);
-	} else {
-		for (auto base = bases_.begin (); base != bases_.end (); ++base) {
-			(*base)->base_find (name, found);
-		}
-	}
-}
-
 }

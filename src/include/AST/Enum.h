@@ -39,12 +39,13 @@ class EnumItem :
 {
 public:
 	/// \returns The pointer to enumerated type.
-	const NamedItem& enum_type () const
+	const NamedItem& enum_type () const noexcept
 	{
 		return enum_type_;
 	}
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	EnumItem (const Build::Builder& builder, const NamedItem& enum_type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM_ITEM, builder, name),
@@ -53,7 +54,6 @@ public:
 
 private:
 	const NamedItem& enum_type_;
-	/// \endinternal
 };
 
 /// The `enum` declaration.
@@ -62,14 +62,13 @@ class Enum :
 	public RepositoryId,
 	public ContainerT <EnumItem>
 {
-public:
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	Enum (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM, builder, name),
 		RepositoryId (*this, builder)
 	{}
-	/// \endinternal
 };
 
 }

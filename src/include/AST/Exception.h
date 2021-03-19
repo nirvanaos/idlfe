@@ -33,12 +33,12 @@ namespace AST {
 class Exception :
 	public ItemContainer
 {
-public:
-	/// \internal
+private:
+	template <class T> friend class Ptr;
+
 	Exception (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemContainer (Item::Kind::EXCEPTION, builder, name)
 	{}
-	/// \endinternal
 };
 
 /// The user exceptions.

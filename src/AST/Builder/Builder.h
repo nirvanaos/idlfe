@@ -95,7 +95,7 @@ public:
 	ItemScope* cur_scope () const;
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
-	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
+	Type lookup_type (const ScopedName& scoped_name);
 
 	void native (const SimpleDeclarator& name);
 

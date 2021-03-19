@@ -41,6 +41,7 @@
 #include "../../include/AST/Constant.h"
 #include "../../include/AST/StateMember.h"
 #include "../../include/AST/ValueFactory.h"
+#include "../../include/AST/ValueBox.h"
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -419,7 +420,7 @@ unsigned Builder::positive_int (const Variant& v, const Location& loc)
 	return 1;
 }
 
-const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name)
+Type Builder::lookup_type (const ScopedName& scoped_name)
 {
 	const Ptr <NamedItem>* item = lookup (scoped_name);
 	if (item) {
@@ -429,7 +430,7 @@ const Ptr <NamedItem>* Builder::lookup_type (const ScopedName& scoped_name)
 			item = nullptr;
 		}
 	}
-	return item;
+	return Type (item);
 }
 
 ItemScope* Builder::cur_scope () const
@@ -1061,7 +1062,7 @@ void Builder::parameter (Parameter::Attribute att, const Type& type, const Simpl
 		if (!ins.second)
 			message (name, MessageType::ERROR, string ("duplicated parameter ") + name);
 		else if (is_main_file ())
-			op->push_back (par);
+			op->append (*par);
 	}
 }
 

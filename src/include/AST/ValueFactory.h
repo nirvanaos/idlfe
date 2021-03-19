@@ -33,7 +33,9 @@ namespace AST {
 class ValueFactory :
 	public OperationBase
 {
-public:
+private:
+	template <class T> friend class Ptr;
+
 	ValueFactory (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		OperationBase (Item::Kind::VALUE_FACTORY, builder, name)
 	{}

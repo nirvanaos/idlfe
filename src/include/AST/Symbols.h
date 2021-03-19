@@ -35,8 +35,12 @@ class Symbols :
 	public std::set <Ptr <NamedItem>, std::less <>>
 {
 	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
-public:
-	/// \internal
+protected:
+	friend class Build::Builder;
+
+	const Ptr <NamedItem>* find (const Identifier& name) const noexcept;
+
+private:
 	// Methods made outline to reduce size.
 	std::pair <iterator, bool> emplace (const NamedItem&);
 
@@ -44,10 +48,6 @@ public:
 	{
 		return emplace (item);
 	}
-
-	const Ptr <NamedItem>* find (const Identifier& name) const;
-
-	/// \endinternal
 };
 
 }

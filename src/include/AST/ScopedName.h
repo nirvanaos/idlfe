@@ -43,8 +43,6 @@ struct ScopedName :
 	/// \returns The name converted to string.
 	std::string stringize () const;
 
-	/// \internal
-
 	ScopedName () :
 		from_root (false)
 	{}
@@ -61,7 +59,6 @@ struct ScopedName :
 
 	ScopedName& operator = (const ScopedName&) = default;
 	ScopedName& operator = (ScopedName&&) = default;
-	/// \endinternal
 };
 
 typedef std::forward_list <ScopedName> ScopedNames;

@@ -40,18 +40,19 @@ public:
 	typedef std::vector <Variant> Labels;
 
 	/// \returns The vector of `case` labels for this element. Empty for the `default` case.
-	const Labels& labels () const
+	const Labels& labels () const noexcept
 	{
 		return labels_;
 	}
 
 	/// \returns `true` if this is the `default` element.
-	bool is_default () const
+	bool is_default () const noexcept
 	{
 		return labels_.empty ();
 	}
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	UnionElement (const Build::Builder& builder, std::vector <Variant>&& labels, const Type& t, const Build::SimpleDeclarator& name) :
 		Member (builder, t, name, Item::Kind::UNION_ELEMENT),
@@ -60,7 +61,6 @@ public:
 
 private:
 	const std::vector <Variant> labels_;
-	/// \endinternal
 };
 
 }

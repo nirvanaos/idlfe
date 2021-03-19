@@ -39,8 +39,8 @@ class Root :
 	public Container
 {
 public:
-	/// \returns The name of compiled IDL file.
-	const std::filesystem::path& file () const
+	/// \returns The name of compiled IDL file. TODO: Remove.
+	const std::filesystem::path& file () const noexcept
 	{
 		return main_file_;
 	}
@@ -49,12 +49,15 @@ public:
 	/// \returns `true` if unsuppported building blocks were occurred.
 	bool visit (CodeGen& cg) const;
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	Root (const std::string& file) :
 		Item (Item::Kind::ROOT),
 		main_file_ (file)
 	{}
+
+	friend class Build::Builder;
 
 	std::pair <std::set <std::string>::iterator, bool> add_file (const std::string& name)
 	{
@@ -64,7 +67,6 @@ public:
 private:
 	std::set <std::string> files_;
 	std::filesystem::path main_file_;
-	/// \endinternal
 };
 
 }

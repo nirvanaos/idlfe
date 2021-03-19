@@ -36,12 +36,13 @@ class Array :
 {
 public:
 	/// \returns The vector of the array dimensions.
-	const std::vector <Dim>& dimensions () const
+	const std::vector <Dim>& dimensions () const noexcept
 	{
 		return dimensions_;
 	}
 
-	/// \internal
+private:
+	friend class Type;
 
 	Array (const Type& type, std::vector <Dim>&& dimensions) :
 		Type (type),
@@ -50,7 +51,6 @@ public:
 
 private:
 	std::vector <Dim> dimensions_;
-	/// \endinternal
 };
 
 }

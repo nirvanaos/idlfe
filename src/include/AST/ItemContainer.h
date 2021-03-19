@@ -38,11 +38,20 @@ class ItemContainer :
 	public Container
 {
 public:
-	/// \internal
+	using ItemScope::insert;
+	using Container::begin;
+	using Container::end;
+	using Container::cbegin;
+	using Container::cend;
+
+protected:
 	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (kind, builder, name),
 		RepositoryId (*this, builder)
 	{}
+
+private:
+	friend class Build::Builder;
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 	{
@@ -51,14 +60,6 @@ public:
 		else
 			return false;
 	}
-
-	using ItemScope::insert;
-	using Container::begin;
-	using Container::end;
-	using Container::cbegin;
-	using Container::cend;
-
-	/// \endinternal
 };
 
 typedef std::vector <const ItemContainer*> Containers;

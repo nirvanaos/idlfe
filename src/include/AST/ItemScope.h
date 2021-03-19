@@ -36,20 +36,17 @@ class ItemScope :
 	public Symbols
 {
 public:
-	/// \internal
-	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
-
-	static ItemScope* cast (NamedItem* item) noexcept;
-
+	/// \param item The NamedItem pointer.
+	/// 
+	/// \returns Pointer to const ItemScope if item derives from ItemScope.
+	///          Otherwise returns `nullptr`.
 	static const ItemScope* cast (const NamedItem* item) noexcept
 	{
 		return cast (const_cast <NamedItem*> (item));
 	}
 
-	const std::string& prefix () const noexcept
-	{
-		return prefix_;
-	}
+protected:
+	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 	{
@@ -58,8 +55,17 @@ public:
 	}
 
 private:
+	friend class Build::Builder;
+
+	static ItemScope* cast (NamedItem* item) noexcept;
+
+	const std::string& prefix () const noexcept
+	{
+		return prefix_;
+	}
+
+private:
 	std::string prefix_;
-	/// \endinternal
 };
 
 }
