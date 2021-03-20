@@ -28,9 +28,9 @@ namespace AST {
 
 bool Root::visit (CodeGen& cg) const
 {
-	cg.begin ();
+	cg.begin (*this);
 	bool ret = Container::visit (cg);
-	cg.end ();
+	cg.end (*this);
 	return ret;
 }
 
