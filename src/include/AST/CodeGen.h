@@ -57,6 +57,8 @@ namespace AST {
 /// - Interfaces Basic
 /// - Interfaces Full
 /// - CORBA - Specific Interfaces (except for `import`)
+/// - Value Types
+/// - CORBA - Specific - Value Types
 /// - Anonimous Types
 
 class CodeGen

@@ -30,7 +30,7 @@ namespace AST {
 
 inline bool ci_compare (char l, char r) noexcept
 {
-	return tolower (l) < tolower (r);
+	return Identifier::tolower (l) < Identifier::tolower (r);
 }
 
 bool Identifier::operator < (const Identifier& r) const noexcept

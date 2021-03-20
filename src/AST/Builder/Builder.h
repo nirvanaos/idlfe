@@ -55,7 +55,6 @@ public:
 		tree_ (Ptr <Root>::make <Root> (file)),
 		is_main_file_ (true)
 	{
-		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
 		file_stack_.emplace_back (*tree_->add_file (file).first);
 	}
@@ -92,7 +91,8 @@ public:
 
 	const std::string& prefix () const;
 
-	ItemScope* cur_scope () const;
+	ItemScope* cur_parent () const;
+	Symbols* cur_scope () const;
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
 	Type lookup_type (const ScopedName& scoped_name);
@@ -232,7 +232,7 @@ private:
 	RepositoryId* lookup_rep_id (const ScopedName& name);
 	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
-	bool scope_begin ();
+	Symbols* scope_begin ();
 	void scope_push (ItemContainer* scope);
 	void scope_end ();
 
@@ -263,7 +263,7 @@ private:
 	unsigned err_cnt_;
 	std::ostream err_out_;
 	Ptr <Root> tree_;
-	typedef std::vector <Symbols*> ScopeStack;
+	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
 	std::stack <std::unique_ptr <Eval>> eval_stack_;

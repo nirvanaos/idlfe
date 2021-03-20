@@ -35,11 +35,10 @@ namespace AST {
 /// \brief Abstract Syntax Tree root.
 class Root :
 	public Item,
-	public Symbols,
 	public Container
 {
 public:
-	/// \returns The name of compiled IDL file. TODO: Remove.
+	/// \returns The name of compiled IDL file.
 	const std::filesystem::path& file () const noexcept
 	{
 		return main_file_;
@@ -64,9 +63,20 @@ private:
 		return files_.insert (name);
 	}
 
+	operator Symbols& () noexcept
+	{
+		return symbols_;
+	}
+
+	operator const Symbols& () const noexcept
+	{
+		return symbols_;
+	}
+
 private:
 	std::set <std::string> files_;
 	std::filesystem::path main_file_;
+	Symbols symbols_;
 };
 
 }

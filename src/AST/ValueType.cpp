@@ -30,7 +30,7 @@ namespace AST {
 
 using namespace Build;
 
-const char* ValueType::modifier_name () const
+const char* ValueType::modifier_name () const noexcept
 {
 	static const char* const names [] = {
 		"",

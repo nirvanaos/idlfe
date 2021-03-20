@@ -1,4 +1,3 @@
-/// \file Symbols.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -30,7 +29,6 @@
 
 namespace AST {
 
-/// The ordered container of pointers to NamedItem.
 class Symbols :
 	public std::set <Ptr <NamedItem>, std::less <>>
 {

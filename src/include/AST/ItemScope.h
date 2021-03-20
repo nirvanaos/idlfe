@@ -30,21 +30,10 @@
 
 namespace AST {
 
-/// The set of NamedItem elements.
+/// The named item which defines a scope.
 class ItemScope :
-	public NamedItem,
-	public Symbols
+	public NamedItem
 {
-public:
-	/// \param item The NamedItem pointer.
-	/// 
-	/// \returns Pointer to const ItemScope if item derives from ItemScope.
-	///          Otherwise returns `nullptr`.
-	static const ItemScope* cast (const NamedItem* item) noexcept
-	{
-		return cast (const_cast <NamedItem*> (item));
-	}
-
 protected:
 	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
@@ -57,6 +46,21 @@ protected:
 private:
 	friend class Build::Builder;
 
+	operator Symbols& () noexcept
+	{
+		return symbols_;
+	}
+
+	operator const Symbols& () const noexcept
+	{
+		return symbols_;
+	}
+
+	static const ItemScope* cast (const NamedItem* item) noexcept
+	{
+		return cast (const_cast <NamedItem*> (item));
+	}
+
 	static ItemScope* cast (NamedItem* item) noexcept;
 
 	const std::string& prefix () const noexcept
@@ -65,6 +69,7 @@ private:
 	}
 
 private:
+	Symbols symbols_;
 	std::string prefix_;
 };
 

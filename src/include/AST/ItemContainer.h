@@ -37,13 +37,6 @@ class ItemContainer :
 	public RepositoryId,
 	public Container
 {
-public:
-	using ItemScope::insert;
-	using Container::begin;
-	using Container::end;
-	using Container::cbegin;
-	using Container::cend;
-
 protected:
 	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (kind, builder, name),

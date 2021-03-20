@@ -32,7 +32,7 @@ NamedItem::NamedItem (Kind kind, const Builder& builder, const SimpleDeclarator&
 	Item (kind),
 	Location (name),
 	name_ (name),
-	parent_ (builder.cur_scope ())
+	parent_ (builder.cur_parent ())
 {}
 
 std::string NamedItem::qualified_name () const

@@ -45,7 +45,7 @@ class NamedItem :
 	public Location
 {
 public:
-	/// \returns The name of item. TODO: Remove
+	/// \returns The name of item.
 	const Identifier& name () const noexcept
 	{
 		return name_;
@@ -71,21 +71,18 @@ private:
 	const Identifier name_;
 };
 
-/// Comparator
 inline
 bool operator < (const Ptr <NamedItem>& l, const Identifier& r) noexcept
 {
 	return l->name () < r;
 }
 
-/// Comparator
 inline
 bool operator < (const Identifier& l, const Ptr <NamedItem>& r) noexcept
 {
 	return l < r->name ();
 }
 
-/// Comparator
 inline
 bool operator < (const Ptr <NamedItem>& l, const Ptr <NamedItem>& r) noexcept
 {

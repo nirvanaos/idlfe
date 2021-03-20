@@ -36,9 +36,13 @@ public:
 	/// CORBA IDL identifiers are case-insensitive.
 	bool operator < (const Identifier& r) const noexcept;
 
+	/// Default constructor.
 	Identifier () {}
 
-	// Unescape identifier.
+	/// CORBA identifiers may be "escaped" by the underscore.
+	/// 
+	/// See 7.2.3.2 of https://www.omg.org/spec/IDL/4.2/
+	/// The constructor removes leading undescore.
 	Identifier (const char* s, size_t len) :
 		std::string ('_' == *s ? s + 1 : s, '_' == *s ? len - 1 : len)
 	{}
@@ -47,6 +51,12 @@ public:
 	Identifier (Identifier&&) = default;
 	Identifier& operator = (const Identifier&) = default;
 	Identifier& operator = (Identifier&&) = default;
+
+	// Simplified tolower. We don't need to consider the locale settings.
+	static char tolower (char c)
+	{
+		return ('A' <= c && c <= 'Z') ? c + 32 : c;
+	}
 };
 
 }
