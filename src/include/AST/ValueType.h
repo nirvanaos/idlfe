@@ -55,9 +55,6 @@ public:
 		return modifier_;
 	}
 
-	/// \returns The value type modifier name.
-	const char* modifier_name () const noexcept;
-
 	/// \returns The base value types.
 	const ValueTypes& bases () const noexcept
 	{
@@ -79,6 +76,8 @@ private:
 	{}
 
 	friend class Build::Builder;
+
+	const char* modifier_name () const noexcept;
 
 	void set_truncatable ()
 	{

@@ -1,4 +1,4 @@
-// IDL_Print.h Demonstrates the IDL compiler back-end class.
+// IDL_Print.h Demonstrates the IDL compiler class.
 #ifndef NIDLFE_EXAMPLE_IDL_PRINT_H_
 #define NIDLFE_EXAMPLE_IDL_PRINT_H_
 

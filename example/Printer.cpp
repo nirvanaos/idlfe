@@ -69,7 +69,7 @@ void Printer::print_type (const Type& t)
 	}
 }
 
-void Printer::include (const Include& item)
+void Printer::leaf (const Include& item)
 {
 	if (item.system ())
 		out_ << "#include <" << item.file ().string () << ">\n";
@@ -77,13 +77,13 @@ void Printer::include (const Include& item)
 		out_ << "#include \"" << item.file ().string () << "\"\n";
 }
 
-void Printer::native (const Native& item)
+void Printer::leaf (const Native& item)
 {
 	indent ();
 	out_ << "native " << item.name () << ";\n";
 }
 
-void Printer::type_def (const TypeDef& item)
+void Printer::leaf (const TypeDef& item)
 {
 	indent ();
 	out_ << "typedef ";
@@ -91,7 +91,7 @@ void Printer::type_def (const TypeDef& item)
 	out_ << ' ' << item.name () << ";\n";
 }
 
-void Printer::constant (const Constant& item)
+void Printer::leaf (const Constant& item)
 {
 	indent ();
 	out_ << "const ";
@@ -99,29 +99,42 @@ void Printer::constant (const Constant& item)
 	out_ << ' ' << item.name () << " = " << item.to_string () <<";\n";
 }
 
-void Printer::module_begin (const ModuleItems& item)
+void Printer::begin (const ModuleItems& item)
 {
 	out_ << "module " << item.name () << " {\n";
 }
 
-void Printer::module_end (const ModuleItems& item)
+void Printer::end (const ModuleItems& item)
 {
 	out_ << "};\n";
 }
 
-void Printer::interface_decl (const InterfaceDecl& item)
+void Printer::print_interface_kind (const InterfaceKind ik)
+{
+	switch (ik.interface_kind ()) {
+		case InterfaceKind::ABSTRACT:
+			out_ << "abstract ";
+			break;
+		case InterfaceKind::LOCAL:
+			out_ << "local ";
+			break;
+		case InterfaceKind::PSEUDO:
+			out_ << "pseudo ";
+			break;
+	}
+}
+
+void Printer::leaf (const InterfaceDecl& item)
 {
 	indent ();
-	if (item.interface_kind () != InterfaceKind::UNCONSTRAINED)
-		out_ << item.interface_kind_name () << ' ';
+	print_interface_kind (item);
 	out_ << "interface " << item.name () << ";\n";
 }
 
-void Printer::interface_begin (const Interface& item)
+void Printer::begin (const Interface& item)
 {
 	indent ();
-	if (item.interface_kind () != InterfaceKind::UNCONSTRAINED)
-		out_ << item.interface_kind_name () << ' ';
+	print_interface_kind (item);
 	out_ << "interface " << item.name ();
 	if (!item.bases ().empty ()) {
 		out_ << " :\n";
@@ -143,7 +156,7 @@ void Printer::interface_begin (const Interface& item)
 	++indent_;
 }
 
-void Printer::interface_end (const Interface& item)
+void Printer::end (const Interface& item)
 {
 	complex_end ();
 }
@@ -162,7 +175,7 @@ void Printer::complex_end ()
 	out_ << "};\n";
 }
 
-void Printer::operation (const Operation& item)
+void Printer::leaf (const Operation& item)
 {
 	indent ();
 	if (item.oneway ())
@@ -171,20 +184,9 @@ void Printer::operation (const Operation& item)
 		out_ << "void";
 	else
 		print_type (item);
-	out_ << ' ' << item.name () << " (";
-	if (!item.empty ()) {
-		auto param = item.begin ();
-		print_param (**param);
-		for (++param; param != item.end (); ++param) {
-			out_ << ", ";
-			print_param (**param);
-		}
-	}
-	out_ << ')';
-	if (!item.raises ().empty ()) {
-		out_ << " raises ";
-		print_raises (item.raises ());
-	}
+
+	print_op_base (item);
+
 	if (!item.context ().empty ()) {
 		out_ << " context (\"";
 		auto s = item.context ().begin ();
@@ -197,7 +199,25 @@ void Printer::operation (const Operation& item)
 	out_ << ";\n";
 }
 
-void Printer::print_raises (const Raises& raises)
+void Printer::print_op_base (const AST::OperationBase& item)
+{
+	out_ << ' ' << item.name () << " (";
+	if (!item.empty ()) {
+		auto param = item.begin ();
+		print (**param);
+		for (++param; param != item.end (); ++param) {
+			out_ << ", ";
+			print (**param);
+		}
+	}
+	out_ << ')';
+	if (!item.raises ().empty ()) {
+		out_ << " raises ";
+		print (item.raises ());
+	}
+}
+
+void Printer::print (const Raises& raises)
 {
 	auto ex = raises.begin ();
 	out_ << '(' << (*ex)->name ();
@@ -207,7 +227,7 @@ void Printer::print_raises (const Raises& raises)
 	out_ << ')';
 }
 
-void Printer::print_param (const Parameter& p)
+void Printer::print (const Parameter& p)
 {
 	const char* att = "in";
 	switch (p.attribute ()) {
@@ -223,16 +243,16 @@ void Printer::print_param (const Parameter& p)
 	out_ << ' ' << p.name ();
 }
 
-void Printer::attribute (const Attribute& item)
+void Printer::leaf (const Attribute& item)
 {
 	indent ();
 	if (item.readonly ()) {
-		out_ << "readonly ";
+		out_ << "readonly attribute ";
 		print_type (item);
 		out_ << ' ' << item.name ();
 		if (!item.getraises ().empty ()) {
 			out_ << " raises ";
-			print_raises (item.getraises ());
+			print (item.getraises ());
 		}
 	} else {
 		out_ << "attribute ";
@@ -240,56 +260,56 @@ void Printer::attribute (const Attribute& item)
 		out_ << ' ' << item.name ();
 		if (!item.getraises ().empty ()) {
 			out_ << " getraises ";
-			print_raises (item.getraises ());
+			print (item.getraises ());
 		}
 		if (!item.setraises ().empty ()) {
 			out_ << " setraises ";
-			print_raises (item.setraises ());
+			print (item.setraises ());
 		}
 	}
 	out_ << ";\n";
 }
 
-void Printer::exception_begin (const Exception& item)
+void Printer::begin (const Exception& item)
 {
 	constructed_begin ("exception ", item);
 }
 
-void Printer::exception_end (const Exception& item)
+void Printer::end (const Exception& item)
 {
 	complex_end ();
 }
 
-void Printer::struct_decl (const StructDecl& item)
+void Printer::leaf (const StructDecl& item)
 {
 	indent ();
 	out_ << "struct " << item.name () << ";\n";
 }
 
-void Printer::struct_begin (const Struct& item)
+void Printer::begin (const Struct& item)
 {
 	constructed_begin ("struct ", item);
 }
 
-void Printer::struct_end (const Struct& item)
+void Printer::end (const Struct& item)
 {
 	complex_end ();
 }
 
-void Printer::member (const Member& item)
+void Printer::leaf (const Member& item)
 {
 	indent ();
 	print_type (item);
 	out_ << ' ' << item.name () << ";\n";
 }
 
-void Printer::union_decl (const UnionDecl& item)
+void Printer::leaf (const UnionDecl& item)
 {
 	indent ();
 	out_ << "union " << item.name () << ";\n";
 }
 
-void Printer::union_begin (const Union& item)
+void Printer::begin (const Union& item)
 {
 	indent ();
 	out_ << "union " << item.name () << " switch (";
@@ -298,7 +318,7 @@ void Printer::union_begin (const Union& item)
 	++indent_;
 }
 
-void Printer::union_element (const UnionElement& item)
+void Printer::leaf (const UnionElement& item)
 {
 	indent ();
 	if (!item.is_default ()) {
@@ -315,19 +335,113 @@ void Printer::union_element (const UnionElement& item)
 	--indent_;
 }
 
-void Printer::union_end (const Union& item)
+void Printer::end (const Union& item)
 {
 	complex_end ();
 }
 
-void Printer::enum_type (const Enum& item)
+void Printer::leaf (const Enum& item)
 {
 	constructed_begin ("enum ", item);
 	auto it = item.begin ();
 	indent ();
 	out_ << (*it)->name ();
-	for (++it; it != item.end (); ++it)
-		out_ << ",\n" << (*it)->name ();
+	for (++it; it != item.end (); ++it) {
+		out_ << ",\n";
+		indent ();
+		out_ << (*it)->name ();
+	}
 	out_ << endl;
 	complex_end ();
+}
+
+void Printer::leaf (const ValueTypeDecl& item)
+{
+	indent ();
+	if (item.is_abstract ())
+		out_ << "abstract ";
+	out_ << "valuetype " << item.name () << ";\n";
+}
+
+void Printer::begin (const ValueType& item)
+{
+	indent ();
+	switch (item.modifier ()) {
+		case ValueType::Modifier::ABSTRACT:
+			out_ << "abstract ";
+			break;
+		case ValueType::Modifier::CUSTOM:
+			out_ << "custom ";
+			break;
+	}
+	out_ << "valuetype " << item.name ();
+
+	if (!item.bases ().empty ()) {
+		out_ << ":\n";
+		++indent_;
+		auto base = item.bases ().begin ();
+		indent ();
+		out_ << (*base)->name ();
+		++base;
+		for (; base != item.bases ().end (); ++base) {
+			out_ << ",\n";
+			indent ();
+			out_ << (*base)->name ();
+		}
+		--indent_;
+	}
+
+	if (!item.supports ().empty ()) {
+		out_ << "supports\n";
+		++indent_;
+		auto base = item.supports ().begin ();
+		indent ();
+		if (item.modifier () == ValueType::Modifier::TRUNCATABLE)
+			out_ << "truncatable ";
+		out_ << (*base)->name ();
+		++base;
+		for (; base != item.supports ().end (); ++base) {
+			out_ << ",\n";
+			indent ();
+			out_ << (*base)->name ();
+		}
+		--indent_;
+	}
+
+	out_ << '\n';
+	indent ();
+	out_ << "{\n";
+	++indent_;
+}
+
+void Printer::end (const ValueType& item)
+{
+	complex_end ();
+}
+
+void Printer::leaf (const StateMember& item)
+{
+	indent ();
+	if (item.is_public ())
+		out_ << "public ";
+	else
+		out_ << "private ";
+	print_type (item);
+	out_ << ' ' << item.name () << ";\n";
+}
+
+void Printer::leaf (const ValueFactory& item)
+{
+	indent ();
+	out_ << "factory ";
+	print_op_base (item);
+	out_ << ";\n";
+}
+
+void Printer::leaf (const ValueBox& item)
+{
+	indent ();
+	out_ << "valuetype " << item.name () << ' ';
+	print_type (item);
+	out_ << ";\n";
 }

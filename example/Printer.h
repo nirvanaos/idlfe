@@ -17,44 +17,55 @@ public:
 	}
 
 protected:
-	virtual void include (const AST::Include& item);
-	virtual void native (const AST::Native& item);
-	virtual void type_def (const AST::TypeDef& item);
-	virtual void constant (const AST::Constant& item);
+	virtual void leaf (const AST::Include& item);
+	virtual void leaf (const AST::Native& item);
+	virtual void leaf (const AST::TypeDef& item);
+	virtual void leaf (const AST::Constant& item);
 
-	virtual void module_begin (const AST::ModuleItems& item);
-	virtual void module_end (const AST::ModuleItems& item);
+	virtual void begin (const AST::ModuleItems& item);
+	virtual void end (const AST::ModuleItems& item);
 
-	virtual void interface_decl (const AST::InterfaceDecl& item);
-	virtual void interface_begin (const AST::Interface& item);
-	virtual void interface_end (const AST::Interface& item);
+	virtual void leaf (const AST::InterfaceDecl& item);
+	
+	virtual void begin (const AST::Interface& item);
+	virtual void end (const AST::Interface& item);
 
-	virtual void operation (const AST::Operation& item);
-	virtual void attribute (const AST::Attribute& item);
+	virtual void leaf (const AST::Operation& item);
+	virtual void leaf (const AST::Attribute& item);
 
-	virtual void exception_begin (const AST::Exception& item);
-	virtual void exception_end (const AST::Exception& item);
+	virtual void begin (const AST::Exception& item);
+	virtual void end (const AST::Exception& item);
 
-	virtual void struct_decl (const AST::StructDecl& item);
-	virtual void struct_begin (const AST::Struct& item);
-	virtual void struct_end (const AST::Struct& item);
+	virtual void leaf (const AST::StructDecl& item);
+	virtual void begin (const AST::Struct& item);
+	virtual void end (const AST::Struct& item);
 
-	virtual void member (const AST::Member& item);
+	virtual void leaf (const AST::Member& item);
 
-	virtual void union_decl (const AST::UnionDecl& item);
-	virtual void union_begin (const AST::Union& item);
-	virtual void union_element (const AST::UnionElement& item);
-	virtual void union_end (const AST::Union& item);
+	virtual void leaf (const AST::UnionDecl& item);
+	virtual void begin (const AST::Union& item);
+	virtual void end (const AST::Union& item);
+	
+	virtual void leaf (const AST::UnionElement& item);
 
-	virtual void enum_type (const AST::Enum& item);
+	virtual void leaf (const AST::Enum& item);
+	
+	virtual void leaf (const AST::ValueTypeDecl& item);
+	virtual void begin (const AST::ValueType& item);
+	virtual void end (const AST::ValueType& item);
+	virtual void leaf (const AST::StateMember& item);
+	virtual void leaf (const AST::ValueFactory& item);
+	virtual void leaf (const AST::ValueBox& item);
 
 private:
 	void indent ();
 	void print_type (const AST::Type& t);
-	void print_param (const AST::Parameter& p);
+	void print_interface_kind (const AST::InterfaceKind ik);
+	void print_op_base (const AST::OperationBase& item);
+	void print (const AST::Parameter& p);
 	void constructed_begin (const char* type, const AST::NamedItem& item);
 	void complex_end ();
-	void print_raises (const AST::Raises& raises);
+	void print (const AST::Raises& raises);
 
 private:
 	std::ofstream out_;

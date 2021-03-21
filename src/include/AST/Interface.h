@@ -50,13 +50,14 @@ public:
 		return kind_;
 	}
 
-	/// \returns The interface kind keyword. 
-	///          Returns the empty string for the UNCONSTRAINED interface.
-	const char* interface_kind_name () const noexcept;
-
 	InterfaceKind (Kind kind = UNCONSTRAINED) noexcept :
 		kind_ (kind)
 	{}
+
+private:
+	friend class Build::Builder;
+
+	const char* interface_kind_name () const noexcept;
 
 private:
 	Kind kind_;

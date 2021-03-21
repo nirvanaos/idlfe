@@ -45,7 +45,7 @@ public:
 	typedef std::vector <std::string> Context;
 
 	/// \returns The list of context values for the operation.
-	const Context context () const noexcept
+	const Context& context () const noexcept
 	{
 		return context_;
 	}

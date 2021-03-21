@@ -44,8 +44,6 @@ class Attribute;
 
 namespace Build {
 
-/// Abstract Syntax Tree builder.
-/// This class does not depend on any Flex/Bison or other parser/scanner declarations.
 class Builder
 {
 public:

@@ -49,8 +49,7 @@
 
 namespace AST {
 
-/// Base for code generators. Abstract class.
-/// In future versions, it may be extended with derived classes CodeGen2, CodeGen3 etc.
+/// \brief Base for code generators. Abstract class.
 /// 
 /// Supported Building Blocks (https://www.omg.org/spec/IDL/4.2/):
 /// - Core Data Types
@@ -62,6 +61,9 @@ namespace AST {
 /// - Value Types
 /// - CORBA - Specific - Value Types
 /// - Anonimous Types
+/// 
+/// In future versions, it may be extended with derived classes CodeGen2, CodeGen3 etc.
+/// 
 class CodeGen
 {
 public:
@@ -132,11 +134,11 @@ public:
 	/// `union` begin.
 	virtual void begin (const Union&) = 0;
 
-	/// `union` element.
-	virtual void leaf (const UnionElement&) = 0;
-
 	/// `union` end.
 	virtual void end (const Union&) = 0;
+
+	/// `union` element.
+	virtual void leaf (const UnionElement&) = 0;
 
 	/// `enum`
 	virtual void leaf (const Enum&) = 0;
@@ -147,19 +149,23 @@ public:
 	/// `valuetype` begin.
 	virtual void begin (const ValueType&) = 0;
 
+	/// `valuetype` end.
+	virtual void end (const ValueType&) = 0;
+
 	/// `valuetype` state member.
 	virtual void leaf (const StateMember&) = 0;
 
 	/// `factory`
 	virtual void leaf (const ValueFactory&) = 0;
 
-	/// `valuetype` end.
-	virtual void end (const ValueType&) = 0;
-
 	/// Boxed `valuetype`.
 	virtual void leaf (const ValueBox&) = 0;
 };
 
 }
+
+/// \example Printer.cpp
+/// This is an example of how to use CodeGen class.
+/// \include Printer.h
 
 #endif

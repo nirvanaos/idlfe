@@ -28,7 +28,7 @@
 #include <utility>
 #include <assert.h>
 
-/// Abstract Syntax Tree
+/// Abstract Syntax Tree namespace.
 namespace AST {
 
 template <class T> class Ptr;
@@ -116,7 +116,7 @@ private:
 	unsigned ref_cnt_;
 };
 
-/// Item smart pointer.
+/// \brief AST item smart pointer.
 /// 
 /// \tparam T the item type.
 template <class T>

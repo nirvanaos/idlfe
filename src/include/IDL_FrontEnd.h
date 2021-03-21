@@ -32,7 +32,7 @@ namespace AST {
 class Root;
 }
 
-/// IDL Front End.
+/// \brief IDL front-end.
 /// 
 /// Performs:
 ///   - Command line parsing
@@ -41,7 +41,8 @@ class Root;
 ///   - Building of the Abstract Syntax Tree (AST)
 ///
 /// The compiler class should derive from this class and implement
-///   virtual void generate_code ()
+///   virtual void generate_code ();
+/// 
 class IDL_FrontEnd
 {
 public:
@@ -157,5 +158,9 @@ private:
 	struct Arguments;
 	Arguments* arguments_;
 };
+
+/// \example IDL_Print.cpp
+/// This is an example of how to use IDL_FrontEnd class.
+/// \include IDL_Print.h
 
 #endif

@@ -31,7 +31,7 @@
 
 namespace AST {
 
-/// Union element definition.
+/// `union` element definition.
 class UnionElement :
 	public Member
 {
