@@ -2,6 +2,10 @@
 #ifndef NIDLFE_EXAMPLE_IDL_PRINT_H_
 #define NIDLFE_EXAMPLE_IDL_PRINT_H_
 
+#if __cplusplus < 201703L && _MSVC_LANG < 201703L
+#error C++17 compliant compiler is required.
+#endif
+
 #include <IDL_FrontEnd.h>
 #include <filesystem>
 

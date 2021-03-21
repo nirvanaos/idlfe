@@ -25,6 +25,10 @@
 #ifndef NIDL_AST_CODEGEN_H_
 #define NIDL_AST_CODEGEN_H_
 
+#if __cplusplus < 201703L && _MSVC_LANG < 201703L
+#error C++17 compliant compiler is required.
+#endif
+
 #include "Root.h"
 #include "Include.h"
 #include "Native.h"
