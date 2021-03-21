@@ -33,7 +33,7 @@ namespace Build {
 
 void EvalStringBase::error_length (const Location& loc) const
 {
-	builder_.message (loc, Builder::MessageType::ERROR, "String literal length exceedes the limit.");
+	builder_.message (loc, Builder::MessageType::ERROR, "string literal length exceedes the limit");
 }
 
 [[noreturn]] void EvalStringBase::throw_char0 ()

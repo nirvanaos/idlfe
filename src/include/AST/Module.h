@@ -11,12 +11,12 @@ namespace AST {
 class Module :
 	public ItemScope
 {
-public:
-	/// \internal
+private:
+	template <class T> friend class Ptr;
+
 	Module (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (Kind::MODULE, builder, name)
 	{}
-	/// \endinternal
 };
 
 /// The seqence of items in a module.
@@ -26,18 +26,19 @@ class ModuleItems :
 {
 public:
 	/// \returns The module name.
-	const std::string& name () const
+	const Identifier& name () const noexcept
 	{
 		return module_.name ();
 	}
 
-	/// Returns module as a scope.
-	const Module& module () const
+	/// \returns The module as a scope.
+	const Module& module () const noexcept
 	{
 		return module_;
 	}
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	ModuleItems (const Module& mod) :
 		Item (Item::Kind::MODULE_ITEMS),
@@ -46,7 +47,6 @@ public:
 
 private:
 	const Module& module_;
-	/// \endinternal
 };
 
 }

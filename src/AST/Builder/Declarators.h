@@ -24,7 +24,7 @@
 #ifndef NIDL_AST_DECLARATORS_H_
 #define NIDL_AST_DECLARATORS_H_
 
-#include <string>
+#include "../../include/AST/Identifier.h"
 #include "../../include/AST/Location.h"
 #include <forward_list>
 
@@ -32,15 +32,15 @@ namespace AST {
 namespace Build {
 
 class SimpleDeclarator :
-	public std::string,
+	public Identifier,
 	public Location
 {
 public:
 	SimpleDeclarator ()
 	{}
 
-	SimpleDeclarator (const std::string& name, const Location& loc) :
-		std::string (name),
+	SimpleDeclarator (const Identifier& name, const Location& loc) :
+		Identifier (name),
 		Location (loc)
 	{}
 
@@ -62,12 +62,12 @@ public:
 	Declarator ()
 	{}
 
-	Declarator (const std::string& name, const Location& loc, const FixedArraySizes& array) :
+	Declarator (const Identifier& name, const Location& loc, const FixedArraySizes& array) :
 		SimpleDeclarator (name, loc),
 		array_ (array)
 	{}
 
-	Declarator (const std::string& name, const Location& loc) :
+	Declarator (const Identifier& name, const Location& loc) :
 		SimpleDeclarator (name, loc)
 	{}
 

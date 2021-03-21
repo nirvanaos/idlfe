@@ -36,18 +36,20 @@ class Include :
 {
 public:
 	/// Returns the name of included IDL file.
-	const std::filesystem::path& file () const
+	const std::filesystem::path& file () const noexcept
 	{
 		return file_;
 	}
 
 	/// \returns `true` for includes in angle brackets.
-	bool system () const
+	bool system () const noexcept
 	{
 		return system_;
 	}
 
-	/// \internals
+private:
+	template <class T> friend class Ptr;
+
 	Include (std::filesystem::path&& file, bool system) :
 		Item (Kind::INCLUDE),
 		file_ (std::move (file)),
@@ -57,7 +59,6 @@ public:
 private:
 	std::filesystem::path file_;
 	bool system_;
-	/// \endinternals
 };
 
 }

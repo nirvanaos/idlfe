@@ -25,7 +25,11 @@
 #ifndef NIDL_AST_CODEGEN_H_
 #define NIDL_AST_CODEGEN_H_
 
-#include "AST.h"
+#if __cplusplus < 201703L && _MSVC_LANG < 201703L
+#error C++17 compliant compiler is required.
+#endif
+
+#include "Root.h"
 #include "Include.h"
 #include "Native.h"
 #include "TypeDef.h"
@@ -37,64 +41,135 @@
 #include "Attribute.h"
 #include "Struct.h"
 #include "Union.h"
-#include "Member.h"
+#include "UnionElement.h"
 #include "Enum.h"
 #include "Exception.h"
 #include "Array.h"
 #include "Sequence.h"
+#include "ValueType.h"
+#include "StateMember.h"
+#include "ValueFactory.h"
+#include "ValueBox.h"
 
 namespace AST {
 
-/// Base for code generators. Abstract class.
-/// In future versions, it will be extended with derived classes CodeGen2, CodeGen3 etc.
+/// \brief Base for code generators. Abstract class.
 /// 
-/// Supported Building Blocks:
+/// Supported Building Blocks (https://www.omg.org/spec/IDL/4.2/):
 /// - Core Data Types
 /// - Extended Data Types
 /// - Any
 /// - Interfaces Basic
 /// - Interfaces Full
 /// - CORBA - Specific Interfaces (except for `import`)
+/// - Value Types
+/// - CORBA - Specific - Value Types
 /// - Anonimous Types
-
+/// 
+/// In future versions, it may be extended with derived classes CodeGen2, CodeGen3 etc.
+/// 
 class CodeGen
 {
 public:
-	virtual void begin () {}
-	virtual void end () {}
+	/// Begin code generation.
+	/// 
+	/// This method is not pure virtual and doed nothing by default.
+	virtual void begin (const Root&) {}
 
-	virtual void include (const Include& item) = 0;
-	virtual void native (const Native& item) = 0;
-	virtual void type_def (const TypeDef& item) = 0;
-	virtual void constant (const Constant& item) = 0;
+	/// End code generation.
+	/// 
+	/// This method is not pure virtual and doed nothing by default.
+	virtual void end (const Root&) {}
 
-	virtual void module_begin (const ModuleItems& item) = 0;
-	virtual void module_end (const ModuleItems& item) = 0;
+	/// `#include`
+	virtual void leaf (const Include&) = 0;
 
-	virtual void interface_decl (const InterfaceDecl& item) = 0;
-	virtual void interface_begin (const Interface& item) = 0;
-	virtual void interface_end (const Interface& item) = 0;
+	/// `native`
+	virtual void leaf (const Native&) = 0;
 
-	virtual void operation (const Operation& item) = 0;
-	virtual void attribute (const Attribute& item) = 0;
+	/// `typedef`
+	virtual void leaf (const TypeDef&) = 0;
 
-	virtual void exception_begin (const Exception& item) = 0;
-	virtual void exception_end (const Exception& item) = 0;
+	/// `const`
+	virtual void leaf (const Constant&) = 0;
 
-	virtual void struct_decl (const StructDecl& item) = 0;
-	virtual void struct_begin (const Struct& item) = 0;
-	virtual void struct_end (const Struct& item) = 0;
+	/// `module` begin.
+	virtual void begin (const ModuleItems&) = 0;
 
-	virtual void member (const Member& item) = 0;
+	/// `module` end.
+	virtual void end (const ModuleItems&) = 0;
 
-	virtual void union_decl (const UnionDecl& item) = 0;
-	virtual void union_begin (const Union& item) = 0;
-	virtual void union_element (const UnionElement& item) = 0;
-	virtual void union_end (const Union& item) = 0;
+	/// `interface` forward declaration.
+	virtual void leaf (const InterfaceDecl&) = 0;
 
-	virtual void enum_type (const Enum& item) = 0;
+	/// `interface` begin.
+	virtual void begin (const Interface&) = 0;
+
+	/// `interface` end.
+	virtual void end (const Interface&) = 0;
+
+	/// Operation.
+	virtual void leaf (const Operation&) = 0;
+
+	/// `attribute`
+	virtual void leaf (const Attribute&) = 0;
+
+	/// `exception` begin.
+	virtual void begin (const Exception&) = 0;
+
+	/// `exception` end.
+	virtual void end (const Exception&) = 0;
+
+	/// `struct` forward declaration.
+	virtual void leaf (const StructDecl&) = 0;
+
+	/// `struct` begin.
+	virtual void begin (const Struct&) = 0;
+
+	/// `struct` end.
+	virtual void end (const Struct&) = 0;
+
+	/// Member of `struct` or `exception`.
+	virtual void leaf (const Member&) = 0;
+
+	/// `union` forward declaration.
+	virtual void leaf (const UnionDecl&) = 0;
+
+	/// `union` begin.
+	virtual void begin (const Union&) = 0;
+
+	/// `union` end.
+	virtual void end (const Union&) = 0;
+
+	/// `union` element.
+	virtual void leaf (const UnionElement&) = 0;
+
+	/// `enum`
+	virtual void leaf (const Enum&) = 0;
+
+	/// `valuetype` forward declaration.
+	virtual void leaf (const ValueTypeDecl&) = 0;
+
+	/// `valuetype` begin.
+	virtual void begin (const ValueType&) = 0;
+
+	/// `valuetype` end.
+	virtual void end (const ValueType&) = 0;
+
+	/// `valuetype` state member.
+	virtual void leaf (const StateMember&) = 0;
+
+	/// `factory`
+	virtual void leaf (const ValueFactory&) = 0;
+
+	/// Boxed `valuetype`.
+	virtual void leaf (const ValueBox&) = 0;
 };
 
 }
+
+/// \example Printer.cpp
+/// This is an example of how to use CodeGen class.
+/// \include Printer.h
 
 #endif

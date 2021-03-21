@@ -39,10 +39,20 @@ Type::Type (BasicType bt) :
 
 Type::Type (const Ptr <NamedItem>* named) :
 	kind_ (named ? Kind::NAMED_TYPE : Kind::VOID),
-	type_ (named)
+	type_ (named ? named : (const Ptr <NamedItem>*)nullptr)
 {
 	assert (!named || (*named)->is_type ());
 }
+
+Type Type::make_sequence (const Type& type, Dim size)
+{
+	return Type (new Sequence (type, size));
+}
+
+Type::Type (const Type& type, const FixedArraySizes& sizes) :
+	kind_ (Kind::ARRAY),
+	type_ (new Array (type, vector <Dim> (sizes.begin (), sizes.end ())))
+{}
 
 Type::Type (unsigned digits, unsigned scale) :
 	kind_ (Kind::FIXED)
@@ -115,24 +125,13 @@ const Type& Type::dereference_type () const noexcept
 {
 	const Type* t = this;
 	while (t->kind_ == Kind::NAMED_TYPE) {
-		const NamedItem* p = *(t->type_.named_type);
-		if (Item::Kind::TYPEDEF == p->kind ())
+		const NamedItem* p = t->named_type ();
+		if (Item::Kind::TYPE_DEF == p->kind ())
 			t = static_cast <const TypeDef*> (p);
 		else
 			break;
 	}
 	return *t;
-}
-
-Type Type::make_sequence (const Type& type, Dim size)
-{
-	return Type (new Sequence (type, size));
-}
-
-Type Type::make_array (const Type& type, const FixedArraySizes& sizes)
-{
-	std::vector <Dim> dimensions (sizes.begin (), sizes.end ());
-	return Type (new Array (type, move (dimensions)));
 }
 
 size_t Type::key_max () const noexcept
@@ -157,9 +156,9 @@ size_t Type::key_max () const noexcept
 				return numeric_limits <size_t>::max ();
 		}
 	} else if (t.tkind () == Kind::NAMED_TYPE) {
-		const Ptr <NamedItem>& en = named_type ();
-		if (en->kind () == Item::Kind::ENUM) {
-			size_t item_cnt = static_cast <const Enum&> (*en).size ();
+		const NamedItem& en = *named_type ();
+		if (en.kind () == Item::Kind::ENUM) {
+			size_t item_cnt = static_cast <const Enum&> (en).size ();
 			if (item_cnt > 0)
 				--item_cnt;
 			return item_cnt;
@@ -167,6 +166,30 @@ size_t Type::key_max () const noexcept
 	}
 	assert (false);
 	return 0;
+}
+
+bool Type::is_complete_or_ref () const noexcept
+{
+	const Type& t = dereference_type ();
+	if (t.tkind () == Kind::NAMED_TYPE) {
+		Item::Kind k = named_type ()->kind ();
+		return k != Item::Kind::STRUCT_DECL && k != Item::Kind::UNION_DECL;
+	}
+	return true;
+}
+
+bool Type::is_complete () const noexcept
+{
+	const Type& t = dereference_type ();
+	switch (t.tkind ()) {
+		case Kind::NAMED_TYPE:
+			return !t.named_type ()->is_forward_decl ();
+		case Kind::SEQUENCE:
+			return sequence ().is_complete ();
+		case Kind::ARRAY:
+			return array ().is_complete ();
+	}
+	return true;
 }
 
 }

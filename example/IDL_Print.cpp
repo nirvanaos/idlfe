@@ -1,5 +1,4 @@
-// IDL_Print.cpp Demonstrates the compiler class.
-
+// IDL_Print.cpp Demonstrates the IDL compiler class.
 #include "IDL_Print.h"
 #include "Printer.h"
 #include <iostream>
@@ -29,8 +28,7 @@ bool IDL_Print::parse_command_line (CmdLine& args)
 	return false;
 }
 
-
-void IDL_Print::generate_code (const AST::AST& tree)
+void IDL_Print::generate_code (const AST::Root& tree)
 {
 	path file = out_dir_ / tree.file ().filename ();
 	file.replace_extension (".txt");

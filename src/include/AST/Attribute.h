@@ -25,24 +25,38 @@
 #ifndef NIDL_AST_ATTRIBUTE_H_
 #define NIDL_AST_ATTRIBUTE_H_
 
-#include "NamedItem.h"
+#include "Exception.h"
 #include "Type.h"
 
 namespace AST {
 
-/// `attribute` specification.
+/// \brief The `attribute` specification.
 class Attribute :
 	public NamedItem,
 	public Type
 {
 public:
 	/// \returns `true` if the attribute is marked as `readonly`.
-	bool readonly () const
+	bool readonly () const noexcept
 	{
 		return readonly_;
 	}
 
-	/// \internal
+	/// \returns Potential user exceptions may be raised when the attribute is read.
+	const Raises& getraises () const noexcept
+	{
+		return getraises_;
+	}
+
+	/// \returns Potential user exceptions may be raised when the attribute is written.
+	const Raises& setraises () const noexcept
+	{
+		return setraises_;
+	}
+
+private:
+	friend class Build::Builder;
+	template <class T> friend class Ptr;
 
 	Attribute (const Build::Builder& builder, bool readonly, const Type& type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ATTRIBUTE, builder, name),
@@ -50,9 +64,20 @@ public:
 		readonly_ (readonly)
 	{}
 
+	void getraises (Raises&& raises) noexcept
+	{
+		getraises_ = std::move (raises);
+	}
+
+	void setraises (Raises&& raises) noexcept
+	{
+		setraises_ = std::move (raises);
+	}
+
 private:
 	bool readonly_;
-	/// \endinternal
+	Raises getraises_;
+	Raises setraises_;
 };
 
 }

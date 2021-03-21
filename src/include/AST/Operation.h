@@ -25,80 +25,55 @@
 #ifndef NIDL_AST_OPERATION_H_
 #define NIDL_AST_OPERATION_H_
 
-#include "NamedItem.h"
-#include "Parameter.h"
-#include "Exception.h"
-#include "Variant.h"
+#include "OPerationBase.h"
 
 namespace AST {
 
-/// The container of the Parameter elements.
-typedef std::vector <Ptr <Parameter>> Parameters;
-
 /// The operation.
 class Operation :
-	public NamedItem,
-	public Type,
-	public Parameters
+	public OperationBase,
+	public Type
 {
 public:
 	/// \returns `true` if this is an `onevay` operation.
-	bool oneway () const
+	bool oneway () const noexcept
 	{
 		return oneway_;
-	}
-
-	/// The user exceptions.
-	typedef std::vector <const Exception*> Raises;
-
-	/// \returns The possible user exceptions for the operation.
-	const Raises& raises () const
-	{
-		return raises_;
 	}
 
 	/// The context.
 	typedef std::vector <std::string> Context;
 
 	/// \returns The list of context values for the operation.
-	const Context context () const
+	const Context& context () const noexcept
 	{
 		return context_;
 	}
 
-	/// \internals
+private:
+	template <class T> friend class Ptr;
 
 	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::OPERATION, builder, name),
+		OperationBase (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)
 	{}
+
+	friend class Build::Builder;
 
 	void oneway_clear ()
 	{
 		oneway_ = false;
 	}
 
-	void add_exception (const Exception* ex)
+	void context (Context&& strings)
 	{
-		raises_.push_back (ex);
-	}
-
-	void context (const Build::Variants& strings)
-	{
-		for (auto it = strings.begin (); it != strings.end (); ++it) {
-			if (!it->empty ()) {
-				assert (it->vtype () == Variant::VT::STRING);
-				context_.push_back (it->as_string ());
-			}
-		}
+		context_ = std::move (strings);
 	}
 
 private:
 	bool oneway_;
-	Raises raises_;
 	Context context_;
-	/// \endinternals
 };
 
 }

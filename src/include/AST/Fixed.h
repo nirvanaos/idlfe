@@ -30,14 +30,14 @@ extern "C" struct _decNumber;
 
 namespace AST {
 
-/// This structure is completely equivalent to decNumber.
+// This structure is completely equivalent to decNumber.
 struct Fixed
 {
 	int32_t digits;
 	int32_t exponent;
 	uint8_t lsu [31];
 
-	Fixed (const _decNumber& dn)
+	Fixed (const _decNumber& dn) noexcept
 	{
 		*this = reinterpret_cast <const Fixed&> (dn);
 	}

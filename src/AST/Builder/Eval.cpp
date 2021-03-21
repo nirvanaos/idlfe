@@ -32,7 +32,7 @@ namespace Build {
 
 void Eval::invalid_literal_type (const Location& loc) const
 {
-	builder_.message (loc, Builder::MessageType::ERROR, "Invalid literal type.");
+	builder_.message (loc, Builder::MessageType::ERROR, "invalid literal type");
 }
 
 void Eval::invalid_operation (char op, const Location& loc) const
@@ -48,7 +48,7 @@ void Eval::invalid_operation (char op, const Location& loc) const
 		default:
 			sop = op;
 	}
-	builder_.message (loc, Builder::MessageType::ERROR, string ("Operation ") + sop + " is invalid in this context.");
+	builder_.message (loc, Builder::MessageType::ERROR, string ("operation ") + sop + " is invalid in this context");
 }
 
 void Eval::error (const Location& loc, const std::exception& ex) const
@@ -115,7 +115,7 @@ const Constant* Eval::lookup_const (const ScopedName& constant) const
 	if (pitem) {
 		const NamedItem* item = *pitem;
 		if (item->kind () != Item::Kind::CONSTANT) {
-			builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a constant.");
+			builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a constant");
 			see_definition (*item);
 		} else
 			return static_cast <const Constant*> (item);
@@ -125,12 +125,12 @@ const Constant* Eval::lookup_const (const ScopedName& constant) const
 
 void Eval::see_definition (const NamedItem& item) const
 {
-	builder_.message (item, Builder::MessageType::MESSAGE, string ("See definition of ") + item.qualified_name () + ".");
+	builder_.message (item, Builder::MessageType::MESSAGE, string ("see definition of ") + item.qualified_name ());
 }
 
 void Eval::invalid_constant_type (const ScopedName& constant) const
 {
-	builder_.message (constant, Builder::MessageType::ERROR, string ("Constant ") + constant.stringize () + " type is invalid.");
+	builder_.message (constant, Builder::MessageType::ERROR, string ("constant ") + constant.stringize () + " type is invalid");
 }
 
 Variant Eval::expr (const Variant& l, char op, const Variant& r, const Location& loc)

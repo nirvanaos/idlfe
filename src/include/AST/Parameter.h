@@ -45,12 +45,13 @@ public:
 	};
 
 	/// \returns The parameter attribute.
-	Attribute attribute () const
+	Attribute attribute () const noexcept
 	{
 		return attribute_;
 	}
 
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	Parameter (const Build::Builder& builder, Attribute att, const Type& type, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::PARAMETER, builder, name),
@@ -60,7 +61,6 @@ public:
 
 private:
 	Attribute attribute_;
-	/// \endinternal
 };
 
 }

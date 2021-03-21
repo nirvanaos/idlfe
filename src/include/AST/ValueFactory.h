@@ -1,3 +1,4 @@
+/// \file ValueFactory.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -21,17 +22,25 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "../include/AST/AST.h"
-#include "../include/AST/CodeGen.h"
+#ifndef NIDL_AST_VALUEFACTORY_H_
+#define NIDL_AST_VALUEFACTORY_H_
+
+#include "OperationBase.h"
 
 namespace AST {
 
-bool AST::visit (CodeGen& cg) const
+/// Value type `factory` operation.
+class ValueFactory :
+	public OperationBase
 {
-	cg.begin ();
-	bool ret = Container::visit (cg);
-	cg.end ();
-	return ret;
-}
+private:
+	template <class T> friend class Ptr;
+
+	ValueFactory (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		OperationBase (Item::Kind::VALUE_FACTORY, builder, name)
+	{}
+};
 
 }
+
+#endif

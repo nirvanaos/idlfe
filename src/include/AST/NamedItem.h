@@ -26,6 +26,7 @@
 #define NIDL_AST_NAMEDITEM_H_
 
 #include "Item.h"
+#include "Identifier.h"
 #include "Location.h"
 
 namespace AST {
@@ -45,13 +46,13 @@ class NamedItem :
 {
 public:
 	/// \returns The name of item.
-	const std::string& name () const
+	const Identifier& name () const noexcept
 	{
 		return name_;
 	}
 
 	/// \returns The parent scope or `nullptr`.
-	const ItemScope* parent () const
+	const ItemScope* parent () const noexcept
 	{
 		return parent_;
 	}
@@ -62,15 +63,31 @@ public:
 	/// \returns The fully qualified ScopedName of the item.
 	ScopedName scoped_name () const;
 
-	/// \internal
-
+protected:
 	NamedItem (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 private:
 	const ItemScope* parent_;
-	const std::string name_;
-	/// \endinternal
+	const Identifier name_;
 };
+
+inline
+bool operator < (const Ptr <NamedItem>& l, const Identifier& r) noexcept
+{
+	return l->name () < r;
+}
+
+inline
+bool operator < (const Identifier& l, const Ptr <NamedItem>& r) noexcept
+{
+	return l < r->name ();
+}
+
+inline
+bool operator < (const Ptr <NamedItem>& l, const Ptr <NamedItem>& r) noexcept
+{
+	return l->name () < r->name ();
+}
 
 }
 

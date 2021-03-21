@@ -37,9 +37,11 @@ class TypeDef :
 	public RepositoryId,
 	public Type
 {
-public:
+private:
+	template <class T> friend class Ptr;
+
 	TypeDef (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& t) :
-		NamedItem (Item::Kind::TYPEDEF, builder, name),
+		NamedItem (Item::Kind::TYPE_DEF, builder, name),
 		RepositoryId (*this, builder),
 		Type (t)
 	{}

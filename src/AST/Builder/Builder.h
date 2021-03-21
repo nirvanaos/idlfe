@@ -24,34 +24,35 @@
 #ifndef NIDL_AST_BUILDER_H_
 #define NIDL_AST_BUILDER_H_
 
-#include "../../include/AST/AST.h"
-#include "../../include/AST/Interface.h"
+#include "../../include/AST/Root.h"
+#include "../../include/AST/ValueType.h"
 #include "../../include/AST/Parameter.h"
 #include "../../include/AST/ScopedName.h"
+#include "../../include/AST/Exception.h"
 #include "Eval.h"
 #include "Declarators.h"
 #include <ostream>
 #include <stack>
 #include <map>
+#include <set>
 
 namespace AST {
 
-class AST;
-class Operation;
+class Root;
+class OperationBase;
+class Attribute;
 
 namespace Build {
 
-/// Abstract Syntax Tree builder.
-/// This class does not depend on any Flex/Bison or other parser/scanner declarations.
 class Builder
 {
 public:
 	Builder (const std::string& file, std::ostream& err_out) :
 		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
-		tree_ (Ptr <AST>::make <AST> (file))
+		tree_ (Ptr <Root>::make <Root> (file)),
+		is_main_file_ (true)
 	{
-		scope_stack_.push_back (tree_);
 		container_stack_.push (tree_);
 		file_stack_.emplace_back (*tree_->add_file (file).first);
 	}
@@ -59,11 +60,6 @@ public:
 	unsigned err_cnt () const
 	{
 		return err_cnt_;
-	}
-
-	void parser_error (const Location& loc, const std::string& msg)
-	{
-		message (loc, MessageType::ERROR, msg);
 	}
 
 	static const int FILE_FLAG_START = 0x1;
@@ -79,7 +75,7 @@ public:
 
 	bool is_main_file () const
 	{
-		return file_stack_.size () == 1;
+		return is_main_file_;
 	}
 
 	enum class MessageType
@@ -93,10 +89,11 @@ public:
 
 	const std::string& prefix () const;
 
-	ItemScope* cur_scope () const;
+	ItemScope* cur_parent () const;
+	Symbols* cur_scope () const;
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
-	const Ptr <NamedItem>* lookup_type (const ScopedName& scoped_name);
+	Type lookup_type (const ScopedName& scoped_name);
 
 	void native (const SimpleDeclarator& name);
 
@@ -112,34 +109,30 @@ public:
 	void interface_bases (const ScopedNames& bases);
 
 	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
-	void operation_parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
-	void operation_raises (const ScopedNames& raises);
-	void operation_context (const Variants& context);
+
+	void parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
+	
+	void raises (const ScopedNames& names);
+	void operation_context (const Variants& strings);
 
 	void operation_end ()
 	{
-		interface_.operation.clear ();
+		operation_.clear ();
 	}
 
 	void attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators);
 
-	void interface_end ()
+	void attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name);
+	
+	void getraises (const ScopedNames& names);
+	void setraises (const ScopedNames& names);
+
+	void attribute_end ()
 	{
-		// Delete all operations and attributes from scope
-		Symbols* scope = scope_stack_.back ();
-		for (auto it = scope->begin (); it != scope->end ();) {
-			switch ((*it)->kind ()) {
-				case Item::Kind::OPERATION:
-				case Item::Kind::ATTRIBUTE:
-					it = scope->erase (it);
-					break;
-				default:
-					++it;
-			}
-		}
-		scope_end ();
-		interface_.clear ();
+		attribute_.clear ();
 	}
+
+	void interface_end ();
 
 	void type_def (const Type& type, const Declarators& declarators);
 
@@ -158,7 +151,7 @@ public:
 		return scope_end ();
 	}
 
-	void member (const Type& type, const Declarators& declarators);
+	void member (const Type& type, const Declarators& names);
 
 	void union_decl (const SimpleDeclarator& name);
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
@@ -168,6 +161,26 @@ public:
 	const Ptr <NamedItem>* union_end ();
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
+
+	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
+	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
+	void valuetype_bases (bool truncatable, const ScopedNames& bases);
+	void valuetype_supports (const ScopedNames& bases);
+	void state_member (bool is_public, const Type& type, const Declarators& names);
+
+	void valuetype_factory_begin (const SimpleDeclarator& name);
+
+	void valuetype_factory_end ()
+	{
+		operation_end ();
+	}
+
+	void valuetype_end ()
+	{
+		interface_end ();
+	}
+
+	void valuetype_box (const SimpleDeclarator& name, const Type& type);
 
 	void eval_push (const Type& t, const Location& loc);
 
@@ -207,20 +220,7 @@ public:
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
 
-	Ptr <AST> finalize ()
-	{
-		if (!err_cnt_ && tree_) {
-			try {
-				std::map <std::string, const NamedItem*> ids;
-				tree_->check_rep_ids_unique (*this, ids);
-			} catch (const std::exception& ex) {
-				err_out_ << ex.what () << std::endl;
-			}
-			if (err_cnt_)
-				tree_ = nullptr;
-		}
-		return std::move (tree_);
-	}
+	Ptr <Root> finalize ();
 
 private:
 	bool prefix_valid (const std::string& pref, const Location& loc);
@@ -230,25 +230,38 @@ private:
 	RepositoryId* lookup_rep_id (const ScopedName& name);
 	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
-	bool scope_begin ();
+	Symbols* scope_begin ();
 	void scope_push (ItemContainer* scope);
 	void scope_end ();
 
 	const Ptr <NamedItem>* constr_type_end ();
 
-	static bool is_scope (Item::Kind ik)
-	{
-		return Item::Kind::MODULE == ik || Item::Kind::INTERFACE == ik;
-	}
+	Raises lookup_exceptions (const ScopedNames& names);
+
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const Containers& containers, const Identifier& name, const Location& loc);
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
+	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
+
+	void add_base_members (const Location& loc, const Containers& bases);
+	bool check_member_name (const NamedItem& item);
+	bool check_complete_or_ref (const Type& type, const Location& loc);
+
+	typedef std::map <std::string, const NamedItem&> RepIdMap;
+	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
+	void check_unique (RepIdMap& ids, const RepositoryId& rid);
+
+	void check_complete (const Container& items);
+	bool check_complete (const Type& type, const Location& loc);
+	void check_complete (const OperationBase& op);
 
 private:
 	unsigned err_cnt_;
 	std::ostream err_out_;
-	Ptr <AST> tree_;
-	typedef std::vector <Symbols*> ScopeStack;
+	Ptr <Root> tree_;
+	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
 	std::stack <std::unique_ptr <Eval>> eval_stack_;
@@ -264,29 +277,51 @@ private:
 	};
 
 	std::vector <File> file_stack_;
+	bool is_main_file_;
 
+	// Current interface data. Also used for value types.
 	struct InterfaceData
 	{
-		Symbols all_operations;
+		Symbols all_members;
+		std::set <const Item*> all_bases;
 
 		void clear ()
 		{
-			all_operations.clear ();
+			all_members.clear ();
+			all_bases.clear ();
 		}
 
-		struct OperationData
-		{
-			Operation* op;
-			Symbols params;
-
-			void clear ()
-			{
-				op = nullptr;
-				params.clear ();
-			}
-		} operation;
-
 	} interface_;
+
+	struct OperationData
+	{
+		OperationBase* op;
+		Symbols params;
+
+		OperationData () :
+			op (nullptr)
+		{}
+
+		void clear ()
+		{
+			op = nullptr;
+			params.clear ();
+		}
+	} operation_;
+
+	struct AttributeData
+	{
+		Attribute* att;
+
+		AttributeData () :
+			att (nullptr)
+		{}
+
+		void clear ()
+		{
+			att = nullptr;
+		}
+	} attribute_;
 
 	struct UnionData
 	{

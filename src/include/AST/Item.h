@@ -28,6 +28,7 @@
 #include <utility>
 #include <assert.h>
 
+/// Abstract Syntax Tree namespace.
 namespace AST {
 
 template <class T> class Ptr;
@@ -39,43 +40,47 @@ public:
 	/// The kind of item.
 	enum class Kind
 	{
-		AST, /// class AST
-		INCLUDE, /// class Include
-		NATIVE, /// class Native
-		TYPEDEF, /// class TypeDef
-		CONSTANT, /// class Constant
-		MODULE, /// class Module
-		MODULE_ITEMS, /// class ModuleItems
-		INTERFACE_DECL, /// class InterfaceDecl
-		INTERFACE, /// class Interface
-		OPERATION, /// class Operation
-		PARAMETER, /// class Parameter
-		ATTRIBUTE, /// class Attribute
-		EXCEPTION, /// class Exception
-		STRUCT_DECL, /// class StructDecl
-		STRUCT, /// class Struct
-		MEMBER, /// class Member
-		UNION_DECL, /// class UnionDecl
-		UNION, /// class Union
-		UNION_ELEMENT, /// class UnionElement
-		ENUM, /// class Enum
-		ENUM_ITEM /// class EnumItem
+		ROOT, ///< class Root
+		INCLUDE, ///< class Include
+		NATIVE, ///< class Native
+		TYPE_DEF, ///< class TypeDef
+		CONSTANT, ///< class Constant
+		MODULE, ///< class Module
+		MODULE_ITEMS, ///< class ModuleItems
+		INTERFACE_DECL, ///< class InterfaceDecl
+		INTERFACE, ///< class Interface
+		OPERATION, ///< class Operation
+		PARAMETER, ///< class Parameter
+		ATTRIBUTE, ///< class Attribute
+		EXCEPTION, ///< class Exception
+		STRUCT_DECL, ///< class StructDecl
+		STRUCT, ///< class Struct
+		MEMBER, ///< class Member
+		UNION_DECL, ///< class UnionDecl
+		UNION, ///< class Union
+		UNION_ELEMENT, ///< class UnionElement
+		ENUM, ///< class Enum
+		ENUM_ITEM, ///< class EnumItem
+		VALUE_TYPE_DECL, ///< class ValueTypeDecl
+		VALUE_TYPE, ///< class ValueType
+		VALUE_BOX, ///< class ValueBox
+		STATE_MEMBER, ///< class StateMember
+		VALUE_FACTORY ///< class ValueFactory
 	};
 
 	/// \returns The kind of item.
-	Kind kind () const
+	Kind kind () const noexcept
 	{
 		return kind_;
 	}
 
 	/// \returns `true` if the item represents a type.
-	bool is_type () const
-	{
-		return Kind::NATIVE <= kind_ && kind_ <= Kind::ENUM;
-	}
+	bool is_type () const noexcept;
 
-	/// \internals
+	/// \returns `true` if the item is a forward declaration.
+	bool is_forward_decl () const noexcept;
 
+protected:
 	Item (Kind kind) :
 		kind_ (kind),
 		ref_cnt_ (1)
@@ -95,12 +100,12 @@ private:
 		return ::operator new (cb);
 	}
 
-	void _add_ref ()
+	void _add_ref () noexcept
 	{
 		++ref_cnt_;
 	}
 
-	void _remove_ref ()
+	void _remove_ref () noexcept
 	{
 		if (!--ref_cnt_)
 			delete this;
@@ -109,10 +114,9 @@ private:
 private:
 	const Kind kind_;
 	unsigned ref_cnt_;
-	/// \endinternals
 };
 
-/// Item smart pointer.
+/// \brief AST item smart pointer.
 /// 
 /// \tparam T the item type.
 template <class T>
@@ -120,7 +124,7 @@ class Ptr
 {
 	template <class T1> friend class Ptr;
 public:
-	Ptr () :
+	Ptr () noexcept :
 		p_ (nullptr)
 	{}
 
@@ -131,14 +135,14 @@ public:
 	}
 
 	template <class T1>
-	Ptr (const Ptr <T1>& src) :
+	Ptr (const Ptr <T1>& src) noexcept :
 		p_ (src.p_)
 	{
 		if (p_)
 			p_->_add_ref ();
 	}
 	
-	Ptr (const Ptr& src) :
+	Ptr (const Ptr& src) noexcept :
 		p_ (src.p_)
 	{
 		if (p_)
@@ -146,41 +150,41 @@ public:
 	}
 
 	template <class T1>
-	Ptr (Ptr <T1>&& src) :
+	Ptr (Ptr <T1>&& src) noexcept :
 		p_ (src.p_)
 	{
 		src.p_ = nullptr;
 	}
 
-	Ptr (Ptr&& src) :
+	Ptr (Ptr&& src) noexcept :
 		p_ (src.p_)
 	{
 		src.p_ = nullptr;
 	}
 
 	template <class T1>
-	Ptr (T1* p) :
+	Ptr (T1* p) noexcept :
 		p_ (p)
 	{
 		if (p_)
 			p_->_add_ref ();
 	}
 
-	Ptr (T* p) :
+	Ptr (T* p) noexcept :
 		p_ (p)
 	{
 		if (p_)
 			p_->_add_ref ();
 	}
 
-	~Ptr ()
+	~Ptr () noexcept
 	{
 		if (p_)
 			p_->_remove_ref ();
 	}
 
 	template <class T1>
-	Ptr& operator = (const Ptr <T1>& src)
+	Ptr& operator = (const Ptr <T1>& src) noexcept
 	{
 		if (p_ != src.p_) {
 			if (p_)
@@ -191,7 +195,7 @@ public:
 		return *this;
 	}
 
-	Ptr& operator = (const Ptr <T>& src)
+	Ptr& operator = (const Ptr <T>& src) noexcept
 	{
 		if (p_ != src.p_) {
 			if (p_)
@@ -203,7 +207,7 @@ public:
 	}
 
 	template <class T1>
-	Ptr& operator = (Ptr <T1>&& src)
+	Ptr& operator = (Ptr <T1>&& src) noexcept
 	{
 		if (p_ != src.p_) {
 			if (p_)
@@ -214,7 +218,7 @@ public:
 		return *this;
 	}
 
-	Ptr& operator = (Ptr <T>&& src)
+	Ptr& operator = (Ptr <T>&& src) noexcept
 	{
 		if (p_ != src.p_) {
 			if (p_)
@@ -226,7 +230,7 @@ public:
 	}
 
 	template <class T1>
-	Ptr& operator = (T1* p)
+	Ptr& operator = (T1* p) noexcept
 	{
 		if (p_ != p) {
 			if (p_)
@@ -236,7 +240,7 @@ public:
 		return *this;
 	}
 
-	Ptr& operator = (T* p)
+	Ptr& operator = (T* p) noexcept
 	{
 		if (p_ != p) {
 			if (p_)
@@ -246,7 +250,7 @@ public:
 		return *this;
 	}
 
-	Ptr& operator = (nullptr_t)
+	Ptr& operator = (nullptr_t) noexcept
 	{
 		if (p_) {
 			p_->_remove_ref ();
@@ -255,18 +259,18 @@ public:
 		return *this;
 	}
 
-	T* operator -> () const
+	T* operator -> () const noexcept
 	{
 		assert (p_);
 		return p_;
 	}
 
-	operator T* () const
+	operator T* () const noexcept
 	{
 		return p_;
 	}
 
-	T& operator * () const
+	T& operator * () const noexcept
 	{
 		assert (p_);
 		return *p_;
@@ -284,7 +288,7 @@ private:
 };
 
 template <class T1, class T>
-T1* scast (const Ptr <T>& ptr)
+T1* scast (const Ptr <T>& ptr) noexcept
 {
 	return static_cast <T1*> ((T*)ptr);
 }

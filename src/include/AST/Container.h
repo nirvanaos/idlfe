@@ -30,23 +30,40 @@
 
 namespace AST {
 
+/// Sequential container of the AST items.
+template <class T>
+class ContainerT :
+	public std::vector <Ptr <T>>
+{
+protected:
+	typedef std::vector <Ptr <T>> Base;
+
+protected:
+	friend class Build::Builder;
+
+	void append (T& item)
+	{
+		Base::emplace_back (&item);
+	}
+};
+
 class CodeGen;
 
 /// Sequential container of the AST items.
 class Container :
-	public std::vector <Ptr <Item>>
+	public ContainerT <Item>
 {
-	typedef std::vector <Ptr <Item>> Base;
+	typedef ContainerT <Item> Base;
 public:
 	/// Visit all items for the code generation.
 	/// \returns `true` if unsuppported building blocks were occurred.
 	bool visit (CodeGen& cg) const;
 
-	/// \internal
-	void append (Item* item);
-	/// \endinternal
-};
+private:
+	friend class Build::Builder;
 
+	void append (Item& item);
+};
 
 }
 

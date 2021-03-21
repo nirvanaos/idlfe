@@ -1,4 +1,4 @@
-/// \file RepositoryId
+/// \file RepositoryId.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -27,7 +27,6 @@
 
 #include "Location.h"
 #include <stdint.h>
-#include <map>
 
 namespace AST {
 
@@ -42,19 +41,50 @@ struct Version
 	uint16_t major, minor;
 };
 
-class RepositoryIdData
+/// Items which have repository identifiers derive from this class.
+class RepositoryId
 {
-protected:
-	RepositoryIdData (const std::string& prefix) :
-		prefix_or_id_ (prefix)
+public:
+	/// \returns The repository id.
+	std::string repository_id () const;
+
+	/// \returns The NamedItem.
+	const NamedItem& item () const noexcept
 	{
-		version_.major = 1;
-		version_.minor = 0;
+		return item_;
 	}
 
-	std::string prefix_or_id_;
-	Version version_;
+	/// \returns RepositoryId const pointer if item derives from RepositoryId.
+	///          Otherwise returns `nullptr`.
+	static const RepositoryId* cast (const NamedItem* item) noexcept
+	{
+		return cast (const_cast <NamedItem*> (item));
+	}
 
+protected:
+	RepositoryId (const NamedItem& item, const Build::Builder& builder);
+	RepositoryId (const RepositoryId&) = delete;
+
+	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
+
+private:
+	friend class Build::Builder;
+
+	static RepositoryId* cast (NamedItem* item) noexcept;
+
+	bool check_prefix (Build::Builder& builder, const Location& loc) const noexcept;
+
+	void type_id (Build::Builder& builder, const std::string& id, const Location& loc);
+
+	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
+
+	RepositoryId& operator = (const RepositoryId& src)
+	{
+		data_ = src.data_;
+		return *this;
+	}
+
+private:
 	enum
 	{
 		EXPLICIT_ID,
@@ -64,48 +94,23 @@ protected:
 		EXPLICIT_SPECIFICATIONS
 	};
 
-	Location explicit_ [EXPLICIT_SPECIFICATIONS];
-};
-
-/// Items which have repository ids derives from this class.
-class RepositoryId :
-	public RepositoryIdData
-{
-public:
-	/// \returns The repository id.
-	std::string repository_id () const;
-
-	/// \returns The NamedItem.
-	const NamedItem& item () const
+	struct Data
 	{
-		return item_;
-	}
+		Data (const std::string& prefix) :
+			prefix_or_id (prefix)
+		{
+			version.major = 1;
+			version.minor = 0;
+		}
 
-	/// \internal
+		std::string prefix_or_id;
+		Version version;
 
-	static RepositoryId* cast (NamedItem* item) noexcept;
+		Location explicit_ [EXPLICIT_SPECIFICATIONS];
+	};
 
-	static const RepositoryId* cast (const NamedItem* item) noexcept
-	{
-		return cast (const_cast <NamedItem*> (item));
-	}
-
-	bool check_prefix (Build::Builder& builder, const Location& loc) const;
-
-	void type_id (Build::Builder& builder, const std::string& id, const Location& loc);
-
-	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
-
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
-
-	bool check_unique (Build::Builder& builder, std::map <std::string, const NamedItem*>& ids) const;
-
-protected:
-	RepositoryId (const NamedItem& item, const Build::Builder& builder);
-
-private:
 	const NamedItem& item_;
-	/// \endinternal
+	Data data_;
 };
 
 }

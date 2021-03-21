@@ -37,17 +37,14 @@ class ItemContainer :
 	public RepositoryId,
 	public Container
 {
-public:
-	/// \internal
+protected:
 	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (kind, builder, name),
 		RepositoryId (*this, builder)
 	{}
 
-	std::pair <ItemScope::iterator, bool> insert (NamedItem* item)
-	{
-		return ItemScope::insert (item);
-	}
+private:
+	friend class Build::Builder;
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 	{
@@ -56,8 +53,9 @@ public:
 		else
 			return false;
 	}
-	/// \endinternal
 };
+
+typedef std::vector <const ItemContainer*> Containers;
 
 }
 

@@ -102,7 +102,7 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 							++inc;
 						const char* sem = strchr (inc, ';');
 						const char* endi = sem ? sem : end;
-						while (isspace (*(endi - 1)))
+						while (inc < endi && isspace (*(endi - 1)))
 							--endi;
 						if (inc < endi)
 							arguments_->preprocessor.includePaths.emplace_back (inc, endi);
@@ -232,7 +232,7 @@ bool IDL_FrontEnd::compile (const string& file)
 		preprocessed.str (output_tokens.stringify ());
 	}
 
-	AST::Ptr <AST::AST> ast = FE::Driver::parse (file, preprocessed);
+	AST::Ptr <AST::Root> ast = FE::Driver::parse (file, preprocessed);
 
 	if (ast)
 		try {

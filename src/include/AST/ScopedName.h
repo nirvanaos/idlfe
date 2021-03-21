@@ -25,16 +25,16 @@
 #ifndef NIDL_AST_SCOPEDNAME_H_
 #define NIDL_AST_SCOPEDNAME_H_
 
-#include <string>
+#include "Identifier.h"
+#include "Location.h"
 #include <vector>
 #include <forward_list>
-#include "Location.h"
 
 namespace AST {
 
 /// The scoped name.
 struct ScopedName : 
-	std::vector <std::string>,
+	std::vector <Identifier>,
 	Location
 {
 	/// `true` if it is a root-scoped name, i.e. started from "::".
@@ -42,8 +42,6 @@ struct ScopedName :
 
 	/// \returns The name converted to string.
 	std::string stringize () const;
-
-	/// \internal
 
 	ScopedName () :
 		from_root (false)
@@ -54,14 +52,13 @@ struct ScopedName :
 		from_root (false)
 	{}
 
-	ScopedName (const Location& loc, bool root, const std::string& name);
+	ScopedName (const Location& loc, bool root, const Identifier& name);
 
 	ScopedName (const ScopedName&) = default;
 	ScopedName (ScopedName&&) = default;
 
 	ScopedName& operator = (const ScopedName&) = default;
 	ScopedName& operator = (ScopedName&&) = default;
-	/// \endinternal
 };
 
 typedef std::forward_list <ScopedName> ScopedNames;

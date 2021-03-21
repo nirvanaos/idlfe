@@ -26,7 +26,6 @@
 #define NIDL_AST_STRUCT_H_
 
 #include "ItemContainer.h"
-#include "RepositoryId.h"
 
 namespace AST {
 
@@ -35,7 +34,9 @@ class StructDecl :
 	public NamedItem,
 	public RepositoryId
 {
-public:
+private:
+	template <class T> friend class Ptr;
+
 	StructDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (Item::Kind::STRUCT_DECL, builder, name),
 		RepositoryId (*this, builder)
@@ -46,12 +47,12 @@ public:
 class Struct :
 	public ItemContainer
 {
-public:
-	/// \internals
+private:
+	template <class T> friend class Ptr;
+
 	Struct (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemContainer (Item::Kind::STRUCT, builder, name)
 	{}
-	/// \endinternals
 };
 
 }

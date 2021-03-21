@@ -1,4 +1,3 @@
-/// \file AST.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -22,51 +21,43 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_AST_H_
-#define NIDL_AST_AST_H_
+#include "../include/AST/Item.h"
+#include <algorithm>
 
-#include "Item.h"
-#include "Symbols.h"
-#include "Container.h"
-#include <filesystem>
+using namespace std;
 
 namespace AST {
 
-/// Abstract Syntax Tree.
-class AST :
-	public Item,
-	public Symbols,
-	public Container
+bool Item::is_type () const noexcept
 {
-public:
-	/// \returns The name of compiled IDL file.
-	const std::filesystem::path& file () const
-	{
-		return main_file_;
-	}
+	static const Kind kinds [] = {
+		Kind::NATIVE,
+		Kind::TYPE_DEF,
+		Kind::INTERFACE_DECL,
+		Kind::INTERFACE,
+		Kind::STRUCT_DECL,
+		Kind::STRUCT,
+		Kind::UNION_DECL,
+		Kind::UNION,
+		Kind::ENUM,
+		Kind::VALUE_TYPE_DECL,
+		Kind::VALUE_TYPE,
+		Kind::VALUE_BOX
+	};
 
-	/// Visit all items for the code generation.
-	/// \returns `true` if unsuppported building blocks were occurred.
-	bool visit (CodeGen& cg) const;
-
-	/// \internal
-
-	AST (const std::string& file) :
-		Item (Item::Kind::AST),
-		main_file_ (file)
-	{}
-
-	std::pair <std::set <std::string>::iterator, bool> add_file (const std::string& name)
-	{
-		return files_.insert (name);
-	}
-
-private:
-	std::set <std::string> files_;
-	std::filesystem::path main_file_;
-	/// \endinternal
-};
-
+	return find (kinds, end (kinds), kind_) != end (kinds);
 }
 
-#endif
+bool Item::is_forward_decl () const noexcept
+{
+	static const Kind kinds [] = {
+		Kind::INTERFACE_DECL,
+		Kind::STRUCT_DECL,
+		Kind::UNION_DECL,
+		Kind::VALUE_TYPE_DECL
+	};
+
+	return find (kinds, end (kinds), kind_) != end (kinds);
+}
+
+}

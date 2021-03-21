@@ -45,14 +45,14 @@ public:
 	/// The kind of type.
 	enum class Kind
 	{
-		VOID,
-		BASIC_TYPE, ///< basic_type ()
-		NAMED_TYPE, ///< named_type ()
-		STRING,     ///< string_size ()
-		WSTRING,    ///< string_size ()
-		FIXED,      ///< fixed_digits (), fixed_scale ()
-		SEQUENCE,   ///< sequence ()
-		ARRAY       ///< array ()
+		VOID,       ///< `void`
+		BASIC_TYPE, ///< `Type::basic_type ();`
+		NAMED_TYPE, ///< `named_type ()`
+		STRING,     ///< `string_size ()`
+		WSTRING,    ///< `string_size ()`
+		FIXED,      ///< `fixed_digits (), fixed_scale ()`
+		SEQUENCE,   ///< `sequence ()`
+		ARRAY       ///< `array ()`
 	};
 
 	/// \returns The kind of type.
@@ -62,40 +62,40 @@ public:
 	}
 
 	/// \returns The BasicType.
-	/// \invariant `kind () == Kind::BASIC_TYPE`.
+	/// \invariant `Type::tkind () == Kind::BASIC_TYPE`.
 	BasicType basic_type () const noexcept
 	{
 		assert (tkind () == Kind::BASIC_TYPE);
 		return type_.basic_type;
 	}
 
-	/// \returns `const Ptr <NamedItem>&`.
-	/// \invariant `kind () == Kind::NAMED_TYPE`.
+	/// \returns Reference to a named type.
+	/// \invariant `tkind () == Kind::NAMED_TYPE`.
 	const Ptr <NamedItem>& named_type () const noexcept
 	{
 		assert (tkind () == Kind::NAMED_TYPE);
+		assert (type_.named_type);
 		return *type_.named_type;
 	}
 
-	// String
-
 	/// \returns The string size limit if string has limited size.
+	/// \invariant `tkind () == Kind::STRING || tkind () == Kind::WSTRING`
 	uint32_t string_size () const noexcept
 	{
 		assert (tkind () == Kind::STRING || tkind () == Kind::WSTRING);
 		return type_.string_size;
 	}
 
-	// Sequence
-
+	/// \returns The sequence descriptor.
+	/// \invariant `tkind () == Kind::SEQUENCE`
 	const Sequence& sequence () const noexcept
 	{
 		assert (tkind () == Kind::SEQUENCE);
 		return *type_.sequence;
 	}
 
-	// Array
-
+	/// \returns The array descriptor.
+	/// \invariant `tkind () == Kind::ARRAY`
 	const Array& array () const noexcept
 	{
 		assert (tkind () == Kind::ARRAY);
@@ -104,39 +104,52 @@ public:
 
 	// Fixed
 
+	/// \returns Number of digits for fixed type.
+	/// \invariant `tkind () == Kind::FIXED`
 	uint8_t fixed_digits () const noexcept
 	{
 		assert (tkind () == Kind::FIXED);
 		return type_.fixed.digits;
 	}
 
+	/// \returns Scale for fixed type.
+	/// \invariant `tkind () == Kind::FIXED`
 	uint8_t fixed_scale () const noexcept
 	{
 		assert (tkind () == Kind::FIXED);
 		return type_.fixed.scale;
 	}
 
-	/// \internal
+	/// \returns The referenced type.
+	const Type& dereference_type () const noexcept;
 
+	/// Destructor.
 	~Type ()
 	{
 		clear ();
 	}
 
+	/// Default constructor.
 	Type () :
 		kind_ (Kind::VOID)
 	{}
 
-	Type (BasicType bt);
-
-	Type (const Ptr <NamedItem>* named);
-
+	/// Copy constructor.
 	Type (const Type& src)
 	{
 		copy (src);
 	}
 
+	/// Move constructor.
 	Type (Type&& src) noexcept;
+
+	/// Copy assignment.
+	Type& operator = (const Type& src);
+
+	/// Move assignment.
+	Type& operator = (Type&& src) noexcept;
+
+	Type (BasicType bt);
 
 	static Type make_string (Dim size = 0)
 	{
@@ -149,19 +162,23 @@ public:
 	}
 
 	static Type make_sequence (const Type& type, Dim size = 0);
-	static Type make_array (const Type& type, const FixedArraySizes& sizes);
+
+	Type (const Type& type, const FixedArraySizes& sizes);
 
 	static Type make_fixed (unsigned digits, unsigned scale)
 	{
 		return Type (digits, scale);
 	}
 
-	Type& operator = (const Type& src);
-	Type& operator = (Type&& src) noexcept;
+	Type (const Ptr <NamedItem>* named);
 
-	const Type& dereference_type () const noexcept;
+private:
+	friend class Build::Builder;
 
 	size_t key_max () const noexcept;
+
+	bool is_complete_or_ref () const noexcept;
+	bool is_complete () const noexcept;
 
 private:
 	void clear () noexcept;
@@ -186,25 +203,20 @@ private:
 		type_ (seq)
 	{}
 
-	Type (Array* arr) :
-		kind_ (Kind::ARRAY),
-		type_ (arr)
-	{}
-
 private:
 	Kind kind_;
 	union U
 	{
-		BasicType basic_type;              // BASIC_TYPE
-		const Ptr <NamedItem>* named_type; // NAMED_TYPE
-		Dim string_size;                   // STRING, WSTRING
-		const Sequence* sequence;          // SEQUENCE
-		const Array* array;                // ARRAY
+		BasicType basic_type;              // `Kind::BASIC_TYPE`
+		const Ptr <NamedItem>* named_type; // `Kind::NAMED_TYPE`
+		Dim string_size;                   // `Kind::STRING, Kind::WSTRING`
+		const Sequence* sequence;          // `Kind::SEQUENCE`
+		const Array* array;                // `Kind::ARRAY`
 		struct
 		{
 			uint8_t digits;
 			uint8_t scale;
-		} fixed;                           // FIXED
+		} fixed;                           // `Kind::FIXED`
 
 		U ()
 		{}
@@ -221,17 +233,16 @@ private:
 			string_size (ssize)
 		{}
 
-		U (Sequence* pseq) :
+		U (const Sequence* pseq) :
 			sequence (pseq)
 		{}
 
-		U (Array* parr) :
+		U (const Array* parr) :
 			array (parr)
 		{}
 
 		~U () {}
 	} type_;
-	/// \endinternal
 };
 
 }

@@ -37,15 +37,14 @@ class Constant :
 	public Type,
 	public Variant
 {
-public:
-	/// \internal
+private:
+	template <class T> friend class Ptr;
 
 	Constant (const Build::Builder& builder, const Type& type, const Build::SimpleDeclarator& name, Variant&& val) :
 		NamedItem (Item::Kind::CONSTANT, builder, name),
 		Type (type),
 		Variant (std::move (val))
 	{}
-	/// \endinternal
 };
 
 }

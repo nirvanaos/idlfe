@@ -34,13 +34,14 @@ class Sequence :
 	public Type
 {
 public:
-	/// Returns the size limit or 0.
-	Dim size () const
+	/// \returns The size limit or 0 if no limit.
+	Dim size () const noexcept
 	{
 		return size_;
 	}
 
-	/// \internal
+private:
+	friend class Type;
 
 	Sequence (const Type& type, Dim size = 0) :
 		Type (type),
@@ -49,7 +50,6 @@ public:
 
 private:
 	Dim size_;
-	/// \endinternal
 };
 
 }

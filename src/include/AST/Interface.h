@@ -26,7 +26,6 @@
 #define NIDL_AST_INTERFACE_H_
 
 #include "ItemContainer.h"
-#include "RepositoryId.h"
 
 namespace AST {
 
@@ -41,7 +40,8 @@ public:
 	{
 		UNCONSTRAINED,
 		ABSTRACT,
-		LOCAL
+		LOCAL,
+		PSEUDO
 	};
 
 	/// \returns The kind of interface.
@@ -50,62 +50,58 @@ public:
 		return kind_;
 	}
 
-	/// \returns The interface kind keyword. 
-	///          Returns the empty string for the UNCONSTRAINED interface.
-	const char* interface_kind_name () const noexcept;
-
-	/// \internals
-
 	InterfaceKind (Kind kind = UNCONSTRAINED) noexcept :
 		kind_ (kind)
 	{}
 
 private:
+	friend class Build::Builder;
+
+	const char* interface_kind_name () const noexcept;
+
+private:
 	Kind kind_;
-	/// \endinternals
 };
 
 /// The sequence of interfaces.
 typedef std::vector <const Interface*> Interfaces;
 
-/// The interface definition.
+/// Interface definition.
 class Interface :
 	public ItemContainer,
 	public InterfaceKind
 {
 public:
 	/// \returns The base interfaces.
-	const Interfaces& bases () const
+	const Interfaces& bases () const noexcept
 	{
 		return bases_;
 	}
 
-	/// \summary Get all direct and indirect bases.
+	/// Get all direct and indirect bases.
+	/// 
 	/// \param bases All bases.
 	void get_all_bases (std::set <const Interface*>& bases) const;
 
-	/// \internals
+private:
+	template <class T> friend class Ptr;
+	friend class Build::Builder;
+	friend class ValueType;
 
-	void get_all_interfaces (Interfaces& all) const;
+	void get_all_containers (Containers& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		ItemContainer (Item::Kind::INTERFACE, builder, name)
 	{}
 
-	void add_base (const Interface* base)
+	void add_base (const Interface& base)
 	{
-		bases_.push_back (base);
+		bases_.push_back (&base);
 	}
-
-	virtual std::pair <bool, const Ptr <NamedItem>*> find (Build::Builder& builder, const std::string& name, const Location&) const;
-
-private:
-	void base_find (const std::string& name, std::set <const Ptr <NamedItem>*>& found) const;
 
 private:
 	Interfaces bases_;
-	/// \endinternals
 };
 
 /// Interface forward declaration.
@@ -114,14 +110,14 @@ class InterfaceDecl :
 	public InterfaceKind,
 	public RepositoryId
 {
-public:
-	/// \internals
+private:
+	template <class T> friend class Ptr;
+
 	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		InterfaceKind (kind),
 		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
 		RepositoryId (*this, builder)
 	{}
-	/// \endinternals
 };
 
 }

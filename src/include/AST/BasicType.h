@@ -27,33 +27,35 @@
 
 namespace AST {
 
-/// Basic type enumeration.
+/// \brief CORBA basic type enumeration.
 enum class BasicType
 {
-	BOOLEAN,
-	OCTET,
-	CHAR,
-	WCHAR,
-	USHORT,
-	ULONG,
-	ULONGLONG,
-	SHORT,
-	LONG,
-	LONGLONG,
-	FLOAT,
-	DOUBLE,
-	LONGDOUBLE,
-	OBJECT,
-	VALUE_BASE,
-	ANY
+	BOOLEAN, ///< `boolean`
+	OCTET, ///< `octet`
+	CHAR, ///< `char`
+	WCHAR, ///< `wchar`
+	USHORT, ///< `unsigned short`
+	ULONG, ///< `unsigned long`
+	ULONGLONG, ///< `unsigned long long`
+	SHORT, ///< `short`
+	LONG, ///< `long`
+	LONGLONG, ///< `long long`
+	FLOAT, ///< `float`
+	DOUBLE, ///< `double`
+	LONGDOUBLE, ///< `long double`
+	OBJECT, ///< `Object`
+	VALUE_BASE, ///< `ValueBase`
+	ANY ///< `any`
 };
 
+/// \returns `true` if a type is integral type.
 inline
 bool is_integral (BasicType bt) noexcept
 {
 	return BasicType::BOOLEAN <= bt && bt <= BasicType::LONGLONG;
 }
 
+/// \returns `true` if a type is signed type.
 inline
 bool is_signed (BasicType bt) noexcept
 {
