@@ -18,6 +18,8 @@ To create an IDL compiler:
 * Derive your compiler class from `class IDL_FrontEnd`.
 * Derive your back-end code generator from `class AST::CodeGen`.
 
+API reference: https://nirvanaos.github.io/idlfe/
+
 ## Implemented Building Blocks
 
 See: https://www.omg.org/spec/IDL/4.2/
@@ -34,7 +36,7 @@ See: https://www.omg.org/spec/IDL/4.2/
 
 ## How to use
 
-Install nirvanaos.idlfe NuGet package.
+Install nirvanaos.idlfe.vc.1.#.# NuGet package.
 
 ## How to build
 
