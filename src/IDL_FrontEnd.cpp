@@ -116,7 +116,8 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 
 			for (const auto& file : arguments_->files) {
 				cout << file << endl;
-				compile (file);
+				if (!compile (file))
+					ret = -1;
 			}
 		}
 	} catch (const exception& ex) {

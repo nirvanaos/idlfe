@@ -36,13 +36,13 @@ void Printer::print_type (const Type& t)
 			out_ << basic_types [(size_t)t.basic_type ()];
 			break;
 		case Type::Kind::NAMED_TYPE:
-			out_ << t.named_type ()->name ();
+			out_ << t.named_type ()->qualified_name ();
 			break;
 		case Type::Kind::STRING:
 		case Type::Kind::WSTRING:
 			out_ << (t.tkind () == Type::Kind::STRING ? "string" : "wstring");
-			if (t.string_size ())
-				out_ << " <" << t.string_size () << '>';
+			if (t.string_bound ())
+				out_ << " <" << t.string_bound () << '>';
 			break;
 		case Type::Kind::FIXED:
 			out_ << "fixed";
@@ -53,8 +53,8 @@ void Printer::print_type (const Type& t)
 			const Sequence& seq = t.sequence ();
 			out_ << "sequence <";
 			print_type (seq);
-			if (seq.size ())
-				out_ << ", " << seq.size ();
+			if (seq.bound ())
+				out_ << ", " << seq.bound ();
 			out_ << '>';
 		} break;
 		case Type::Kind::ARRAY: {

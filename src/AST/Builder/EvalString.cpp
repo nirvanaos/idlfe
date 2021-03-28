@@ -88,7 +88,7 @@ Variant EvalString::cast (const Type& t, Variant&& v, const Location& loc)
 		assert (v.dereference_const ().vtype () == Variant::VT::STRING);
 		const Type& dt = t.dereference_type ();
 		assert (dt.tkind () == Type::Kind::STRING);
-		if (dt.string_size () && v.dereference_const ().as_string ().length () > dt.string_size ()) {
+		if (dt.string_bound () && v.dereference_const ().as_string ().length () > dt.string_bound ()) {
 			error_length (loc);
 			return Variant ();
 		}
@@ -143,7 +143,7 @@ Variant EvalWString::cast (const Type& t, Variant&& v, const Location& loc)
 		assert (v.dereference_const ().vtype () == Variant::VT::WSTRING);
 		const Type& dt = t.dereference_type ();
 		assert (dt.tkind () == Type::Kind::WSTRING);
-		if (dt.string_size () && v.dereference_const ().as_wstring ().length () > dt.string_size ()) {
+		if (dt.string_bound () && v.dereference_const ().as_wstring ().length () > dt.string_bound ()) {
 			error_length (loc);
 			return Variant ();
 		}

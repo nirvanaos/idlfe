@@ -33,6 +33,7 @@ namespace AST {
 
 typedef std::forward_list <unsigned> FixedArraySizes;
 
+/// Array dimensions, string and sequence bounds.
 typedef uint32_t Dim;
 
 class Sequence;
@@ -48,8 +49,8 @@ public:
 		VOID,       ///< `void`
 		BASIC_TYPE, ///< `Type::basic_type ();`
 		NAMED_TYPE, ///< `named_type ()`
-		STRING,     ///< `string_size ()`
-		WSTRING,    ///< `string_size ()`
+		STRING,     ///< `string_bound ()`
+		WSTRING,    ///< `string_bound ()`
 		FIXED,      ///< `fixed_digits (), fixed_scale ()`
 		SEQUENCE,   ///< `sequence ()`
 		ARRAY       ///< `array ()`
@@ -78,12 +79,18 @@ public:
 		return *type_.named_type;
 	}
 
-	/// \returns The string size limit if string has limited size.
+	/// \returns The string size bound if string has limited size. If size is not limited, returns 0.
 	/// \invariant `tkind () == Kind::STRING || tkind () == Kind::WSTRING`
-	uint32_t string_size () const noexcept
+	Dim string_bound () const noexcept
 	{
 		assert (tkind () == Kind::STRING || tkind () == Kind::WSTRING);
-		return type_.string_size;
+		return type_.string_bound;
+	}
+
+	/// Obsolete. Use Type::string_bound () instead.
+	Dim string_size () const noexcept
+	{
+		return string_bound ();
 	}
 
 	/// \returns The sequence descriptor.
@@ -209,7 +216,7 @@ private:
 	{
 		BasicType basic_type;              // `Kind::BASIC_TYPE`
 		const Ptr <NamedItem>* named_type; // `Kind::NAMED_TYPE`
-		Dim string_size;                   // `Kind::STRING, Kind::WSTRING`
+		Dim string_bound;                  // `Kind::STRING, Kind::WSTRING`
 		const Sequence* sequence;          // `Kind::SEQUENCE`
 		const Array* array;                // `Kind::ARRAY`
 		struct
@@ -229,8 +236,8 @@ private:
 			named_type (nt)
 		{}
 
-		U (Dim ssize) :
-			string_size (ssize)
+		U (Dim bound) :
+			string_bound (bound)
 		{}
 
 		U (const Sequence* pseq) :
