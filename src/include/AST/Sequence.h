@@ -29,27 +29,33 @@
 
 namespace AST {
 
-/// Sequence type.
+/// \brief The `sequence` type descriptor.
 class Sequence :
 	public Type
 {
 public:
-	/// \returns The size limit or 0 if no limit.
+	/// \returns The size bound or 0 if no limit.
+	Dim bound () const noexcept
+	{
+		return bound_;
+	}
+
+	/// Obsolete. Use Sequence::bound () instead.
 	Dim size () const noexcept
 	{
-		return size_;
+		return bound ();
 	}
 
 private:
 	friend class Type;
 
-	Sequence (const Type& type, Dim size = 0) :
+	Sequence (const Type& type, Dim bound = 0) :
 		Type (type),
-		size_ (size)
+		bound_ (bound)
 	{}
 
 private:
-	Dim size_;
+	Dim bound_;
 };
 
 }

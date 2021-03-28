@@ -81,7 +81,7 @@ void Type::copy (const Type& src)
 			break;
 		case Kind::STRING:
 		case Kind::WSTRING:
-			type_.string_size = src.type_.string_size;
+			type_.string_bound = src.type_.string_bound;
 			break;
 		case Kind::SEQUENCE:
 			type_.sequence = nullptr;
