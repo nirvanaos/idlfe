@@ -90,7 +90,7 @@ Inheritance diagram for AST::Type:</div>
 <area href="class_a_s_t_1_1_member.html" title="The member of struct, union, or valuetype." alt="AST::Member" shape="rect" coords="110,224,210,248"/>
 <area href="class_a_s_t_1_1_operation.html" title="The operation." alt="AST::Operation" shape="rect" coords="110,280,210,304"/>
 <area href="class_a_s_t_1_1_parameter.html" title="The parameter of an operation." alt="AST::Parameter" shape="rect" coords="110,336,210,360"/>
-<area href="class_a_s_t_1_1_sequence.html" title="Sequence type." alt="AST::Sequence" shape="rect" coords="110,392,210,416"/>
+<area href="class_a_s_t_1_1_sequence.html" title="The sequence type descriptor." alt="AST::Sequence" shape="rect" coords="110,392,210,416"/>
 <area href="class_a_s_t_1_1_type_def.html" title="The named type." alt="AST::TypeDef" shape="rect" coords="110,448,210,472"/>
 <area href="class_a_s_t_1_1_value_box.html" title="Boxed value type." alt="AST::ValueBox" shape="rect" coords="110,504,210,528"/>
   </map>
@@ -121,8 +121,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6745ed12ebb811519b2bf61fd4f12b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6524ab9ecb4aaa9ab078607a69432e00"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_ptr.html">Ptr</a>&lt; <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_type.html#a6524ab9ecb4aaa9ab078607a69432e00">named_type</a> () const noexcept</td></tr>
 <tr class="separator:a6524ab9ecb4aaa9ab078607a69432e00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39fe1e526e42d3d765919af7e0d6bab8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_type.html#a39fe1e526e42d3d765919af7e0d6bab8">string_size</a> () const noexcept</td></tr>
-<tr class="separator:a39fe1e526e42d3d765919af7e0d6bab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afea87aaa471c69acd337239a5db74fba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_type.html#afea87aaa471c69acd337239a5db74fba">string_bound</a> () const noexcept</td></tr>
+<tr class="separator:afea87aaa471c69acd337239a5db74fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a3e4c1aed6df3c71a0c9356ff62dfe6"><td class="memItemLeft" align="right" valign="top"><a id="a9a3e4c1aed6df3c71a0c9356ff62dfe6"></a>
+<a class="el" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_type.html#a9a3e4c1aed6df3c71a0c9356ff62dfe6">string_size</a> () const noexcept</td></tr>
+<tr class="memdesc:a9a3e4c1aed6df3c71a0c9356ff62dfe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obsolete. Use <a class="el" href="class_a_s_t_1_1_type.html#afea87aaa471c69acd337239a5db74fba">Type::string_bound</a> () instead. <br /></td></tr>
+<tr class="separator:a9a3e4c1aed6df3c71a0c9356ff62dfe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2320bbec2d795e52e3441e4c467575a4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_sequence.html">Sequence</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_type.html#a2320bbec2d795e52e3441e4c467575a4">sequence</a> () const noexcept</td></tr>
 <tr class="separator:a2320bbec2d795e52e3441e4c467575a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e32db7d1457378232857be6f9cb90ec"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_array.html">Array</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_type.html#a3e32db7d1457378232857be6f9cb90ec">array</a> () const noexcept</td></tr>
@@ -163,7 +167,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#_a26">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00042">42</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00043">43</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ae27c12696fe202ed662d6bd06ce92800"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae27c12696fe202ed662d6bd06ce92800">&#9670;&nbsp;</a></span>Kind</h2>
@@ -193,9 +197,9 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ae27c12696fe202ed662d6bd06ce92800a8f290a42cbaff2beb0c40af10a30fbb2"></a>NAMED_TYPE&#160;</td><td class="fielddoc"><p><code>named_type ()</code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ae27c12696fe202ed662d6bd06ce92800a63b588d5559f64f89a416e656880b949"></a>STRING&#160;</td><td class="fielddoc"><p><code>string_size ()</code> </p>
+<tr><td class="fieldname"><a id="ae27c12696fe202ed662d6bd06ce92800a63b588d5559f64f89a416e656880b949"></a>STRING&#160;</td><td class="fielddoc"><p><code>string_bound ()</code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ae27c12696fe202ed662d6bd06ce92800ad002390d7727d576cef45267f1678ea3"></a>WSTRING&#160;</td><td class="fielddoc"><p><code>string_size ()</code> </p>
+<tr><td class="fieldname"><a id="ae27c12696fe202ed662d6bd06ce92800ad002390d7727d576cef45267f1678ea3"></a>WSTRING&#160;</td><td class="fielddoc"><p><code>string_bound ()</code> </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ae27c12696fe202ed662d6bd06ce92800ac6e6dc18b53b4c2681394b9d8aefcec7"></a>FIXED&#160;</td><td class="fielddoc"><p><code>fixed_digits (), fixed_scale ()</code> </p>
 </td></tr>
@@ -205,7 +209,7 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00046">46</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00047">47</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -236,7 +240,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a31">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00059">59</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00060">60</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -267,7 +271,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a32">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00066">66</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00067">67</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -298,12 +302,12 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a33">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00074">74</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00075">75</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
-<a id="a39fe1e526e42d3d765919af7e0d6bab8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39fe1e526e42d3d765919af7e0d6bab8">&#9670;&nbsp;</a></span>string_size()</h2>
+<a id="afea87aaa471c69acd337239a5db74fba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afea87aaa471c69acd337239a5db74fba">&#9670;&nbsp;</a></span>string_bound()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -312,7 +316,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t AST::Type::string_size </td>
+          <td class="memname"><a class="el" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a> AST::Type::string_bound </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -324,12 +328,12 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>The string size limit if string has limited size. </dd></dl>
-<dl class="section invariant"><dt>Invariant</dt><dd><code>tkind () == <a class="el" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800a63b588d5559f64f89a416e656880b949" title="string_size ()">Kind::STRING</a> || tkind () == <a class="el" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800ad002390d7727d576cef45267f1678ea3" title="string_size ()">Kind::WSTRING</a></code> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The string size bound if string has limited size. If size is not limited, returns 0. </dd></dl>
+<dl class="section invariant"><dt>Invariant</dt><dd><code>tkind () == <a class="el" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800a63b588d5559f64f89a416e656880b949" title="string_bound ()">Kind::STRING</a> || tkind () == <a class="el" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800ad002390d7727d576cef45267f1678ea3" title="string_bound ()">Kind::WSTRING</a></code> </dd></dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a34">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00083">83</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00084">84</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -360,7 +364,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a38">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00091">91</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00098">98</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -389,7 +393,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The array descriptor. </dd></dl>
 <dl class="section invariant"><dt>Invariant</dt><dd><code>tkind () == <a class="el" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800acb4fb1757fb37c43cded35d3eb857c43" title="array ()">Kind::ARRAY</a></code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00099">99</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00106">106</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -420,7 +424,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a35">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00109">109</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00116">116</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>
@@ -451,7 +455,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#a36">Printer.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00117">117</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_type_8h_source.html#l00124">124</a> of file <a class="el" href="_type_8h_source.html">Type.h</a>.</p>
 
 </div>
 </div>

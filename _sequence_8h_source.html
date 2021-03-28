@@ -103,31 +103,38 @@ $(function() {
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">   38</a></span>&#160;    Dim <a class="code" href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">size</a> () const noexcept</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_sequence.html#a819c4593ef9e99c1f68e5cac500ecde9">   38</a></span>&#160;    <a class="code" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a> <a class="code" href="class_a_s_t_1_1_sequence.html#a819c4593ef9e99c1f68e5cac500ecde9">bound</a> () const noexcept</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">return</span> size_;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">return</span> bound_;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    }</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_type.html">Type</a>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="class_a_s_t_1_1_sequence.html">Sequence</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp; type, Dim <a class="code" href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">size</a> = 0) :</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="class_a_s_t_1_1_type.html">Type</a> (type),</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        size_ (<a class="code" href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">size</a>)</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {}</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    Dim size_;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">   44</a></span>&#160;    <a class="code" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a> <a class="code" href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">size</a> () const noexcept</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="class_a_s_t_1_1_sequence.html#a819c4593ef9e99c1f68e5cac500ecde9">bound</a> ();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_type.html">Type</a>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="class_a_s_t_1_1_sequence.html">Sequence</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp; type, <a class="code" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a> <a class="code" href="class_a_s_t_1_1_sequence.html#a819c4593ef9e99c1f68e5cac500ecde9">bound</a> = 0) :</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="class_a_s_t_1_1_type.html">Type</a> (type),</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        bound_ (<a class="code" href="class_a_s_t_1_1_sequence.html#a819c4593ef9e99c1f68e5cac500ecde9">bound</a>)</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    {}</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">Dim</a> bound_;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_a_s_t_1_1_type_html"><div class="ttname"><a href="class_a_s_t_1_1_type.html">AST::Type</a></div><div class="ttdoc">An IDL type.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00042">Type.h:43</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_sequence_html"><div class="ttname"><a href="class_a_s_t_1_1_sequence.html">AST::Sequence</a></div><div class="ttdoc">Sequence type.</div><div class="ttdef"><b>Definition:</b> <a href="_sequence_8h_source.html#l00033">Sequence.h:35</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_type_html"><div class="ttname"><a href="class_a_s_t_1_1_type.html">AST::Type</a></div><div class="ttdoc">An IDL type.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00043">Type.h:44</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_sequence_html"><div class="ttname"><a href="class_a_s_t_1_1_sequence.html">AST::Sequence</a></div><div class="ttdoc">The sequence type descriptor.</div><div class="ttdef"><b>Definition:</b> <a href="_sequence_8h_source.html#l00033">Sequence.h:35</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00031">Array.h:31</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_sequence_html_abb0da88100fd2269a555f7a72a5db48e"><div class="ttname"><a href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">AST::Sequence::size</a></div><div class="ttdeci">Dim size() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_sequence_8h_source.html#l00038">Sequence.h:38</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html_a6fd9093219afd22f8ddd822664ad686e"><div class="ttname"><a href="namespace_a_s_t.html#a6fd9093219afd22f8ddd822664ad686e">AST::Dim</a></div><div class="ttdeci">uint32_t Dim</div><div class="ttdoc">Array dimensions, string and sequence bounds.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00037">Type.h:37</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_sequence_html_abb0da88100fd2269a555f7a72a5db48e"><div class="ttname"><a href="class_a_s_t_1_1_sequence.html#abb0da88100fd2269a555f7a72a5db48e">AST::Sequence::size</a></div><div class="ttdeci">Dim size() const noexcept</div><div class="ttdoc">Obsolete. Use Sequence::bound () instead.</div><div class="ttdef"><b>Definition:</b> <a href="_sequence_8h_source.html#l00044">Sequence.h:44</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_sequence_html_a819c4593ef9e99c1f68e5cac500ecde9"><div class="ttname"><a href="class_a_s_t_1_1_sequence.html#a819c4593ef9e99c1f68e5cac500ecde9">AST::Sequence::bound</a></div><div class="ttdeci">Dim bound() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_sequence_8h_source.html#l00038">Sequence.h:38</a></div></div>
 <div class="ttc" id="a_type_8h_html"><div class="ttname"><a href="_type_8h.html">Type.h</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
