@@ -1056,6 +1056,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::VALUE_TYPE);
+		assert (static_cast <const ValueType*> (parent)->modifier () != ValueType::Modifier::ABSTRACT);
 		Ptr <OperationBase> op = Ptr <OperationBase>::make <ValueFactory> (ref (*this), ref (name));
 		if (check_member_name (*op)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*op);
@@ -1325,6 +1326,7 @@ void Builder::state_member (bool is_public, const Type& type, const Declarators&
 	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
 	if (vt) {
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
+		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
 		if (check_complete_or_ref (type, names.front ())) {
 			for (auto name = names.begin (); name != names.end (); ++name) {
 				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));
