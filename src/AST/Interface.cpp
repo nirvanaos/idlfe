@@ -3,6 +3,8 @@
 *
 * This is a part of the Nirvana project.
 *
+* Author: Igor Popov
+*
 * Copyright (c) 2021 Igor Popov.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -51,11 +53,21 @@ void Interface::get_all_containers (Containers& all) const
 		base->get_all_containers (all);
 }
 
-void Interface::get_all_bases (set <const Interface*>& bases) const
+Interfaces Interface::get_all_bases () const
+{
+	set <const Interface*> bset;
+	Interfaces bvec;
+	get_all_bases (bset, bvec);
+	return bvec;
+}
+
+void Interface::get_all_bases (set <const Interface*>& bset, Interfaces& bvec) const
 {
 	for (const Interface* base : bases_) {
-		if (bases.insert (base).second)
-			base->get_all_bases (bases);
+		if (bset.insert (base).second) {
+			bvec.push_back (base);
+			base->get_all_bases (bset, bvec);
+		}
 	}
 }
 

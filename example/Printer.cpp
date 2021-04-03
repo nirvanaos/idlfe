@@ -4,12 +4,6 @@
 using namespace std;
 using namespace AST;
 
-void Printer::indent ()
-{
-	for (unsigned cnt = indent_; cnt; --cnt)
-		out_ << '\t';
-}
-
 void Printer::print_type (const Type& t)
 {
 	static const char* const basic_types [(size_t)BasicType::ANY + 1] = {
@@ -79,13 +73,11 @@ void Printer::leaf (const Include& item)
 
 void Printer::leaf (const Native& item)
 {
-	indent ();
 	out_ << "native " << item.name () << ";\n";
 }
 
 void Printer::leaf (const TypeDef& item)
 {
-	indent ();
 	out_ << "typedef ";
 	print_type (item);
 	out_ << ' ' << item.name () << ";\n";
@@ -93,7 +85,6 @@ void Printer::leaf (const TypeDef& item)
 
 void Printer::leaf (const Constant& item)
 {
-	indent ();
 	out_ << "const ";
 	print_type (item);
 	out_ << ' ' << item.name () << " = " << item.to_string () <<";\n";
@@ -101,12 +92,13 @@ void Printer::leaf (const Constant& item)
 
 void Printer::begin (const ModuleItems& item)
 {
-	out_ << "module " << item.name () << " {\n";
+	out_.empty_line ();
+	out_ << "module " << item.name () << " {\n\n";
 }
 
 void Printer::end (const ModuleItems& item)
 {
-	out_ << "};\n";
+	out_ << "};\n\n";
 }
 
 void Printer::print_interface_kind (const InterfaceKind ik)
@@ -126,34 +118,30 @@ void Printer::print_interface_kind (const InterfaceKind ik)
 
 void Printer::leaf (const InterfaceDecl& item)
 {
-	indent ();
 	print_interface_kind (item);
 	out_ << "interface " << item.name () << ";\n";
 }
 
 void Printer::begin (const Interface& item)
 {
-	indent ();
+	out_.empty_line ();
 	print_interface_kind (item);
 	out_ << "interface " << item.name ();
 	if (!item.bases ().empty ()) {
 		out_ << " :\n";
-		++indent_;
+		out_.indent ();
 		auto base = item.bases ().begin ();
-		indent ();
 		out_ << (*base)->name ();
 		++base;
 		for (; base != item.bases ().end (); ++base) {
 			out_ << ",\n";
-			indent ();
 			out_ << (*base)->name ();
 		}
-		--indent_;
+		out_.unindent ();
 	}
 	out_ << '\n';
-	indent ();
 	out_ << "{\n";
-	++indent_;
+	out_.indent ();
 }
 
 void Printer::end (const Interface& item)
@@ -163,21 +151,19 @@ void Printer::end (const Interface& item)
 
 void Printer::constructed_begin (const char* type, const NamedItem& item)
 {
-	indent ();
+	out_.empty_line ();
 	out_ << type << item.name () << " {\n";
-	++indent_;
+	out_.indent ();
 }
 
 void Printer::complex_end ()
 {
-	--indent_;
-	indent ();
-	out_ << "};\n";
+	out_.unindent ();
+	out_ << "};\n\n";
 }
 
 void Printer::leaf (const Operation& item)
 {
-	indent ();
 	if (item.oneway ())
 		out_ << "oneway void";
 	else if (item.tkind () == Type::Kind::VOID)
@@ -245,7 +231,6 @@ void Printer::print (const Parameter& p)
 
 void Printer::leaf (const Attribute& item)
 {
-	indent ();
 	if (item.readonly ()) {
 		out_ << "readonly attribute ";
 		print_type (item);
@@ -282,7 +267,6 @@ void Printer::end (const Exception& item)
 
 void Printer::leaf (const StructDecl& item)
 {
-	indent ();
 	out_ << "struct " << item.name () << ";\n";
 }
 
@@ -298,41 +282,35 @@ void Printer::end (const Struct& item)
 
 void Printer::leaf (const Member& item)
 {
-	indent ();
 	print_type (item);
 	out_ << ' ' << item.name () << ";\n";
 }
 
 void Printer::leaf (const UnionDecl& item)
 {
-	indent ();
 	out_ << "union " << item.name () << ";\n";
 }
 
 void Printer::begin (const Union& item)
 {
-	indent ();
 	out_ << "union " << item.name () << " switch (";
 	print_type (item.discriminator_type ());
 	out_ << ") {\n";
-	++indent_;
+	out_.indent ();
 }
 
 void Printer::leaf (const UnionElement& item)
 {
-	indent ();
 	if (!item.is_default ()) {
 		for (const auto& label : item.labels ()) {
-			indent ();
 			out_ << "case " << label.to_string () << ":\n";
 		}
 	} else
 		out_ << "default:\n";
-	++indent_;
-	indent ();
+	out_.indent ();
 	print_type (item);
 	out_ << ' ' << item.name () << ";\n";
-	--indent_;
+	out_.unindent ();
 }
 
 void Printer::end (const Union& item)
@@ -344,11 +322,9 @@ void Printer::leaf (const Enum& item)
 {
 	constructed_begin ("enum ", item);
 	auto it = item.begin ();
-	indent ();
 	out_ << (*it)->name ();
 	for (++it; it != item.end (); ++it) {
 		out_ << ",\n";
-		indent ();
 		out_ << (*it)->name ();
 	}
 	out_ << endl;
@@ -357,7 +333,6 @@ void Printer::leaf (const Enum& item)
 
 void Printer::leaf (const ValueTypeDecl& item)
 {
-	indent ();
 	if (item.is_abstract ())
 		out_ << "abstract ";
 	out_ << "valuetype " << item.name () << ";\n";
@@ -365,7 +340,6 @@ void Printer::leaf (const ValueTypeDecl& item)
 
 void Printer::begin (const ValueType& item)
 {
-	indent ();
 	switch (item.modifier ()) {
 		case ValueType::Modifier::ABSTRACT:
 			out_ << "abstract ";
@@ -378,40 +352,35 @@ void Printer::begin (const ValueType& item)
 
 	if (!item.bases ().empty ()) {
 		out_ << ":\n";
-		++indent_;
+		out_.indent ();
 		auto base = item.bases ().begin ();
-		indent ();
 		out_ << (*base)->name ();
 		++base;
 		for (; base != item.bases ().end (); ++base) {
 			out_ << ",\n";
-			indent ();
 			out_ << (*base)->name ();
 		}
-		--indent_;
+		out_.unindent ();
 	}
 
 	if (!item.supports ().empty ()) {
 		out_ << "supports\n";
-		++indent_;
+		out_.indent ();
 		auto base = item.supports ().begin ();
-		indent ();
 		if (item.modifier () == ValueType::Modifier::TRUNCATABLE)
 			out_ << "truncatable ";
 		out_ << (*base)->name ();
 		++base;
 		for (; base != item.supports ().end (); ++base) {
 			out_ << ",\n";
-			indent ();
 			out_ << (*base)->name ();
 		}
-		--indent_;
+		out_.unindent ();
 	}
 
 	out_ << '\n';
-	indent ();
 	out_ << "{\n";
-	++indent_;
+	out_.indent ();
 }
 
 void Printer::end (const ValueType& item)
@@ -421,7 +390,6 @@ void Printer::end (const ValueType& item)
 
 void Printer::leaf (const StateMember& item)
 {
-	indent ();
 	if (item.is_public ())
 		out_ << "public ";
 	else
@@ -432,7 +400,6 @@ void Printer::leaf (const StateMember& item)
 
 void Printer::leaf (const ValueFactory& item)
 {
-	indent ();
 	out_ << "factory ";
 	print_op_base (item);
 	out_ << ";\n";
@@ -440,7 +407,6 @@ void Printer::leaf (const ValueFactory& item)
 
 void Printer::leaf (const ValueBox& item)
 {
-	indent ();
 	out_ << "valuetype " << item.name () << ' ';
 	print_type (item);
 	out_ << ";\n";

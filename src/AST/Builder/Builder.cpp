@@ -3,6 +3,8 @@
 *
 * This is a part of the Nirvana project.
 *
+* Author: Igor Popov
+*
 * Copyright (c) 2021 Igor Popov.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -822,19 +824,25 @@ void Builder::interface_bases (const ScopedNames& bases)
 						message (*base_name, MessageType::ERROR, "may not derive from itself");
 						continue;
 					}
-					if (InterfaceKind::PSEUDO == base_itf->interface_kind ())
-						err = "pseudo interfaces may not be derived";
-					else {
-						switch (itf->interface_kind ()) {
-							case InterfaceKind::UNCONSTRAINED:
-								if (InterfaceKind::LOCAL == base_itf->interface_kind ())
-									err = "unconstrained interface may not derive local interface";
-								break;
-							case InterfaceKind::ABSTRACT:
-								if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
-									err = "an abstract interface may only inherit from abstract interfaces";
-								break;
-						}
+					switch (itf->interface_kind ()) {
+						case InterfaceKind::UNCONSTRAINED:
+							switch (base_itf->interface_kind ()) {
+								case InterfaceKind::LOCAL:
+									err = "the unconstrained interface may not inherit a local interface";
+									break;
+								case InterfaceKind::PSEUDO:
+									err = "the unconstrained interface may not inherit a pseudo interface";
+									break;
+							}
+							break;
+						case InterfaceKind::ABSTRACT:
+							if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
+								err = "the abstract interface may only inherit abstract interfaces";
+							break;
+						case InterfaceKind::PSEUDO:
+							if (InterfaceKind::PSEUDO != base_itf->interface_kind ())
+								err = "the pseudo interface may only inherit pseudo interfaces";
+							break;
 					}
 					if (!err) {
 						auto ins = direct_bases.emplace (base, *base_name);
@@ -1056,6 +1064,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::VALUE_TYPE);
+		assert (static_cast <const ValueType*> (parent)->modifier () != ValueType::Modifier::ABSTRACT);
 		Ptr <OperationBase> op = Ptr <OperationBase>::make <ValueFactory> (ref (*this), ref (name));
 		if (check_member_name (*op)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*op);
@@ -1325,6 +1334,7 @@ void Builder::state_member (bool is_public, const Type& type, const Declarators&
 	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
 	if (vt) {
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
+		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
 		if (check_complete_or_ref (type, names.front ())) {
 			for (auto name = names.begin (); name != names.end (); ++name) {
 				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));

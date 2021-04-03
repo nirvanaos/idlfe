@@ -3,6 +3,8 @@
 *
 * This is a part of the Nirvana project.
 *
+* Author: Igor Popov
+*
 * Copyright (c) 2021 Igor Popov.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -258,6 +260,7 @@ interface_header
 	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); }
 	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	| T_pseudo T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::PSEUDO); }
+	| T_pseudo T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::PSEUDO); } interface_inheritance_spec
 	;
 
 interface_body

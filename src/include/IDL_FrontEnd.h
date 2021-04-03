@@ -4,6 +4,8 @@
 *
 * This is a part of the Nirvana project.
 *
+* Author: Igor Popov
+*
 * Copyright (c) 2021 Igor Popov.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -148,7 +150,7 @@ protected:
 	/// 
 	/// \param tree AST.
 	/// \throw std::runtime_error For displaying the error message and compile next file.
-	///                           Otherr exceptions will cause the compilation interruption.
+	///                           Other exceptions will cause the compilation interruption.
 	virtual void generate_code (const ::AST::Root& tree) = 0;
 
 private:

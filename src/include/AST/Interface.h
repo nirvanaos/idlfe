@@ -4,6 +4,8 @@
 *
 * This is a part of the Nirvana project.
 *
+* Author: Igor Popov
+*
 * Copyright (c) 2021 Igor Popov.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -66,7 +68,7 @@ private:
 /// The sequence of interfaces.
 typedef std::vector <const Interface*> Interfaces;
 
-/// Interface definition.
+/// %Interface definition.
 class Interface :
 	public ItemContainer,
 	public InterfaceKind
@@ -80,8 +82,8 @@ public:
 
 	/// Get all direct and indirect bases.
 	/// 
-	/// \param bases All bases.
-	void get_all_bases (std::set <const Interface*>& bases) const;
+	/// \return All bases.
+	Interfaces get_all_bases () const;
 
 private:
 	template <class T> friend class Ptr;
@@ -100,11 +102,13 @@ private:
 		bases_.push_back (&base);
 	}
 
+	void get_all_bases (std::set <const Interface*>& bset, Interfaces& bvec) const;
+
 private:
 	Interfaces bases_;
 };
 
-/// Interface forward declaration.
+/// %Interface forward declaration.
 class InterfaceDecl :
 	public NamedItem,
 	public InterfaceKind,

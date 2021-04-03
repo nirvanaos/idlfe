@@ -3,18 +3,14 @@
 #define NIDLFE_EXAMPLE_PRINTER_H_
 
 #include <AST/CodeGen.h>
-#include <filesystem>
-#include <fstream>
+#include <BE/IndentedOut.h>
 
 class Printer : public AST::CodeGen
 {
 public:
 	Printer (const std::filesystem::path& filename) :
-		indent_ (0)
-	{
-		out_.exceptions (std::ofstream::failbit | std::ofstream::badbit);
-		out_.open (filename);
-	}
+		out_ (filename)
+	{}
 
 protected:
 	virtual void leaf (const AST::Include& item);
@@ -68,10 +64,7 @@ private:
 	void print (const AST::Raises& raises);
 
 private:
-	std::ofstream out_;
-	unsigned indent_;
+	BE::IndentedOut out_;
 };
-
-
 
 #endif
