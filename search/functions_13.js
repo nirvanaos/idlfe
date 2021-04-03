@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['_7etype_385',['~Type',['../class_a_s_t_1_1_type.html#abb1381dda8574a5944abe9b3e4076c68',1,'AST::Type']]],
-  ['_7evariant_386',['~Variant',['../class_a_s_t_1_1_variant.html#a31fa4b2e583c27df861da89480468d6e',1,'AST::Variant']]]
+  ['variant_399',['Variant',['../class_a_s_t_1_1_variant.html#acb082935f0d1f3d413ea169d99198c1e',1,'AST::Variant::Variant()'],['../class_a_s_t_1_1_variant.html#aa362f93f2f1461ca48dc7baa93d947a1',1,'AST::Variant::Variant(const Variant &amp;src)'],['../class_a_s_t_1_1_variant.html#a51379f38bfa545a68173c3b89ad788ec',1,'AST::Variant::Variant(Variant &amp;&amp;src) noexcept']]],
+  ['visit_400',['visit',['../class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda',1,'AST::Container::visit()'],['../class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba',1,'AST::Root::visit()']]],
+  ['vtype_401',['vtype',['../class_a_s_t_1_1_variant.html#a6e60197d3914d6d2fc8baefc16d2acbb',1,'AST::Variant']]]
 ];

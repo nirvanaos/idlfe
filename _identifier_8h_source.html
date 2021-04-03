@@ -74,62 +74,64 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">*</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">* This is a part of the Nirvana project.</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">*</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">* Copyright (c) 2021 Igor Popov.</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">* Author: Igor Popov</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">*</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">* This program is free software; you can redistribute it and/or modify</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">* it under the terms of the GNU Lesser General Public License as published by</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">* the Free Software Foundation; either version 3 of the License, or</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">* (at your option) any later version.</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">*</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">* This program is distributed in the hope that it will be useful,</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">* but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">* GNU General Public License for more details.</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">*</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">* You should have received a copy of the GNU Lesser General Public</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">* License along with this library.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">*</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">* Send comments and/or bug reports to:</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">*  popov.nirvana@gmail.com</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_IDENTIFIER_H_</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define NIDL_AST_IDENTIFIER_H_</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">* Copyright (c) 2021 Igor Popov.</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">*</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">* This program is free software; you can redistribute it and/or modify</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">* it under the terms of the GNU Lesser General Public License as published by</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">* the Free Software Foundation; either version 3 of the License, or</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">* (at your option) any later version.</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">*</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">* This program is distributed in the hope that it will be useful,</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">* but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">* GNU General Public License for more details.</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">*</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">* You should have received a copy of the GNU Lesser General Public</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">* License along with this library.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">*</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">* Send comments and/or bug reports to:</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">*  popov.nirvana@gmail.com</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_IDENTIFIER_H_</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define NIDL_AST_IDENTIFIER_H_</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html">   33</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a> : <span class="keyword">public</span> std::string</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a2d49228bc6a9362623524e1f883ad453">   37</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_identifier.html#a2d49228bc6a9362623524e1f883ad453">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; r) <span class="keyword">const</span> noexcept;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">   40</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">Identifier</a> () {}</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">   46</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">Identifier</a> (<span class="keyword">const</span> <span class="keywordtype">char</span>* s, <span class="keywordtype">size_t</span> len) :</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        std::string (<span class="stringliteral">&#39;_&#39;</span> == *s ? s + 1 : s, <span class="stringliteral">&#39;_&#39;</span> == *s ? len - 1 : len)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    {}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">Identifier</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">Identifier</a> (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">// Simplified tolower. We don&#39;t need to consider the locale settings.</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">char</span> tolower (<span class="keywordtype">char</span> c)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> (<span class="charliteral">&#39;A&#39;</span> &lt;= c &amp;&amp; c &lt;= <span class="charliteral">&#39;Z&#39;</span>) ? c + 32 : c;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html">   35</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a> : <span class="keyword">public</span> std::string</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a2d49228bc6a9362623524e1f883ad453">   39</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_identifier.html#a2d49228bc6a9362623524e1f883ad453">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; r) <span class="keyword">const</span> noexcept;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">   42</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">Identifier</a> () {}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">   48</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">Identifier</a> (<span class="keyword">const</span> <span class="keywordtype">char</span>* s, <span class="keywordtype">size_t</span> len) :</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        std::string (<span class="stringliteral">&#39;_&#39;</span> == *s ? s + 1 : s, <span class="stringliteral">&#39;_&#39;</span> == *s ? len - 1 : len)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">Identifier</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">Identifier</a> (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="comment">// Simplified tolower. We don&#39;t need to consider the locale settings.</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">char</span> tolower (<span class="keywordtype">char</span> c)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">return</span> (<span class="charliteral">&#39;A&#39;</span> &lt;= c &amp;&amp; c &lt;= <span class="charliteral">&#39;Z&#39;</span>) ? c + 32 : c;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_a_s_t_1_1_identifier_html"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html">AST::Identifier</a></div><div class="ttdoc">An identifier.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00033">Identifier.h:34</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a3ec341ba908cc0d525f3955616edfc0a"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier(const char *s, size_t len)</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00046">Identifier.h:46</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00031">Array.h:31</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a2adf459d331b2f614518efcafd42932f"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00040">Identifier.h:40</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_identifier_html"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html">AST::Identifier</a></div><div class="ttdoc">An identifier.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00035">Identifier.h:36</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a3ec341ba908cc0d525f3955616edfc0a"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier(const char *s, size_t len)</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00048">Identifier.h:48</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a2adf459d331b2f614518efcafd42932f"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00042">Identifier.h:42</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a2d49228bc6a9362623524e1f883ad453"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a2d49228bc6a9362623524e1f883ad453">AST::Identifier::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const Identifier &amp;r) const noexcept</div><div class="ttdoc">CORBA IDL identifiers are case-insensitive.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
