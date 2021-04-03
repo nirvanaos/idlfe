@@ -824,19 +824,25 @@ void Builder::interface_bases (const ScopedNames& bases)
 						message (*base_name, MessageType::ERROR, "may not derive from itself");
 						continue;
 					}
-					if (InterfaceKind::PSEUDO == base_itf->interface_kind ())
-						err = "pseudo interfaces may not be derived";
-					else {
-						switch (itf->interface_kind ()) {
-							case InterfaceKind::UNCONSTRAINED:
-								if (InterfaceKind::LOCAL == base_itf->interface_kind ())
-									err = "unconstrained interface may not derive local interface";
-								break;
-							case InterfaceKind::ABSTRACT:
-								if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
-									err = "an abstract interface may only inherit from abstract interfaces";
-								break;
-						}
+					switch (itf->interface_kind ()) {
+						case InterfaceKind::UNCONSTRAINED:
+							switch (base_itf->interface_kind ()) {
+								case InterfaceKind::LOCAL:
+									err = "the unconstrained interface may not inherit a local interface";
+									break;
+								case InterfaceKind::PSEUDO:
+									err = "the unconstrained interface may not inherit a pseudo interface";
+									break;
+							}
+							break;
+						case InterfaceKind::ABSTRACT:
+							if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
+								err = "the abstract interface may only inherit abstract interfaces";
+							break;
+						case InterfaceKind::PSEUDO:
+							if (InterfaceKind::PSEUDO != base_itf->interface_kind ())
+								err = "the pseudo interface may only inherit pseudo interfaces";
+							break;
 					}
 					if (!err) {
 						auto ins = direct_bases.emplace (base, *base_name);
