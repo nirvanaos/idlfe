@@ -32,7 +32,7 @@ See: https://www.omg.org/spec/IDL/4.2/
 * CORBA-Specific - Interfaces (except for `import`)
 * Value Types
 * CORBA-Specific - Value Types
-* Anonimous Types
+* Anonimous Types (optional)
 
 ## How to use
 

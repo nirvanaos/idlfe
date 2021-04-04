@@ -27,15 +27,14 @@
 #ifndef NIDL_AST_ATTRIBUTE_H_
 #define NIDL_AST_ATTRIBUTE_H_
 
+#include "Member.h"
 #include "Exception.h"
-#include "Type.h"
 
 namespace AST {
 
 /// \brief The `attribute` specification.
 class Attribute :
-	public NamedItem,
-	public Type
+	public Member
 {
 public:
 	/// \returns `true` if the attribute is marked as `readonly`.
@@ -60,9 +59,8 @@ private:
 	friend class Build::Builder;
 	template <class T> friend class Ptr;
 
-	Attribute (const Build::Builder& builder, bool readonly, const Type& type, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::ATTRIBUTE, builder, name),
-		Type (type),
+	Attribute (Build::Builder& builder, bool readonly, const Type& type, const Build::SimpleDeclarator& name) :
+		Member (builder, type, name, Item::Kind::ATTRIBUTE),
 		readonly_ (readonly)
 	{}
 

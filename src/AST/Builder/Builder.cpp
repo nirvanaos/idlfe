@@ -1034,6 +1034,8 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 	assert (!scope_stack_.empty ());
 	assert (!operation_.op); // operation_end () must be called
 
+	check_anonymous (type, name);
+
 	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
@@ -1721,6 +1723,26 @@ void Builder::check_unique (RepIdMap& ids, const RepositoryId& rid)
 	if (!ins.second) {
 		message (rid.item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
 		see_declaration_of (ins.first->second, ins.first->second.qualified_name ());
+	}
+}
+
+void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
+{
+	if (anonymous_deprecated_) {
+		bool anonymous = false;
+		switch (type.tkind ()) {
+			case Type::Kind::STRING:
+			case Type::Kind::WSTRING:
+				anonymous = type.string_bound () != 0;
+				break;
+			case Type::Kind::FIXED:
+			case Type::Kind::SEQUENCE:
+			case Type::Kind::ARRAY:
+				anonymous = true;
+		}
+
+		if (anonymous)
+			message (name, MessageType::ERROR, name + ": anonymous type does not allowed");
 	}
 }
 

@@ -115,7 +115,17 @@ protected:
 		const char* const* end_;
 	};
 
-	IDL_FrontEnd () :
+	/// Deprecates anonymous IDL types as required the C++11 Language Mapping Specification.
+	static const unsigned FLAG_DEPRECATE_ANONYMOUS_TYPES = 1;
+
+protected:
+
+	/// Constructor
+	/// 
+	/// \param flags The flags.
+	///              Currently only IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES is supported.
+	IDL_FrontEnd (unsigned flags = 0) :
+		flags_ (flags),
 		arguments_ (nullptr)
 	{}
 
@@ -157,6 +167,7 @@ private:
 	bool compile (const std::string& file);
 
 private:
+	unsigned flags_;
 	struct Arguments;
 	Arguments* arguments_;
 };

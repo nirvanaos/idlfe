@@ -49,11 +49,12 @@ namespace Build {
 class Builder
 {
 public:
-	Builder (const std::string& file, std::ostream& err_out) :
+	Builder (const std::string& file, std::ostream& err_out, bool anonymous_deprecated) :
 		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
 		tree_ (Ptr <Root>::make <Root> (file)),
-		is_main_file_ (true)
+		is_main_file_ (true),
+		anonymous_deprecated_ (anonymous_deprecated)
 	{
 		container_stack_.push (tree_);
 		file_stack_.emplace_back (*tree_->add_file (file).first);
@@ -224,6 +225,8 @@ public:
 
 	Ptr <Root> finalize ();
 
+	void check_anonymous (const Type& type, const SimpleDeclarator& name);
+
 private:
 	bool prefix_valid (const std::string& pref, const Location& loc);
 	void prefix (const std::string& pref, const Location& loc);
@@ -267,6 +270,7 @@ private:
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
 	std::stack <std::unique_ptr <Eval>> eval_stack_;
+	bool anonymous_deprecated_;
 
 	struct File
 	{
@@ -353,7 +357,6 @@ private:
 			}
 		} element;
 	} union_;
-
 };
 
 }
