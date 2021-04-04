@@ -27,15 +27,13 @@
 #ifndef NIDL_AST_PARAMETER_H_
 #define NIDL_AST_PARAMETER_H_
 
-#include "NamedItem.h"
-#include "Type.h"
+#include "Member.h"
 
 namespace AST {
 
 /// The parameter of an operation.
 class Parameter :
-	public NamedItem,
-	public Type
+	public Member
 {
 public:
 	/// Parameter attribute: `in`, `out`, `inout`.
@@ -56,8 +54,7 @@ private:
 	template <class T> friend class Ptr;
 
 	Parameter (const Build::Builder& builder, Attribute att, const Type& type, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::PARAMETER, builder, name),
-		Type (type),
+		Member (builder, type, name, Item::Kind::PARAMETER),
 		attribute_ (att)
 	{}
 

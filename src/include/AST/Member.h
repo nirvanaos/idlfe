@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The member of `struct`, `union`, or `valuetype`.
+/// The item with name and type.
 class Member :
 	public NamedItem,
 	public Type
