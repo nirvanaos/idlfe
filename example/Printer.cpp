@@ -30,7 +30,7 @@ void Printer::print_type (const Type& t)
 			out_ << basic_types [(size_t)t.basic_type ()];
 			break;
 		case Type::Kind::NAMED_TYPE:
-			out_ << t.named_type ()->qualified_name ();
+			out_ << t.named_type ().qualified_name ();
 			break;
 		case Type::Kind::STRING:
 		case Type::Kind::WSTRING:
