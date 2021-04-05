@@ -40,9 +40,9 @@ class Driver :
 	public AST::Build::Builder
 {
 public:
-	static AST::Ptr <AST::Root> parse (const std::string& file, std::istream& yyin)
+	static AST::Ptr <AST::Root> parse (const std::string& file, std::istream& yyin, bool anonymous_deprecated)
 	{
-		Driver drv (file, yyin);
+		Driver drv (file, yyin, anonymous_deprecated);
 		return drv.parse ();
 	}
 
@@ -62,7 +62,7 @@ private:
 		return *this;
 	}
 
-	Driver (const std::string& file, std::istream& yyin);
+	Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated);
 
 	AST::Ptr <AST::Root> parse ()
 	{

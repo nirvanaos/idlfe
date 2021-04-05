@@ -1,4 +1,3 @@
-/// \file StateMember.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,35 +23,17 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_STATEMEMBER_H_
-#define NIDL_AST_STATEMEMBER_H_
-
-#include "Member.h"
+#include "Builder/Builder.h"
 
 namespace AST {
 
-/// State member.
-class StateMember : public Member
+using namespace Build;
+
+Member::Member (Builder& builder, const Type& t, const Build::SimpleDeclarator& name, Item::Kind kind) :
+	NamedItem (kind, builder, name),
+	Type (t)
 {
-public:
-	/// \returns `true` for public member.
-	bool is_public () const noexcept
-	{
-		return is_public_;
-	}
-
-private:
-	template <class T> friend class Ptr;
-
-	StateMember (Build::Builder& builder, bool is_public, const Type& t, const Build::SimpleDeclarator& name) :
-		Member (builder, t, name, Item::Kind::STATE_MEMBER),
-		is_public_ (is_public)
-	{}
-
-private:
-	bool is_public_;
-};
-
+	builder.check_anonymous (t, name);
 }
 
-#endif
+}

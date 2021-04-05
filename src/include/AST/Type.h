@@ -74,11 +74,11 @@ public:
 
 	/// \returns Reference to a named type.
 	/// \invariant `tkind () == Kind::NAMED_TYPE`.
-	const Ptr <NamedItem>& named_type () const noexcept
+	const NamedItem& named_type () const noexcept
 	{
 		assert (tkind () == Kind::NAMED_TYPE);
-		assert (type_.named_type);
-		return *type_.named_type;
+		assert (**type_.named_type);
+		return **type_.named_type;
 	}
 
 	/// \returns The string size bound if string has limited size. If size is not limited, returns 0.

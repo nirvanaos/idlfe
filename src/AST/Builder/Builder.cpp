@@ -1034,6 +1034,8 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 	assert (!scope_stack_.empty ());
 	assert (!operation_.op); // operation_end () must be called
 
+	check_anonymous (type, name);
+
 	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
@@ -1296,7 +1298,7 @@ bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
 {
 	if (!type.is_complete_or_ref ()) {
 		message (loc, MessageType::ERROR, "incomplete type is not allowed");
-		see_declaration_of (*type.named_type (), type.named_type ()->qualified_name ());
+		see_declaration_of (type.named_type (), type.named_type ().qualified_name ());
 		return false;
 	}
 	return true;
@@ -1400,8 +1402,8 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 			} break;
 
 			case Type::Kind::NAMED_TYPE: {
-				if (t.named_type ()->kind () == Item::Kind::ENUM) {
-					enum_type = switch_type.named_type ();
+				if (t.named_type ().kind () == Item::Kind::ENUM) {
+					enum_type = &switch_type.named_type ();
 					type_OK = true;
 				}
 			}
@@ -1552,7 +1554,7 @@ void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
 		{
 			const Type& t = type.dereference_type ();
 			if (t.tkind () == Type::Kind::NAMED_TYPE) {
-				switch (t.named_type ()->kind ()) {
+				switch (t.named_type ().kind ()) {
 					case Item::Kind::VALUE_TYPE:
 					case Item::Kind::VALUE_BOX:
 						message (name, MessageType::ERROR, "value types may not be boxed");
@@ -1604,7 +1606,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 			eval = new EvalFixed (*this);
 			break;
 		case Type::Kind::NAMED_TYPE: {
-			const NamedItem& nt = *type.named_type ();
+			const NamedItem& nt = type.named_type ();
 			if (nt.kind () == Item::Kind::ENUM)
 				eval = new EvalEnum (*this, nt);
 		} break;
@@ -1688,7 +1690,7 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 {
 	if (!type.is_complete ()) {
 		message (loc, MessageType::ERROR, "incomplete type is not allowed");
-		see_declaration_of (*type.named_type (),  type.named_type ()->qualified_name ());
+		see_declaration_of (type.named_type (),  type.named_type ().qualified_name ());
 		return false;
 	}
 	return true;
@@ -1721,6 +1723,26 @@ void Builder::check_unique (RepIdMap& ids, const RepositoryId& rid)
 	if (!ins.second) {
 		message (rid.item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
 		see_declaration_of (ins.first->second, ins.first->second.qualified_name ());
+	}
+}
+
+void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
+{
+	if (anonymous_deprecated_) {
+		bool anonymous = false;
+		switch (type.tkind ()) {
+			case Type::Kind::STRING:
+			case Type::Kind::WSTRING:
+				anonymous = type.string_bound () != 0;
+				break;
+			case Type::Kind::FIXED:
+			case Type::Kind::SEQUENCE:
+			case Type::Kind::ARRAY:
+				anonymous = true;
+		}
+
+		if (anonymous)
+			message (name, MessageType::ERROR, name + ": anonymous type does not allowed");
 	}
 }
 

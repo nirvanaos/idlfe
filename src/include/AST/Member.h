@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The member of `struct`, `union`, or `valuetype`.
+/// The item with name and type.
 class Member :
 	public NamedItem,
 	public Type
@@ -40,10 +40,7 @@ class Member :
 protected:
 	template <class T> friend class Ptr;
 
-	Member (const Build::Builder& builder, const Type& t, const Build::SimpleDeclarator& name, Item::Kind kind = Item::Kind::MEMBER) :
-		NamedItem (kind, builder, name),
-		Type (t)
-	{}
+	Member (Build::Builder& builder, const Type& t, const Build::SimpleDeclarator& name, Item::Kind kind = Item::Kind::MEMBER);
 };
 
 }

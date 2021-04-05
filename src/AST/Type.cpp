@@ -127,9 +127,9 @@ const Type& Type::dereference_type () const noexcept
 {
 	const Type* t = this;
 	while (t->kind_ == Kind::NAMED_TYPE) {
-		const NamedItem* p = t->named_type ();
-		if (Item::Kind::TYPE_DEF == p->kind ())
-			t = static_cast <const TypeDef*> (p);
+		const NamedItem& nt = t->named_type ();
+		if (Item::Kind::TYPE_DEF == nt.kind ())
+			t = &static_cast <const TypeDef&> (nt);
 		else
 			break;
 	}
@@ -158,7 +158,7 @@ size_t Type::key_max () const noexcept
 				return numeric_limits <size_t>::max ();
 		}
 	} else if (t.tkind () == Kind::NAMED_TYPE) {
-		const NamedItem& en = *named_type ();
+		const NamedItem& en = named_type ();
 		if (en.kind () == Item::Kind::ENUM) {
 			size_t item_cnt = static_cast <const Enum&> (en).size ();
 			if (item_cnt > 0)
@@ -174,7 +174,7 @@ bool Type::is_complete_or_ref () const noexcept
 {
 	const Type& t = dereference_type ();
 	if (t.tkind () == Kind::NAMED_TYPE) {
-		Item::Kind k = named_type ()->kind ();
+		Item::Kind k = named_type ().kind ();
 		return k != Item::Kind::STRUCT_DECL && k != Item::Kind::UNION_DECL;
 	}
 	return true;
@@ -185,7 +185,7 @@ bool Type::is_complete () const noexcept
 	const Type& t = dereference_type ();
 	switch (t.tkind ()) {
 		case Kind::NAMED_TYPE:
-			return !t.named_type ()->is_forward_decl ();
+			return !t.named_type ().is_forward_decl ();
 		case Kind::SEQUENCE:
 			return sequence ().is_complete ();
 		case Kind::ARRAY:
