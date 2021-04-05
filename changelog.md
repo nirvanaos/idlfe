@@ -1,6 +1,11 @@
 # Change log
 
-### 1.1.0 03.04.2021
+### 1.2.0
+
+- Added: Flag for deprecation the anonymous IDL types
+- Changed: The class hierarchy for Parameter and Attribute
+
+### 1.1.1 03.04.2021
 
 - Added: class BE\::IndentedOut
 - Fixed: AST\::Interface\::get_all_bases ()

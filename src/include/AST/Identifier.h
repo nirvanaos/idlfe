@@ -49,6 +49,14 @@ public:
 		std::string ('_' == *s ? s + 1 : s, '_' == *s ? len - 1 : len)
 	{}
 
+	/// CORBA identifiers may be "escaped" by the underscore.
+	/// 
+	/// See 7.2.3.2 of https://www.omg.org/spec/IDL/4.2/
+	/// The constructor removes leading undescore.
+	Identifier (const char* s) :
+		std::string ('_' == *s ? s + 1 : s)
+	{}
+
 	Identifier (const Identifier&) = default;
 	Identifier (Identifier&&) = default;
 	Identifier& operator = (const Identifier&) = default;
