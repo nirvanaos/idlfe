@@ -92,6 +92,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a2adf459d331b2f614518efcafd42932f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ec341ba908cc0d525f3955616edfc0a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a">Identifier</a> (const char *s, size_t len)</td></tr>
 <tr class="separator:a3ec341ba908cc0d525f3955616edfc0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a068e9fc4f819fafe552295c497012214"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_identifier.html#a068e9fc4f819fafe552295c497012214">Identifier</a> (const char *s)</td></tr>
+<tr class="separator:a068e9fc4f819fafe552295c497012214"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An identifier. </p>
@@ -99,7 +101,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00035">35</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3ec341ba908cc0d525f3955616edfc0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ec341ba908cc0d525f3955616edfc0a">&#9670;&nbsp;</a></span>Identifier()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ec341ba908cc0d525f3955616edfc0a">&#9670;&nbsp;</a></span>Identifier() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -135,6 +137,36 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>See 7.2.3.2 of <a href="https://www.omg.org/spec/IDL/4.2/">https://www.omg.org/spec/IDL/4.2/</a> The constructor removes leading undescore. </p>
 
 <p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00048">48</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
+
+</div>
+</div>
+<a id="a068e9fc4f819fafe552295c497012214"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a068e9fc4f819fafe552295c497012214">&#9670;&nbsp;</a></span>Identifier() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">AST::Identifier::Identifier </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>CORBA identifiers may be "escaped" by the underscore.</p>
+<p>See 7.2.3.2 of <a href="https://www.omg.org/spec/IDL/4.2/">https://www.omg.org/spec/IDL/4.2/</a> The constructor removes leading undescore. </p>
+
+<p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00056">56</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
 
 </div>
 </div>

@@ -66,6 +66,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
 <a href="class_i_d_l___front_end-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">IDL_FrontEnd Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -95,12 +96,21 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:aa26e9f94caeb7b989d15d4a5d658b41d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#aa26e9f94caeb7b989d15d4a5d658b41d">IDL_FrontEnd</a> (unsigned flags=0)</td></tr>
+<tr class="separator:aa26e9f94caeb7b989d15d4a5d658b41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48852b706ce523a906a9138647518bb8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">parse_command_line</a> (<a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html">CmdLine</a> &amp;args)</td></tr>
 <tr class="separator:a48852b706ce523a906a9138647518bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a254a4a366be92150108415e5f5cdbee4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a254a4a366be92150108415e5f5cdbee4">print_usage_info</a> (const char *exe_name)</td></tr>
 <tr class="separator:a254a4a366be92150108415e5f5cdbee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe271bfdf968951672734b28b0380524"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#abe271bfdf968951672734b28b0380524">generate_code</a> (const ::<a class="el" href="class_a_s_t_1_1_root.html">AST::Root</a> &amp;tree)=0</td></tr>
 <tr class="separator:abe271bfdf968951672734b28b0380524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
+Static Protected Attributes</h2></td></tr>
+<tr class="memitem:a60bf0e97e8a9903f9540467df4a51ff0"><td class="memItemLeft" align="right" valign="top"><a id="a60bf0e97e8a9903f9540467df4a51ff0"></a>
+static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0">FLAG_DEPRECATE_ANONYMOUS_TYPES</a> = 1</td></tr>
+<tr class="memdesc:a60bf0e97e8a9903f9540467df4a51ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disallows anonymous IDL types as required by the C++11 Language Mapping Specification. <br /></td></tr>
+<tr class="separator:a60bf0e97e8a9903f9540467df4a51ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>IDL front-end. </p>
@@ -115,7 +125,43 @@ Protected Member Functions</h2></td></tr>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00048">48</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aa26e9f94caeb7b989d15d4a5d658b41d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa26e9f94caeb7b989d15d4a5d658b41d">&#9670;&nbsp;</a></span>IDL_FrontEnd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IDL_FrontEnd::IDL_FrontEnd </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>flags</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructor</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">flags</td><td>The flags. Currently only <a class="el" href="class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0" title="Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.">IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES</a> is supported. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00127">127</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a0d30150e84085a999e1d8726c30dff07"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d30150e84085a999e1d8726c30dff07">&#9670;&nbsp;</a></span>main()</h2>
 
