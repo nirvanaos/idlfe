@@ -115,7 +115,7 @@ protected:
 		const char* const* end_;
 	};
 
-	/// Deprecates anonymous IDL types as required the C++11 Language Mapping Specification.
+	/// Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.
 	static const unsigned FLAG_DEPRECATE_ANONYMOUS_TYPES = 1;
 
 protected:
