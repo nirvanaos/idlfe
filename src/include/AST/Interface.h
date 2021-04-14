@@ -93,8 +93,8 @@ private:
 	void get_all_containers (Containers& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
-		InterfaceKind (kind),
-		ItemContainer (Item::Kind::INTERFACE, builder, name)
+		ItemContainer (Item::Kind::INTERFACE, builder, name),
+		InterfaceKind (kind)
 	{}
 
 	void add_base (const Interface& base)
@@ -118,8 +118,8 @@ private:
 	template <class T> friend class Ptr;
 
 	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
-		InterfaceKind (kind),
 		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
+		InterfaceKind (kind),
 		RepositoryId (*this, builder)
 	{}
 };

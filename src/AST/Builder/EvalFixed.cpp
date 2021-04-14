@@ -146,7 +146,7 @@ Variant EvalFixed::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	assert (t.dereference_type ().tkind () == Type::Kind::FIXED);
 	assert (v.empty () || v.dereference_const ().vtype () == Variant::VT::FIXED);
-	return v;
+	return move (v);
 }
 
 }

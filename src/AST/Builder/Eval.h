@@ -44,6 +44,8 @@ public:
 		builder_ (builder)
 	{}
 
+	virtual ~Eval () {}
+
 	virtual Variant literal_char (const std::string& s, const Location& loc);
 	virtual Variant literal_wchar (const std::string& s, const Location& loc);
 	virtual Variant literal_int (const std::string& s, const Location& loc);

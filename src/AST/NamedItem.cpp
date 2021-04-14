@@ -33,8 +33,8 @@ namespace AST {
 NamedItem::NamedItem (Kind kind, const Builder& builder, const SimpleDeclarator& name) :
 	Item (kind),
 	Location (name),
-	name_ (name),
-	parent_ (builder.cur_parent ())
+	parent_ (builder.cur_parent ()),
+	name_ (name)
 {}
 
 std::string NamedItem::qualified_name () const
