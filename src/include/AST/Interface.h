@@ -82,7 +82,7 @@ public:
 
 	/// Get all direct and indirect bases.
 	/// 
-	/// \return All bases.
+	/// \returns All bases.
 	Interfaces get_all_bases () const;
 
 private:

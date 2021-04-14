@@ -73,10 +73,16 @@ public:
 		isbuf_.empty_line ();
 	}
 
-	/// \return Current indentation.
+	/// \returns Current indentation.
 	unsigned indentation () const
 	{
 		return isbuf_.indentation ();
+	}
+
+	/// \returns The last output character.
+	char last_char () const
+	{
+		return isbuf_.last_char ();
 	}
 
 private:
@@ -87,7 +93,8 @@ private:
 			out_ (nullptr),
 			indentation_ (0),
 			bol_ (true),
-			empty_line_ (false)
+			empty_line_ (false),
+			last_char_ (0)
 		{}
 
 		void init (std::ostream& s)
@@ -120,12 +127,21 @@ private:
 
 		void empty_line ();
 
+		const char last_char () const
+		{
+			return last_char_;
+		}
+
 	protected:
 		virtual int overflow (int c);
 
 	private:
+		int put_char (char c);
+
+	private:
 		std::streambuf* out_;
 		unsigned indentation_;
+		char last_char_;
 		bool bol_;
 		bool empty_line_;
 	};

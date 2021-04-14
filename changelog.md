@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1 - 14.04.2021
+### Fixed
+- The incompatibility with C-lang was fixed.
+
 ## 1.2.0 - 05.04.2021
 ### Added
 - Added flag to disallow anonymous IDL types.
