@@ -56,13 +56,13 @@ public:
 	void open (const std::filesystem::path& file);
 
 	/// Increase indentation.
-	void indent ()
+	void indent () noexcept
 	{
 		isbuf_.indent ();
 	}
 
 	/// Decrease indentation.
-	void unindent ()
+	void unindent () noexcept
 	{
 		isbuf_.unindent ();
 	}
@@ -74,13 +74,13 @@ public:
 	}
 
 	/// \returns Current indentation.
-	unsigned indentation () const
+	unsigned indentation () const noexcept
 	{
 		return isbuf_.indentation ();
 	}
 
 	/// \returns The last output character.
-	char last_char () const
+	char last_char () const noexcept
 	{
 		return isbuf_.last_char ();
 	}
