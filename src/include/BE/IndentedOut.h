@@ -101,6 +101,7 @@ private:
 		{
 			out_ = s.rdbuf ();
 			s.rdbuf (this);
+			last_char_ = 0;
 		}
 
 		void term (std::ostream& s)
