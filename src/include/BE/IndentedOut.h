@@ -109,26 +109,26 @@ private:
 			s.rdbuf (out_);
 		}
 
-		void indent ()
+		void indent () noexcept
 		{
 			++indentation_;
 		}
 
-		void unindent ()
+		void unindent () noexcept
 		{
 			assert (indentation_ > 0);
 			if (indentation_ > 0)
 				--indentation_;
 		}
 
-		unsigned indentation () const
+		unsigned indentation () const noexcept
 		{
 			return indentation_;
 		}
 
 		void empty_line ();
 
-		const char last_char () const
+		const char last_char () const noexcept
 		{
 			return last_char_;
 		}
