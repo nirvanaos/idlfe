@@ -53,8 +53,8 @@ public:
 		err_cnt_ (0),
 		err_out_ (err_out.rdbuf ()),
 		tree_ (Ptr <Root>::make <Root> (file)),
-		is_main_file_ (true),
-		anonymous_deprecated_ (anonymous_deprecated)
+		anonymous_deprecated_ (anonymous_deprecated),
+		is_main_file_ (true)
 	{
 		container_stack_.push (tree_);
 		file_stack_.emplace_back (*tree_->add_file (file).first);

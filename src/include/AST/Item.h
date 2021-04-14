@@ -191,7 +191,7 @@ public:
 		if (p_ != src.p_) {
 			if (p_)
 				p_->_remove_ref ();
-			if (p_ = src.p_)
+			if ((p_ = src.p_))
 				p_->_add_ref ();
 		}
 		return *this;
@@ -202,7 +202,7 @@ public:
 		if (p_ != src.p_) {
 			if (p_)
 				p_->_remove_ref ();
-			if (p_ = src.p_)
+			if ((p_ = src.p_))
 				p_->_add_ref ();
 		}
 		return *this;

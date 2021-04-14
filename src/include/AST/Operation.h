@@ -27,7 +27,7 @@
 #ifndef NIDL_AST_OPERATION_H_
 #define NIDL_AST_OPERATION_H_
 
-#include "OPerationBase.h"
+#include "OperationBase.h"
 
 namespace AST {
 

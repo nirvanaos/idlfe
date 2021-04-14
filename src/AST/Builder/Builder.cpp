@@ -517,7 +517,10 @@ bool Builder::prefix_valid (const std::string& pref, const Location& loc)
 				valid = false;
 				message (loc, MessageType::ERROR, "the prefix shall not contain a trailing slash (/)");
 			} else {
-				for (auto c : pref) {
+				for (const char* p = pref.c_str (); true; ++p) {
+					char c = *p;
+					if (!c)
+						break;
 					switch (c) {
 						case '_':
 						case '-':
@@ -1411,7 +1414,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 		if (!type_OK) {
 			message (type_loc, MessageType::ERROR, "invalid switch type");
-			eval_stack_.push (move (make_unique <Eval> (*this)));
+			eval_stack_.push (make_unique <Eval> (*this));
 			scope_push (nullptr);
 			return;
 		}
@@ -1575,7 +1578,7 @@ void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& v
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (t), ref (name), move (eval ().cast (t, move (val), loc)));
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (t), ref (name), eval ().cast (t, move (val), loc));
 		auto ins = scope->insert (*item);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
@@ -1639,7 +1642,6 @@ void Builder::check_complete (const Container& items)
 {
 	for (auto it = items.begin (); it != items.end (); ++it) {
 		const Item& item = **it;
-		bool complete = true;
 		switch (item.kind ()) {
 			case Item::Kind::TYPE_DEF: {
 				const TypeDef& t = static_cast <const TypeDef&> (item);
