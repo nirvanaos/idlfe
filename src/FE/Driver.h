@@ -32,6 +32,11 @@
 #include "../AST/Builder/Builder.h"
 #include <iostream>
 
+inline AST::Location::Location (const yy::location& loc) noexcept :
+	file_ (loc.begin.filename),
+	line_ (loc.begin.line)
+{}
+
 namespace FE {
 
 /// The proxy class between Flex, Bison and `AST::Builder`.

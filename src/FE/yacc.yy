@@ -26,12 +26,6 @@
 
 %{
 #include "Driver.h"
-
-inline AST::Location::Location (const yy::location& loc) noexcept :
-	file_ (loc.begin.filename),
-	line_ (loc.begin.line)
-{}
-
 %}
 
 %require "3.7.1"
