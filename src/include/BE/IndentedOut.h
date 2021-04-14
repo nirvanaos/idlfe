@@ -56,13 +56,13 @@ public:
 	void open (const std::filesystem::path& file);
 
 	/// Increase indentation.
-	void indent ()
+	void indent () noexcept
 	{
 		isbuf_.indent ();
 	}
 
 	/// Decrease indentation.
-	void unindent ()
+	void unindent () noexcept
 	{
 		isbuf_.unindent ();
 	}
@@ -73,10 +73,16 @@ public:
 		isbuf_.empty_line ();
 	}
 
-	/// \return Current indentation.
-	unsigned indentation () const
+	/// \returns Current indentation.
+	unsigned indentation () const noexcept
 	{
 		return isbuf_.indentation ();
+	}
+
+	/// \returns The last output character.
+	char last_char () const noexcept
+	{
+		return isbuf_.last_char ();
 	}
 
 private:
@@ -87,13 +93,15 @@ private:
 			out_ (nullptr),
 			indentation_ (0),
 			bol_ (true),
-			empty_line_ (false)
+			empty_line_ (false),
+			last_char_ (0)
 		{}
 
 		void init (std::ostream& s)
 		{
 			out_ = s.rdbuf ();
 			s.rdbuf (this);
+			last_char_ = 0;
 		}
 
 		void term (std::ostream& s)
@@ -101,31 +109,40 @@ private:
 			s.rdbuf (out_);
 		}
 
-		void indent ()
+		void indent () noexcept
 		{
 			++indentation_;
 		}
 
-		void unindent ()
+		void unindent () noexcept
 		{
 			assert (indentation_ > 0);
 			if (indentation_ > 0)
 				--indentation_;
 		}
 
-		unsigned indentation () const
+		unsigned indentation () const noexcept
 		{
 			return indentation_;
 		}
 
 		void empty_line ();
 
+		const char last_char () const noexcept
+		{
+			return last_char_;
+		}
+
 	protected:
 		virtual int overflow (int c);
 
 	private:
+		int put_char (char c);
+
+	private:
 		std::streambuf* out_;
 		unsigned indentation_;
+		char last_char_;
 		bool bol_;
 		bool empty_line_;
 	};

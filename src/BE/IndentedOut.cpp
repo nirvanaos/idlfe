@@ -59,9 +59,10 @@ int IndentedOut::IndentedStreambuf::overflow (int c)
 	if (c != '\n') {
 		if (bol_ && indentation_) {
 			for (unsigned cnt = indentation_; cnt; --cnt) {
-				int ret = out_->sputc ('\t');
+				int ret = put_char ('\t');
 				if (ret != '\t')
 					return ret;
+
 			}
 		}
 		empty_line_ = bol_ = false;
@@ -69,7 +70,15 @@ int IndentedOut::IndentedStreambuf::overflow (int c)
 		empty_line_ = true;
 	else
 		bol_ = true;
-	return out_->sputc (c);
+	return put_char (c);
+}
+
+int IndentedOut::IndentedStreambuf::put_char (char c)
+{
+	int ret = out_->sputc (c);
+	if (ret == c)
+		last_char_ = c;
+	return ret;
 }
 
 void IndentedOut::IndentedStreambuf::empty_line ()
