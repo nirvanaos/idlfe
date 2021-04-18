@@ -58,7 +58,9 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 {
 	static const char* const msg_types [] = { "error", "warning", "message" };
 
-	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
+	if (l)
+		err_out_ << l.file () << '(' << l.line () << "): ";
+	err_out_ << msg_types [(size_t)mt] << ": " << err << endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
 		throw runtime_error ("Too many errors, compilation aborted.");
@@ -614,6 +616,7 @@ void Builder::native (const SimpleDeclarator& name)
 
 void Builder::type_def (const Type& type, const Declarators& declarators)
 {
+	check_complete_or_ref (type, declarators.front ());
 	Symbols* scope = cur_scope ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
