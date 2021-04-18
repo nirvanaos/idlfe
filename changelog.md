@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 - 18.04.2021
+### Fixed
+- Bugs.
+
 ## 1.3.0 - 14.04.2021
 ### Added
 - char IndentedOut::last_char() const;
