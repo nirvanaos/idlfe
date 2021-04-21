@@ -173,7 +173,7 @@ void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
 			msg [pos++] = ' ';
 	}
 
-	message (loc, MessageType::ERROR, msg);
+	message (loc.begin.filename ? loc : location (), MessageType::ERROR, msg);
 }
 
 }

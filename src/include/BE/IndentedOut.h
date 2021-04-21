@@ -47,13 +47,22 @@ public:
 	/// \throw std::runtime_error
 	IndentedOut (const std::filesystem::path& file);
 
-	~IndentedOut ();
+	/// Destructor.
+	~IndentedOut ()
+	{
+		close ();
+	}
 
 	/// \brief Opens the file.
+	/// 
+	/// Also creates all parent directories.
 	/// 
 	/// \param file File to open.
 	/// \throw std::runtime_error
 	void open (const std::filesystem::path& file);
+
+	/// \brief Closes the file.
+	void close ();
 
 	/// Increase indentation.
 	void indent () noexcept
@@ -85,29 +94,20 @@ public:
 		return isbuf_.last_char ();
 	}
 
+	/// \returns The number of characters written.
+	size_t size () const noexcept
+	{
+		return isbuf_.size ();
+	}
+
 private:
 	class IndentedStreambuf : public std::streambuf
 	{
 	public:
-		IndentedStreambuf () :
-			out_ (nullptr),
-			indentation_ (0),
-			bol_ (true),
-			empty_line_ (false),
-			last_char_ (0)
-		{}
+		IndentedStreambuf ();
 
-		void init (std::ostream& s)
-		{
-			out_ = s.rdbuf ();
-			s.rdbuf (this);
-			last_char_ = 0;
-		}
-
-		void term (std::ostream& s)
-		{
-			s.rdbuf (out_);
-		}
+		void init (std::ostream& s);
+		void term (std::ostream& s);
 
 		void indent () noexcept
 		{
@@ -133,6 +133,11 @@ private:
 			return last_char_;
 		}
 
+		size_t size () const noexcept
+		{
+			return size_;
+		}
+
 	protected:
 		virtual int overflow (int c);
 
@@ -145,6 +150,7 @@ private:
 		char last_char_;
 		bool bol_;
 		bool empty_line_;
+		size_t size_;
 	};
 
 	IndentedStreambuf isbuf_;

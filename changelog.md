@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2 - 21.04.2021
+### Fixed
+- Bugs.
+### Added
+- size_t IndentedOut::size() const;
+
 ## 1.3.1 - 18.04.2021
 ### Fixed
 - Bugs.

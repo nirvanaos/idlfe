@@ -13,6 +13,8 @@ public:
 	{}
 
 protected:
+	virtual void end (const AST::Root& ast);
+
 	virtual void leaf (const AST::Include& item);
 	virtual void leaf (const AST::Native& item);
 	virtual void leaf (const AST::TypeDef& item);
@@ -54,7 +56,6 @@ protected:
 	virtual void leaf (const AST::ValueBox& item);
 
 private:
-	void indent ();
 	void print_type (const AST::Type& t);
 	void print_interface_kind (const AST::InterfaceKind ik);
 	void print_op_base (const AST::OperationBase& item);
