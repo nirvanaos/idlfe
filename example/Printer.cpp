@@ -4,6 +4,11 @@
 using namespace std;
 using namespace AST;
 
+void Printer::end (const Root& ast)
+{
+	out_.close ();
+}
+
 void Printer::print_type (const Type& t)
 {
 	static const char* const basic_types [(size_t)BasicType::ANY + 1] = {
@@ -185,7 +190,7 @@ void Printer::leaf (const Operation& item)
 	out_ << ";\n";
 }
 
-void Printer::print_op_base (const AST::OperationBase& item)
+void Printer::print_op_base (const OperationBase& item)
 {
 	out_ << ' ' << item.name () << " (";
 	if (!item.empty ()) {

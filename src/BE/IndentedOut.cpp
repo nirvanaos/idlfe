@@ -29,29 +29,31 @@ using namespace std;
 
 namespace BE {
 
-IndentedOut::IndentedOut ()
+inline
+IndentedOut::IndentedStreambuf::IndentedStreambuf () :
+	out_ (nullptr),
+	indentation_ (0),
+	last_char_ (0),
+	bol_ (true),
+	empty_line_ (false),
+	size_ (0)
 {}
 
-IndentedOut::IndentedOut (const filesystem::path& file)
+inline
+void IndentedOut::IndentedStreambuf::init (std::ostream& s)
 {
-	open (file);
+	out_ = s.rdbuf ();
+	s.rdbuf (this);
+	last_char_ = 0;
+	bol_ = true;
+	empty_line_ = false;
+	size_ = 0;
 }
 
-IndentedOut::~IndentedOut ()
+inline
+void IndentedOut::IndentedStreambuf::term (std::ostream& s)
 {
-	if (is_open ())
-		isbuf_.term (*this);
-}
-
-void IndentedOut::open (const std::filesystem::path& file)
-{
-	if (is_open ())
-		throw runtime_error ("File is already open");
-	create_directories (file.parent_path ());
-	ofstream::open (file);
-	if (!is_open ())
-		throw runtime_error (string ("Can not open file: ") + file.string ());
-	isbuf_.init (*this);
+	s.rdbuf (out_);
 }
 
 int IndentedOut::IndentedStreambuf::overflow (int c)
@@ -62,7 +64,6 @@ int IndentedOut::IndentedStreambuf::overflow (int c)
 				int ret = put_char ('\t');
 				if (ret != '\t')
 					return ret;
-
 			}
 		}
 		empty_line_ = bol_ = false;
@@ -76,8 +77,10 @@ int IndentedOut::IndentedStreambuf::overflow (int c)
 int IndentedOut::IndentedStreambuf::put_char (char c)
 {
 	int ret = out_->sputc (c);
-	if (ret == c)
+	if (ret == c) {
 		last_char_ = c;
+		++size_;
+	}
 	return ret;
 }
 
@@ -91,6 +94,31 @@ void IndentedOut::IndentedStreambuf::empty_line ()
 		out_->sputc ('\n');
 		empty_line_ = true;
 	}
+}
+
+IndentedOut::IndentedOut ()
+{}
+
+IndentedOut::IndentedOut (const filesystem::path& file)
+{
+	open (file);
+}
+
+void IndentedOut::open (const std::filesystem::path& file)
+{
+	if (is_open ())
+		throw runtime_error ("File is already open");
+	create_directories (file.parent_path ());
+	ofstream::open (file);
+	if (!is_open ())
+		throw runtime_error (string ("Can not open file: ") + file.string ());
+	isbuf_.init (*this);
+}
+
+void IndentedOut::close ()
+{
+	if (is_open ())
+		isbuf_.term (*this);
 }
 
 }

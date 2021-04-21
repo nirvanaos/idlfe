@@ -58,9 +58,7 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 {
 	static const char* const msg_types [] = { "error", "warning", "message" };
 
-	if (l)
-		err_out_ << l.file () << '(' << l.line () << "): ";
-	err_out_ << msg_types [(size_t)mt] << ": " << err << endl;
+	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
 		throw runtime_error ("Too many errors, compilation aborted.");
