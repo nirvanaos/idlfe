@@ -117,8 +117,10 @@ void IndentedOut::open (const std::filesystem::path& file)
 
 void IndentedOut::close ()
 {
-	if (is_open ())
+	if (is_open ()) {
 		isbuf_.term (*this);
+		ofstream::close ();
+	}
 }
 
 }

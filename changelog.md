@@ -1,24 +1,28 @@
 # Changelog
 
-## 1.3.2 - 21.04.2021
+## 1.3.3 - 2021-04-21
+### Fixed
+- Bug.
+
+## 1.3.2 - 2021-04-21 YANKED
 ### Fixed
 - Bugs.
 ### Added
 - size_t IndentedOut::size() const;
 
-## 1.3.1 - 18.04.2021
+## 1.3.1 - 2021-04-18
 ### Fixed
 - Bugs.
 
-## 1.3.0 - 14.04.2021
+## 1.3.0 - 2021-04-14
 ### Added
 - char IndentedOut::last_char() const;
 
-## 1.2.1 - 14.04.2021
+## 1.2.1 - 2021-04-14
 ### Fixed
 - The incompatibility with C-lang was fixed.
 
-## 1.2.0 - 05.04.2021
+## 1.2.0 - 2021-04-05
 ### Added
 - Added flag to disallow anonymous IDL types.
 
@@ -26,14 +30,14 @@
 - AST\::Parameter and AST\::Attribute classes now inherit AST\::Member.
 - AST\::Type\::named_type() now returns reference instead of pointer.
 
-## 1.1.1 - 03.04.2021
+## 1.1.1 - 2021-04-03
 ### Added
 - class BE\::IndentedOut.
 ### Changed
 - AST\::Interface\::get_all_bases () now returns AST\::Interfaces.
 - pseudo interfaces may inherit other pseudo interfaces.
 
-## 1.0.1 - 28.03.2021
+## 1.0.1 - 2021-03-28
 ### Fixed
 - Bugs.
 ### Changed
