@@ -1,22 +1,14 @@
 var searchData=
 [
-  ['value_5fbase_198',['VALUE_BASE',['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20abf6780dbf5074d9d77a1b1cfd04d67c2',1,'AST']]],
-  ['value_5fbox_199',['VALUE_BOX',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a1f0030799b5ace16ca95ad961005ba9f',1,'AST::Item']]],
-  ['value_5ffactory_200',['VALUE_FACTORY',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a25e3d00ad450958b112179196859711d',1,'AST::Item']]],
-  ['value_5ftype_201',['VALUE_TYPE',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a2990260a99720a49de68bce1935cf1f3',1,'AST::Item']]],
-  ['value_5ftype_5fdecl_202',['VALUE_TYPE_DECL',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a5bf1e003df38f829afa5913a27ef900e',1,'AST::Item']]],
-  ['valuebox_203',['ValueBox',['../class_a_s_t_1_1_value_box.html',1,'AST']]],
-  ['valuebox_2eh_204',['ValueBox.h',['../_value_box_8h.html',1,'']]],
-  ['valuefactory_205',['ValueFactory',['../class_a_s_t_1_1_value_factory.html',1,'AST']]],
-  ['valuefactory_2eh_206',['ValueFactory.h',['../_value_factory_8h.html',1,'']]],
-  ['valuetype_207',['ValueType',['../class_a_s_t_1_1_value_type.html',1,'AST']]],
-  ['valuetype_2eh_208',['ValueType.h',['../_value_type_8h.html',1,'']]],
-  ['valuetypedecl_209',['ValueTypeDecl',['../class_a_s_t_1_1_value_type_decl.html',1,'AST']]],
-  ['valuetypes_210',['ValueTypes',['../namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5',1,'AST']]],
-  ['variant_211',['Variant',['../class_a_s_t_1_1_variant.html',1,'AST::Variant'],['../class_a_s_t_1_1_variant.html#acb082935f0d1f3d413ea169d99198c1e',1,'AST::Variant::Variant()'],['../class_a_s_t_1_1_variant.html#aa362f93f2f1461ca48dc7baa93d947a1',1,'AST::Variant::Variant(const Variant &amp;src)'],['../class_a_s_t_1_1_variant.html#a51379f38bfa545a68173c3b89ad788ec',1,'AST::Variant::Variant(Variant &amp;&amp;src) noexcept']]],
-  ['variant_2eh_212',['Variant.h',['../_variant_8h.html',1,'']]],
-  ['visit_213',['visit',['../class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda',1,'AST::Container::visit()'],['../class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba',1,'AST::Root::visit()']]],
-  ['void_214',['VOID',['../class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800a6d0c9fc747131795e6e5d0c5119f12cb',1,'AST::Type']]],
-  ['vt_215',['VT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2',1,'AST::Variant']]],
-  ['vtype_216',['vtype',['../class_a_s_t_1_1_variant.html#a6e60197d3914d6d2fc8baefc16d2acbb',1,'AST::Variant']]]
+  ['ulong_190',['ULONG',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2a0edad1cd854da1f522d2a35119917e84',1,'AST::Variant::ULONG()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20a0edad1cd854da1f522d2a35119917e84',1,'AST::ULONG()']]],
+  ['ulonglong_191',['ULONGLONG',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2a95e833dae5108813951d3805ab594c65',1,'AST::Variant::ULONGLONG()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20a95e833dae5108813951d3805ab594c65',1,'AST::ULONGLONG()']]],
+  ['unindent_192',['unindent',['../class_b_e_1_1_indented_out.html#ad7bf27af10fc6068c8090c59da3f8687',1,'BE::IndentedOut']]],
+  ['union_193',['Union',['../class_a_s_t_1_1_union.html',1,'AST::Union'],['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54aea931da33de8ba05c3635a51c2b25d75',1,'AST::Item::UNION()']]],
+  ['union_2eh_194',['Union.h',['../_union_8h.html',1,'']]],
+  ['union_5fdecl_195',['UNION_DECL',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a801cb380216b1d0c24832234cface666',1,'AST::Item']]],
+  ['union_5felement_196',['UNION_ELEMENT',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54aa428b2ee3d15f14b603c562894a26694',1,'AST::Item']]],
+  ['uniondecl_197',['UnionDecl',['../class_a_s_t_1_1_union_decl.html',1,'AST']]],
+  ['unionelement_198',['UnionElement',['../class_a_s_t_1_1_union_element.html',1,'AST']]],
+  ['unionelement_2eh_199',['UnionElement.h',['../_union_element_8h.html',1,'']]],
+  ['ushort_200',['USHORT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ab8627cc5bae17ed1687bb487a4d70a3e',1,'AST::Variant::USHORT()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20ab8627cc5bae17ed1687bb487a4d70a3e',1,'AST::USHORT()']]]
 ];

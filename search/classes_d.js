@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['valuebox_268',['ValueBox',['../class_a_s_t_1_1_value_box.html',1,'AST']]],
-  ['valuefactory_269',['ValueFactory',['../class_a_s_t_1_1_value_factory.html',1,'AST']]],
-  ['valuetype_270',['ValueType',['../class_a_s_t_1_1_value_type.html',1,'AST']]],
-  ['valuetypedecl_271',['ValueTypeDecl',['../class_a_s_t_1_1_value_type_decl.html',1,'AST']]],
-  ['variant_272',['Variant',['../class_a_s_t_1_1_variant.html',1,'AST']]]
+  ['union_269',['Union',['../class_a_s_t_1_1_union.html',1,'AST']]],
+  ['uniondecl_270',['UnionDecl',['../class_a_s_t_1_1_union_decl.html',1,'AST']]],
+  ['unionelement_271',['UnionElement',['../class_a_s_t_1_1_union_element.html',1,'AST']]]
 ];

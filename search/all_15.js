@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['_7eindentedout_219',['~IndentedOut',['../class_b_e_1_1_indented_out.html#a0e371ee7d56aabe96929d6f7bdd2476e',1,'BE::IndentedOut']]],
-  ['_7etype_220',['~Type',['../class_a_s_t_1_1_type.html#abb1381dda8574a5944abe9b3e4076c68',1,'AST::Type']]],
-  ['_7evariant_221',['~Variant',['../class_a_s_t_1_1_variant.html#a31fa4b2e583c27df861da89480468d6e',1,'AST::Variant']]]
+  ['wchar_220',['WCHAR',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2adc99812abb393a37006e7328cb47b210',1,'AST::Variant::WCHAR()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20adc99812abb393a37006e7328cb47b210',1,'AST::WCHAR()']]],
+  ['wstring_221',['WSTRING',['../class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800ad002390d7727d576cef45267f1678ea3',1,'AST::Type::WSTRING()'],['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ad002390d7727d576cef45267f1678ea3',1,'AST::Variant::WSTRING()']]]
 ];

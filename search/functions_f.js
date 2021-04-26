@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['raises_390',['raises',['../class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838',1,'AST::OperationBase']]],
-  ['readonly_391',['readonly',['../class_a_s_t_1_1_attribute.html#a1f6925dc9383fcd3c5772c2478de9f9d',1,'AST::Attribute']]],
-  ['repository_5fid_392',['repository_id',['../class_a_s_t_1_1_repository_id.html#a9cdddbf5cd89efe8626230361f100e99',1,'AST::RepositoryId']]]
+  ['qualified_5fname_395',['qualified_name',['../class_a_s_t_1_1_named_item.html#a6166b40336cb00e6bc5e0d13b52e12f3',1,'AST::NamedItem']]]
 ];

@@ -7,5 +7,7 @@ var searchData=
   ['fixed_5fscale_70',['fixed_scale',['../class_a_s_t_1_1_type.html#a578f5ee329a35243a2c4afe8e59386b5',1,'AST::Type::fixed_scale()'],['../class_a_s_t_1_1_variant.html#aab1da152c61de77fca44653987458754',1,'AST::Variant::fixed_scale()']]],
   ['flag_5fdeprecate_5fanonymous_5ftypes_71',['FLAG_DEPRECATE_ANONYMOUS_TYPES',['../class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0',1,'IDL_FrontEnd']]],
   ['float_72',['FLOAT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ae738c26bf4ce1037fa81b039a915cbf6',1,'AST::Variant::FLOAT()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20ae738c26bf4ce1037fa81b039a915cbf6',1,'AST::FLOAT()']]],
-  ['from_5froot_73',['from_root',['../struct_a_s_t_1_1_scoped_name.html#a7907dbc7d3d9cf123779bee26ac344d8',1,'AST::ScopedName']]]
+  ['forwarddeclarable_73',['ForwardDeclarable',['../class_a_s_t_1_1_forward_declarable.html',1,'AST']]],
+  ['forwarddeclarable_2eh_74',['ForwardDeclarable.h',['../_forward_declarable_8h.html',1,'']]],
+  ['from_5froot_75',['from_root',['../struct_a_s_t_1_1_scoped_name.html#a7907dbc7d3d9cf123779bee26ac344d8',1,'AST::ScopedName']]]
 ];
