@@ -28,6 +28,7 @@
 #define NIDL_AST_INTERFACE_H_
 
 #include "ItemContainer.h"
+#include "ForwardDeclarable.h"
 
 namespace AST {
 
@@ -71,7 +72,8 @@ typedef std::vector <const Interface*> Interfaces;
 /// %Interface definition.
 class Interface :
 	public ItemContainer,
-	public InterfaceKind
+	public InterfaceKind,
+	public ForwardDeclarable
 {
 public:
 	/// \returns The base interfaces.

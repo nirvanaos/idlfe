@@ -1,4 +1,4 @@
-/// \file ItemScope.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,56 +24,41 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMSCOPE_H_
-#define NIDL_AST_ITEMSCOPE_H_
-
-#include "Symbols.h"
+#ifndef NIDL_AST_FORWARDECLARABLE_H_
+#define NIDL_AST_FORWARDECLARABLE_H_
 
 namespace AST {
 
-/// The named item which defines a scope.
-class ItemScope :
-	public NamedItem
-{
-protected:
-	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
+namespace Build {
+class Builder;
+}
 
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+/// The item that can be forward declared.
+class ForwardDeclarable
+{
+public:
+	/// \returns `true` if this item has been declared forward.
+	bool has_forward_dcl () const
 	{
-		prefix_ = pref;
-		return true;
+		return has_forward_dcl_;
 	}
+
+protected:
+	ForwardDeclarable () :
+		has_forward_dcl_ (false)
+	{}
 
 private:
 	friend class Build::Builder;
 
-	operator Symbols& () noexcept
+	void set_has_forward_dcl ()
 	{
-		return symbols_;
-	}
-
-	operator const Symbols& () const noexcept
-	{
-		return symbols_;
-	}
-
-	static const ItemScope* cast (const NamedItem* item) noexcept
-	{
-		return cast (const_cast <NamedItem*> (item));
-	}
-
-	static ItemScope* cast (NamedItem* item) noexcept;
-
-	const std::string& prefix () const noexcept
-	{
-		return prefix_;
+		has_forward_dcl_ = true;
 	}
 
 private:
-	Symbols symbols_;
-	std::string prefix_;
+	bool has_forward_dcl_;
 };
-
 }
 
 #endif
