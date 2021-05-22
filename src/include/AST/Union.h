@@ -29,6 +29,7 @@
 
 #include "ItemContainer.h"
 #include "Type.h"
+#include "ForwardDeclarable.h"
 
 namespace AST {
 
@@ -48,7 +49,8 @@ private:
 
 /// `union` definition.
 class Union :
-	public ItemContainer
+	public ItemContainer,
+	public ForwardDeclarable
 {
 public:
 	/// \returns The discriminator type.

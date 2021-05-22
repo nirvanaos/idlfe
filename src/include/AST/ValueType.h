@@ -29,6 +29,7 @@
 
 #include "Interface.h"
 #include "Type.h"
+#include "ForwardDeclarable.h"
 
 namespace AST {
 
@@ -39,7 +40,8 @@ typedef std::vector <const ValueType*> ValueTypes;
 
 /// Value type definition.
 class ValueType :
-	public ItemContainer
+	public ItemContainer,
+	public ForwardDeclarable
 {
 public:
 	/// Value type modifier.

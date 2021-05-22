@@ -701,6 +701,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 
 			rid->check_prefix (*this, name);
 			static_cast <RepositoryId&> (*decl) = *rid;
+			return; // Second declaration - skip it.
 		}
 
 		if (is_main_file ())
@@ -741,6 +742,7 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 
 			rid->check_prefix (*this, name);
 			static_cast <RepositoryId&> (*decl) = *rid;
+			return; // Ignore second declaration
 		}
 
 		if (is_main_file ())
@@ -767,6 +769,7 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 				decl.check_prefix (*this, name);
 				static_cast <RepositoryId&> (*itf) = decl;
 				const_cast <Ptr <NamedItem>&> (*ins.first) = itf;
+				itf->set_has_forward_dcl ();
 			}
 		}
 
@@ -795,6 +798,7 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 				static_cast <RepositoryId&> (*vt) = decl;
 				const_cast <Ptr <NamedItem>&> (*ins.first) = vt;
 			}
+			vt->set_has_forward_dcl ();
 		}
 
 		scope_push (vt);
@@ -1251,6 +1255,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 			}
 
 			rid->check_prefix (*this, name);
+			return; // Ignore second declaration
 		}
 
 		if (is_main_file ())
@@ -1276,6 +1281,7 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 			decl.check_prefix (*this, name);
 			static_cast <RepositoryId&> (*def) = decl;
 			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
+			def->set_has_forward_dcl ();
 		}
 
 		scope_push (def);
@@ -1383,6 +1389,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 			}
 
 			rid->check_prefix (*this, name);
+			return; // Ignore second definition
 		}
 
 		if (is_main_file ())
@@ -1434,6 +1441,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 			decl.check_prefix (*this, name);
 			static_cast <RepositoryId&> (*def) = decl;
 			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
+			def->set_has_forward_dcl ();
 		}
 
 		scope_push (def);
