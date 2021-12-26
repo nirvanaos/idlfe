@@ -1459,9 +1459,10 @@ void Builder::union_label (const Variant& label, const Location& loc)
 	assert (!scope_stack_.empty ());
 	if (scope_stack_.back ()) {
 		if (!label.empty ()) {
-			auto ins = union_.all_labels.emplace (label.to_key (), loc);
+			const Variant& key = label.dereference_const ();
+			auto ins = union_.all_labels.emplace (key.to_key (), loc);
 			if (!ins.second) {
-				message (loc, MessageType::ERROR, label.dereference_const ().to_string () + " is already used");
+				message (loc, MessageType::ERROR, key.to_string () + " is already used");
 				see_prev_declaration (ins.first->second);
 			} else if (union_.element.is_default)
 				message (loc, MessageType::WARNING, "default element, case is ignored");

@@ -1,0 +1,93 @@
+/// \file
+/*
+* Nirvana IDL support library.
+*
+* This is a part of the Nirvana project.
+*
+* Author: Igor Popov
+*
+* Copyright (c) 2021 Igor Popov.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Send comments and/or bug reports to:
+*  popov.nirvana@gmail.com
+*/
+
+module Nirvana {
+
+native Pointer;
+native ConstPointer;
+native Size;
+native UIntPtr;
+
+/// Memory manager interface.
+pseudo interface Memory
+{
+  const unsigned short READ_WRITE = 0x0000;
+  const unsigned short READ_ONLY = 0x0001;
+  const unsigned short RESERVED = 0x0002;
+
+  const unsigned short DST_ALLOCATE = 0x0008;
+  const unsigned short SRC_DECOMMIT = 0x0010;
+  const unsigned short SRC_RELEASE = 0x0030;
+  
+  const unsigned short ZERO_INIT = 0x0040;
+  const unsigned short EXACTLY = 0x0080;
+
+  const unsigned short SIMPLE_COPY = 0x0100;
+
+  // Implementation flags
+  const unsigned short HARDWARE_PROTECTION = 0x0001;
+  const unsigned short COPY_ON_WRITE = 0x0002;
+  const unsigned short SPACE_RESERVATION = 0x0004;
+  const unsigned short ACCESS_CHECK = 0x0008;
+
+  Pointer allocate (in Pointer dst, in Size size, in unsigned short flags);
+  void commit (in Pointer dst, in Size size);
+  void decommit (in Pointer dst, in Size size);
+  void release (in Pointer dst, in Size size);
+  Pointer copy (in Pointer dst, in Pointer src, in Size size, in unsigned short flags);
+  boolean is_readable (in ConstPointer p, in Size size);
+  boolean is_writable (in ConstPointer p, in Size size);
+  boolean is_private (in ConstPointer p, in Size size);
+  boolean is_copy (in ConstPointer p1, in ConstPointer p2, in Size size); // Obsolete, remove!
+
+  enum QueryParam
+  {
+    ALLOCATION_UNIT,
+    PROTECTION_UNIT,
+    COMMIT_UNIT,
+    OPTIMAL_COMMIT_UNIT,
+    SHARING_UNIT,
+    SHARING_ASSOCIATIVITY,
+    GRANULARITY,
+    ALLOCATION_SPACE_BEGIN,
+    ALLOCATION_SPACE_END,
+    FLAGS,
+    MEMORY_STATE
+  };
+
+  enum MemoryState
+  {
+    MEM_NOT_ALLOCATED,
+    MEM_RESERVED,
+    MEM_READ_ONLY,
+    MEM_READ_WRITE
+  };
+
+  UIntPtr query (in ConstPointer p, in QueryParam param);
+};
+
+};

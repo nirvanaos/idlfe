@@ -108,9 +108,8 @@ const Variant& Variant::dereference_const () const noexcept
 uint8_t Variant::to_octet () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	uint8_t ret;
-	if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
+	if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -118,9 +117,8 @@ uint8_t Variant::to_octet () const
 uint16_t Variant::to_unsigned_short () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	uint16_t ret;
-	if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
+	if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -128,9 +126,8 @@ uint16_t Variant::to_unsigned_short () const
 int16_t Variant::to_short () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	int16_t ret;
-	if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
+	if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -138,9 +135,8 @@ int16_t Variant::to_short () const
 uint32_t Variant::to_unsigned_long () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	uint32_t ret;
-if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
+if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -148,9 +144,8 @@ if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 int32_t Variant::to_long () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	int32_t ret;
-if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
+if (!(is_signed () ? SafeCast (val_.u.i, ret) : SafeCast (val_.u.ui, ret)))
 		throw_out_of_range ();
 	return ret;
 }
@@ -158,26 +153,24 @@ if (!(is_signed () ? SafeCast (v.val_.u.i, ret) : SafeCast (v.val_.u.ui, ret)))
 uint64_t Variant::to_unsigned_long_long () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	uint64_t ret;
 	if (is_signed ()) {
-		if (!SafeCast (v.val_.u.i, ret))
+		if (!SafeCast (val_.u.i, ret))
 			throw_out_of_range ();
 	} else
-		ret = v.val_.u.ui;
+		ret = val_.u.ui;
 	return ret;
 }
 
 int64_t Variant::to_long_long () const
 {
 	assert (is_integral ());
-	const Variant& v = dereference_const ();
 	int64_t ret;
 	if (!is_signed ()) {
-		if (!SafeCast (v.val_.u.ui, ret))
+		if (!SafeCast (val_.u.ui, ret))
 			throw_out_of_range ();
 	} else
-		ret = v.val_.u.i;
+		ret = val_.u.i;
 	return ret;
 }
 

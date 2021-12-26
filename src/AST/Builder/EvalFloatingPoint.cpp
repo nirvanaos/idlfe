@@ -69,9 +69,11 @@ void EvalFloatingPoint::check_inexact (const Location& loc) const
 		builder_.message (loc, Builder::MessageType::WARNING, "precision lost in conversion");
 }
 
-Variant EvalFloatingPoint::expr (const Variant& l, char op, const Variant& r, const Location& loc)
+Variant EvalFloatingPoint::expr (const Variant& cl, char op, const Variant& cr, const Location& loc)
 {
-	if (!l.empty () && !r.empty ()) {
+	if (!cl.empty () && !cr.empty ()) {
+		const Variant& l = cl.dereference_const ();
+		const Variant& r = cr.dereference_const ();
 		if (l.is_integral () && r.is_integral ())
 			return EvalIntegral::expr (l, op, r, loc);
 		else {
@@ -114,9 +116,10 @@ Variant EvalFloatingPoint::expr (const Variant& l, char op, const Variant& r, co
 	return Variant ();
 }
 
-Variant EvalFloatingPoint::expr (char op, const Variant& v, const Location& loc)
+Variant EvalFloatingPoint::expr (char op, const Variant& cv, const Location& loc)
 {
-	if (!v.empty ()) {
+	if (!cv.empty ()) {
+		const Variant& v = cv.dereference_const ();
 		if (v.is_integral ())
 			return EvalIntegral::expr (op, v, loc);
 		else {
