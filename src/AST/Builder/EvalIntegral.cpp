@@ -108,9 +108,11 @@ Variant EvalIntegral::constant (const ScopedName& constant)
 	return Variant ();
 }
 
-Variant EvalIntegral::expr (const Variant& l, char op, const Variant& r, const Location& loc)
+Variant EvalIntegral::expr (const Variant& cl, char op, const Variant& cr, const Location& loc)
 {
-	if (!l.empty () && !r.empty ()) {
+	if (!cl.empty () && !cr.empty ()) {
+		const Variant& l = cl.dereference_const ();
+		const Variant& r = cr.dereference_const ();
 		assert (l.is_integral () && r.is_integral ());
 		try {
 			if (l.is_signed ()) {
@@ -211,9 +213,10 @@ Variant EvalIntegral::expr (const Variant& l, char op, const Variant& r, const L
 	return Variant ();
 }
 
-Variant EvalIntegral::expr (char op, const Variant& v, const Location& loc)
+Variant EvalIntegral::expr (char op, const Variant& cv, const Location& loc)
 {
-	if (!v.empty ()) {
+	if (!cv.empty ()) {
+		const Variant& v = cv.dereference_const ();
 		try {
 			if (v.is_signed ()) {
 				int64_t i = v.to_long_long ();

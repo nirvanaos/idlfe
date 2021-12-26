@@ -1,0 +1,147 @@
+/*
+* Nirvana runtime library.
+*
+* This is a part of the Nirvana project.
+*
+* Author: Igor Popov
+*
+* Copyright (c) 2021 Igor Popov.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Send comments and/or bug reports to:
+*  popov.nirvana@gmail.com
+*/
+
+#include "Memory.idl"
+
+module CORBA {
+module Internal {
+
+native Interface;
+
+};
+};
+
+module Nirvana{
+
+/// \brief Used for iterator debugging.
+/// May be used for other purposes.
+pseudo interface RuntimeProxy
+{
+	/// Pointer passed to System::runtime_proxy_get
+	///   or `nullptr` if System::runtime_proxy_remove was called.
+	readonly attribute ConstPointer object;
+};
+
+/// General system interface
+pseudo interface System
+{
+	///@{
+	/// Object binding
+
+	/// Binds a static object.
+	/// 
+	/// This method can bind objects from other protection domains.
+	/// 
+	/// \param name The object name.
+	/// \returns Object.
+	/// \throws OBJECT_NOT_EXIST Object with that name not found.
+	/// \throws INV_OBJREF Object with that name exists but it is pseudo object.
+	Object bind (in string name);
+
+	/// Binds a static pseudo object.
+	/// 
+	/// This method binds objects in the current protection domain only.
+	/// So if the implementation is not present for the current platform,
+	/// OBJECT_NOT_EXIST will be thrown.
+	/// 
+	/// \param name The object name.
+	/// \param interface_id The interface id.
+	/// \throws OBJECT_NOT_EXIST Object with that name not found.
+	/// \throws INV_OBJREF Object with that name exists but does not support the interface specified.
+	CORBA::Internal::Interface bind_interface (in string name, in string interface_id);
+
+	///@}
+
+	///@{
+	/// Runtime proxy support
+
+	RuntimeProxy runtime_proxy_get (in ConstPointer obj);
+	void runtime_proxy_remove (in ConstPointer obj);
+
+	///@}
+
+	///@{
+	/// Time service
+
+	/// Time duration in nanoseconds.
+	typedef unsigned long long Duration;
+
+	const Duration MICROSECOND = 1000;
+	const Duration MILLISECOND = MICROSECOND * 1000;
+	const Duration SECOND = MILLISECOND * 1000;
+
+	/// Epoch year
+	readonly attribute unsigned short epoch;
+
+	/// Duration since 1 Jan of the epoch year, UTC
+	readonly attribute Duration system_clock;
+
+	/// Duration since system startup.
+	readonly attribute Duration steady_clock;
+
+	/// Convert system time to monotonic
+	/// 
+	/// \param epoch Source epoch to convert
+	/// \param clock Count of nanoseconds since 1 Jan of epoch
+	/// \returns Local steady time
+	Duration system_to_steady (in unsigned short epoch, in Duration clock);
+
+	/// Convert monotonic time to system time relative to the current epoch
+	/// 
+	/// \param steady Local steady time
+	/// \returns Local system time
+	Duration steady_to_system (in Duration steady);
+
+	/// Current request deadline
+	readonly attribute Duration deadline;
+
+	///@}
+
+	/// C runtime error number location (errno)
+	readonly attribute Pointer error_number;
+
+	/// Create heap
+	/// 
+	/// \param granularity Allocation unit size.
+	///        Must be power of 2. If granularity = 0, the heap will be created
+	///        with default granularity.
+	Memory create_heap (in unsigned short granularity);
+
+	/// Abort current execution domain
+	void abort ();
+
+	/// Pseudo-random number generator initialization
+	/// 
+	/// \param seed An integer value to be used as seed by the pseudo-random number generator algorithm.
+	void srand (in unsigned long seed);
+
+	/// Generate random number
+	/// 
+	/// \returns An integer value between 0 and RAND_MAX.
+	short rand ();
+};
+
+};

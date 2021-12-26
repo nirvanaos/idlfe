@@ -194,7 +194,7 @@ bool IDL_FrontEnd::compile (const string& file)
 	{ // Perform preprocessing
 		using namespace simplecpp;
 		OutputList output_list;
-		vector<string> files;
+		vector <string> files;
 		ifstream f (file);
 		if (!f.is_open ()) {
 			cerr << "Can not open file " << file << endl;
@@ -203,7 +203,7 @@ bool IDL_FrontEnd::compile (const string& file)
 		TokenList rawtokens (f, files, file, &output_list);
 
 		rawtokens.removeComments ();
-		map<string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
+		map <string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
 		for (auto i = included.begin (); i != included.end (); ++i)
 			i->second->removeComments ();
 

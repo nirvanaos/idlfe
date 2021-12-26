@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 - 2021-12-26
+### Fixed
+- Bug in constant evaluation.
+
 ## 1.4.0 - 2021-04-26
 ### Added
 - class ForwardDeclarable.

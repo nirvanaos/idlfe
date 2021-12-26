@@ -377,8 +377,7 @@ public:
 
 	Key to_key () const noexcept
 	{
-		const Variant& v = dereference_const ();
-		if (v.is_integral ())
+		if (is_integral ())
 			return val_.u.ui;
 		else {
 			assert (VT::ENUM_ITEM == type_);
