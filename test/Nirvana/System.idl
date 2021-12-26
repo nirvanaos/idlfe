@@ -24,7 +24,7 @@
 *  popov.nirvana@gmail.com
 */
 
-#include "Memory.idl"
+#include "../Memory.idl"
 
 module CORBA {
 module Internal {

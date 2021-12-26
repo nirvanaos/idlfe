@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2 - 2021-12-26
+### Fixed
+- Bug in #include processing.
+
 ## 1.4.1 - 2021-12-26
 ### Fixed
 - Bug in constant evaluation.
