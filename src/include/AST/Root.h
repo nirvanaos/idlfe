@@ -55,7 +55,7 @@ private:
 
 	Root (const std::string& file) :
 		Item (Item::Kind::ROOT),
-		main_file_ (file)
+		main_file_ (std::filesystem::absolute (file))
 	{}
 
 	friend class Build::Builder;

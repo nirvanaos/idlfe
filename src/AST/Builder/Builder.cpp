@@ -277,12 +277,7 @@ void Builder::file (const std::string& name, const Location& loc, int flags)
 	if ((flags & FILE_FLAG_START) && is_main_file () && container_stack_.size () == 1) {
 		is_main_file_ = false;
 		try {
-			filesystem::path file;
-			if (flags & FILE_FLAG_SYSTEM)
-				file = name;
-			else
-				file = filesystem::relative (name, tree_->file ().parent_path ());
-			tree_->append (*Ptr <Item>::make <Include> (move (file), flags & FILE_FLAG_SYSTEM));
+			tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM));
 		} catch (const filesystem::filesystem_error& ex) {
 			message (loc, MessageType::ERROR, ex.what ());
 		}
