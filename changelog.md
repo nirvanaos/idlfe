@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.3 - 2022-02-06
+### Fixed
+- Bug in pseudo interface.
+
 ## 1.4.2 - 2021-12-26
 ### Fixed
 - Bug in #include processing.
