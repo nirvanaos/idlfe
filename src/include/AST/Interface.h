@@ -41,9 +41,11 @@ public:
 	/// The kind of interface.
 	enum Kind
 	{
-		UNCONSTRAINED,
-		ABSTRACT,
-		LOCAL,
+		UNCONSTRAINED, ///< `interface`
+		ABSTRACT,      ///< `abstract interface`
+		LOCAL,         ///< `local interface`
+
+		/// `pseudo interface` is Nirvana IDL extension
 		PSEUDO
 	};
 

@@ -254,7 +254,6 @@ interface_header
 	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); }
 	| T_local T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::LOCAL); } interface_inheritance_spec
 	| T_pseudo T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::PSEUDO); }
-	| T_pseudo T_interface simple_declarator { drv.interface_begin ($3, AST::InterfaceKind::PSEUDO); } interface_inheritance_spec
 	;
 
 interface_body
