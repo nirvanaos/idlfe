@@ -1,0 +1,12 @@
+// Pseudo interfaces can not inherit
+// This test must cause a compilation error
+
+pseudo interface Base
+{
+	void met ();
+};
+
+pseudo interface Derived : Base
+{
+	void met1 ();
+};
