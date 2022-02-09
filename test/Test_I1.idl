@@ -1,0 +1,43 @@
+// Test_I1.idl File from ORB test set.
+module Test {
+
+typedef sequence <long> SeqLong;
+
+typedef SeqLong MyAlias;
+
+exception MyException
+{
+	string param;
+	boolean bparam;
+};
+
+interface I1;
+
+struct MyStruct
+{
+	wstring ws_member;
+	long l_member;
+	I1 itf;
+};
+
+enum MyEnum
+{
+	a, b, c
+};
+
+typedef string <8> ShortString;
+typedef sequence <long, 4> ShortSeqLong;
+
+interface I1
+{
+	long op1 (in long p1);
+	void throw_no_implement ();
+	void throw_user () raises (MyException);
+	I1 object_op (in I1 in_obj, out I1 out_obj, inout I1 inout_obj);
+	string string_op (in string in_s, out string out_s, inout string inout_s);
+	SeqLong seq_op (in SeqLong in_s, out SeqLong out_s, inout SeqLong inout_s);
+	any any_op (in any in_any, out any out_any, inout any inout_any);
+	attribute long addendum;
+};
+
+};

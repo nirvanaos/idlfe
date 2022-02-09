@@ -667,12 +667,12 @@ sequence_type
 	;
 
 string_type
-	: T_string T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_string (); }
+	: T_string T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_string ($3); }
 	| T_string { $$ = AST::Type::make_string (); }
 	;
 
 wide_string_type
-	: T_wstring T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_wstring (); }
+	: T_wstring T_LESS_THAN_SIGN positive_int_const T_GREATER_THAN_SIGN { $$ = AST::Type::make_wstring ($3); }
 	| T_wstring { $$ = AST::Type::make_wstring (); }
 	;
 
