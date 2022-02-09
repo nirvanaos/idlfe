@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.4 - 2022-02-09
+### Fixed
+- Bug in bounded strings.
+
 ## 1.4.3 - 2022-02-06
 ### Fixed
 - Bug in pseudo interface.
