@@ -937,9 +937,10 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 	}
 }
 
-void Builder::valuetype_supports (const ScopedNames& bases)
+void Builder::valuetype_supports (const ScopedNames& interfaces)
 {
-	assert (!bases.empty ());
+	// This method always called if a value type derives other value types or supports interfaces.
+	// If the value type does not support interfaces, the `interfaces` container will be empty.
 	assert (!scope_stack_.empty ());
 	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
 	if (vt) {
@@ -948,7 +949,7 @@ void Builder::valuetype_supports (const ScopedNames& bases)
 		// Process bases
 		map <const Item*, Location> direct_bases;
 		bool first = true;
-		for (auto base_name = bases.begin (); base_name != bases.end (); first = false, ++base_name) {
+		for (auto base_name = interfaces.begin (); base_name != interfaces.end (); first = false, ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
 			if (pbase) {
 				const NamedItem* base = *pbase;
@@ -969,13 +970,12 @@ void Builder::valuetype_supports (const ScopedNames& bases)
 							message (*base_name, MessageType::ERROR, base_name->stringize () + " is already base of " + vt->name ());
 							see_prev_declaration (ins.first->second);
 							continue;
-						} else {
-							Containers bases;
-							base_itf->get_all_containers (bases);
-							add_base_members (*base_name, bases);
 						}
 
 						// OK
+						Containers bases;
+						base_itf->get_all_containers (bases);
+						add_base_members (*base_name, bases);
 						vt->add_supports (*base_itf);
 					}
 				}
@@ -985,7 +985,50 @@ void Builder::valuetype_supports (const ScopedNames& bases)
 				}
 			}
 		}
+
+		// While a valuetype may only directly support one interface, it is possible for the valuetype to support other interfaces as
+		// well through inheritance. In this case, the supported interface must be derived, directly or indirectly, from each interface
+		// that the valuetype supports through inheritance.This rule does not apply to abstract interfaces that the valuetype supports.
+
+		// Collect all concrete base interfaces
+		set <const Interface*> concrete_bases;
+		for (auto base : vt->bases ()) {
+			const Interfaces& supports = base->supports ();
+			if (!supports.empty ()) {
+				const Interface* itf = supports.front ();
+				if (itf->interface_kind () != InterfaceKind::ABSTRACT)
+					concrete_bases.insert (itf);
+			}
+		}
+
+		if (!concrete_bases.empty ()) {
+			const Interface* concrete_supports = nullptr;
+			if (!vt->supports ().empty ()) {
+				concrete_supports = vt->supports ().front ();
+				if (concrete_supports->interface_kind () == InterfaceKind::ABSTRACT)
+					concrete_supports = nullptr;
+			}
+			if (concrete_bases.size () > 1 || concrete_supports) {
+				if (!concrete_supports) {
+					message (*vt, MessageType::ERROR, "value type can not support more then one concrete interface");
+				} else {
+					for (auto b : concrete_bases) {
+						if (!is_base_of (*b, *concrete_supports))
+							message (*vt, MessageType::ERROR, b->qualified_name () + " is not base of " + concrete_supports->qualified_name ());
+					}
+				}
+			}
+		}
 	}
+}
+
+bool Builder::is_base_of (const Interface& base, const Interface& derived)
+{
+	for (auto direct_base : derived.bases ()) {
+		if (direct_base == &base || is_base_of (base, *direct_base))
+			return true;
+	}
+	return false;
 }
 
 void Builder::add_base_members (const Location& loc, const Containers& bases)
