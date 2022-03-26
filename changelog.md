@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.5 - 2022-03-26
+### Changed
+- Improved check of the valuetype inheritance rules.
+
 ## 1.4.4 - 2022-02-09
 ### Fixed
 - Bug in bounded strings.

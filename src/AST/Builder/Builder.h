@@ -168,7 +168,7 @@ public:
 	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
 	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
 	void valuetype_bases (bool truncatable, const ScopedNames& bases);
-	void valuetype_supports (const ScopedNames& bases);
+	void valuetype_supports (const ScopedNames& interfaces);
 	void state_member (bool is_public, const Type& type, const Declarators& names);
 
 	void valuetype_factory_begin (const SimpleDeclarator& name);
@@ -261,6 +261,8 @@ private:
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
 	void check_complete (const OperationBase& op);
+
+	static bool is_base_of (const Interface& base, const Interface& derived);
 
 private:
 	unsigned err_cnt_;
