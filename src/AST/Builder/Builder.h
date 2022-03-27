@@ -263,6 +263,7 @@ private:
 	void check_complete (const OperationBase& op);
 
 	static bool is_base_of (const Interface& base, const Interface& derived);
+	static void collect_concrete_interfaces (const ValueType& vt, std::map <const Interface*, const ValueType*>& interfaces);
 
 private:
 	unsigned err_cnt_;

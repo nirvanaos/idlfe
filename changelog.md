@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.5 - 2022-03-26
+## 1.4.6 - 2022-03-27
 ### Changed
 - Improved check of the valuetype inheritance rules.
 
