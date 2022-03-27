@@ -991,34 +991,44 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 		// that the valuetype supports through inheritance.This rule does not apply to abstract interfaces that the valuetype supports.
 
 		// Collect all concrete base interfaces
-		set <const Interface*> concrete_bases;
-		for (auto base : vt->bases ()) {
-			const Interfaces& supports = base->supports ();
-			if (!supports.empty ()) {
-				const Interface* itf = supports.front ();
-				if (itf->interface_kind () != InterfaceKind::ABSTRACT)
-					concrete_bases.insert (itf);
-			}
-		}
+		map <const Interface*, const ValueType*> concrete_interfaces;
+		collect_concrete_interfaces (*vt, concrete_interfaces);
 
-		if (!concrete_bases.empty ()) {
+		if (!concrete_interfaces.empty ()) {
 			const Interface* concrete_supports = nullptr;
 			if (!vt->supports ().empty ()) {
 				concrete_supports = vt->supports ().front ();
 				if (concrete_supports->interface_kind () == InterfaceKind::ABSTRACT)
 					concrete_supports = nullptr;
 			}
-			if (concrete_bases.size () > 1 || concrete_supports) {
+			if (concrete_interfaces.size () > 1 || concrete_supports) {
 				if (!concrete_supports) {
 					message (*vt, MessageType::ERROR, "value type can not support more then one concrete interface");
 				} else {
-					for (auto b : concrete_bases) {
-						if (!is_base_of (*b, *concrete_supports))
-							message (*vt, MessageType::ERROR, b->qualified_name () + " is not base of " + concrete_supports->qualified_name ());
+					for (const auto& itf : concrete_interfaces) {
+						if (!is_base_of (*itf.first, *concrete_supports)) {
+							message (interfaces.front (), MessageType::ERROR, itf.first->qualified_name () + " is not base of " + concrete_supports->qualified_name ());
+							see_declaration_of (*itf.second, itf.second->qualified_name ());
+						}
 					}
 				}
 			}
 		}
+	}
+}
+
+void Builder::collect_concrete_interfaces (const ValueType& vt, map <const Interface*, const ValueType*>& interfaces)
+{
+	for (auto base : vt.bases ()) {
+		const Interfaces& supports = base->supports ();
+		if (!supports.empty ()) {
+			const Interface* itf = supports.front ();
+			if (itf->interface_kind () != InterfaceKind::ABSTRACT) {
+				interfaces.emplace (itf, base);
+				continue;
+			}
+		}
+		collect_concrete_interfaces (*base, interfaces);
 	}
 }
 
