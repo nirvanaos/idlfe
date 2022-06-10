@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.7 - 2022-0610
+### Fixed
+- Bug: The factory with empty parameter list caused a syntax error.
+
 ## 1.4.6 - 2022-03-27
 ### Changed
 - Improved check of the valuetype inheritance rules.
