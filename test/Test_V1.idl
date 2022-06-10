@@ -1,0 +1,16 @@
+module Test {
+
+valuetype V1
+{
+	short op1 ();
+	long op2 (in V1 x);
+	private short val1;
+	public long val2;
+	private string val3;
+	public V1 val4;
+
+	factory create (in short v1, in string v3);
+};
+
+};
+

@@ -366,21 +366,22 @@ state_member
 
 init_dcl
 	: T_factory simple_declarator { drv.valuetype_factory_begin ($2); }
-		T_LEFT_PARANTHESIS init_param_decls T_RIGHT_PARANTHESIS operation_raises
+		init_param_decls operation_raises
 		T_SEMICOLON { drv.valuetype_factory_end (); }
 	;
 
 init_param_decls
-	: init_param_decl
-	| init_param_decl T_COMMA init_param_decls
+	: T_LEFT_PARANTHESIS init_param_dcls T_RIGHT_PARANTHESIS
+	| T_LEFT_PARANTHESIS T_RIGHT_PARANTHESIS
 	;
 
-init_param_decl
-	: init_param_attribute param_type_spec simple_declarator { drv.parameter (AST::Parameter::Attribute::IN, $2, $3); }
+init_param_dcls
+	: init_param_dcl
+	| init_param_dcl T_COMMA init_param_dcls
 	;
 
-init_param_attribute
-	: T_in
+init_param_dcl
+	: T_in param_type_spec simple_declarator { drv.parameter (AST::Parameter::Attribute::IN, $2, $3); }
 	;
 
 const_dcl
