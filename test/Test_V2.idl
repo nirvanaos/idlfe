@@ -1,0 +1,14 @@
+#include "Test_V1.idl"
+
+module Test {
+
+valuetype V2 : V1
+{
+	long op_v2 (in long x);
+
+	public long val_v2;
+
+	factory create ();
+};
+
+};
