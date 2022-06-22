@@ -59,7 +59,7 @@ void IndentedOut::IndentedStreambuf::term (std::ostream& s)
 int IndentedOut::IndentedStreambuf::overflow (int c)
 {
 	if (c != '\n') {
-		if (bol_ && indentation_) {
+		if (bol_ && c != '#') {
 			for (unsigned cnt = indentation_; cnt; --cnt) {
 				int ret = put_char ('\t');
 				if (ret != '\t')

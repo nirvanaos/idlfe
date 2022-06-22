@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.4.7 - 2022-0610
+## 1.4.8 - 2022-06-22
+### Changed
+- IndentedOut: unindent preprocessor directives.
+
+## 1.4.7 - 2022-06-10
 ### Fixed
 - Bug: The factory with empty parameter list caused a syntax error.
 
