@@ -29,7 +29,7 @@
 
 #include "ItemContainer.h"
 #include "ForwardDeclarable.h"
-#include "Variant.h"
+#include "UnionElement.h"
 
 namespace AST {
 
@@ -63,14 +63,28 @@ public:
 	/// 
 	/// Default label is different from the all declared labels.
 	/// If no such value exists, the returned variant will be empty.
+	/// If union has the `default` label, default_label is always non empty.
 	const Variant& default_label () const noexcept
 	{
 		return default_label_;
 	}
 
+	/// \returns UnionElement for `default` label.
+	/// 
+	/// If union does not have `default` label, returns `nullptr`.
+	const UnionElement* default_element () const noexcept
+	{
+		return default_element_;
+	}
+
 	void default_label (const Variant& val)
 	{
 		default_label_ = val;
+	}
+
+	void default_element (const UnionElement& def) noexcept
+	{
+		default_element_ = &def;
 	}
 
 private:
@@ -79,13 +93,21 @@ private:
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name,
 		const Type& discriminator_type) :
 		ItemContainer (Item::Kind::UNION, builder, name),
-		discriminator_type_ (discriminator_type)
+		discriminator_type_ (discriminator_type),
+		default_element_ (nullptr)
 	{}
 
 private:
 	Type discriminator_type_;
+	const UnionElement* default_element_;
 	Variant default_label_;
 };
+
+inline
+bool UnionElement::is_default () const noexcept
+{
+	return static_cast <const Union&> (*parent ()).default_element () == this;
+}
 
 }
 

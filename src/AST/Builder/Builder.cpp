@@ -1540,21 +1540,24 @@ void Builder::union_default (const Location& loc)
 void Builder::union_element (const Type& type, const Build::Declarator& decl)
 {
 	assert (!scope_stack_.empty ());
-	ItemScope* parent = scope_stack_.back ();
+	Union* parent = static_cast <Union*> (scope_stack_.back ());
 	if (parent && (union_.element.is_default || !union_.element.labels.empty ())) {
 		assert (parent->kind () == Item::Kind::UNION);
-		Ptr <NamedItem> item;
+		Ptr <UnionElement> item;
 		if (decl.array_sizes ().empty ()) {
-			item = Ptr <NamedItem>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
+			item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
 		} else {
 			Type arr (type, decl.array_sizes ());
-			item = Ptr <NamedItem>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
+			item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
 		}
 		auto ins = static_cast <Symbols&> (*parent).insert (*item);
 		if (!ins.second)
 			error_name_collision (decl, **ins.first);
 		else if (is_main_file ())
 			container_stack_.top ()->append (*item);
+
+		if (union_.element.is_default)
+			parent->default_element (*item);
 	}
 	union_.element.clear ();
 }

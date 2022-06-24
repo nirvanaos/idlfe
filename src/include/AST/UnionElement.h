@@ -48,10 +48,7 @@ public:
 	}
 
 	/// \returns `true` if this is the `default` element.
-	bool is_default () const noexcept
-	{
-		return labels_.empty ();
-	}
+	bool is_default () const noexcept;
 
 private:
 	template <class T> friend class Ptr;

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 - 2022-06-24
+### Changed
+ - `class AST::Union`
+     - Added property `default_element();`
+     - Added property `default_label();`
+ - Added `class AST::Fixed`.
+
 ## 1.4.8 - 2022-06-22
 ### Changed
 - IndentedOut: unindent preprocessor directives.
