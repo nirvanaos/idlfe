@@ -90,8 +90,8 @@ Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Loca
 		try {
 			Context ctx;
 			decNumber ret;
-			const decNumber& lv = l.dereference_const ().as_decNumber ();
-			const decNumber& rv = r.dereference_const ().as_decNumber ();
+			const decNumber& lv = l.dereference_const ().as_Fixed ();
+			const decNumber& rv = r.dereference_const ().as_Fixed ();
 			switch (op) {
 				case '+':
 					decNumberAdd (&ret, &lv, &rv, &ctx);
@@ -126,7 +126,7 @@ Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 			decNumber ret;
 			switch (op) {
 				case '-':
-					decNumberMinus (&ret, &v.dereference_const ().as_decNumber (), &ctx);
+					decNumberMinus (&ret, &v.dereference_const ().as_Fixed (), &ctx);
 					break;
 				case '+':
 					break;

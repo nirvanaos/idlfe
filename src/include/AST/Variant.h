@@ -216,20 +216,26 @@ public:
 
 	// Fixed
 
+	/// \returns Fixed reference.
+	/// \invariant vtype () == VT::FIXED
+	const Fixed& as_Fixed () const noexcept
+	{
+		assert (VT::FIXED == type_);
+		return val_.u.fixed;
+	}
+
 	/// \returns Number of digits for `fixed` type.
 	/// \invariant vtype () == VT::FIXED
 	uint16_t fixed_digits () const noexcept
 	{
-		assert (vtype () == VT::FIXED);
-		return (uint16_t)val_.u.fixed.digits;
+		return as_Fixed ().digits ();
 	}
 
 	/// \returns Scale for `fixed` type.
 	/// \invariant vtype () == VT::FIXED
 	uint16_t fixed_scale () const noexcept
 	{
-		assert (vtype () == VT::FIXED);
-		return (uint16_t)-val_.u.fixed.exponent;
+		return as_Fixed ().scale ();
 	}
 
 	/// Converts value to std::string.
@@ -385,12 +391,6 @@ public:
 		}
 	}
 
-	const _decNumber& as_decNumber () const noexcept
-	{
-		assert (VT::FIXED == type_);
-		return val_.u.fixed;
-	}
-
 	bool is_integral () const noexcept
 	{
 		return VT::BOOLEAN <= type_ && type_ <= VT::LONGLONG;
@@ -406,9 +406,9 @@ public:
 		return VT::FLOAT <= type_ && type_ <= VT::LONGDOUBLE;
 	}
 
-	static void append (std::string& s, unsigned c);
-
 private:
+	friend class Build::Builder;
+
 	void reset () noexcept
 	{
 		type_ = VT::EMPTY;
@@ -419,7 +419,8 @@ private:
 
 	static void check_fp ();
 
-private:
+	static void append (std::string& s, unsigned c);
+
 	[[noreturn]] static void throw_out_of_range ();
 
 private:

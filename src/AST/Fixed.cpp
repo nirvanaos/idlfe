@@ -1,4 +1,3 @@
-/// \file UnionElement.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,44 +23,18 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_UNIONELEMENT_H_
-#define NIDL_AST_UNIONELEMENT_H_
-
-#include "Member.h"
-#include "Variant.h"
-#include <vector>
+#include "../include/AST/Fixed.h"
+#include "Builder/decNumber.h"
+#include <assert.h>
 
 namespace AST {
 
-/// `union` element definition.
-class UnionElement :
-	public Member
+std::string Fixed::to_string () const
 {
-public:
-	/// The vector of `case` labels.
-	typedef std::vector <Variant> Labels;
-
-	/// \returns The vector of `case` labels for this element. Empty for the `default` case.
-	const Labels& labels () const noexcept
-	{
-		return labels_;
-	}
-
-	/// \returns `true` if this is the `default` element.
-	bool is_default () const noexcept;
-
-private:
-	template <class T> friend class Ptr;
-
-	UnionElement (Build::Builder& builder, std::vector <Variant>&& labels, const Type& t, const Build::SimpleDeclarator& name) :
-		Member (builder, t, name, Item::Kind::UNION_ELEMENT),
-		labels_ (std::move (labels))
-	{}
-
-private:
-	const std::vector <Variant> labels_;
-};
-
+	char buf [31 + 14];
+	assert (exponent_ > -31);
+	decNumberToString (operator & (), buf);
+	return buf;
 }
 
-#endif
+}

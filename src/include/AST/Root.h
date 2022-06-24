@@ -31,6 +31,7 @@
 #include "Symbols.h"
 #include "Container.h"
 #include <filesystem>
+#include <unordered_set>
 
 namespace AST {
 
@@ -60,7 +61,7 @@ private:
 
 	friend class Build::Builder;
 
-	std::pair <std::set <std::string>::iterator, bool> add_file (const std::string& name)
+	std::pair <std::unordered_set <std::string>::iterator, bool> add_file (const std::string& name)
 	{
 		return files_.insert (name);
 	}
@@ -76,7 +77,7 @@ private:
 	}
 
 private:
-	std::set <std::string> files_;
+	std::unordered_set <std::string> files_;
 	std::filesystem::path main_file_;
 	Symbols symbols_;
 };

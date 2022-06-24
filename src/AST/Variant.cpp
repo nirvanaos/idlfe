@@ -26,7 +26,6 @@
 #include "../include/AST/Constant.h"
 #include "../include/AST/Enum.h"
 #include "Builder/SafeInt/SafeInt.hpp"
-#include "Builder/decNumber.h"
 #include <stdexcept>
 #include <limits>
 #include <cfenv>
@@ -251,12 +250,9 @@ string Variant::to_string () const
 				append (s, *pc);
 			s += '\"';
 		} break;
-		case VT::FIXED: {
-			char buf [31 + 14];
-			assert (val_.u.fixed.exponent > -31);
-			decNumberToString (&as_decNumber (), buf);
-			s = buf;
-		} break;
+		case VT::FIXED:
+			s = val_.u.fixed.to_string ();
+			break;
 		case VT::ENUM_ITEM:
 			s = val_.u.enum_item->qualified_name ();
 			break;

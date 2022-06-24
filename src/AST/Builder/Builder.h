@@ -35,8 +35,8 @@
 #include "Declarators.h"
 #include <ostream>
 #include <stack>
-#include <map>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace AST {
 
@@ -254,7 +254,7 @@ private:
 	bool check_member_name (const NamedItem& item);
 	bool check_complete_or_ref (const Type& type, const Location& loc);
 
-	typedef std::map <std::string, const NamedItem&> RepIdMap;
+	typedef std::unordered_map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
 	void check_unique (RepIdMap& ids, const RepositoryId& rid);
 
@@ -263,7 +263,7 @@ private:
 	void check_complete (const OperationBase& op);
 
 	static bool is_base_of (const Interface& base, const Interface& derived);
-	static void collect_concrete_interfaces (const ValueType& vt, std::map <const Interface*, const ValueType*>& interfaces);
+	static void collect_concrete_interfaces (const ValueType& vt, std::unordered_map <const Interface*, const ValueType*>& interfaces);
 
 private:
 	unsigned err_cnt_;
@@ -292,7 +292,7 @@ private:
 	struct InterfaceData
 	{
 		Symbols all_members;
-		std::set <const Item*> all_bases;
+		std::unordered_set <const Item*> all_bases;
 
 		void clear ()
 		{
@@ -334,7 +334,7 @@ private:
 
 	struct UnionData
 	{
-		std::map <Variant::Key, Location> all_labels;
+		std::unordered_map <Variant::Key, Location> all_labels;
 		bool has_default;
 		Location default_loc;
 

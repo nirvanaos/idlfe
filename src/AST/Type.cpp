@@ -138,9 +138,8 @@ const Type& Type::dereference_type () const noexcept
 
 size_t Type::key_max () const noexcept
 {
-	const Type& t = dereference_type ();
-	if (t.tkind () == Kind::BASIC_TYPE) {
-		switch (t.basic_type ()) {
+	if (tkind () == Kind::BASIC_TYPE) {
+		switch (basic_type ()) {
 			case BasicType::BOOLEAN:
 				return 1;
 			case BasicType::OCTET:
@@ -157,7 +156,7 @@ size_t Type::key_max () const noexcept
 			case BasicType::LONGLONG:
 				return numeric_limits <size_t>::max ();
 		}
-	} else if (t.tkind () == Kind::NAMED_TYPE) {
+	} else if (tkind () == Kind::NAMED_TYPE) {
 		const NamedItem& en = named_type ();
 		if (en.kind () == Item::Kind::ENUM) {
 			size_t item_cnt = static_cast <const Enum&> (en).size ();
