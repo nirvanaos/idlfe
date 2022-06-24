@@ -45,8 +45,6 @@
 #include "../../include/AST/ValueFactory.h"
 #include "../../include/AST/ValueBox.h"
 #include <stdexcept>
-#include <map>
-#include <set>
 #include <algorithm>
 
 using namespace std;
@@ -367,8 +365,8 @@ pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, con
 
 std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const Containers& containers, const Identifier& name, const Location& loc)
 {
-	set <const ItemContainer*> unique;
-	set <const Ptr <NamedItem>*> found;
+	unordered_set <const ItemContainer*> unique;
+	unordered_set <const Ptr <NamedItem>*> found;
 	for (const ItemContainer* cont : containers) {
 		if (unique.insert (cont).second) {
 			auto p = static_cast <const Symbols&> (*cont).find (name);
@@ -810,7 +808,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 		assert (itf->interface_kind () != InterfaceKind::PSEUDO);
 
 		// Process bases
-		map <const Item*, Location> direct_bases;
+		unordered_map <const Item*, Location> direct_bases;
 		for (auto base_name = bases.begin (); base_name != bases.end (); ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
 			if (pbase) {
@@ -887,7 +885,7 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 		}
 
 		// Process bases
-		map <const Item*, Location> direct_bases;
+		unordered_map <const Item*, Location> direct_bases;
 		bool first = true;
 		for (auto base_name = bases.begin (); base_name != bases.end (); first = false, ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
@@ -947,7 +945,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
 
 		// Process bases
-		map <const Item*, Location> direct_bases;
+		unordered_map <const Item*, Location> direct_bases;
 		bool first = true;
 		for (auto base_name = interfaces.begin (); base_name != interfaces.end (); first = false, ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
@@ -991,7 +989,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 		// that the valuetype supports through inheritance.This rule does not apply to abstract interfaces that the valuetype supports.
 
 		// Collect all concrete base interfaces
-		map <const Interface*, const ValueType*> concrete_interfaces;
+		unordered_map <const Interface*, const ValueType*> concrete_interfaces;
 		collect_concrete_interfaces (*vt, concrete_interfaces);
 
 		if (!concrete_interfaces.empty ()) {
@@ -1017,7 +1015,8 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 	}
 }
 
-void Builder::collect_concrete_interfaces (const ValueType& vt, map <const Interface*, const ValueType*>& interfaces)
+void Builder::collect_concrete_interfaces (const ValueType& vt,
+	unordered_map <const Interface*, const ValueType*>& interfaces)
 {
 	for (auto base : vt.bases ()) {
 		const Interfaces& supports = base->supports ();
@@ -1169,7 +1168,7 @@ void Builder::raises (const ScopedNames& names)
 
 Raises Builder::lookup_exceptions (const ScopedNames& names)
 {
-	map <const Item*, Location> unique;
+	unordered_map <const Item*, Location> unique;
 	Raises exceptions;
 	for (auto name = names.begin (); name != names.end (); ++name) {
 		const Ptr <NamedItem>* l = lookup (*name);
@@ -1565,10 +1564,53 @@ const Ptr <NamedItem>* Builder::union_end ()
 	assert (!scope_stack_.empty ());
 	Union* u = static_cast <Union*> (scope_stack_.back ());
 	if (u) {
-		// A union type can contain a default label only where the values given in the non-default labels
-		// do not cover the entire range of the union's discriminant type.
-		if (union_.has_default && union_.all_labels.size () > u->discriminator_type ().key_max ())
-			message (union_.default_loc, MessageType::ERROR, "non-default labels cover the entire range of the union's discriminant type");
+		const Type& dt = u->discriminator_type ().dereference_type ();
+		size_t key_max = dt.key_max ();
+		if (union_.all_labels.size () > key_max) {
+			// A union type can contain a default label only where the values given in the non-default labels
+			// do not cover the entire range of the union's discriminant type.
+			if (union_.has_default)
+				message (union_.default_loc, MessageType::ERROR, "non-default labels cover the entire range of the union's discriminant type");
+		} else {
+			// Find default discriminator value
+			Variant def;
+			if (dt.tkind () == Type::Kind::BASIC_TYPE) {
+				Variant::Key max_key = numeric_limits <Variant::Key>::min ();
+				const Variant* max_label = nullptr;
+				for (const auto& item : *u) {
+					if (item->kind () == Item::Kind::UNION_ELEMENT) {
+						for (const auto& label : static_cast <const UnionElement&> (*item).labels ()) {
+							Variant::Key key = label.dereference_const ().to_key ();
+							if (!max_label || key > max_key) {
+								max_label = &label;
+								max_key = key;
+							}
+						}
+					}
+				}
+				assert (max_label);
+				if (max_key < key_max)
+					def = eval ().expr (*max_label, '+', 1, *u);
+				else {
+					def = *max_label;
+					for (;;) {
+						def = eval ().expr (def, '-', 1, *u);
+						if (union_.all_labels.find (def.to_key ()) == union_.all_labels.end ())
+							break;
+					}
+				}
+			} else {
+				assert (dt.tkind () == Type::Kind::NAMED_TYPE);
+				assert (dt.named_type ().kind () == Item::Kind::ENUM);
+				const Enum& en = static_cast <const Enum&> (dt.named_type ());
+				for (const auto& item : en) {
+					def = *item;
+					if (union_.all_labels.find (def.to_key ()) == union_.all_labels.end ())
+						break;
+				}
+			}
+			u->default_label (eval ().cast (dt, move (def), *u));
+		}
 		eval_pop ();
 	}
 	union_.clear ();

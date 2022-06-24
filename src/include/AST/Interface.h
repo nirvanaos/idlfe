@@ -29,6 +29,7 @@
 
 #include "ItemContainer.h"
 #include "ForwardDeclarable.h"
+#include <unordered_set>
 
 namespace AST {
 
@@ -106,7 +107,7 @@ private:
 		bases_.push_back (&base);
 	}
 
-	void get_all_bases (std::set <const Interface*>& bset, Interfaces& bvec) const;
+	void get_all_bases (std::unordered_set <const Interface*>& bset, Interfaces& bvec) const;
 
 private:
 	Interfaces bases_;

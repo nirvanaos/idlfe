@@ -1,0 +1,36 @@
+// Test for unions
+
+#include "Test_I1.idl"
+
+module Test {
+
+struct S { long len; };
+
+union U switch (long) {
+	case 1: long x;
+	case 2: string z;
+	case 3:
+	case 4: S w;
+	default: I1 obj;
+};
+
+union UFixed switch (long) {
+	case 1: long x;
+	case 2: double d;
+};
+
+union Z switch (boolean) {
+	case TRUE: short s;
+};
+
+enum Tag
+{
+	First,
+	Second
+};
+
+union Tagged switch (Tag) {
+	case Second: short s;
+};
+
+};

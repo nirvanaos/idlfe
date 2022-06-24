@@ -28,8 +28,8 @@
 #define NIDL_AST_UNION_H_
 
 #include "ItemContainer.h"
-#include "Type.h"
 #include "ForwardDeclarable.h"
+#include "Variant.h"
 
 namespace AST {
 
@@ -59,16 +59,32 @@ public:
 		return discriminator_type_;
 	}
 
+	/// \returns Default discriminator value.
+	/// 
+	/// Default label is different from the all declared labels.
+	/// If no such value exists, the returned variant will be empty.
+	const Variant& default_label () const noexcept
+	{
+		return default_label_;
+	}
+
+	void default_label (const Variant& val)
+	{
+		default_label_ = val;
+	}
+
 private:
 	template <class T> friend class Ptr;
 
-	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& discriminator_type) :
+	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name,
+		const Type& discriminator_type) :
 		ItemContainer (Item::Kind::UNION, builder, name),
 		discriminator_type_ (discriminator_type)
 	{}
 
 private:
 	Type discriminator_type_;
+	Variant default_label_;
 };
 
 }

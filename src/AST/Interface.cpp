@@ -55,13 +55,13 @@ void Interface::get_all_containers (Containers& all) const
 
 Interfaces Interface::get_all_bases () const
 {
-	set <const Interface*> bset;
+	unordered_set <const Interface*> bset;
 	Interfaces bvec;
 	get_all_bases (bset, bvec);
 	return bvec;
 }
 
-void Interface::get_all_bases (set <const Interface*>& bset, Interfaces& bvec) const
+void Interface::get_all_bases (unordered_set <const Interface*>& bset, Interfaces& bvec) const
 {
 	for (const Interface* base : bases_) {
 		if (bset.insert (base).second) {
