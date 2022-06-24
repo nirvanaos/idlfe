@@ -101,63 +101,64 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;Symbols.h&quot;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_container_8h.html">Container.h</a>&quot;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;filesystem&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_root.html">   38</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_root.html">Root</a> :</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item.html">Item</a>,</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_container.html">Container</a></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">   44</a></span>&#160;    <span class="keyword">const</span> std::filesystem::path&amp; <a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a> () const noexcept</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">return</span> main_file_;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba">   51</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba">visit</a> (<a class="code" href="class_a_s_t_1_1_code_gen.html">CodeGen</a>&amp; cg) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="class_a_s_t_1_1_root.html">Root</a> (<span class="keyword">const</span> std::string&amp; <a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>) :</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="class_a_s_t_1_1_item.html">Item</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::ROOT),</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        main_file_ (std::filesystem::absolute (<a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>))</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    std::pair &lt;std::set &lt;std::string&gt;::iterator, <span class="keywordtype">bool</span>&gt; add_file (<span class="keyword">const</span> std::string&amp; name)</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">return</span> files_.insert (name);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">operator</span> Symbols&amp; () noexcept</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">return</span> symbols_;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">operator</span> <span class="keyword">const</span> Symbols&amp; () <span class="keyword">const</span> noexcept</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordflow">return</span> symbols_;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    std::set &lt;std::string&gt; files_;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    std::filesystem::path main_file_;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    Symbols symbols_;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;};</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_root.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_root.html">Root</a> :</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item.html">Item</a>,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_container.html">Container</a></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">   45</a></span>&#160;    <span class="keyword">const</span> std::filesystem::path&amp; <a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a> () const noexcept</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">return</span> main_file_;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba">   52</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba">visit</a> (<a class="code" href="class_a_s_t_1_1_code_gen.html">CodeGen</a>&amp; cg) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="class_a_s_t_1_1_root.html">Root</a> (<span class="keyword">const</span> std::string&amp; <a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>) :</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="class_a_s_t_1_1_item.html">Item</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::ROOT),</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        main_file_ (std::filesystem::absolute (<a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>))</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {}</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::pair &lt;std::unordered_set &lt;std::string&gt;::iterator, <span class="keywordtype">bool</span>&gt; add_file (<span class="keyword">const</span> std::string&amp; name)</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> files_.insert (name);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">operator</span> Symbols&amp; () noexcept</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> symbols_;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">operator</span> <span class="keyword">const</span> Symbols&amp; () <span class="keyword">const</span> noexcept</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> symbols_;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    std::unordered_set &lt;std::string&gt; files_;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    std::filesystem::path main_file_;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    Symbols symbols_;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;};</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_a_s_t_1_1_root_html"><div class="ttname"><a href="class_a_s_t_1_1_root.html">AST::Root</a></div><div class="ttdoc">Abstract Syntax Tree root.</div><div class="ttdef"><b>Definition:</b> <a href="_root_8h_source.html#l00038">Root.h:41</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_root_html"><div class="ttname"><a href="class_a_s_t_1_1_root.html">AST::Root</a></div><div class="ttdoc">Abstract Syntax Tree root.</div><div class="ttdef"><b>Definition:</b> <a href="_root_8h_source.html#l00039">Root.h:42</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_root_html_a687de82cd81741180f83cec285be1aba"><div class="ttname"><a href="class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba">AST::Root::visit</a></div><div class="ttdeci">bool visit(CodeGen &amp;cg) const</div><div class="ttdoc">Visit all items for the code generation.</div></div>
 <div class="ttc" id="a_item_8h_html"><div class="ttname"><a href="_item_8h.html">Item.h</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
 <div class="ttc" id="a_container_8h_html"><div class="ttname"><a href="_container_8h.html">Container.h</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_container_html"><div class="ttname"><a href="class_a_s_t_1_1_container.html">AST::Container</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00055">Container.h:57</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_root_html_a1fd97331b3366e17df4ba7b37ae967fa"><div class="ttname"><a href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">AST::Root::file</a></div><div class="ttdeci">const std::filesystem::path &amp; file() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_root_8h_source.html#l00044">Root.h:44</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_root_html_a1fd97331b3366e17df4ba7b37ae967fa"><div class="ttname"><a href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">AST::Root::file</a></div><div class="ttdeci">const std::filesystem::path &amp; file() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_root_8h_source.html#l00045">Root.h:45</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00043">Item.h:44</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00039">Item.h:40</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_code_gen_html"><div class="ttname"><a href="class_a_s_t_1_1_code_gen.html">AST::CodeGen</a></div><div class="ttdoc">Base for code generators. Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="_code_gen_8h_source.html#l00073">CodeGen.h:74</a></div></div>

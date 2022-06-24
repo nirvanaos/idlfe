@@ -114,31 +114,29 @@ $(function() {
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">return</span> labels_;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749">   51</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749">is_default</a> () const noexcept</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> labels_.empty ();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749">is_default</a> () const noexcept;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;private:</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    template &lt;class T&gt; friend class <a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="class_a_s_t_1_1_union_element.html">UnionElement</a> (Build::Builder&amp; builder, std::vector &lt;Variant&gt;&amp;&amp; <a class="code" href="class_a_s_t_1_1_union_element.html#aa9a2eb10466c36d4b2171fa0e97cd9b9">labels</a>, <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp; t, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <a class="code" href="class_a_s_t_1_1_member.html">Member</a> (builder, t, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800">Kind</a>::UNION_ELEMENT),</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        labels_ (std::move (<a class="code" href="class_a_s_t_1_1_union_element.html#aa9a2eb10466c36d4b2171fa0e97cd9b9">labels</a>))</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    {}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> std::vector &lt;Variant&gt; labels_;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;};</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="class_a_s_t_1_1_union_element.html">UnionElement</a> (Build::Builder&amp; builder, std::vector &lt;<a class="code" href="class_a_s_t_1_1_variant.html">Variant</a>&gt;&amp;&amp; <a class="code" href="class_a_s_t_1_1_union_element.html#aa9a2eb10466c36d4b2171fa0e97cd9b9">labels</a>, const <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp; t, const Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="class_a_s_t_1_1_member.html">Member</a> (builder, t, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_type.html#ae27c12696fe202ed662d6bd06ce92800">Kind</a>::UNION_ELEMENT),</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        labels_ (std::move (<a class="code" href="class_a_s_t_1_1_union_element.html#aa9a2eb10466c36d4b2171fa0e97cd9b9">labels</a>))</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">const</span> std::vector &lt;Variant&gt; labels_;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_type_html"><div class="ttname"><a href="class_a_s_t_1_1_type.html">AST::Type</a></div><div class="ttdoc">An IDL type.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00045">Type.h:46</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_member_html"><div class="ttname"><a href="class_a_s_t_1_1_member.html">AST::Member</a></div><div class="ttdoc">The item with name and type.</div><div class="ttdef"><b>Definition:</b> <a href="_member_8h_source.html#l00036">Member.h:39</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_variant_html"><div class="ttname"><a href="class_a_s_t_1_1_variant.html">AST::Variant</a></div><div class="ttdoc">Stores the constant value.</div><div class="ttdef"><b>Definition:</b> <a href="_variant_8h_source.html#l00039">Variant.h:40</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_union_element_html_a92bcc5e263465c69fb14e0adcfca7749"><div class="ttname"><a href="class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749">AST::UnionElement::is_default</a></div><div class="ttdeci">bool is_default() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_union_element_8h_source.html#l00051">UnionElement.h:51</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_union_element_html_a92bcc5e263465c69fb14e0adcfca7749"><div class="ttname"><a href="class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749">AST::UnionElement::is_default</a></div><div class="ttdeci">bool is_default() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_union_8h_source.html#l00107">Union.h:107</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_union_element_html_a95d3c1f114088613b1d470c6787e015f"><div class="ttname"><a href="class_a_s_t_1_1_union_element.html#a95d3c1f114088613b1d470c6787e015f">AST::UnionElement::Labels</a></div><div class="ttdeci">std::vector&lt; Variant &gt; Labels</div><div class="ttdoc">The vector of case labels.</div><div class="ttdef"><b>Definition:</b> <a href="_union_element_8h_source.html#l00042">UnionElement.h:42</a></div></div>
 <div class="ttc" id="a_variant_8h_html"><div class="ttname"><a href="_variant_8h.html">Variant.h</a></div></div>
 <div class="ttc" id="a_member_8h_html"><div class="ttname"><a href="_member_8h.html">Member.h</a></div></div>

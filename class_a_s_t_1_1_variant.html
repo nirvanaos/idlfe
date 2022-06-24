@@ -157,6 +157,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afdf63c9de33301d7954905471fb68af7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7c2036167421e9130513e54bee8a965"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_constant.html">Constant</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_variant.html#aa7c2036167421e9130513e54bee8a965">as_constant</a> () const noexcept</td></tr>
 <tr class="separator:aa7c2036167421e9130513e54bee8a965"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d8c8cc99483764a1d27a77b075afb9a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_fixed.html">Fixed</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_variant.html#a4d8c8cc99483764a1d27a77b075afb9a">as_Fixed</a> () const noexcept</td></tr>
+<tr class="separator:a4d8c8cc99483764a1d27a77b075afb9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2df16ed1db6ba08e6e548d7754c0488e"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_variant.html#a2df16ed1db6ba08e6e548d7754c0488e">fixed_digits</a> () const noexcept</td></tr>
 <tr class="separator:a2df16ed1db6ba08e6e548d7754c0488e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab1da152c61de77fca44653987458754"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_variant.html#aab1da152c61de77fca44653987458754">fixed_scale</a> () const noexcept</td></tr>
@@ -286,7 +288,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Default constructor. Creates empty Valriant. </p>
 
-<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00254">254</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00260">260</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
 </div>
 </div>
@@ -812,6 +814,35 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a4d8c8cc99483764a1d27a77b075afb9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d8c8cc99483764a1d27a77b075afb9a">&#9670;&nbsp;</a></span>as_Fixed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="class_a_s_t_1_1_fixed.html">Fixed</a>&amp; AST::Variant::as_Fixed </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_a_s_t_1_1_fixed.html" title="Fixed point constant.">Fixed</a> reference. </dd></dl>
+<dl class="section invariant"><dt>Invariant</dt><dd>vtype () == <a class="el" href="class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7" title="Variant::fixed_digits (); Variant::fixed_scale ();.">VT::FIXED</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00221">221</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+
+</div>
+</div>
 <a id="a2df16ed1db6ba08e6e548d7754c0488e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2df16ed1db6ba08e6e548d7754c0488e">&#9670;&nbsp;</a></span>fixed_digits()</h2>
 
@@ -837,7 +868,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Number of digits for <code>fixed</code> type. </dd></dl>
 <dl class="section invariant"><dt>Invariant</dt><dd>vtype () == <a class="el" href="class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7" title="Variant::fixed_digits (); Variant::fixed_scale ();.">VT::FIXED</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00221">221</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00229">229</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
 </div>
 </div>
@@ -866,7 +897,7 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Scale for <code>fixed</code> type. </dd></dl>
 <dl class="section invariant"><dt>Invariant</dt><dd>vtype () == <a class="el" href="class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7" title="Variant::fixed_digits (); Variant::fixed_scale ();.">VT::FIXED</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00229">229</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00236">236</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
 </div>
 </div>
@@ -912,7 +943,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if <a class="el" href="class_a_s_t_1_1_variant.html" title="Stores the constant value.">Variant</a> is empty. In the valid <a class="el" href="namespace_a_s_t.html" title="Abstract Syntax Tree namespace.">AST</a>, <a class="el" href="class_a_s_t_1_1_variant.html" title="Stores the constant value.">Variant</a> never be empty. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00241">241</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00247">247</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
 </div>
 </div>
