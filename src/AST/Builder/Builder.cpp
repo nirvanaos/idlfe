@@ -1822,7 +1822,7 @@ void Builder::check_rep_ids_unique (RepIdMap& ids, const Symbols& sym)
 void Builder::check_unique (RepIdMap& ids, const RepositoryId& rid)
 {
 	auto ins = ids.emplace (rid.repository_id (), rid.item ());
-	if (!ins.second) {
+	if (!ins.second && &ins.first->second != &rid.item ()) {
 		message (rid.item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
 		see_declaration_of (ins.first->second, ins.first->second.qualified_name ());
 	}
