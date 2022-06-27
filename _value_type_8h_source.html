@@ -99,128 +99,124 @@ $(function() {
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_interface_8h.html">Interface.h</a>&quot;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_type_8h.html">Type.h</a>&quot;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_forward_declarable_8h.html">ForwardDeclarable.h</a>&quot;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">class </span>ValueType;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">   39</a></span>&#160;<span class="keyword">typedef</span> std::vector &lt;const ValueType*&gt; <a class="code" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">ValueTypes</a>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_value_type.html">ValueType</a> :</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item_container.html">ItemContainer</a>,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">   48</a></span>&#160;    <span class="keyword">enum class</span> <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        NONE,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaa72baef04098f035e8a320b03ad197818">CUSTOM</a>, </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaf387fb1201d443061afb1c768e1e287b">ABSTRACT</a>, </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaede700394374d65d0e6db5d3dd2db395">TRUNCATABLE</a> </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    };</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">   57</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a> <a class="code" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">modifier</a> () const noexcept</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">return</span> modifier_;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#a180a6db73641a636d48d64fd95f8c409">   63</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">ValueTypes</a>&amp; <a class="code" href="class_a_s_t_1_1_value_type.html#a180a6db73641a636d48d64fd95f8c409">bases</a> () const noexcept</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">return</span> bases_;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#a578593ec76809589f1996b98b3aba4dd">   69</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="namespace_a_s_t.html#a4a590eb801888aecfd835aeb3eb0a7ab">Interfaces</a>&amp; <a class="code" href="class_a_s_t_1_1_value_type.html#a578593ec76809589f1996b98b3aba4dd">supports</a> () const noexcept</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> supports_;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type.html">ValueType</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a> <a class="code" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">modifier</a>) :</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <a class="code" href="class_a_s_t_1_1_item_container.html">ItemContainer</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::VALUE_TYPE, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        modifier_ (<a class="code" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">modifier</a>)</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    {}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">class </span>ValueType;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">   38</a></span>&#160;<span class="keyword">typedef</span> std::vector &lt;const ValueType*&gt; <a class="code" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">ValueTypes</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html">   41</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_value_type.html">ValueType</a> :</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">   46</a></span>&#160;    <span class="keyword">enum class</span> <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        NONE,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaa72baef04098f035e8a320b03ad197818">CUSTOM</a>, </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaf387fb1201d443061afb1c768e1e287b">ABSTRACT</a>, </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaede700394374d65d0e6db5d3dd2db395">TRUNCATABLE</a> </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    };</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">   55</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a> <a class="code" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">modifier</a> () const noexcept</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">return</span> modifier_;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#a180a6db73641a636d48d64fd95f8c409">   61</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">ValueTypes</a>&amp; <a class="code" href="class_a_s_t_1_1_value_type.html#a180a6db73641a636d48d64fd95f8c409">bases</a> () const noexcept</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">return</span> bases_;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type.html#a578593ec76809589f1996b98b3aba4dd">   67</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="namespace_a_s_t.html#a4a590eb801888aecfd835aeb3eb0a7ab">Interfaces</a>&amp; <a class="code" href="class_a_s_t_1_1_value_type.html#a578593ec76809589f1996b98b3aba4dd">supports</a> () const noexcept</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordflow">return</span> supports_;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type.html">ValueType</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a> <a class="code" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">modifier</a>) :</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::VALUE_TYPE, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        modifier_ (<a class="code" href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">modifier</a>)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    {}</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* modifier_name () const noexcept;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* modifier_name () const noexcept;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> set_truncatable ()</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        assert (modifier_ == Modifier::NONE);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        modifier_ = <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaede700394374d65d0e6db5d3dd2db395">Modifier::TRUNCATABLE</a>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> add_base (<span class="keyword">const</span> ValueType&amp; vt)</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        bases_.push_back (&amp;vt);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> add_supports (<span class="keyword">const</span> Interface&amp; itf)</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    {</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        supports_.push_back (&amp;itf);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">void</span> set_truncatable ()</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        assert (modifier_ == Modifier::NONE);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        modifier_ = <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaede700394374d65d0e6db5d3dd2db395">Modifier::TRUNCATABLE</a>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> add_base (<span class="keyword">const</span> ValueType&amp; vt)</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        bases_.push_back (&amp;vt);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> add_supports (<span class="keyword">const</span> Interface&amp; itf)</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        supports_.push_back (&amp;itf);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> get_all_containers (Containers&amp; all) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> get_all_containers (Containers&amp; all) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a> modifier_;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <a class="code" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">ValueTypes</a> bases_;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="namespace_a_s_t.html#a4a590eb801888aecfd835aeb3eb0a7ab">Interfaces</a> supports_;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;};</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type_decl.html">  111</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_value_type_decl.html">ValueTypeDecl</a> :</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_repository_id.html">RepositoryId</a></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;{</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8">  117</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8">is_abstract</a> () const noexcept</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">return</span> is_abstract_;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type_decl.html">ValueTypeDecl</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <span class="keywordtype">bool</span> abstr) :</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::VALUE_TYPE_DECL, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <a class="code" href="class_a_s_t_1_1_repository_id.html">RepositoryId</a> (*this, builder),</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        is_abstract_ (abstr)</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    {}</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordtype">bool</span> is_abstract_;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;};</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">Modifier</a> modifier_;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <a class="code" href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">ValueTypes</a> bases_;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <a class="code" href="namespace_a_s_t.html#a4a590eb801888aecfd835aeb3eb0a7ab">Interfaces</a> supports_;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;};</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type_decl.html">  109</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_value_type_decl.html">ValueTypeDecl</a> :</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>,</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_repository_id.html">RepositoryId</a></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;{</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8">  115</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8">is_abstract</a> () const noexcept</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordflow">return</span> is_abstract_;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_type_decl.html">ValueTypeDecl</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <span class="keywordtype">bool</span> abstr) :</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::VALUE_TYPE_DECL, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <a class="code" href="class_a_s_t_1_1_repository_id.html">RepositoryId</a> (*this, builder),</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        is_abstract_ (abstr)</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    {}</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keywordtype">bool</span> is_abstract_;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;};</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_repository_id_html"><div class="ttname"><a href="class_a_s_t_1_1_repository_id.html">AST::RepositoryId</a></div><div class="ttdoc">Items which have repository identifiers derive from this class.</div><div class="ttdef"><b>Definition:</b> <a href="_repository_id_8h_source.html#l00047">RepositoryId.h:48</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_html"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html">AST::ValueType</a></div><div class="ttdoc">Value type definition.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00042">ValueType.h:45</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_html"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html">AST::ValueType</a></div><div class="ttdoc">Value type definition.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00041">ValueType.h:43</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_value_type_html_ac2742b2ddf19921ffc9bb992ef5e2fdaa72baef04098f035e8a320b03ad197818"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaa72baef04098f035e8a320b03ad197818">AST::ValueType::Modifier::CUSTOM</a></div><div class="ttdeci">@ CUSTOM</div><div class="ttdoc">custom</div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_decl_html_ad5a2d34290346fbdd9de6e4b247e89d8"><div class="ttname"><a href="class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8">AST::ValueTypeDecl::is_abstract</a></div><div class="ttdeci">bool is_abstract() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00117">ValueType.h:117</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_decl_html_ad5a2d34290346fbdd9de6e4b247e89d8"><div class="ttname"><a href="class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8">AST::ValueTypeDecl::is_abstract</a></div><div class="ttdeci">bool is_abstract() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00115">ValueType.h:115</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_decl_html"><div class="ttname"><a href="class_a_s_t_1_1_value_type_decl.html">AST::ValueTypeDecl</a></div><div class="ttdoc">Value type forward declaration.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00111">ValueType.h:114</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_aae16cc27ffa7009b3d49a802d1e63638"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">AST::ValueType::modifier</a></div><div class="ttdeci">Modifier modifier() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00057">ValueType.h:57</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_decl_html"><div class="ttname"><a href="class_a_s_t_1_1_value_type_decl.html">AST::ValueTypeDecl</a></div><div class="ttdoc">Value type forward declaration.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00109">ValueType.h:112</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_aae16cc27ffa7009b3d49a802d1e63638"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#aae16cc27ffa7009b3d49a802d1e63638">AST::ValueType::modifier</a></div><div class="ttdeci">Modifier modifier() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00055">ValueType.h:55</a></div></div>
 <div class="ttc" id="a_interface_8h_html"><div class="ttname"><a href="_interface_8h.html">Interface.h</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_a180a6db73641a636d48d64fd95f8c409"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#a180a6db73641a636d48d64fd95f8c409">AST::ValueType::bases</a></div><div class="ttdeci">const ValueTypes &amp; bases() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00063">ValueType.h:63</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_a578593ec76809589f1996b98b3aba4dd"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#a578593ec76809589f1996b98b3aba4dd">AST::ValueType::supports</a></div><div class="ttdeci">const Interfaces &amp; supports() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00069">ValueType.h:69</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_a180a6db73641a636d48d64fd95f8c409"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#a180a6db73641a636d48d64fd95f8c409">AST::ValueType::bases</a></div><div class="ttdeci">const ValueTypes &amp; bases() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00061">ValueType.h:61</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_a578593ec76809589f1996b98b3aba4dd"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#a578593ec76809589f1996b98b3aba4dd">AST::ValueType::supports</a></div><div class="ttdeci">const Interfaces &amp; supports() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00067">ValueType.h:67</a></div></div>
 <div class="ttc" id="a_type_8h_html"><div class="ttname"><a href="_type_8h.html">Type.h</a></div></div>
-<div class="ttc" id="a_forward_declarable_8h_html"><div class="ttname"><a href="_forward_declarable_8h.html">ForwardDeclarable.h</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00043">Item.h:44</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html_a4a590eb801888aecfd835aeb3eb0a7ab"><div class="ttname"><a href="namespace_a_s_t.html#a4a590eb801888aecfd835aeb3eb0a7ab">AST::Interfaces</a></div><div class="ttdeci">std::vector&lt; const Interface * &gt; Interfaces</div><div class="ttdoc">The sequence of interfaces.</div><div class="ttdef"><b>Definition:</b> <a href="_interface_8h_source.html#l00073">Interface.h:73</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_container_html"><div class="ttname"><a href="class_a_s_t_1_1_item_container.html">AST::ItemContainer</a></div><div class="ttdoc">The container of AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_item_container_8h_source.html#l00037">ItemContainer.h:41</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html_a4a590eb801888aecfd835aeb3eb0a7ab"><div class="ttname"><a href="namespace_a_s_t.html#a4a590eb801888aecfd835aeb3eb0a7ab">AST::Interfaces</a></div><div class="ttdeci">std::vector&lt; const Interface * &gt; Interfaces</div><div class="ttdoc">The sequence of interfaces.</div><div class="ttdef"><b>Definition:</b> <a href="_interface_8h_source.html#l00072">Interface.h:72</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_value_type_html_ac2742b2ddf19921ffc9bb992ef5e2fdaaede700394374d65d0e6db5d3dd2db395"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaede700394374d65d0e6db5d3dd2db395">AST::ValueType::Modifier::TRUNCATABLE</a></div><div class="ttdeci">@ TRUNCATABLE</div><div class="ttdoc">truncatable</div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_value_type_html_ac2742b2ddf19921ffc9bb992ef5e2fdaaf387fb1201d443061afb1c768e1e287b"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaaf387fb1201d443061afb1c768e1e287b">AST::ValueType::Modifier::ABSTRACT</a></div><div class="ttdeci">@ ABSTRACT</div><div class="ttdoc">abstract</div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00039">Item.h:40</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html_aaa47200411b2d5eb57cb14aa941b59a5"><div class="ttname"><a href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">AST::ValueTypes</a></div><div class="ttdeci">std::vector&lt; const ValueType * &gt; ValueTypes</div><div class="ttdoc">The sequence of value types.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00039">ValueType.h:36</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_ac2742b2ddf19921ffc9bb992ef5e2fda"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">AST::ValueType::Modifier</a></div><div class="ttdeci">Modifier</div><div class="ttdoc">Value type modifier.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00048">ValueType.h:49</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html_aaa47200411b2d5eb57cb14aa941b59a5"><div class="ttname"><a href="namespace_a_s_t.html#aaa47200411b2d5eb57cb14aa941b59a5">AST::ValueTypes</a></div><div class="ttdeci">std::vector&lt; const ValueType * &gt; ValueTypes</div><div class="ttdoc">The sequence of value types.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00038">ValueType.h:35</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_type_html_ac2742b2ddf19921ffc9bb992ef5e2fda"><div class="ttname"><a href="class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fda">AST::ValueType::Modifier</a></div><div class="ttdeci">Modifier</div><div class="ttdoc">Value type modifier.</div><div class="ttdef"><b>Definition:</b> <a href="_value_type_8h_source.html#l00046">ValueType.h:47</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_named_item_html"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html">AST::NamedItem</a></div><div class="ttdoc">The named AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00045">NamedItem.h:48</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_ptr_html"><div class="ttname"><a href="class_a_s_t_1_1_ptr.html">AST::Ptr</a></div><div class="ttdoc">AST item smart pointer.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00125">Item.h:126</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html">AST::ForwardDeclarable</a></div><div class="ttdoc">The item that can be forward declared.</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00037">ForwardDeclarable.h:38</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html">AST::ForwardDeclarable</a></div><div class="ttdoc">The item that can be forward declared.</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00039">ForwardDeclarable.h:40</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_named_item_html_abf5f13b7ca46a219c3bc12de3ac45982"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">AST::NamedItem::name</a></div><div class="ttdeci">const Identifier &amp; name() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00051">NamedItem.h:51</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
