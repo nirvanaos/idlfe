@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 - 2022-06-27
+### Changed
+ - Class hierarchy optimized.
+
 ## 1.5.0 - 2022-06-24
 ### Changed
  - `class AST::Union`
