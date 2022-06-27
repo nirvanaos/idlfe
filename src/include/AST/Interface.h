@@ -27,7 +27,6 @@
 #ifndef NIDL_AST_INTERFACE_H_
 #define NIDL_AST_INTERFACE_H_
 
-#include "ItemContainer.h"
 #include "ForwardDeclarable.h"
 #include <unordered_set>
 
@@ -74,9 +73,8 @@ typedef std::vector <const Interface*> Interfaces;
 
 /// %Interface definition.
 class Interface :
-	public ItemContainer,
-	public InterfaceKind,
-	public ForwardDeclarable
+	public ForwardDeclarable,
+	public InterfaceKind
 {
 public:
 	/// \returns The base interfaces.
@@ -98,7 +96,7 @@ private:
 	void get_all_containers (Containers& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
-		ItemContainer (Item::Kind::INTERFACE, builder, name),
+		ForwardDeclarable (Item::Kind::INTERFACE, builder, name),
 		InterfaceKind (kind)
 	{}
 
