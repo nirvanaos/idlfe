@@ -29,7 +29,6 @@
 
 #include "Interface.h"
 #include "Type.h"
-#include "ForwardDeclarable.h"
 
 namespace AST {
 
@@ -40,7 +39,6 @@ typedef std::vector <const ValueType*> ValueTypes;
 
 /// Value type definition.
 class ValueType :
-	public ItemContainer,
 	public ForwardDeclarable
 {
 public:
@@ -75,7 +73,7 @@ private:
 	template <class T> friend class Ptr;
 
 	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
-		ItemContainer (Item::Kind::VALUE_TYPE, builder, name),
+		ForwardDeclarable (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
 

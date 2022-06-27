@@ -27,7 +27,6 @@
 #ifndef NIDL_AST_STRUCT_H_
 #define NIDL_AST_STRUCT_H_
 
-#include "ItemContainer.h"
 #include "ForwardDeclarable.h"
 
 namespace AST {
@@ -48,7 +47,6 @@ private:
 
 /// `struct` definition.
 class Struct :
-	public ItemContainer,
 	public ForwardDeclarable
 {
 private:
@@ -56,7 +54,7 @@ private:
 	friend class Build::Builder;
 
 	Struct (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::STRUCT, builder, name)
+		ForwardDeclarable (Item::Kind::STRUCT, builder, name)
 	{}
 };
 

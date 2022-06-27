@@ -27,7 +27,6 @@
 #ifndef NIDL_AST_UNION_H_
 #define NIDL_AST_UNION_H_
 
-#include "ItemContainer.h"
 #include "ForwardDeclarable.h"
 #include "UnionElement.h"
 
@@ -49,7 +48,6 @@ private:
 
 /// `union` definition.
 class Union :
-	public ItemContainer,
 	public ForwardDeclarable
 {
 public:
@@ -92,7 +90,7 @@ private:
 
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name,
 		const Type& discriminator_type) :
-		ItemContainer (Item::Kind::UNION, builder, name),
+		ForwardDeclarable (Item::Kind::UNION, builder, name),
 		discriminator_type_ (discriminator_type),
 		default_element_ (nullptr)
 	{}
