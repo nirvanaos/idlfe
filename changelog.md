@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.2 - 2022-06-27
+### Fixed
+ - Bug in unions.
+
 ## 1.5.1 - 2022-06-27
 ### Changed
  - Class hierarchy optimized.
