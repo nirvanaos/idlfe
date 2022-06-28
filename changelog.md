@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.3 - 2022-06-28
+### Fixed
+ - Bug: Redundant error "incomplete type is not allowed" for interface reference.
+ - Bug: Redundant assertion in `enum`.
+
 ## 1.5.2 - 2022-06-27
 ### Fixed
  - Bug in unions.

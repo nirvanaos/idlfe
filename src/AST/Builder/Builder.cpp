@@ -1624,7 +1624,6 @@ const Ptr <NamedItem>* Builder::union_end ()
 
 const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
 {
-	assert (!scope_stack_.empty ());
 	assert (!items.empty ());
 	Symbols* scope = cur_scope ();
 	if (scope) {
@@ -1774,7 +1773,7 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::UNION_ELEMENT:
 			case Item::Kind::STATE_MEMBER: {
 				const Member& m = static_cast <const Member&> (item);
-				check_complete (m, m);
+				check_complete_or_ref (m, m);
 			} break;
 			case Item::Kind::UNION:
 				check_complete (static_cast <const Union&> (item));

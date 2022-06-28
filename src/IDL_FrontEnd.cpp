@@ -143,10 +143,10 @@ void IDL_FrontEnd::print_usage_info (const char* exe_name)
 		"\tparameter = (!\"-\")'...'.\n"
 		"\n"
 		"Preprocessor parameters:\n"
-		"\t-D symbol Define symbol.\n"
-		"\t-U symbol Undefine symbol.\n"
-		"\t-I directory Add include directory.\n"
-		"\t-FI file Include file.\n"
+		"\t-D symbol\tDefine symbol.\n"
+		"\t-U symbol\tUndefine symbol.\n"
+		"\t-I directory\tAdd include directory.\n"
+		"\t-FI file\tInclude file.\n"
 		;
 }
 
