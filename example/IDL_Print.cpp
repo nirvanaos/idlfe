@@ -11,7 +11,7 @@ void IDL_Print::print_usage_info (const char* exe_name)
 	cout << "Compile and print IDL.\n";
 	IDL_FrontEnd::print_usage_info (exe_name);
 	cout << "Output options:\n"
-		"\t-d directory Directory for output files.\n";
+		"\t-d directory\tDirectory for output files.\n";
 }
 
 bool IDL_Print::parse_command_line (CmdLine& args)
