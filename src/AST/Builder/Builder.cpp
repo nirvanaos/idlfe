@@ -1773,7 +1773,7 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::UNION_ELEMENT:
 			case Item::Kind::STATE_MEMBER: {
 				const Member& m = static_cast <const Member&> (item);
-				check_complete_or_ref (m, m);
+				check_complete (m, m);
 			} break;
 			case Item::Kind::UNION:
 				check_complete (static_cast <const Union&> (item));
