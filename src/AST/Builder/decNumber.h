@@ -26,6 +26,7 @@
 #ifndef NIDL_AST_DECNUMBER_H_
 #define NIDL_AST_DECNUMBER_H_
 
+// All calculations are performed with double precision 62 digits
 #define DECNUMDIGITS 62
 
 extern "C" {

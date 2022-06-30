@@ -47,4 +47,17 @@ vector <uint8_t> Fixed::to_BCD (int32_t& scale) const
 	return bcd;
 }
 
+Fixed Fixed::normalize (const Fixed& f) noexcept
+{
+	if (f.digits_ > 31) {
+		decContext ctx;
+		decContextDefault (&ctx, DEC_INIT_BASE);
+		ctx.digits = 31;
+		Fixed ret;
+		decNumberReduce ((decNumber*)&ret, (const decNumber*)&f, &ctx);
+		return ret;
+	} else
+		return f;
+}
+
 }

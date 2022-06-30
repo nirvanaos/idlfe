@@ -46,7 +46,7 @@ public:
 	/// \returns Scale for `fixed` type.
 	uint16_t scale () const noexcept
 	{
-		(uint16_t)-exponent_;
+		return (uint16_t)-exponent_;
 	}
 
 	/// \returns Fixed point as a character string.
@@ -61,6 +61,8 @@ public:
 
 	Fixed () noexcept
 	{}
+
+	static Fixed normalize (const Fixed& f) noexcept;
 
 private:
 	/// This structure is completely equivalent to struct decNumber 62 digits

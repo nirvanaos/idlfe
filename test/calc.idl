@@ -1,0 +1,6 @@
+
+#define A 1.23456789012345D
+
+const fixed B = 3.45789012345678901D;
+
+const fixed C = A * B;
