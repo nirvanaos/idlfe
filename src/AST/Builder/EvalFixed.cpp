@@ -58,9 +58,9 @@ Variant EvalFixed::literal_fixed (const string& s, const Location& loc)
 	assert (!s.empty ());
 	assert (s.back () == 'd' || s.back () == 'D');
 
-	decNumber v;
+	Fixed v;
 	Context ctx;
-	decNumberFromString (&v, s.substr (0, s.length () - 1).c_str (), &ctx);
+	decNumberFromString ((decNumber*)&v, s.substr (0, s.length () - 1).c_str (), &ctx);
 	try {
 		ctx.check ();
 	} catch (const exception& ex) {
@@ -89,21 +89,21 @@ Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Loca
 	if (!l.empty () && !r.empty ()) {
 		try {
 			Context ctx;
-			decNumber ret;
-			const decNumber& lv = l.dereference_const ().as_Fixed ();
-			const decNumber& rv = r.dereference_const ().as_Fixed ();
+			Fixed ret;
+			const Fixed& lv = l.dereference_const ().as_Fixed ();
+			const Fixed& rv = r.dereference_const ().as_Fixed ();
 			switch (op) {
 				case '+':
-					decNumberAdd (&ret, &lv, &rv, &ctx);
+					decNumberAdd ((decNumber*)&ret, (const decNumber*)&lv, (const decNumber*)&rv, &ctx);
 					break;
 				case '-':
-					decNumberSubtract (&ret, &lv, &rv, &ctx);
+					decNumberSubtract ((decNumber*)&ret, (const decNumber*)&lv, (const decNumber*)&rv, &ctx);
 					break;
 				case '*':
-					decNumberMultiply (&ret, &lv, &rv, &ctx);
+					decNumberMultiply ((decNumber*)&ret, (const decNumber*)&lv, (const decNumber*)&rv, &ctx);
 					break;
 				case '/':
-					decNumberDivide (&ret, &lv, &rv, &ctx);
+					decNumberDivide ((decNumber*)&ret, (const decNumber*)&lv, (const decNumber*)&rv, &ctx);
 					break;
 				default:
 					invalid_operation (op, loc);
@@ -123,10 +123,10 @@ Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 	if (!v.empty ()) {
 		try {
 			Context ctx;
-			decNumber ret;
+			Fixed ret;
 			switch (op) {
 				case '-':
-					decNumberMinus (&ret, &v.dereference_const ().as_Fixed (), &ctx);
+					decNumberMinus ((decNumber*)&ret, (const decNumber*)&v.dereference_const ().as_Fixed (), &ctx);
 					break;
 				case '+':
 					break;

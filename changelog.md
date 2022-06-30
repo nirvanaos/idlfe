@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.0 - 2022-06-30
+### Changed
+ - AST::Fixed API.
+
 ## 1.5.3 - 2022-06-28
 ### Fixed
  - Bug: Redundant error "incomplete type is not allowed" for interface reference.

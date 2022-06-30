@@ -336,7 +336,7 @@ public:
 		val_ (std::move (v))
 	{}
 
-	Variant (const _decNumber& v) noexcept :
+	Variant (const Fixed& v) noexcept :
 		type_ (VT::FIXED),
 		val_ (v)
 	{}
@@ -463,8 +463,8 @@ private:
 			ws (std::move (src))
 		{}
 
-		U (const _decNumber& dn) :
-			fixed (dn)
+		U (const Fixed& src) :
+			fixed (src)
 		{}
 
 		U (const EnumItem& src) :
