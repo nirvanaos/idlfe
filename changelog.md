@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.1 - 2022-06-30
+### Fixed
+ - Bug in checking type completeness.
+
 ## 1.6.0 - 2022-06-30
 ### Changed
  - AST::Fixed API.

@@ -186,9 +186,9 @@ bool Type::is_complete () const noexcept
 		case Kind::NAMED_TYPE:
 			return !t.named_type ().is_forward_decl ();
 		case Kind::SEQUENCE:
-			return sequence ().is_complete ();
+			return t.sequence ().is_complete ();
 		case Kind::ARRAY:
-			return array ().is_complete ();
+			return t.array ().is_complete ();
 	}
 	return true;
 }
