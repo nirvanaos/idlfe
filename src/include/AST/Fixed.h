@@ -68,7 +68,7 @@ private:
 	int32_t digits_;
 	int32_t exponent_;
 	uint8_t bits_;
-	uint16_t lsu_ [21];
+	uint8_t lsu_ [31];
 };
 
 }
