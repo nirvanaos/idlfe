@@ -29,8 +29,7 @@
 
 #include <stdint.h>
 #include <string>
-
-extern "C" struct _decNumber;
+#include <vector>
 
 namespace AST {
 
@@ -47,50 +46,26 @@ public:
 	/// \returns Scale for `fixed` type.
 	uint16_t scale () const noexcept
 	{
-		(uint16_t)-exponent_;
+		return (uint16_t)-exponent_;
 	}
 
 	/// \returns Fixed point as a character string.
 	std::string to_string () const;
 
-	/// \returns CORBA fixed point CDR byte array.
-	const uint8_t* CDR () const noexcept
-	{
-		return lsu_;
-	}
+	/// Converts fixed to binary-coded decimal.
+	/// Returned array is CORBA fixed point CDR compatible.
+	/// 
+	/// \param[out] scale The scale result.
+	/// \returns The BCD bytes.
+	std::vector <uint8_t> to_BCD (int32_t& scale) const;
 
-	/// \returns CORBA fixed point CDR byte array size.
-	size_t CDR_size () const noexcept
-	{
-		return (digits_ + 2) / 2 * 2;
-	}
+	Fixed () noexcept
+	{}
 
-	/// \returns _decNumber reference.
-	/// https://github.com/nirvanaos/decNumber.
-	operator const _decNumber& () const
-	{
-		return *(const _decNumber*)(const void*)(this);
-	}
-
-	/// \returns _decNumber reference.
-	const _decNumber* operator & () const
-	{
-		return reinterpret_cast <const _decNumber*> (this);
-	}
-
-	/// \returns _decNumber pointer.
-	_decNumber* operator & ()
-	{
-		return reinterpret_cast <_decNumber*> (this);
-	}
-
-	Fixed (const _decNumber& dn) noexcept
-	{
-		*this = reinterpret_cast <const Fixed&> (dn);
-	}
+	static Fixed normalize (const Fixed& f) noexcept;
 
 private:
-	/// This structure is completely equivalent to struct decNumber
+	/// This structure is completely equivalent to struct decNumber 62 digits
 	/// https://github.com/nirvanaos/decNumber.
 	int32_t digits_;
 	int32_t exponent_;

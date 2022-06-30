@@ -45,7 +45,7 @@ private:
 	Constant (const Build::Builder& builder, const Type& type, const Build::SimpleDeclarator& name, Variant&& val) :
 		NamedItem (Item::Kind::CONSTANT, builder, name),
 		Type (type),
-		Variant (std::move (val))
+		Variant (val.vtype () == Variant::VT::FIXED ? Variant (Fixed::normalize (val.as_Fixed ())) : std::move (val))
 	{}
 };
 

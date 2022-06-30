@@ -27,14 +27,37 @@
 #include "Builder/decNumber.h"
 #include <assert.h>
 
+using namespace std;
+
 namespace AST {
 
-std::string Fixed::to_string () const
+string Fixed::to_string () const
 {
 	char buf [31 + 14];
 	assert (exponent_ > -31);
-	decNumberToString (operator & (), buf);
+	decNumberToString ((const decNumber*)this, buf);
 	return buf;
+}
+
+vector <uint8_t> Fixed::to_BCD (int32_t& scale) const
+{
+	size_t len = (digits_ + 2) / 2;
+	vector <uint8_t> bcd (len);
+	decPackedFromNumber (bcd.data (), (int32_t)bcd.size (), &scale, (const decNumber*)this);
+	return bcd;
+}
+
+Fixed Fixed::normalize (const Fixed& f) noexcept
+{
+	if (f.digits_ > 31) {
+		decContext ctx;
+		decContextDefault (&ctx, DEC_INIT_BASE);
+		ctx.digits = 31;
+		Fixed ret;
+		decNumberReduce ((decNumber*)&ret, (const decNumber*)&f, &ctx);
+		return ret;
+	} else
+		return f;
 }
 
 }

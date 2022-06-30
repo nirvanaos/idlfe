@@ -26,8 +26,11 @@
 #ifndef NIDL_AST_DECNUMBER_H_
 #define NIDL_AST_DECNUMBER_H_
 
+// All calculations are performed with double precision 62 digits
+#define DECNUMDIGITS 62
+
 extern "C" {
-#include <decNumber/decNumber.h>
+#include <decNumber/decPacked.h>
 }
 #include "../../include/AST/Fixed.h"
 
@@ -35,6 +38,6 @@ extern "C" {
 #error decNumber DECNUMDIGITS must be 62.
 #endif
 
-static_assert (sizeof (_decNumber) == sizeof (AST::Fixed), "Check decNumber library definitions.");
+static_assert (sizeof (decNumber) == sizeof (AST::Fixed), "Check decNumber library definitions.");
 
 #endif
