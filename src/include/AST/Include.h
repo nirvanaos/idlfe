@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_INCLUDE_H_
 #define NIDL_AST_INCLUDE_H_
+#pragma once
 
 #include "Item.h"
 #include <filesystem>

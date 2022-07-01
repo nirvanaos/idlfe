@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_ITEM_H_
 #define NIDL_AST_ITEM_H_
+#pragma once
 
 #include <utility>
 #include <assert.h>

@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_BASICTYPE_H_
 #define NIDL_AST_BASICTYPE_H_
+#pragma once
 
 namespace AST {
 

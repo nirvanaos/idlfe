@@ -1,4 +1,4 @@
-/// \file RepositoryId.h
+/// \file NamedItem.h
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,19 +24,13 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_REPOSITORYID_H_
-#define NIDL_AST_REPOSITORYID_H_
+#ifndef NIDL_AST_ITEMWITHID_H_
+#define NIDL_AST_ITEMWITHID_H_
+#pragma once
 
-#include "Location.h"
-#include <stdint.h>
+#include "NamedItem.h"
 
 namespace AST {
-
-namespace Build {
-class Builder;
-}
-
-class NamedItem;
 
 struct Version
 {
@@ -44,35 +38,28 @@ struct Version
 };
 
 /// Items which have repository identifiers derive from this class.
-class RepositoryId
+class ItemWithId : public NamedItem
 {
 public:
 	/// \returns The repository id.
 	std::string repository_id () const;
 
-	/// \returns The NamedItem.
-	const NamedItem& item () const noexcept
-	{
-		return item_;
-	}
-
-	/// \returns RepositoryId const pointer if item derives from RepositoryId.
+	/// \returns ItemWithId const pointer if item derives from ItemWithId.
 	///          Otherwise returns `nullptr`.
-	static const RepositoryId* cast (const NamedItem* item) noexcept
+	static const ItemWithId* cast (const NamedItem* item) noexcept
 	{
 		return cast (const_cast <NamedItem*> (item));
 	}
 
 protected:
-	RepositoryId (const NamedItem& item, const Build::Builder& builder);
-	RepositoryId (const RepositoryId&) = delete;
+	ItemWithId (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
 
 private:
 	friend class Build::Builder;
 
-	static RepositoryId* cast (NamedItem* item) noexcept;
+	static ItemWithId* cast (NamedItem* item) noexcept;
 
 	bool check_prefix (Build::Builder& builder, const Location& loc) const noexcept;
 
@@ -80,10 +67,9 @@ private:
 
 	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
 
-	RepositoryId& operator = (const RepositoryId& src)
+	void set_id (const ItemWithId& src)
 	{
 		data_ = src.data_;
-		return *this;
 	}
 
 private:
@@ -109,10 +95,8 @@ private:
 		Version version;
 
 		Location explicit_ [EXPLICIT_SPECIFICATIONS];
-	};
-
-	const NamedItem& item_;
-	Data data_;
+	}
+	data_;
 };
 
 }

@@ -43,6 +43,8 @@ namespace AST {
 class Root;
 class OperationBase;
 class Attribute;
+class StructBase;
+class Union;
 
 namespace Build {
 
@@ -95,7 +97,7 @@ public:
 	ItemScope* cur_parent () const;
 	Symbols* cur_scope () const;
 
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
+	const NamedItem* lookup (const ScopedName& scoped_name);
 	Type lookup_type (const ScopedName& scoped_name);
 
 	void native (const SimpleDeclarator& name);
@@ -142,7 +144,7 @@ public:
 	void struct_decl (const SimpleDeclarator& name);
 	void struct_begin (const SimpleDeclarator& name);
 
-	const Ptr <NamedItem>* struct_end ()
+	const NamedItem* struct_end ()
 	{
 		return constr_type_end ();
 	}
@@ -151,7 +153,7 @@ public:
 
 	void exception_end ()
 	{
-		return scope_end ();
+		constr_type_end ();
 	}
 
 	void member (const Type& type, const Declarators& names);
@@ -161,9 +163,9 @@ public:
 	void union_label (const Variant& label, const Location& loc);
 	void union_default (const Location& loc);
 	void union_element (const Type& type, const Build::Declarator& decl);
-	const Ptr <NamedItem>* union_end ();
+	const NamedItem* union_end ();
 
-	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
+	const NamedItem* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
 	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
 	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
@@ -232,19 +234,19 @@ private:
 	void prefix (const std::string& pref, const Location& loc);
 	bool get_quoted_string (const char*& s, std::string& qs, const Location& loc);
 	static bool get_scoped_name (const char*& s, ScopedName& name);
-	RepositoryId* lookup_rep_id (const ScopedName& name);
+	ItemWithId* lookup_rep_id (const ScopedName& name);
 	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
 	Symbols* scope_begin ();
 	void scope_push (ItemContainer* scope);
 	void scope_end ();
 
-	const Ptr <NamedItem>* constr_type_end ();
+	const NamedItem* constr_type_end ();
 
 	Raises lookup_exceptions (const ScopedNames& names);
 
-	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
-	std::pair <bool, const Ptr <NamedItem>*> lookup (const Containers& containers, const Identifier& name, const Location& loc);
+	std::pair <bool, const NamedItem*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
+	std::pair <bool, const NamedItem*> lookup (const Containers& containers, const Identifier& name, const Location& loc);
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
@@ -256,11 +258,13 @@ private:
 
 	typedef std::unordered_map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
-	void check_unique (RepIdMap& ids, const RepositoryId& rid);
+	void check_unique (RepIdMap& ids, const ItemWithId& rid);
 
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
 	void check_complete (const OperationBase& op);
+	void check_complete (const StructBase& s);
+	void check_complete (const Union& u);
 
 	static bool is_base_of (const Interface& base, const Interface& derived);
 	static void collect_concrete_interfaces (const ValueType& vt, std::unordered_map <const Interface*, const ValueType*>& interfaces);
@@ -272,7 +276,7 @@ private:
 	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
-	std::stack <std::unique_ptr <Eval>> eval_stack_;
+	std::stack <std::unique_ptr <Eval> > eval_stack_;
 	bool anonymous_deprecated_;
 
 	struct File
@@ -332,6 +336,23 @@ private:
 		}
 	} attribute_;
 
+	struct ConstrType
+	{
+		ItemWithId* obj;
+		Symbols members;
+
+		ConstrType () :
+			obj (nullptr)
+		{}
+
+		void clear () noexcept
+		{
+			obj = nullptr;
+			members.clear ();
+		}
+
+	} constr_type_;
+
 	struct UnionData
 	{
 		std::unordered_map <Variant::Key, Location> all_labels;
@@ -342,7 +363,7 @@ private:
 			has_default (false)
 		{}
 
-		void clear ()
+		void clear () noexcept
 		{
 			all_labels.clear ();
 			has_default = false;

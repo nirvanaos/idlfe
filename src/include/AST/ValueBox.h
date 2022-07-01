@@ -26,26 +26,24 @@
 */
 #ifndef NIDL_AST_VALUEBOX_H_
 #define NIDL_AST_VALUEBOX_H_
+#pragma once
 
-#include "NamedItem.h"
+#include "ItemWithId.h"
 #include "Type.h"
-#include "RepositoryId.h"
 
 namespace AST {
 
 /// Boxed value type.
 class ValueBox :
-	public NamedItem,
-	public Type,
-	public RepositoryId
+	public ItemWithId,
+	public Type
 {
 private:
 	template <class T> friend class Ptr;
 
 	ValueBox (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
-		NamedItem (Item::Kind::VALUE_BOX, builder, name),
-		Type (type),
-		RepositoryId (*this, builder)
+		ItemWithId (Item::Kind::VALUE_BOX, builder, name),
+		Type (type)
 	{}
 };
 

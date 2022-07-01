@@ -1,4 +1,4 @@
-/// \file Container.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,48 +24,25 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_CONTAINER_H_
-#define NIDL_AST_CONTAINER_H_
+#ifndef NIDL_AST_STRUCTBASE_H_
+#define NIDL_AST_STRUCTBASE_H_
 #pragma once
 
-#include "Item.h"
-#include <vector>
+#include "ItemWithId.h"
+#include "Container.h"
+#include "Member.h"
 
 namespace AST {
 
-/// Sequential container of the AST items.
-template <class T>
-class ContainerT :
-	public std::vector <Ptr <T> >
+/// The common base for Struct and Exception.
+class StructBase :
+	public ItemWithId,
+	public ContainerT <Member>
 {
 protected:
-	typedef std::vector <Ptr <T> > Base;
-
-protected:
-	friend class Build::Builder;
-
-	void append (T& item)
-	{
-		Base::emplace_back (&item);
-	}
-};
-
-class CodeGen;
-
-/// Sequential container of the AST items.
-class Container :
-	public ContainerT <Item>
-{
-	typedef ContainerT <Item> Base;
-public:
-	/// Visit all items for the code generation.
-	/// \returns `true` if unsuppported building blocks were occurred.
-	bool visit (CodeGen& cg) const;
-
-private:
-	friend class Build::Builder;
-
-	void append (Item& item);
+	StructBase (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		ItemWithId (kind, builder, name)
+	{}
 };
 
 }

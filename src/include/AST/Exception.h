@@ -26,20 +26,21 @@
 */
 #ifndef NIDL_AST_EXCEPTION_H_
 #define NIDL_AST_EXCEPTION_H_
+#pragma once
 
-#include "ItemContainer.h"
+#include "StructBase.h"
 
 namespace AST {
 
 /// The `exception` declaration.
 class Exception :
-	public ItemContainer
+	public StructBase
 {
 private:
 	template <class T> friend class Ptr;
 
 	Exception (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemContainer (Item::Kind::EXCEPTION, builder, name)
+		StructBase (Item::Kind::EXCEPTION, builder, name)
 	{}
 };
 

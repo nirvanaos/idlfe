@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_LOCATION_H_
 #define NIDL_AST_LOCATION_H_
+#pragma once
 
 #include <string>
 #include <assert.h>

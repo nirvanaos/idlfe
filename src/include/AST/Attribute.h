@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_ATTRIBUTE_H_
 #define NIDL_AST_ATTRIBUTE_H_
+#pragma once
 
 #include "Member.h"
 #include "Exception.h"

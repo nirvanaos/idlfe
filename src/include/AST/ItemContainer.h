@@ -26,23 +26,23 @@
 */
 #ifndef NIDL_AST_ITEMCONTAINER_H_
 #define NIDL_AST_ITEMCONTAINER_H_
+#pragma once
 
 #include "ItemScope.h"
 #include "Container.h"
-#include "RepositoryId.h"
+#include "ForwardDeclarable.h"
 
 namespace AST {
 
-/// The container of AST items.
+/// Base for Interface and ValueType.
 class ItemContainer :
 	public ItemScope,
-	public RepositoryId,
-	public Container
+	public Container,
+	public ForwardDeclarable
 {
 protected:
 	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemScope (kind, builder, name),
-		RepositoryId (*this, builder)
+		ItemScope (kind, builder, name)
 	{}
 
 private:
@@ -50,7 +50,7 @@ private:
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 	{
-		if (RepositoryId::prefix (builder, pref, loc))
+		if (ItemWithId::prefix (builder, pref, loc))
 			return ItemScope::prefix (builder, pref, loc);
 		else
 			return false;

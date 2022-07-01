@@ -32,17 +32,21 @@
 #include "../include/AST/Exception.h"
 #include "../include/AST/ValueType.h"
 #include "../include/AST/ValueBox.h"
+#include "../include/AST/Module.h"
 
 using namespace std;
 using namespace AST::Build;
 
 namespace AST {
 
-RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
+ItemWithId* ItemWithId::cast (NamedItem* item) noexcept
 {
-	RepositoryId* p = nullptr;
+	ItemWithId* p = nullptr;
 	if (item) {
 		switch (item->kind ()) {
+			case Item::Kind::MODULE:
+				p = static_cast <Module*> (item);
+				break;
 			case Item::Kind::INTERFACE:
 				p = static_cast <Interface*> (item);
 				break;
@@ -87,31 +91,31 @@ RepositoryId* RepositoryId::cast (NamedItem* item) noexcept
 	return p;
 }
 
-RepositoryId::RepositoryId (const NamedItem& item, const Builder& builder) :
-	item_ (item),
+ItemWithId::ItemWithId (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	NamedItem (kind, builder, name),
 	data_ (builder.prefix ())
 {}
 
-bool RepositoryId::check_prefix (Builder& builder, const Location& loc) const noexcept
+bool ItemWithId::check_prefix (Builder& builder, const Location& loc) const noexcept
 {
 	if (!data_.explicit_ [EXPLICIT_ID] && !data_.explicit_ [EXPLICIT_PREFIX]) {
 		const string& pref = builder.prefix ();
 		if (data_.prefix_or_id != pref) {
-			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different prefix \"" + data_.prefix_or_id
+			builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with different prefix \"" + data_.prefix_or_id
 				+ "\". Current prefix is \"" + pref + "\".");
-			builder.see_prev_declaration (item ());
+			builder.see_prev_declaration (*this);
 			return false;
 		}
 	}
 	return true;
 }
 
-bool RepositoryId::prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+bool ItemWithId::prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 {
 	if (!data_.explicit_ [EXPLICIT_ID]) {
 		if (data_.explicit_ [EXPLICIT_PREFIX]) {
 			if (data_.prefix_or_id != pref) {
-				builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different prefix \"" + data_.prefix_or_id
+				builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with different prefix \"" + data_.prefix_or_id
 					+ "\". Current prefix is \"" + pref + "\".");
 				builder.see_prev_declaration (data_.explicit_ [EXPLICIT_PREFIX]);
 				return false;
@@ -124,15 +128,15 @@ bool RepositoryId::prefix (Build::Builder& builder, const std::string& pref, con
 	return true;
 }
 
-void RepositoryId::type_id (Builder& builder, const std::string& id, const Location& loc)
+void ItemWithId::type_id (Builder& builder, const std::string& id, const Location& loc)
 {
 	if (data_.explicit_ [EXPLICIT_ID]) {
 		if (data_.prefix_or_id != id) {
-			builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with different repository ID \"" + data_.prefix_or_id + '\"');
+			builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with different repository ID \"" + data_.prefix_or_id + '\"');
 			builder.see_prev_declaration (data_.explicit_ [EXPLICIT_ID]);
 		}
 	} else if (data_.explicit_ [EXPLICIT_VERSION]) {
-		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version");
+		builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with #pragma version");
 		builder.see_prev_declaration (data_.explicit_ [EXPLICIT_VERSION]);
 	} else {
 		data_.prefix_or_id = id;
@@ -140,13 +144,13 @@ void RepositoryId::type_id (Builder& builder, const std::string& id, const Locat
 	}
 }
 
-void RepositoryId::pragma_version (Builder& builder, const Version v, const Location& loc)
+void ItemWithId::pragma_version (Builder& builder, const Version v, const Location& loc)
 {
 	if (data_.explicit_ [EXPLICIT_ID]) {
-		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with repository ID");
+		builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with repository ID");
 		builder.see_prev_declaration (data_.explicit_ [EXPLICIT_ID]);
 	} else if (data_.explicit_ [EXPLICIT_VERSION]) {
-		builder.message (loc, Builder::MessageType::ERROR, item ().qualified_name () + " is already declared with #pragma version");
+		builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with #pragma version");
 		builder.see_prev_declaration (data_.explicit_ [EXPLICIT_VERSION]);
 	} else {
 		data_.version = v;
@@ -154,7 +158,7 @@ void RepositoryId::pragma_version (Builder& builder, const Version v, const Loca
 	}
 }
 
-string RepositoryId::repository_id () const
+string ItemWithId::repository_id () const
 {
 	if (data_.explicit_ [EXPLICIT_ID])
 		return data_.prefix_or_id;
@@ -165,7 +169,7 @@ string RepositoryId::repository_id () const
 		id += data_.prefix_or_id;
 		id += '/';
 	}
-	ScopedName sn = item ().scoped_name ();
+	ScopedName sn = scoped_name ();
 	auto it = sn.begin ();
 	id += *(it++);
 	for (; it != sn.end (); ++it) {

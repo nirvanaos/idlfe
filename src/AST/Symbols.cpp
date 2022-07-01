@@ -24,7 +24,6 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Symbols.h"
-#include "../include/AST/RepositoryId.h"
 #include "../include/AST/ItemScope.h"
 
 using namespace std;
@@ -36,11 +35,11 @@ std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
 	return Base::emplace (&const_cast <NamedItem&> (item));
 }
 
-const Ptr <NamedItem>* Symbols::find (const Identifier& name) const noexcept
+const NamedItem* Symbols::find (const Identifier& name) const noexcept
 {
 	auto f = Base::find (name);
 	if (f != end ())
-		return &*f;
+		return *f;
 	else
 		return nullptr;
 }

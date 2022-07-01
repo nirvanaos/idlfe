@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_SCOPEDNAME_H_
 #define NIDL_AST_SCOPEDNAME_H_
+#pragma once
 
 #include "Identifier.h"
 #include "Location.h"

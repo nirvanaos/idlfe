@@ -35,7 +35,7 @@
 namespace AST {
 
 ItemScope::ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-	NamedItem (kind, builder, name),
+	ItemWithId (kind, builder, name),
 	prefix_ (builder.prefix ())
 {}
 
@@ -47,12 +47,6 @@ ItemScope* ItemScope::cast (NamedItem* item) noexcept
 				return static_cast <Module*> (item);
 			case Kind::INTERFACE:
 				return static_cast <Interface*> (item);
-			case Kind::STRUCT:
-				return static_cast <Struct*> (item);
-			case Kind::UNION:
-				return static_cast <Union*> (item);
-			case Kind::EXCEPTION:
-				return static_cast <Exception*> (item);
 			case Kind::VALUE_TYPE:
 				return static_cast <ValueType*> (item);
 		}

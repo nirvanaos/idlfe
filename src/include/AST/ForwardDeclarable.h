@@ -26,8 +26,7 @@
 */
 #ifndef NIDL_AST_FORWARDECLARABLE_H_
 #define NIDL_AST_FORWARDECLARABLE_H_
-
-#include "ItemContainer.h"
+#pragma once
 
 namespace AST {
 
@@ -36,7 +35,7 @@ class Builder;
 }
 
 /// The item that can be forward declared.
-class ForwardDeclarable : public ItemContainer
+class ForwardDeclarable
 {
 public:
 	/// \returns `true` if this item has been declared forward.
@@ -46,8 +45,7 @@ public:
 	}
 
 protected:
-	ForwardDeclarable (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemContainer (kind, builder, name),
+	ForwardDeclarable () :
 		has_forward_dcl_ (false)
 	{}
 

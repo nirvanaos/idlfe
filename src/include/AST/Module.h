@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_MODULE_H_
 #define NIDL_AST_MODULE_H_
+#pragma once
 
 #include "ItemScope.h"
 #include "Container.h"

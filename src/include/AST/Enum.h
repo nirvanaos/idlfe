@@ -26,9 +26,9 @@
 */
 #ifndef NIDL_AST_ENUM_H_
 #define NIDL_AST_ENUM_H_
+#pragma once
 
-#include "NamedItem.h"
-#include "RepositoryId.h"
+#include "ItemWithId.h"
 #include "Container.h"
 
 namespace AST {
@@ -60,16 +60,14 @@ private:
 
 /// The `enum` declaration.
 class Enum :
-	public NamedItem,
-	public RepositoryId,
+	public ItemWithId,
 	public ContainerT <EnumItem>
 {
 private:
 	template <class T> friend class Ptr;
 
 	Enum (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::ENUM, builder, name),
-		RepositoryId (*this, builder)
+		ItemWithId (Item::Kind::ENUM, builder, name)
 	{}
 };
 
