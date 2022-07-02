@@ -31,6 +31,7 @@
 #endif
 #include "../AST/Builder/Builder.h"
 #include <iostream>
+#include <filesystem>
 
 inline AST::Location::Location (const yy::location& loc) noexcept :
 	file_ (loc.begin.filename),

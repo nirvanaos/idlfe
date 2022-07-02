@@ -57,7 +57,7 @@ void Driver::preprocessor_directive (const char* const dir)
 				if (*s == '\"') {
 					const char* end = strchr (s + 1, '\"');
 					if (end) {
-						file (string (s + 1, end - s - 1), AST::Location (file (), lineno () - 1));
+						line (string (s + 1, end - s - 1));
 						yylineno = l;
 						return;
 					}

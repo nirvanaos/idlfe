@@ -32,6 +32,7 @@
 %language "c++"
 %define api.value.type variant
 %define api.token.constructor
+%define api.filename.type { const std::filesystem::path }
 
 %code requires {
 namespace FE {

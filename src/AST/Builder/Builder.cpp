@@ -56,7 +56,7 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 {
 	static const char* const msg_types [] = { "error", "warning", "message" };
 
-	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
+	err_out_ << l.file ().string () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
 		throw runtime_error ("Too many errors, compilation aborted.");
@@ -255,31 +255,35 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 
 void Builder::file (const std::string& name, const Location& loc, int flags)
 {
-	auto ins = tree_->add_file (name);
-	if (!ins.second && !(flags & FILE_FLAG_START)) {
-		const string& file = *ins.first;
+	if (!(flags & FILE_FLAG_START)) {
+		// Leave include file
 		auto it = file_stack_.end () - 1;
 		for (; it != file_stack_.begin (); --it) {
-			if (it->file == &file)
+			if (it->file == name)
 				break;
 		}
-		if (it->file == &file) {
+		if (it->file == name) {
 			file_stack_.erase (it + 1, file_stack_.end ());
 			if (file_stack_.size () == 1)
 				is_main_file_ = true;
-			return;
 		}
-	}
-	// Use #include at global scope only.
-	if ((flags & FILE_FLAG_START) && is_main_file () && container_stack_.size () == 1) {
-		is_main_file_ = false;
-		try {
-			tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM));
-		} catch (const filesystem::filesystem_error& ex) {
-			message (loc, MessageType::ERROR, ex.what ());
+	} else {
+		// Use #include at global scope only.
+		if (is_main_file () && container_stack_.size () == 1) {
+			is_main_file_ = false;
+			try {
+				tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM));
+			} catch (const filesystem::filesystem_error& ex) {
+				message (loc, MessageType::ERROR, ex.what ());
+			}
 		}
+		file_stack_.emplace_back (name);
 	}
-	file_stack_.emplace_back (*ins.first);
+}
+
+void Builder::line (const std::string& filename)
+{
+	cur_file_ = &tree_->add_file (filename);
 }
 
 void Builder::error_name_collision (const SimpleDeclarator& name, const Location& prev_loc)

@@ -56,10 +56,11 @@ public:
 		err_out_ (err_out.rdbuf ()),
 		tree_ (Ptr <Root>::make <Root> (file)),
 		anonymous_deprecated_ (anonymous_deprecated),
+		cur_file_ (&tree_->file ()),
 		is_main_file_ (true)
 	{
 		container_stack_.push (tree_);
-		file_stack_.emplace_back (*tree_->add_file (file).first);
+		file_stack_.emplace_back (file);
 	}
 
 	unsigned err_cnt () const
@@ -69,13 +70,14 @@ public:
 
 	static const int FILE_FLAG_START = 0x1;
 	static const int FILE_FLAG_SYSTEM = 0x2;
-	void file (const std::string& name, const Location& loc, int flags = 0);
+	void file (const std::string& name, const Location& loc, int flags);
+	void line (const std::string& filename);
 
 	void pragma (const char*, const Location& loc);
 
-	const std::string& file () const
+	const std::filesystem::path& file () const
 	{
-		return *file_stack_.back ().file;
+		return *cur_file_;
 	}
 
 	bool is_main_file () const
@@ -281,15 +283,16 @@ private:
 
 	struct File
 	{
-		const std::string* file;
+		std::string file;
 		std::string prefix;
 
 		File (const std::string& f) :
-			file (&f)
+			file (f)
 		{}
 	};
 
 	std::vector <File> file_stack_;
+	const std::filesystem::path* cur_file_;
 	bool is_main_file_;
 
 	// Current interface data. Also used for value types.
