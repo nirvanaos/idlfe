@@ -71,11 +71,19 @@ public:
 	}
 
 	/// \returns UnionElement for `default` label.
-	/// 
-	/// If union does not have `default` label, returns `nullptr`.
+	///          If union does not have `default` label, returns `nullptr`.
 	const UnionElement* default_element () const noexcept
 	{
 		return default_element_;
+	}
+
+	/// For convenience, the union elements may be accessed as members.
+	/// 
+	/// \returns Union elements as const ConteinerT <Member>.
+	operator const ContainerT <Member>& () const noexcept
+	{
+		return reinterpret_cast <const ContainerT <Member>&> (
+			static_cast <const ContainerT <UnionElement>&> (*this));
 	}
 
 	void default_label (const Variant& val)
