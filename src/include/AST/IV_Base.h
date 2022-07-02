@@ -1,4 +1,4 @@
-/// \file ItemContainer.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMCONTAINER_H_
-#define NIDL_AST_ITEMCONTAINER_H_
+#ifndef NIDL_AST_IV_BASE_H_
+#define NIDL_AST_IV_BASE_H_
 #pragma once
 
 #include "ItemScope.h"
@@ -34,14 +34,14 @@
 
 namespace AST {
 
-/// Base for Interface and ValueType.
-class ItemContainer :
+/// The common base for Interface and ValueType.
+class IV_Base :
 	public ItemScope,
 	public Container,
 	public ForwardDeclarable
 {
 protected:
-	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	IV_Base (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (kind, builder, name)
 	{}
 
@@ -57,7 +57,11 @@ private:
 	}
 };
 
-typedef std::vector <const ItemContainer*> Containers;
+namespace Build {
+
+typedef std::vector <const IV_Base*> IV_Bases;
+
+}
 
 }
 

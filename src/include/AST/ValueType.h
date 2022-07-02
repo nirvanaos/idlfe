@@ -40,7 +40,7 @@ typedef std::vector <const ValueType*> ValueTypes;
 
 /// Value type definition.
 class ValueType :
-	public ItemContainer
+	public IV_Base
 {
 public:
 	/// Value type modifier.
@@ -74,7 +74,7 @@ private:
 	template <class T> friend class Ptr;
 
 	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
-		ItemContainer (Item::Kind::VALUE_TYPE, builder, name),
+		IV_Base (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
 
@@ -98,7 +98,7 @@ private:
 		supports_.push_back (&itf);
 	}
 
-	void get_all_interfaces (Containers& all) const;
+	void get_all_interfaces (Build::IV_Bases& all) const;
 
 private:
 	Modifier modifier_;

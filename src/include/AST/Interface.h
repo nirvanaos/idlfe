@@ -28,7 +28,7 @@
 #define NIDL_AST_INTERFACE_H_
 #pragma once
 
-#include "ItemContainer.h"
+#include "IV_Base.h"
 #include <unordered_set>
 
 namespace AST {
@@ -74,7 +74,7 @@ typedef std::vector <const Interface*> Interfaces;
 
 /// %Interface definition.
 class Interface :
-	public ItemContainer,
+	public IV_Base,
 	public InterfaceKind
 {
 public:
@@ -94,10 +94,10 @@ private:
 	friend class Build::Builder;
 	friend class ValueType;
 
-	void get_all_interfaces (Containers& all) const;
+	void get_all_interfaces (Build::IV_Bases& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
-		ItemContainer (Item::Kind::INTERFACE, builder, name),
+		IV_Base (Item::Kind::INTERFACE, builder, name),
 		InterfaceKind (kind)
 	{}
 

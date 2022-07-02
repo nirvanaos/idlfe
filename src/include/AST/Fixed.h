@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// Fixed point constant.
+/// %Fixed point constant.
 class Fixed
 {
 public:
@@ -50,7 +50,7 @@ public:
 		return (uint16_t)-exponent_;
 	}
 
-	/// \returns Fixed point as a character string.
+	/// \returns %Fixed point as a character string.
 	std::string to_string () const;
 
 	/// Converts fixed to binary-coded decimal.

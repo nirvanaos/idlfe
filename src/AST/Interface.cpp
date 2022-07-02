@@ -44,7 +44,7 @@ const char* InterfaceKind::interface_kind_name () const noexcept
 	return names [(size_t)kind_];
 }
 
-void Interface::get_all_interfaces (Containers& all) const
+void Interface::get_all_interfaces (IV_Bases& all) const
 {
 	all.reserve (all.size () + bases_.size () + 1);
 	all.push_back (this);

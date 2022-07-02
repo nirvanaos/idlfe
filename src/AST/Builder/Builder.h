@@ -238,7 +238,7 @@ private:
 	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
 	Symbols* scope_begin ();
-	void scope_push (ItemContainer* scope);
+	void scope_push (IV_Base* scope);
 	void scope_end ();
 
 	const NamedItem* constr_type_end ();
@@ -246,13 +246,13 @@ private:
 	Raises lookup_exceptions (const ScopedNames& names);
 
 	std::pair <bool, const NamedItem*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
-	std::pair <bool, const NamedItem*> lookup (const Containers& containers, const Identifier& name, const Location& loc);
+	std::pair <bool, const NamedItem*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
 
-	void add_base_members (const Location& loc, const Containers& bases);
+	void add_base_members (const Location& loc, const IV_Bases& bases);
 	bool check_member_name (const NamedItem& item);
 	bool check_complete_or_ref (const Type& type, const Location& loc);
 

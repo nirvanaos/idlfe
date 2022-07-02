@@ -344,13 +344,13 @@ pair <bool, const NamedItem*> Builder::lookup (const ItemScope& scope, const Ide
 	switch (scope.kind ()) {
 
 		case Item::Kind::INTERFACE: {
-			Containers containers;
+			IV_Bases containers;
 			static_cast <const Interface&> (scope).get_all_interfaces (containers);
 			return lookup (containers, name, loc);
 		} break;
 
 		case Item::Kind::VALUE_TYPE: {
-			Containers containers;
+			IV_Bases containers;
 			static_cast <const ValueType&> (scope).get_all_interfaces (containers);
 			return lookup (containers, name, loc);
 		} break;
@@ -362,11 +362,11 @@ pair <bool, const NamedItem*> Builder::lookup (const ItemScope& scope, const Ide
 	}
 }
 
-std::pair <bool, const NamedItem*> Builder::lookup (const Containers& containers, const Identifier& name, const Location& loc)
+std::pair <bool, const NamedItem*> Builder::lookup (const IV_Bases& containers, const Identifier& name, const Location& loc)
 {
-	unordered_set <const ItemContainer*> unique;
+	unordered_set <const IV_Base*> unique;
 	unordered_set <const NamedItem*> found;
-	for (const ItemContainer* cont : containers) {
+	for (const IV_Base* cont : containers) {
 		if (unique.insert (cont).second) {
 			auto p = static_cast <const Symbols&> (*cont).find (name);
 			if (p)
@@ -443,7 +443,7 @@ Symbols* Builder::cur_scope () const
 		return &static_cast <Symbols&> (*tree_);
 }
 
-void Builder::scope_push (ItemContainer* scope)
+void Builder::scope_push (IV_Base* scope)
 {
 	scope_stack_.push_back (scope);
 	if (is_main_file ()) {
@@ -847,7 +847,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 							see_prev_declaration (ins.first->second);
 							continue;
 						} else {
-							Containers bases;
+							IV_Bases bases;
 							base_itf->get_all_interfaces (bases);
 							add_base_members (*base_name, bases);
 						}
@@ -911,7 +911,7 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 							see_prev_declaration (ins.first->second);
 							continue;
 						} else {
-							Containers bases;
+							IV_Bases bases;
 							base_vt->get_all_interfaces (bases);
 							add_base_members (*base_name, bases);
 						}
@@ -964,7 +964,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 						}
 
 						// OK
-						Containers bases;
+						IV_Bases bases;
 						base_itf->get_all_interfaces (bases);
 						add_base_members (*base_name, bases);
 						vt->add_supports (*base_itf);
@@ -1033,9 +1033,9 @@ bool Builder::is_base_of (const Interface& base, const Interface& derived)
 	return false;
 }
 
-void Builder::add_base_members (const Location& loc, const Containers& bases)
+void Builder::add_base_members (const Location& loc, const IV_Bases& bases)
 {
-	for (const ItemContainer* base : bases) {
+	for (const IV_Base* base : bases) {
 		if (interface_.all_bases.insert (base).second) {
 			// Check member names
 			for (auto it = base->begin (); it != base->end (); ++it) {
@@ -1066,7 +1066,7 @@ bool Builder::check_member_name (const NamedItem& item)
 {
 #ifdef _DEBUG
 	assert (!scope_stack_.empty ());
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	assert (parent && parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 #endif
 	auto ins = interface_.all_members.insert (item);
@@ -1084,7 +1084,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 
 	check_anonymous (type, name);
 
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 		if (oneway && type.tkind () != Type::Kind::VOID) {
@@ -1111,7 +1111,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	assert (!scope_stack_.empty ());
 	assert (!operation_.op); // operation_end () must be called
 
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::VALUE_TYPE);
 		assert (static_cast <const ValueType*> (parent)->modifier () != ValueType::Modifier::ABSTRACT);
@@ -1212,7 +1212,7 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 	assert (!scope_stack_.empty ());
 	assert (!attribute_.att); // attribute_end () must be called
 
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
