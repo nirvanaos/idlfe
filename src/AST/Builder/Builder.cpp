@@ -1531,7 +1531,7 @@ const NamedItem* Builder::union_end ()
 	if (constr_type_.obj) { // No error in the parent definition
 		if (is_main_file ()) {
 			assert (container_stack_.top ()->back ()->kind () == Item::Kind::UNION);
-			Union& u = static_cast <Union&> (*container_stack_.top ()->back ());
+			Union& u = static_cast <Union&> (*constr_type_.obj);
 			const Type& dt = u.discriminator_type ().dereference_type ();
 			size_t key_max = dt.key_max ();
 			if (union_.all_labels.size () > key_max) {
