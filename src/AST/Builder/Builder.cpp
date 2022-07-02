@@ -1336,7 +1336,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 
 void Builder::struct_begin (const SimpleDeclarator& name)
 {
-	Symbols* scope = scope_begin ();
+	Symbols* scope = cur_scope ();
 	if (scope) { // No error in parent scope declaration
 		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
 		auto ins = scope->insert (*def);
@@ -1420,7 +1420,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 void Builder::exception_begin (const SimpleDeclarator& name)
 {
-	Symbols* scope = scope_begin ();
+	Symbols* scope = cur_scope ();
 	if (scope) { // No error in the parent scope declaration
 		Ptr <Exception> def = Ptr <Exception>::make <Exception> (ref (*this), ref (name));
 		auto ins = scope->insert (*def);
