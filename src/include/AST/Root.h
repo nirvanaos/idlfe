@@ -63,7 +63,11 @@ private:
 
 	const std::filesystem::path& add_file (const std::string& name)
 	{
-		return *files_.insert (name).first;
+		std::filesystem::path path (name);
+		if (path == main_file_)
+			return main_file_;
+		else
+			return *files_.insert (std::move (path)).first;
 	}
 
 	operator Symbols& () noexcept
