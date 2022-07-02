@@ -44,11 +44,9 @@ ItemScope* ItemScope::cast (NamedItem* item) noexcept
 	if (item) {
 		switch (item->kind ()) {
 			case Kind::MODULE:
-				return static_cast <Module*> (item);
 			case Kind::INTERFACE:
-				return static_cast <Interface*> (item);
 			case Kind::VALUE_TYPE:
-				return static_cast <ValueType*> (item);
+				return static_cast <ItemScope*> (item);
 		}
 	}
 	return nullptr;

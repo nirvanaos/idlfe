@@ -45,46 +45,20 @@ ItemWithId* ItemWithId::cast (NamedItem* item) noexcept
 	if (item) {
 		switch (item->kind ()) {
 			case Item::Kind::MODULE:
-				p = static_cast <Module*> (item);
-				break;
 			case Item::Kind::INTERFACE:
-				p = static_cast <Interface*> (item);
-				break;
 			case Item::Kind::INTERFACE_DECL:
-				p = static_cast <InterfaceDecl*> (item);
-				break;
 			case Item::Kind::STRUCT:
-				p = static_cast <Struct*> (item);
-				break;
 			case Item::Kind::STRUCT_DECL:
-				p = static_cast <StructDecl*> (item);
-				break;
 			case Item::Kind::UNION:
-				p = static_cast <Union*> (item);
-				break;
 			case Item::Kind::UNION_DECL:
-				p = static_cast <UnionDecl*> (item);
-				break;
 			case Item::Kind::ENUM:
-				p = static_cast <Enum*> (item);
-				break;
 			case Item::Kind::TYPE_DEF:
-				p = static_cast <TypeDef*> (item);
-				break;
 			case Item::Kind::NATIVE:
-				p = static_cast <Native*> (item);
-				break;
 			case Item::Kind::EXCEPTION:
-				p = static_cast <Exception*> (item);
-				break;
 			case Item::Kind::VALUE_TYPE_DECL:
-				p = static_cast <ValueTypeDecl*> (item);
-				break;
 			case Item::Kind::VALUE_TYPE:
-				p = static_cast <ValueType*> (item);
-				break;
 			case Item::Kind::VALUE_BOX:
-				p = static_cast <ValueBox*> (item);
+				p = static_cast <ItemWithId*> (item);
 				break;
 		}
 	}
