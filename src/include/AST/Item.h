@@ -89,11 +89,18 @@ protected:
 		ref_cnt_ (1)
 	{}
 
-	Item (const Item& src) = delete;
+	Item (const Item& src) :
+		kind_ (src.kind_),
+		ref_cnt_ (1)
+	{}
 
 	virtual ~Item () {}
 
-	Item& operator = (const Item& src) = delete;
+	Item& operator = (const Item& src)
+	{
+		assert (kind_ == src.kind_);
+		return *this;
+	}
 
 private:
 	template <class T> friend class Ptr;
@@ -103,12 +110,12 @@ private:
 		return ::operator new (cb);
 	}
 
-	void _add_ref () noexcept
+	void _add_ref () const noexcept
 	{
 		++ref_cnt_;
 	}
 
-	void _remove_ref () noexcept
+	void _remove_ref () const noexcept
 	{
 		if (!--ref_cnt_)
 			delete this;
@@ -116,7 +123,7 @@ private:
 
 private:
 	const Kind kind_;
-	unsigned ref_cnt_;
+	mutable unsigned ref_cnt_;
 };
 
 /// \brief AST item smart pointer.
