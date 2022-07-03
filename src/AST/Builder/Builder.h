@@ -43,6 +43,8 @@ namespace AST {
 class Root;
 class OperationBase;
 class Attribute;
+class StructBase;
+class Union;
 
 namespace Build {
 
@@ -54,10 +56,10 @@ public:
 		err_out_ (err_out.rdbuf ()),
 		tree_ (Ptr <Root>::make <Root> (file)),
 		anonymous_deprecated_ (anonymous_deprecated),
-		is_main_file_ (true)
+		cur_file_ (&tree_->file ())
 	{
 		container_stack_.push (tree_);
-		file_stack_.emplace_back (*tree_->add_file (file).first);
+		file_stack_.emplace_back (file);
 	}
 
 	unsigned err_cnt () const
@@ -67,18 +69,19 @@ public:
 
 	static const int FILE_FLAG_START = 0x1;
 	static const int FILE_FLAG_SYSTEM = 0x2;
-	void file (const std::string& name, const Location& loc, int flags = 0);
+	void linemarker (const std::string& name, const Location& loc, int flags);
+	void line (const std::string& filename);
 
 	void pragma (const char*, const Location& loc);
 
-	const std::string& file () const
+	const std::filesystem::path& file () const noexcept
 	{
-		return *file_stack_.back ().file;
+		return *cur_file_;
 	}
 
-	bool is_main_file () const
+	bool is_main_file () const noexcept
 	{
-		return is_main_file_;
+		return file_stack_.size () <= 1;
 	}
 
 	enum class MessageType
@@ -151,7 +154,7 @@ public:
 
 	void exception_end ()
 	{
-		return scope_end ();
+		constr_type_end ();
 	}
 
 	void member (const Type& type, const Declarators& names);
@@ -223,7 +226,7 @@ public:
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
 
-	Ptr <Root> finalize ();
+	Ptr <const Root> finalize ();
 
 	void check_anonymous (const Type& type, const SimpleDeclarator& name);
 
@@ -232,11 +235,11 @@ private:
 	void prefix (const std::string& pref, const Location& loc);
 	bool get_quoted_string (const char*& s, std::string& qs, const Location& loc);
 	static bool get_scoped_name (const char*& s, ScopedName& name);
-	RepositoryId* lookup_rep_id (const ScopedName& name);
+	ItemWithId* lookup_rep_id (const ScopedName& name);
 	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
 	Symbols* scope_begin ();
-	void scope_push (ItemContainer* scope);
+	void scope_push (IV_Base* scope);
 	void scope_end ();
 
 	const Ptr <NamedItem>* constr_type_end ();
@@ -244,23 +247,25 @@ private:
 	Raises lookup_exceptions (const ScopedNames& names);
 
 	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
-	std::pair <bool, const Ptr <NamedItem>*> lookup (const Containers& containers, const Identifier& name, const Location& loc);
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
 	void error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc);
 
-	void add_base_members (const Location& loc, const Containers& bases);
+	void add_base_members (const Location& loc, const IV_Bases& bases);
 	bool check_member_name (const NamedItem& item);
 	bool check_complete_or_ref (const Type& type, const Location& loc);
 
 	typedef std::unordered_map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
-	void check_unique (RepIdMap& ids, const RepositoryId& rid);
+	void check_unique (RepIdMap& ids, const ItemWithId& rid);
 
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
 	void check_complete (const OperationBase& op);
+	void check_complete (const StructBase& s);
+	void check_complete (const Union& u);
 
 	static bool is_base_of (const Interface& base, const Interface& derived);
 	static void collect_concrete_interfaces (const ValueType& vt, std::unordered_map <const Interface*, const ValueType*>& interfaces);
@@ -272,21 +277,21 @@ private:
 	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
-	std::stack <std::unique_ptr <Eval>> eval_stack_;
+	std::stack <std::unique_ptr <Eval> > eval_stack_;
 	bool anonymous_deprecated_;
 
 	struct File
 	{
-		const std::string* file;
+		std::string file;
 		std::string prefix;
 
 		File (const std::string& f) :
-			file (&f)
+			file (f)
 		{}
 	};
 
 	std::vector <File> file_stack_;
-	bool is_main_file_;
+	const std::filesystem::path* cur_file_;
 
 	// Current interface data. Also used for value types.
 	struct InterfaceData
@@ -300,8 +305,10 @@ private:
 			all_bases.clear ();
 		}
 
-	} interface_;
+	}
+	interface_;
 
+	// Current operation data
 	struct OperationData
 	{
 		OperationBase* op;
@@ -316,22 +323,49 @@ private:
 			op = nullptr;
 			params.clear ();
 		}
-	} operation_;
+	}
+	operation_;
 
+	// Current attribute data
 	struct AttributeData
 	{
 		Attribute* att;
 
-		AttributeData () :
+		AttributeData () noexcept :
 			att (nullptr)
 		{}
 
-		void clear ()
+		void clear () noexcept
 		{
 			att = nullptr;
 		}
-	} attribute_;
+	}
+	attribute_;
 
+	// Constructed type: struct, exception, union
+	struct ConstrType
+	{
+		const Ptr <NamedItem>* symbol;
+		Symbols members;
+
+		ConstrType () noexcept :
+			symbol (nullptr)
+		{}
+
+		void clear () noexcept
+		{
+			symbol = nullptr;
+			members.clear ();
+		}
+
+		NamedItem* obj () noexcept
+		{
+			return symbol ? *symbol : nullptr;
+		}
+	}
+	constr_type_;
+
+	// Current union data
 	struct UnionData
 	{
 		std::unordered_map <Variant::Key, Location> all_labels;
@@ -342,7 +376,7 @@ private:
 			has_default (false)
 		{}
 
-		void clear ()
+		void clear () noexcept
 		{
 			all_labels.clear ();
 			has_default = false;
@@ -358,8 +392,10 @@ private:
 				is_default = false;
 				labels.clear ();
 			}
-		} element;
-	} union_;
+		}
+		element;
+	}
+	union_;
 };
 
 }

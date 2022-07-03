@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_SEQUENCE_H_
 #define NIDL_AST_SEQUENCE_H_
+#pragma once
 
 #include "Type.h"
 

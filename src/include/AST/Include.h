@@ -26,15 +26,18 @@
 */
 #ifndef NIDL_AST_INCLUDE_H_
 #define NIDL_AST_INCLUDE_H_
+#pragma once
 
 #include "Item.h"
+#include "Location.h"
 #include <filesystem>
 
 namespace AST {
 
 /// `#include` file.
 class Include :
-	public Item
+	public Item,
+	public Location
 {
 public:
 	/// Returns the name of included IDL file.
@@ -52,8 +55,9 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	Include (std::filesystem::path&& file, bool system) :
+	Include (std::filesystem::path&& file, bool system, const Location& loc) :
 		Item (Kind::INCLUDE),
+		Location (loc),
 		file_ (std::move (file)),
 		system_ (system)
 	{}

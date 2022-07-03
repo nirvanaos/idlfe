@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_VARIANT_H_
 #define NIDL_AST_VARIANT_H_
+#pragma once
 
 #include "Type.h"
 #include "Fixed.h"
@@ -222,20 +223,6 @@ public:
 	{
 		assert (VT::FIXED == type_);
 		return val_.u.fixed;
-	}
-
-	/// \returns Number of digits for `fixed` type.
-	/// \invariant vtype () == VT::FIXED
-	uint16_t fixed_digits () const noexcept
-	{
-		return as_Fixed ().digits ();
-	}
-
-	/// \returns Scale for `fixed` type.
-	/// \invariant vtype () == VT::FIXED
-	uint16_t fixed_scale () const noexcept
-	{
-		return as_Fixed ().scale ();
 	}
 
 	/// Converts value to std::string.

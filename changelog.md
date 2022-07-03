@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.0 - 2022-07-03
+Library was completely refactored.
+
 ## 1.6.1 - 2022-06-30
 ### Fixed
  - Bug in checking type completeness.

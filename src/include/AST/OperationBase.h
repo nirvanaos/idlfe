@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_OPERATIONBASE_H_
 #define NIDL_AST_OPERATIONBASE_H_
+#pragma once
 
 #include "Parameter.h"
 #include "Exception.h"

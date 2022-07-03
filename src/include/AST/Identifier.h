@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_IDENTIFIER_H_
 #define NIDL_AST_IDENTIFIER_H_
+#pragma once
 
 #include <string>
 

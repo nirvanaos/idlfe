@@ -26,10 +26,10 @@
 */
 #ifndef NIDL_AST_NAMEDITEM_H_
 #define NIDL_AST_NAMEDITEM_H_
+#pragma once
 
 #include "Item.h"
-#include "Identifier.h"
-#include "Location.h"
+#include "ScopedName.h"
 
 namespace AST {
 
@@ -39,7 +39,6 @@ class SimpleDeclarator;
 }
 
 class ItemScope;
-struct ScopedName;
 
 /// The named AST item.
 class NamedItem :

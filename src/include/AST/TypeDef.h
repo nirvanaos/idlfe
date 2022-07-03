@@ -26,25 +26,23 @@
 */
 #ifndef NIDL_AST_TYPEDEF_H_
 #define NIDL_AST_TYPEDEF_H_
+#pragma once
 
-#include "NamedItem.h"
+#include "ItemWithId.h"
 #include "Type.h"
-#include "RepositoryId.h"
 
 namespace AST {
 
 /// The named type.
 class TypeDef :
-	public NamedItem,
-	public RepositoryId,
+	public ItemWithId,
 	public Type
 {
 private:
 	template <class T> friend class Ptr;
 
 	TypeDef (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& t) :
-		NamedItem (Item::Kind::TYPE_DEF, builder, name),
-		RepositoryId (*this, builder),
+		ItemWithId (Item::Kind::TYPE_DEF, builder, name),
 		Type (t)
 	{}
 };

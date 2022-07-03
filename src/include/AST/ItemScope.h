@@ -27,13 +27,14 @@
 #ifndef NIDL_AST_ITEMSCOPE_H_
 #define NIDL_AST_ITEMSCOPE_H_
 
+#include "ItemWithId.h"
 #include "Symbols.h"
 
 namespace AST {
 
 /// The named item which defines a scope.
 class ItemScope :
-	public NamedItem
+	public ItemWithId
 {
 protected:
 	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);

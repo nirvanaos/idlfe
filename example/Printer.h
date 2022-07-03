@@ -31,21 +31,14 @@ protected:
 	virtual void leaf (const AST::Operation& item);
 	virtual void leaf (const AST::Attribute& item);
 
-	virtual void begin (const AST::Exception& item);
-	virtual void end (const AST::Exception& item);
+	virtual void leaf (const AST::Exception& item);
 
 	virtual void leaf (const AST::StructDecl& item);
-	virtual void begin (const AST::Struct& item);
-	virtual void end (const AST::Struct& item);
-
-	virtual void leaf (const AST::Member& item);
+	virtual void leaf (const AST::Struct& item);
 
 	virtual void leaf (const AST::UnionDecl& item);
-	virtual void begin (const AST::Union& item);
-	virtual void end (const AST::Union& item);
+	virtual void leaf (const AST::Union& item);
 	
-	virtual void leaf (const AST::UnionElement& item);
-
 	virtual void leaf (const AST::Enum& item);
 	
 	virtual void leaf (const AST::ValueTypeDecl& item);
@@ -61,6 +54,7 @@ private:
 	void print_op_base (const AST::OperationBase& item);
 	void print (const AST::Parameter& p);
 	void constructed_begin (const char* type, const AST::NamedItem& item);
+	void constructed (const AST::StructBase& item);
 	void complex_end ();
 	void print (const AST::Raises& raises);
 

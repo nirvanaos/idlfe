@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_VALUETYPE_H_
 #define NIDL_AST_VALUETYPE_H_
+#pragma once
 
 #include "Interface.h"
 #include "Type.h"
@@ -39,7 +40,7 @@ typedef std::vector <const ValueType*> ValueTypes;
 
 /// Value type definition.
 class ValueType :
-	public ForwardDeclarable
+	public IV_Base
 {
 public:
 	/// Value type modifier.
@@ -73,7 +74,7 @@ private:
 	template <class T> friend class Ptr;
 
 	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
-		ForwardDeclarable (Item::Kind::VALUE_TYPE, builder, name),
+		IV_Base (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
 
@@ -97,7 +98,7 @@ private:
 		supports_.push_back (&itf);
 	}
 
-	void get_all_containers (Containers& all) const;
+	void get_all_interfaces (Build::IV_Bases& all) const;
 
 private:
 	Modifier modifier_;
@@ -107,8 +108,7 @@ private:
 
 /// Value type forward declaration.
 class ValueTypeDecl :
-	public NamedItem,
-	public RepositoryId
+	public ItemWithId
 {
 public:
 	/// \returns `true` if the value type declared `abstract`.
@@ -121,8 +121,7 @@ private:
 	template <class T> friend class Ptr;
 
 	ValueTypeDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, bool abstr) :
-		NamedItem (Item::Kind::VALUE_TYPE_DECL, builder, name),
-		RepositoryId (*this, builder),
+		ItemWithId (Item::Kind::VALUE_TYPE_DECL, builder, name),
 		is_abstract_ (abstr)
 	{}
 

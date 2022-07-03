@@ -26,23 +26,21 @@
 */
 #ifndef NIDL_AST_NATIVE_H_
 #define NIDL_AST_NATIVE_H_
+#pragma once
 
-#include "NamedItem.h"
-#include "RepositoryId.h"
+#include "ItemWithId.h"
 
 namespace AST {
 
 /// The 'native` type.
 class Native :
-	public NamedItem,
-	public RepositoryId
+	public ItemWithId
 {
 private:
 	template <class T> friend class Ptr;
 
 	Native (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		NamedItem (Kind::NATIVE, builder, name),
-		RepositoryId (*this, builder)
+		ItemWithId (Kind::NATIVE, builder, name)
 	{}
 };
 

@@ -26,27 +26,28 @@
 */
 #ifndef NIDL_AST_STRUCT_H_
 #define NIDL_AST_STRUCT_H_
+#pragma once
 
+#include "StructBase.h"
 #include "ForwardDeclarable.h"
 
 namespace AST {
 
 /// `struct` forward declaration.
 class StructDecl :
-	public NamedItem,
-	public RepositoryId
+	public ItemWithId
 {
 private:
 	template <class T> friend class Ptr;
 
 	StructDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::STRUCT_DECL, builder, name),
-		RepositoryId (*this, builder)
+		ItemWithId (Item::Kind::STRUCT_DECL, builder, name)
 	{}
 };
 
 /// `struct` definition.
 class Struct :
+	public StructBase,
 	public ForwardDeclarable
 {
 private:
@@ -54,7 +55,7 @@ private:
 	friend class Build::Builder;
 
 	Struct (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ForwardDeclarable (Item::Kind::STRUCT, builder, name)
+		StructBase (Item::Kind::STRUCT, builder, name)
 	{}
 };
 

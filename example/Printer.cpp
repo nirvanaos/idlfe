@@ -260,14 +260,19 @@ void Printer::leaf (const Attribute& item)
 	out_ << ";\n";
 }
 
-void Printer::begin (const Exception& item)
+void Printer::constructed (const AST::StructBase& item)
 {
-	constructed_begin ("exception ", item);
+	constructed_begin (item.kind () == Item::Kind::EXCEPTION ? "exception " : "struct ", item);
+	for (auto m : item) {
+		print_type (*m);
+		out_ << ' ' << m->name () << ";\n";
+	}
+	complex_end ();
 }
 
-void Printer::end (const Exception& item)
+void Printer::leaf (const Exception& item)
 {
-	complex_end ();
+	constructed (item);
 }
 
 void Printer::leaf (const StructDecl& item)
@@ -275,20 +280,9 @@ void Printer::leaf (const StructDecl& item)
 	out_ << "struct " << item.name () << ";\n";
 }
 
-void Printer::begin (const Struct& item)
+void Printer::leaf (const Struct& item)
 {
-	constructed_begin ("struct ", item);
-}
-
-void Printer::end (const Struct& item)
-{
-	complex_end ();
-}
-
-void Printer::leaf (const Member& item)
-{
-	print_type (item);
-	out_ << ' ' << item.name () << ";\n";
+	constructed (item);
 }
 
 void Printer::leaf (const UnionDecl& item)
@@ -296,30 +290,24 @@ void Printer::leaf (const UnionDecl& item)
 	out_ << "union " << item.name () << ";\n";
 }
 
-void Printer::begin (const Union& item)
+void Printer::leaf (const Union& item)
 {
 	out_ << "union " << item.name () << " switch (";
 	print_type (item.discriminator_type ());
 	out_ << ") {\n";
 	out_.indent ();
-}
-
-void Printer::leaf (const UnionElement& item)
-{
-	if (!item.is_default ()) {
-		for (const auto& label : item.labels ()) {
-			out_ << "case " << label.to_string () << ":\n";
-		}
-	} else
-		out_ << "default:\n";
-	out_.indent ();
-	print_type (item);
-	out_ << ' ' << item.name () << ";\n";
-	out_.unindent ();
-}
-
-void Printer::end (const Union& item)
-{
+	for (auto el : item) {
+		if (!el->is_default ()) {
+			for (const auto& label : el->labels ()) {
+				out_ << "case " << label.to_string () << ":\n";
+			}
+		} else
+			out_ << "default:\n";
+		out_.indent ();
+		print_type (*el);
+		out_ << ' ' << el->name () << ";\n";
+		out_.unindent ();
+	}
 	complex_end ();
 }
 

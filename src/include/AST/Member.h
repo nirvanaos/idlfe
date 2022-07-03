@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_MEMBER_H_
 #define NIDL_AST_MEMBER_H_
+#pragma once
 
 #include "NamedItem.h"
 #include "Type.h"

@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_ARRAY_H_
 #define NIDL_AST_ARRAY_H_
+#pragma once
 
 #include "Type.h"
 #include <vector>

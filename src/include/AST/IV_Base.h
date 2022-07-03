@@ -1,3 +1,4 @@
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -23,25 +24,45 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "../include/AST/Symbols.h"
-#include "../include/AST/ItemScope.h"
+#ifndef NIDL_AST_IV_BASE_H_
+#define NIDL_AST_IV_BASE_H_
+#pragma once
 
-using namespace std;
+#include "ItemScope.h"
+#include "Container.h"
+#include "ForwardDeclarable.h"
 
 namespace AST {
 
-std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
+/// The common base for Interface and ValueType.
+class IV_Base :
+	public ItemScope,
+	public Container,
+	public ForwardDeclarable
 {
-	return Base::emplace (&const_cast <NamedItem&> (item));
+protected:
+	IV_Base (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		ItemScope (kind, builder, name)
+	{}
+
+private:
+	friend class Build::Builder;
+
+	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+	{
+		if (ItemWithId::prefix (builder, pref, loc))
+			return ItemScope::prefix (builder, pref, loc);
+		else
+			return false;
+	}
+};
+
+namespace Build {
+
+typedef std::vector <const IV_Base*> IV_Bases;
+
 }
 
-const Ptr <NamedItem>* Symbols::find (const Identifier& name) const noexcept
-{
-	auto f = Base::find (name);
-	if (f != end ())
-		return &*f;
-	else
-		return nullptr;
 }
 
-}
+#endif

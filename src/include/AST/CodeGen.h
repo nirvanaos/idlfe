@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_CODEGEN_H_
 #define NIDL_AST_CODEGEN_H_
+#pragma once
 
 #if __cplusplus < 201703L && _MSVC_LANG < 201703L
 #error C++17 compliant compiler is required.
@@ -116,35 +117,20 @@ public:
 	/// `attribute`
 	virtual void leaf (const Attribute&) = 0;
 
-	/// `exception` begin.
-	virtual void begin (const Exception&) = 0;
-
-	/// `exception` end.
-	virtual void end (const Exception&) = 0;
+	/// `exception`
+	virtual void leaf (const Exception&) = 0;
 
 	/// `struct` forward declaration.
 	virtual void leaf (const StructDecl&) = 0;
 
-	/// `struct` begin.
-	virtual void begin (const Struct&) = 0;
-
-	/// `struct` end.
-	virtual void end (const Struct&) = 0;
-
-	/// Member of `struct` or `exception`.
-	virtual void leaf (const Member&) = 0;
+	/// `struct`
+	virtual void leaf (const Struct&) = 0;
 
 	/// `union` forward declaration.
 	virtual void leaf (const UnionDecl&) = 0;
 
-	/// `union` begin.
-	virtual void begin (const Union&) = 0;
-
-	/// `union` end.
-	virtual void end (const Union&) = 0;
-
-	/// `union` element.
-	virtual void leaf (const UnionElement&) = 0;
+	/// `union`
+	virtual void leaf (const Union&) = 0;
 
 	/// `enum`
 	virtual void leaf (const Enum&) = 0;

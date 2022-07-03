@@ -31,7 +31,7 @@
 namespace AST {
 namespace Build {
 
-/// /// Fixed evaluator
+/// Fixed evaluator
 class EvalFixed : public Eval
 {
 	struct Context;

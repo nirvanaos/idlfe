@@ -44,6 +44,8 @@
 #include "../../include/AST/StateMember.h"
 #include "../../include/AST/ValueFactory.h"
 #include "../../include/AST/ValueBox.h"
+#include "../../include/AST/Sequence.h"
+#include "../../include/AST/Array.h"
 #include <stdexcept>
 #include <algorithm>
 
@@ -56,7 +58,7 @@ void Builder::message (const Location& l, MessageType mt, const string& err)
 {
 	static const char* const msg_types [] = { "error", "warning", "message" };
 
-	err_out_ << l.file () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
+	err_out_ << l.file ().string () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
 		throw runtime_error ("Too many errors, compilation aborted.");
@@ -112,7 +114,7 @@ void Builder::pragma (const char* s, const Location& loc)
 						u = strtoul (s, &endptr, 10);
 						if (endptr > s && u <= numeric_limits <uint16_t>::max ()) {
 							ver.minor = (uint16_t)u;
-							RepositoryId* rep_id = lookup_rep_id (name);
+							ItemWithId* rep_id = lookup_rep_id (name);
 							if (rep_id)
 								rep_id->pragma_version (*this, ver, loc);
 							return;
@@ -134,19 +136,19 @@ void Builder::type_id (const ScopedName& name, const std::string& id, const Loca
 	if (id.empty ())
 		message (id_loc, MessageType::ERROR, "the repository id must not be empty");
 	else {
-		RepositoryId* rep_id = lookup_rep_id (name);
+		ItemWithId* rep_id = lookup_rep_id (name);
 		if (rep_id)
 			rep_id->type_id (*this, id, name);
 	}
 }
 
-RepositoryId* Builder::lookup_rep_id (const ScopedName& name)
+ItemWithId* Builder::lookup_rep_id (const ScopedName& name)
 {
-	RepositoryId* rep_id = nullptr;
-	const Ptr <NamedItem>* it = lookup (name);
-	if (it) {
-		NamedItem* item = *it;
-		rep_id = RepositoryId::cast (item);
+	ItemWithId* rep_id = nullptr;
+	const Ptr <NamedItem>* l = lookup (name);
+	if (l) {
+		NamedItem* item = *l;
+		rep_id = ItemWithId::cast (item);
 		if (!rep_id) {
 			message (name, MessageType::ERROR, name.stringize () + " has not repository id");
 			see_declaration_of (*item, item->qualified_name ());
@@ -162,15 +164,16 @@ void Builder::type_prefix (const ScopedName& name, const Variant& s, const Locat
 		if (name.empty ())
 			prefix (pref, name);
 		else {
-			const Ptr <NamedItem>* item = lookup (name);
-			if (item) {
-				ItemScope* scope = ItemScope::cast (*item);
+			const Ptr <NamedItem>* l = lookup (name);
+			if (l) {
+				NamedItem* item = *l;
+				ItemScope* scope = ItemScope::cast (item);
 				if (scope) {
 					if (prefix_valid (pref, id_loc))
 						scope->prefix (*this, pref, name);
 				} else {
 					message (name, MessageType::ERROR, name.stringize () + " can not have a prefix");
-					see_declaration_of (**item, (*item)->qualified_name ());
+					see_declaration_of (*item, item->qualified_name ());
 				}
 			}
 		}
@@ -254,33 +257,29 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 	return true;
 }
 
-void Builder::file (const std::string& name, const Location& loc, int flags)
+void Builder::linemarker (const std::string& name, const Location& loc, int flags)
 {
-	auto ins = tree_->add_file (name);
-	if (!ins.second && !(flags & FILE_FLAG_START)) {
-		const string& file = *ins.first;
+	if (flags & FILE_FLAG_START) {
+		// Use #include at global scope only.
+		if (is_main_file () && container_stack_.size () == 1)
+			tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM, ref (loc)));
+		file_stack_.emplace_back (name);
+	} else {
+		// Leave include file
 		auto it = file_stack_.end () - 1;
 		for (; it != file_stack_.begin (); --it) {
-			if (it->file == &file)
+			if (it->file == name)
 				break;
 		}
-		if (it->file == &file) {
+		if (it->file == name)
 			file_stack_.erase (it + 1, file_stack_.end ());
-			if (file_stack_.size () == 1)
-				is_main_file_ = true;
-			return;
-		}
 	}
-	// Use #include at global scope only.
-	if ((flags & FILE_FLAG_START) && is_main_file () && container_stack_.size () == 1) {
-		is_main_file_ = false;
-		try {
-			tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM));
-		} catch (const filesystem::filesystem_error& ex) {
-			message (loc, MessageType::ERROR, ex.what ());
-		}
-	}
-	file_stack_.emplace_back (*ins.first);
+}
+
+// #line
+void Builder::line (const std::string& filename)
+{
+	cur_file_ = &tree_->add_file (filename);
 }
 
 void Builder::error_name_collision (const SimpleDeclarator& name, const Location& prev_loc)
@@ -345,14 +344,14 @@ pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, con
 	switch (scope.kind ()) {
 
 		case Item::Kind::INTERFACE: {
-			Containers containers;
-			static_cast <const Interface&> (scope).get_all_containers (containers);
+			IV_Bases containers;
+			static_cast <const Interface&> (scope).get_all_interfaces (containers);
 			return lookup (containers, name, loc);
 		} break;
 
 		case Item::Kind::VALUE_TYPE: {
-			Containers containers;
-			static_cast <const ValueType&> (scope).get_all_containers (containers);
+			IV_Bases containers;
+			static_cast <const ValueType&> (scope).get_all_interfaces (containers);
 			return lookup (containers, name, loc);
 		} break;
 
@@ -363,11 +362,11 @@ pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, con
 	}
 }
 
-std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const Containers& containers, const Identifier& name, const Location& loc)
+std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& containers, const Identifier& name, const Location& loc)
 {
-	unordered_set <const ItemContainer*> unique;
+	unordered_set <const IV_Base*> unique;
 	unordered_set <const Ptr <NamedItem>*> found;
-	for (const ItemContainer* cont : containers) {
+	for (const IV_Base* cont : containers) {
 		if (unique.insert (cont).second) {
 			auto p = static_cast <const Symbols&> (*cont).find (name);
 			if (p)
@@ -416,8 +415,7 @@ Type Builder::lookup_type (const ScopedName& scoped_name)
 {
 	const Ptr <NamedItem>* item = lookup (scoped_name);
 	if (item) {
-		const NamedItem* p = *item;
-		if (!p->is_type ()) {
+		if (!(*item)->is_type ()) {
 			message (scoped_name, MessageType::ERROR, scoped_name.stringize () + " is not a type");
 			item = nullptr;
 		}
@@ -445,7 +443,7 @@ Symbols* Builder::cur_scope () const
 		return &static_cast <Symbols&> (*tree_);
 }
 
-void Builder::scope_push (ItemContainer* scope)
+void Builder::scope_push (IV_Base* scope)
 {
 	scope_stack_.push_back (scope);
 	if (is_main_file ()) {
@@ -540,35 +538,9 @@ bool Builder::prefix_valid (const std::string& pref, const Location& loc)
 
 const Ptr <NamedItem>* Builder::constr_type_end ()
 {
-	ItemScope* type = scope_stack_.back ();
-
-	if (type) {
-		// Delete members from scope
-		Symbols& scope = *type;
-		for (auto it = scope.begin (); it != scope.end ();) {
-			switch ((*it)->kind ()) {
-				case Item::Kind::MEMBER:
-				case Item::Kind::UNION_ELEMENT:
-					it = scope.erase (it);
-					break;
-				default:
-					++it;
-			}
-		}
-	}
-
-	scope_end ();
-
-	if (type) {
-		const Symbols* scope = cur_scope ();
-		if (scope) {
-			auto f = scope->find (type->name ());
-			assert (f);
-			return f;
-		}
-	}
-
-	return nullptr;
+	const Ptr <NamedItem>* type = constr_type_.symbol;
+	constr_type_.clear ();
+	return type;
 }
 
 void Builder::module_begin (const SimpleDeclarator& name)
@@ -579,10 +551,9 @@ void Builder::module_begin (const SimpleDeclarator& name)
 		auto ins = scope->insert (*mod);
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::MODULE) {
 			error_name_collision (name, **ins.first);
-			scope_push (nullptr);
+			scope_push (nullptr); // Mark new scope as error
 		} else {
-			Module* mod = scast <Module> (*ins.first);
-			scope_stack_.push_back (mod);
+			scope_stack_.push_back (&static_cast <Module&> (**ins.first));
 			if (is_main_file ()) {
 				Ptr <ModuleItems> cont = Ptr <ModuleItems>::make <ModuleItems> (std::ref (*mod));
 				container_stack_.top ()->append (*cont);
@@ -669,7 +640,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
-			const RepositoryId* rid = nullptr;
+			const ItemWithId* rid = nullptr;
 			InterfaceKind prev_ik;
 			switch (item.kind ()) {
 				case Item::Kind::INTERFACE_DECL: {
@@ -693,8 +664,8 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				error_interface_kind (name, ik, prev_ik, item);
 
 			rid->check_prefix (*this, name);
-			static_cast <RepositoryId&> (*decl) = *rid;
-			return; // Second declaration - skip it.
+			decl->set_id (*rid);
+			return; // Ignore second declaration
 		}
 
 		if (is_main_file ())
@@ -710,7 +681,7 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
-			const RepositoryId* rid = nullptr;
+			const ItemWithId* rid = nullptr;
 			bool prev_abstract;
 			switch (item.kind ()) {
 				case Item::Kind::VALUE_TYPE_DECL: {
@@ -734,7 +705,7 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 				error_valuetype_mod (name, is_abstract, item);
 
 			rid->check_prefix (*this, name);
-			static_cast <RepositoryId&> (*decl) = *rid;
+			decl->set_id (*rid);
 			return; // Ignore second declaration
 		}
 
@@ -753,16 +724,16 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 			const NamedItem& item = **ins.first;
 			if ((*ins.first)->kind () != Item::Kind::INTERFACE_DECL) {
 				error_name_collision (name, item);
-				scope_push (nullptr);
+				scope_push (nullptr); // Mark new scope as error
 				return;
 			} else {
 				const InterfaceDecl& decl = static_cast <const InterfaceDecl&> (item);
 				if (decl.interface_kind () != ik.interface_kind ())
 					error_interface_kind (name, ik, decl, decl);
 				decl.check_prefix (*this, name);
-				static_cast <RepositoryId&> (*itf) = decl;
-				const_cast <Ptr <NamedItem>&> (*ins.first) = itf;
+				itf->set_id (decl);
 				itf->set_has_forward_dcl ();
+				const_cast <Ptr <NamedItem>&> (*ins.first) = itf;
 			}
 		}
 
@@ -780,7 +751,7 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 			const NamedItem& item = **ins.first;
 			if ((*ins.first)->kind () != Item::Kind::VALUE_TYPE_DECL) {
 				error_name_collision (name, item);
-				scope_push (nullptr);
+				scope_push (nullptr); // Mark new scope as error
 				return;
 			} else {
 				const ValueTypeDecl& decl = static_cast <const ValueTypeDecl&> (item);
@@ -788,13 +759,38 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 				if (is_abstract != decl.is_abstract ())
 					error_valuetype_mod (name, is_abstract, decl);
 				decl.check_prefix (*this, name);
-				static_cast <RepositoryId&> (*vt) = decl;
+				vt->set_id (decl);
 				const_cast <Ptr <NamedItem>&> (*ins.first) = vt;
 			}
 			vt->set_has_forward_dcl ();
 		}
 
 		scope_push (vt);
+	}
+}
+
+void Builder::state_member (bool is_public, const Type& type, const Declarators& names)
+{
+	assert (!scope_stack_.empty ());
+	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
+	if (vt) {
+		assert (vt->kind () == Item::Kind::VALUE_TYPE);
+		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
+		if (check_complete_or_ref (type, names.front ())) {
+			for (auto name = names.begin (); name != names.end (); ++name) {
+				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));
+				if (!is_public || check_member_name (*item)) {
+					auto ins = static_cast <Symbols&> (*vt).insert (*item);
+					if (!ins.second)
+						error_name_collision (*name, **ins.first); // Name collides with nested type.
+					else {
+						// We always append member to the container, whatever it is the main file or not.
+						// We need it to build all_operations for derived interfaces.
+						vt->append (*item);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -852,8 +848,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 							see_prev_declaration (ins.first->second);
 							continue;
 						} else {
-							Containers bases;
-							base_itf->get_all_containers (bases);
+							IV_Bases bases;
+							base_itf->get_all_interfaces (bases);
 							add_base_members (*base_name, bases);
 						}
 
@@ -917,8 +913,8 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 							see_prev_declaration (ins.first->second);
 							continue;
 						} else {
-							Containers bases;
-							base_vt->get_all_containers (bases);
+							IV_Bases bases;
+							base_vt->get_all_interfaces (bases);
 							add_base_members (*base_name, bases);
 						}
 
@@ -971,8 +967,8 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 						}
 
 						// OK
-						Containers bases;
-						base_itf->get_all_containers (bases);
+						IV_Bases bases;
+						base_itf->get_all_interfaces (bases);
 						add_base_members (*base_name, bases);
 						vt->add_supports (*base_itf);
 					}
@@ -1040,9 +1036,9 @@ bool Builder::is_base_of (const Interface& base, const Interface& derived)
 	return false;
 }
 
-void Builder::add_base_members (const Location& loc, const Containers& bases)
+void Builder::add_base_members (const Location& loc, const IV_Bases& bases)
 {
-	for (const ItemContainer* base : bases) {
+	for (const IV_Base* base : bases) {
 		if (interface_.all_bases.insert (base).second) {
 			// Check member names
 			for (auto it = base->begin (); it != base->end (); ++it) {
@@ -1073,7 +1069,7 @@ bool Builder::check_member_name (const NamedItem& item)
 {
 #ifdef _DEBUG
 	assert (!scope_stack_.empty ());
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	assert (parent && parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 #endif
 	auto ins = interface_.all_members.insert (item);
@@ -1091,7 +1087,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 
 	check_anonymous (type, name);
 
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 		if (oneway && type.tkind () != Type::Kind::VOID) {
@@ -1118,7 +1114,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	assert (!scope_stack_.empty ());
 	assert (!operation_.op); // operation_end () must be called
 
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::VALUE_TYPE);
 		assert (static_cast <const ValueType*> (parent)->modifier () != ValueType::Modifier::ABSTRACT);
@@ -1220,7 +1216,7 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 	assert (!scope_stack_.empty ());
 	assert (!attribute_.att); // attribute_end () must be called
 
-	ItemContainer* parent = static_cast <ItemContainer*> (scope_stack_.back ());
+	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
@@ -1281,12 +1277,12 @@ void Builder::interface_end ()
 void Builder::struct_decl (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
-	if (scope) {
+	if (scope) { // No error in the parent scope declaration
 		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (ref (*this), ref (name));
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
-			const RepositoryId* rid = nullptr;
+			const ItemWithId* rid = nullptr;
 			switch (item.kind ()) {
 				case Item::Kind::STRUCT_DECL:
 					rid = &static_cast <const StructDecl&> (item);
@@ -1310,117 +1306,15 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::struct_begin (const SimpleDeclarator& name)
-{
-	Symbols* scope = scope_begin ();
-	if (scope) {
-		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
-		auto ins = scope->insert (*def);
-		if (!ins.second) {
-			const NamedItem& item = **ins.first;
-			if (item.kind () != Item::Kind::STRUCT_DECL) {
-				error_name_collision (name, item);
-				scope_push (nullptr);
-				return;
-			}
-
-			const StructDecl& decl = static_cast <const StructDecl&> (item);
-			decl.check_prefix (*this, name);
-			static_cast <RepositoryId&> (*def) = decl;
-			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
-			def->set_has_forward_dcl ();
-		}
-
-		scope_push (def);
-	}
-}
-
-void Builder::exception_begin (const SimpleDeclarator& name)
-{
-	Symbols* scope = scope_begin ();
-	if (scope) {
-		Ptr <Exception> def = Ptr <Exception>::make <Exception> (ref (*this), ref (name));
-		auto ins = scope->insert (*def);
-		if (!ins.second) {
-			error_name_collision (name, **ins.first);
-			scope_push (nullptr);
-			return;
-		}
-
-		scope_push (def);
-	}
-}
-
-bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
-{
-	if (!type.is_complete_or_ref ()) {
-		message (loc, MessageType::ERROR, "incomplete type is not allowed");
-		see_declaration_of (type.named_type (), type.named_type ().qualified_name ());
-		return false;
-	}
-	return true;
-}
-
-void Builder::member (const Type& type, const Declarators& names)
-{
-	assert (!scope_stack_.empty ());
-	ItemScope* parent = scope_stack_.back ();
-	if (parent) {
-		assert (parent->kind () == Item::Kind::STRUCT || parent->kind () == Item::Kind::EXCEPTION);
-
-		if (check_complete_or_ref (type, names.front ())) {
-			for (auto decl = names.begin (); decl != names.end (); ++decl) {
-				Ptr <NamedItem> item;
-				if (decl->array_sizes ().empty ()) {
-					item = Ptr <NamedItem>::make <Member> (ref (*this), ref (type), ref (*decl));
-				} else {
-					Type arr (type, decl->array_sizes ());
-					item = Ptr <NamedItem>::make <Member> (ref (*this), ref (arr), ref (*decl));
-				}
-				auto ins = static_cast <Symbols&> (*parent).insert (*item);
-				if (!ins.second)
-					error_name_collision (*decl, **ins.first);
-				else if (is_main_file ())
-					container_stack_.top ()->append (*item);
-			}
-		}
-	}
-}
-
-void Builder::state_member (bool is_public, const Type& type, const Declarators& names)
-{
-	assert (!scope_stack_.empty ());
-	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
-	if (vt) {
-		assert (vt->kind () == Item::Kind::VALUE_TYPE);
-		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
-		if (check_complete_or_ref (type, names.front ())) {
-			for (auto name = names.begin (); name != names.end (); ++name) {
-				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));
-				if (!is_public || check_member_name (*item)) {
-					auto ins = static_cast <Symbols&> (*vt).insert (*item);
-					if (!ins.second)
-						error_name_collision (*name, **ins.first); // Name collides with nested type.
-					else {
-						// We always append member to the container, whatever it is the main file or not.
-						// We need it to build all_operations for derived interfaces.
-						vt->append (*item);
-					}
-				}
-			}
-		}
-	}
-}
-
 void Builder::union_decl (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
-	if (scope) {
+	if (scope) { // No error in the parent scope declaration
 		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (ref (*this), ref (name));
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
-			const RepositoryId* rid = nullptr;
+			const ItemWithId* rid = nullptr;
 			switch (item.kind ()) {
 				case Item::Kind::UNION_DECL:
 					rid = &static_cast <const UnionDecl&> (item);
@@ -1436,7 +1330,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 			}
 
 			rid->check_prefix (*this, name);
-			return; // Ignore second definition
+			return; // Ignore second declaration
 		}
 
 		if (is_main_file ())
@@ -1444,10 +1338,37 @@ void Builder::union_decl (const SimpleDeclarator& name)
 	}
 }
 
+void Builder::struct_begin (const SimpleDeclarator& name)
+{
+	Symbols* scope = cur_scope ();
+	if (scope) { // No error in parent scope declaration
+		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
+		auto ins = scope->insert (*def);
+		if (!ins.second) {
+			const NamedItem& item = **ins.first;
+			if (item.kind () != Item::Kind::STRUCT_DECL) {
+				error_name_collision (name, item);
+				return;
+			}
+
+			const StructDecl& decl = static_cast <const StructDecl&> (item);
+			decl.check_prefix (*this, name);
+			def->set_id (decl);
+			def->set_has_forward_dcl ();
+			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
+		}
+
+		constr_type_.symbol = &*ins.first;
+
+		if (is_main_file ())
+			container_stack_.top ()->append (*def);
+	}
+}
+
 void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc)
 {
-	Symbols* scope = scope_begin ();
-	if (scope) {
+	Symbols* scope = cur_scope ();
+	if (scope) { // No error in the parent scope declaration
 		const Type& t = switch_type.dereference_type ();
 
 		bool type_OK = false;
@@ -1469,8 +1390,6 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 
 		if (!type_OK) {
 			message (type_loc, MessageType::ERROR, "invalid switch type");
-			eval_stack_.push (make_unique <Eval> (*this));
-			scope_push (nullptr);
 			return;
 		}
 
@@ -1480,32 +1399,89 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 			const NamedItem& item = **ins.first;
 			if (item.kind () != Item::Kind::UNION_DECL) {
 				error_name_collision (name, item);
-				scope_push (nullptr);
 				return;
 			}
 
 			const UnionDecl& decl = static_cast <const UnionDecl&> (item);
 			decl.check_prefix (*this, name);
-			static_cast <RepositoryId&> (*def) = decl;
-			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
+			def->set_id (decl);
 			def->set_has_forward_dcl ();
+			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
 
-		scope_push (def);
-		eval_push (switch_type, type_loc);
+		constr_type_.symbol = &*ins.first;
 
 		// If the <switch_type_spec> is an enumeration, the identifier for the enumeration is
 		// as well in the scope of the union; as a result, it must be distinct from the element declarators.
 		if (enum_type)
-			cur_scope ()->insert (*enum_type);
+			constr_type_.members.insert (*enum_type);
+
+		eval_push (switch_type, type_loc);
+
+		if (is_main_file ())
+			container_stack_.top ()->append (*def);
+	}
+}
+
+void Builder::exception_begin (const SimpleDeclarator& name)
+{
+	Symbols* scope = cur_scope ();
+	if (scope) { // No error in the parent scope declaration
+		Ptr <Exception> def = Ptr <Exception>::make <Exception> (ref (*this), ref (name));
+		auto ins = scope->insert (*def);
+		if (!ins.second) {
+			error_name_collision (name, **ins.first);
+			return;
+		}
+
+		constr_type_.symbol = &*ins.first;
+
+		if (is_main_file ())
+			container_stack_.top ()->append (*def);
+	}
+}
+
+bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
+{
+	if (!type.is_complete_or_ref ()) {
+		message (loc, MessageType::ERROR, "incomplete type is not allowed");
+		see_declaration_of (type.named_type (), type.named_type ().qualified_name ());
+		return false;
+	}
+	return true;
+}
+
+void Builder::member (const Type& type, const Declarators& names)
+{
+	StructBase* s = static_cast <StructBase*> (constr_type_.obj ());
+	if (s) { // No error in the parent definition
+		assert (s->kind () == Item::Kind::STRUCT || s->kind () == Item::Kind::EXCEPTION);
+
+		if (check_complete_or_ref (type, names.front ())) {
+			for (auto decl = names.begin (); decl != names.end (); ++decl) {
+				Ptr <Member> item;
+				if (decl->array_sizes ().empty ()) {
+					item = Ptr <Member>::make <Member> (ref (*this), ref (type), ref (*decl));
+				} else {
+					Type arr (type, decl->array_sizes ());
+					item = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
+				}
+				auto ins = constr_type_.members.insert (*item);
+				if (!ins.second)
+					error_name_collision (*decl, **ins.first);
+				else if (is_main_file ())
+					s->append (*item);
+			}
+		}
 	}
 }
 
 void Builder::union_label (const Variant& label, const Location& loc)
 {
-	assert (!scope_stack_.empty ());
-	if (scope_stack_.back ()) {
-		if (!label.empty ()) {
+	Union* u = static_cast <Union*> (constr_type_.obj ());
+	if (u) { // No error in the parent definition
+		assert (u->kind () == Item::Kind::UNION);
+		if (!label.empty ()) { // No error in label calculation
 			const Variant& key = label.dereference_const ();
 			auto ins = union_.all_labels.emplace (key.to_key (), loc);
 			if (!ins.second) {
@@ -1521,8 +1497,9 @@ void Builder::union_label (const Variant& label, const Location& loc)
 
 void Builder::union_default (const Location& loc)
 {
-	assert (!scope_stack_.empty ());
-	if (scope_stack_.back ()) {
+	Union* u = static_cast <Union*> (constr_type_.obj ());
+	if (u) { // No error in the parent definition
+		assert (u->kind () == Item::Kind::UNION);
 		if (union_.has_default)
 			message (loc, MessageType::ERROR, "union already has the default element");
 		else {
@@ -1539,35 +1516,36 @@ void Builder::union_default (const Location& loc)
 
 void Builder::union_element (const Type& type, const Build::Declarator& decl)
 {
-	assert (!scope_stack_.empty ());
-	Union* parent = static_cast <Union*> (scope_stack_.back ());
-	if (parent && (union_.element.is_default || !union_.element.labels.empty ())) {
-		assert (parent->kind () == Item::Kind::UNION);
-		Ptr <UnionElement> item;
-		if (decl.array_sizes ().empty ()) {
-			item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
-		} else {
-			Type arr (type, decl.array_sizes ());
-			item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
+	Union* u = static_cast <Union*> (constr_type_.obj ());
+	if (u) { // No error in the parent definition
+		assert (u->kind () == Item::Kind::UNION);
+		if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
+			Ptr <UnionElement> item;
+			if (decl.array_sizes ().empty ()) {
+				item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
+			} else {
+				Type arr (type, decl.array_sizes ());
+				item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
+			}
+			auto ins = constr_type_.members.insert (*item);
+			if (!ins.second)
+				error_name_collision (decl, **ins.first);
+			else if (is_main_file ()) {
+				u->append (*item);
+				if (union_.element.is_default)
+					u->default_element (*item);
+			}
 		}
-		auto ins = static_cast <Symbols&> (*parent).insert (*item);
-		if (!ins.second)
-			error_name_collision (decl, **ins.first);
-		else if (is_main_file ())
-			container_stack_.top ()->append (*item);
-
-		if (union_.element.is_default)
-			parent->default_element (*item);
+		union_.element.clear ();
 	}
-	union_.element.clear ();
 }
 
 const Ptr <NamedItem>* Builder::union_end ()
 {
-	assert (!scope_stack_.empty ());
-	Union* u = static_cast <Union*> (scope_stack_.back ());
-	if (u) {
+	Union* u = static_cast <Union*> (constr_type_.obj ());
+	if (u) { // No error in the definition
 		if (is_main_file ()) {
+			assert (container_stack_.top ()->back ()->kind () == Item::Kind::UNION);
 			const Type& dt = u->discriminator_type ().dereference_type ();
 			size_t key_max = dt.key_max ();
 			if (union_.all_labels.size () > key_max) {
@@ -1581,14 +1559,12 @@ const Ptr <NamedItem>* Builder::union_end ()
 				if (dt.tkind () == Type::Kind::BASIC_TYPE) {
 					Variant::Key max_key = numeric_limits <Variant::Key>::min ();
 					const Variant* max_label = nullptr;
-					for (const auto& item : *u) {
-						if (item->kind () == Item::Kind::UNION_ELEMENT) {
-							for (const auto& label : static_cast <const UnionElement&> (*item).labels ()) {
-								Variant::Key key = label.dereference_const ().to_key ();
-								if (!max_label || key > max_key) {
-									max_label = &label;
-									max_key = key;
-								}
+					for (const auto& el : *u) {
+						for (const auto& label : el->labels ()) {
+							Variant::Key key = label.dereference_const ().to_key ();
+							if (!max_label || key > max_key) {
+								max_label = &label;
+								max_key = key;
 							}
 						}
 					}
@@ -1626,7 +1602,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 {
 	assert (!items.empty ());
 	Symbols* scope = cur_scope ();
-	if (scope) {
+	if (scope) { // No error in the parent scope
 		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
 		auto ins = scope->insert (*def);
 		if (!ins.second)
@@ -1648,8 +1624,8 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 						def->append (*enumerator);
 				}
 			}
+			return &*ins.first;
 		}
-		return &*ins.first;
 	}
 	return nullptr;
 }
@@ -1726,7 +1702,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (unique_ptr <Eval> (eval));
 }
 
-Ptr <Root> Builder::finalize ()
+Ptr <const Root> Builder::finalize ()
 {
 	if (!err_cnt_ && tree_) {
 		try {
@@ -1756,8 +1732,8 @@ void Builder::check_complete (const Container& items)
 				break;
 			case Item::Kind::OPERATION: {
 				const Operation& op = static_cast <const Operation&> (item);
-				check_complete (op, op);
-				check_complete (op);
+				check_complete (op, op); // Return type
+				check_complete (op); // Arguments
 			} break;
 			case Item::Kind::ATTRIBUTE: {
 				const Attribute& att = static_cast <const Attribute&> (item);
@@ -1796,7 +1772,22 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 {
 	if (!type.is_complete ()) {
 		message (loc, MessageType::ERROR, "incomplete type is not allowed");
-		see_declaration_of (type.named_type (),  type.named_type ().qualified_name ());
+		const NamedItem* decl;
+		switch (type.tkind ()) {
+			case Type::Kind::NAMED_TYPE:
+				decl = &type.named_type ();
+				break;
+			case Type::Kind::SEQUENCE:
+				decl = &type.sequence ().named_type ();
+				break;
+			case Type::Kind::ARRAY:
+				decl = &type.array ().named_type ();
+				break;
+			default:
+				assert (false);
+				return false;
+		}
+		see_declaration_of (*decl,  decl->qualified_name ());
 		return false;
 	}
 	return true;
@@ -1804,9 +1795,22 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 
 void Builder::check_complete (const OperationBase& op)
 {
-	for (auto par = op.begin (); par != op.end (); ++par) {
-		const Parameter& param = **par;
-		check_complete (param, param);
+	for (const auto& par : op) {
+		check_complete (*par, *par);
+	}
+}
+
+void Builder::check_complete (const StructBase& s)
+{
+	for (const auto& m : s) {
+		check_complete (*m, *m);
+	}
+}
+
+void Builder::check_complete (const Union& u)
+{
+	for (const auto& m : u) {
+		check_complete (*m, *m);
 	}
 }
 
@@ -1814,7 +1818,7 @@ void Builder::check_rep_ids_unique (RepIdMap& ids, const Symbols& sym)
 {
 	for (auto it = sym.begin (); it != sym.end (); ++it) {
 		NamedItem* item = *it;
-		const RepositoryId* rid = RepositoryId::cast (item);
+		const ItemWithId* rid = ItemWithId::cast (item);
 		if (rid)
 			check_unique (ids, *rid);
 		const ItemScope* child = ItemScope::cast (item);
@@ -1823,11 +1827,11 @@ void Builder::check_rep_ids_unique (RepIdMap& ids, const Symbols& sym)
 	}
 }
 
-void Builder::check_unique (RepIdMap& ids, const RepositoryId& rid)
+void Builder::check_unique (RepIdMap& ids, const ItemWithId& rid)
 {
-	auto ins = ids.emplace (rid.repository_id (), rid.item ());
-	if (!ins.second && &ins.first->second != &rid.item ()) {
-		message (rid.item (), Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
+	auto ins = ids.emplace (rid.repository_id (), rid);
+	if (!ins.second && &ins.first->second != &rid) {
+		message (rid, Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
 		see_declaration_of (ins.first->second, ins.first->second.qualified_name ());
 	}
 }

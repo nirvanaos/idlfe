@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_TYPE_H_
 #define NIDL_AST_TYPE_H_
+#pragma once
 
 #include "BasicType.h"
 #include "NamedItem.h"
@@ -77,7 +78,7 @@ public:
 	const NamedItem& named_type () const noexcept
 	{
 		assert (tkind () == Kind::NAMED_TYPE);
-		assert (**type_.named_type);
+		assert (type_.named_type);
 		return **type_.named_type;
 	}
 
