@@ -44,6 +44,8 @@
 #include "../../include/AST/StateMember.h"
 #include "../../include/AST/ValueFactory.h"
 #include "../../include/AST/ValueBox.h"
+#include "../../include/AST/Sequence.h"
+#include "../../include/AST/Array.h"
 #include <stdexcept>
 #include <algorithm>
 
@@ -1756,7 +1758,22 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 {
 	if (!type.is_complete ()) {
 		message (loc, MessageType::ERROR, "incomplete type is not allowed");
-		see_declaration_of (type.named_type (),  type.named_type ().qualified_name ());
+		const NamedItem* decl;
+		switch (type.tkind ()) {
+			case Type::Kind::NAMED_TYPE:
+				decl = &type.named_type ();
+				break;
+			case Type::Kind::SEQUENCE:
+				decl = &type.sequence ().named_type ();
+				break;
+			case Type::Kind::ARRAY:
+				decl = &type.array ().named_type ();
+				break;
+			default:
+				assert (false);
+				return false;
+		}
+		see_declaration_of (*decl,  decl->qualified_name ());
 		return false;
 	}
 	return true;
