@@ -1530,8 +1530,11 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 			auto ins = constr_type_.members.insert (*item);
 			if (!ins.second)
 				error_name_collision (decl, **ins.first);
-			else if (is_main_file ())
+			else if (is_main_file ()) {
 				u->append (*item);
+				if (union_.element.is_default)
+					u->default_element (*item);
+			}
 		}
 		union_.element.clear ();
 	}
@@ -1556,14 +1559,12 @@ const Ptr <NamedItem>* Builder::union_end ()
 				if (dt.tkind () == Type::Kind::BASIC_TYPE) {
 					Variant::Key max_key = numeric_limits <Variant::Key>::min ();
 					const Variant* max_label = nullptr;
-					for (const auto& item : *u) {
-						if (item->kind () == Item::Kind::UNION_ELEMENT) {
-							for (const auto& label : static_cast <const UnionElement&> (*item).labels ()) {
-								Variant::Key key = label.dereference_const ().to_key ();
-								if (!max_label || key > max_key) {
-									max_label = &label;
-									max_key = key;
-								}
+					for (const auto& el : *u) {
+						for (const auto& label : el->labels ()) {
+							Variant::Key key = label.dereference_const ().to_key ();
+							if (!max_label || key > max_key) {
+								max_label = &label;
+								max_key = key;
 							}
 						}
 					}
