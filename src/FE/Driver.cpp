@@ -92,7 +92,7 @@ void Driver::preprocessor_directive (const char* const dir)
 							} else
 								break;
 						}
-						file (string (name, nameend - name), AST::Location (file (), lineno () - 1), flags);
+						linemarker (string (name, nameend - name), AST::Location (file (), lineno () - 1), flags);
 						yylineno = l;
 						return;
 					}

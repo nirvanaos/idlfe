@@ -253,34 +253,26 @@ bool Builder::get_scoped_name (const char*& s, ScopedName& sn)
 	return true;
 }
 
-void Builder::file (const std::string& name, const Location& loc, int flags)
+void Builder::linemarker (const std::string& name, const Location& loc, int flags)
 {
-	if (!(flags & FILE_FLAG_START)) {
+	if (flags & FILE_FLAG_START) {
+		// Use #include at global scope only.
+		if (is_main_file () && container_stack_.size () == 1)
+			tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM, ref (loc)));
+		file_stack_.emplace_back (name);
+	} else {
 		// Leave include file
 		auto it = file_stack_.end () - 1;
 		for (; it != file_stack_.begin (); --it) {
 			if (it->file == name)
 				break;
 		}
-		if (it->file == name) {
+		if (it->file == name)
 			file_stack_.erase (it + 1, file_stack_.end ());
-			if (file_stack_.size () == 1)
-				is_main_file_ = true;
-		}
-	} else {
-		// Use #include at global scope only.
-		if (is_main_file () && container_stack_.size () == 1) {
-			is_main_file_ = false;
-			try {
-				tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM));
-			} catch (const filesystem::filesystem_error& ex) {
-				message (loc, MessageType::ERROR, ex.what ());
-			}
-		}
-		file_stack_.emplace_back (name);
 	}
 }
 
+// #line
 void Builder::line (const std::string& filename)
 {
 	cur_file_ = &tree_->add_file (filename);

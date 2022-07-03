@@ -70,19 +70,19 @@ public:
 
 	static const int FILE_FLAG_START = 0x1;
 	static const int FILE_FLAG_SYSTEM = 0x2;
-	void file (const std::string& name, const Location& loc, int flags);
+	void linemarker (const std::string& name, const Location& loc, int flags);
 	void line (const std::string& filename);
 
 	void pragma (const char*, const Location& loc);
 
-	const std::filesystem::path& file () const
+	const std::filesystem::path& file () const noexcept
 	{
 		return *cur_file_;
 	}
 
-	bool is_main_file () const
+	bool is_main_file () const noexcept
 	{
-		return is_main_file_;
+		return file_stack_.size () <= 1;
 	}
 
 	enum class MessageType
