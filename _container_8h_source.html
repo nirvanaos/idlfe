@@ -96,54 +96,55 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_CONTAINER_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define NIDL_AST_CONTAINER_H_</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_item_8h.html">Item.h</a>&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_container_t.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT</a> :</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">public</span> std::vector &lt;Ptr &lt;T&gt;&gt;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">typedef</span> std::vector &lt;Ptr &lt;T&gt;&gt; Base;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> append (T&amp; item)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        Base::emplace_back (&amp;item);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_code_gen.html">CodeGen</a>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_container.html">   55</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_container.html">Container</a> :</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT</a> &lt;Item&gt;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT &lt;Item&gt;</a> <a class="code" href="class_a_s_t_1_1_container_t.html">Base</a>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda">   62</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda">visit</a> (<a class="code" href="class_a_s_t_1_1_code_gen.html">CodeGen</a>&amp; cg) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> append (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>&amp; item);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_item_8h.html">Item.h</a>&quot;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_container_t.html">   38</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT</a> :</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">public</span> std::vector &lt;Ptr &lt;const T&gt; &gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">typedef</span> std::vector &lt;Ptr &lt;const T&gt; &gt; Base;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">void</span> append (T&amp; item)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        Base::emplace_back (&amp;item);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_code_gen.html">CodeGen</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_container.html">   56</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_container.html">Container</a> :</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT</a> &lt;Item&gt;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT &lt;Item&gt;</a> <a class="code" href="class_a_s_t_1_1_container_t.html">Base</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda">   63</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda">visit</a> (<a class="code" href="class_a_s_t_1_1_code_gen.html">CodeGen</a>&amp; cg) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> append (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>&amp; item);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="a_item_8h_html"><div class="ttname"><a href="_item_8h.html">Item.h</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_container_html_afe78c2807de14f5204163625e7e8bbda"><div class="ttname"><a href="class_a_s_t_1_1_container.html#afe78c2807de14f5204163625e7e8bbda">AST::Container::visit</a></div><div class="ttdeci">bool visit(CodeGen &amp;cg) const</div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_container_html"><div class="ttname"><a href="class_a_s_t_1_1_container.html">AST::Container</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00055">Container.h:57</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_container_t_html"><div class="ttname"><a href="class_a_s_t_1_1_container_t.html">AST::ContainerT</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00037">Container.h:39</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00039">Item.h:40</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_code_gen_html"><div class="ttname"><a href="class_a_s_t_1_1_code_gen.html">AST::CodeGen</a></div><div class="ttdoc">Base for code generators. Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="_code_gen_8h_source.html#l00073">CodeGen.h:74</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_container_html"><div class="ttname"><a href="class_a_s_t_1_1_container.html">AST::Container</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00056">Container.h:58</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_container_t_html"><div class="ttname"><a href="class_a_s_t_1_1_container_t.html">AST::ContainerT</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00038">Container.h:40</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00040">Item.h:41</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_code_gen_html"><div class="ttname"><a href="class_a_s_t_1_1_code_gen.html">AST::CodeGen</a></div><div class="ttdoc">Base for code generators. Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="_code_gen_8h_source.html#l00074">CodeGen.h:75</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

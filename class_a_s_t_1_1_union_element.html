@@ -175,8 +175,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a26025c1208f44b6644ef8d8275955e18 inherit pub_methods_class_a_s_t_1_1_item"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_item.html#a26025c1208f44b6644ef8d8275955e18">is_forward_decl</a> () const noexcept</td></tr>
 <tr class="separator:a26025c1208f44b6644ef8d8275955e18 inherit pub_methods_class_a_s_t_1_1_item"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_a_s_t_1_1_location"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_a_s_t_1_1_location')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_a_s_t_1_1_location.html">AST::Location</a></td></tr>
-<tr class="memitem:a5d80a521c8476f448b113d33abb97805 inherit pub_methods_class_a_s_t_1_1_location"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_location.html#a5d80a521c8476f448b113d33abb97805">file</a> () const noexcept</td></tr>
-<tr class="separator:a5d80a521c8476f448b113d33abb97805 inherit pub_methods_class_a_s_t_1_1_location"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd5411f62883f12eec2a0cb771babc4b inherit pub_methods_class_a_s_t_1_1_location"><td class="memItemLeft" align="right" valign="top">const std::filesystem::path &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_location.html#afd5411f62883f12eec2a0cb771babc4b">file</a> () const noexcept</td></tr>
+<tr class="separator:afd5411f62883f12eec2a0cb771babc4b inherit pub_methods_class_a_s_t_1_1_location"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac77871db090a01ae497f74ead1430584 inherit pub_methods_class_a_s_t_1_1_location"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_location.html#ac77871db090a01ae497f74ead1430584">line</a> () const noexcept</td></tr>
 <tr class="separator:ac77871db090a01ae497f74ead1430584 inherit pub_methods_class_a_s_t_1_1_location"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_a_s_t_1_1_type"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_a_s_t_1_1_type')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_a_s_t_1_1_type.html">AST::Type</a></td></tr>
@@ -229,10 +229,8 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><code>union</code> element definition. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_printer_8cpp-example.html#_a20">Printer.cpp</a>.</dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="_union_element_8h_source.html#l00037">37</a> of file <a class="el" href="_union_element_8h_source.html">UnionElement.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_union_element_8h_source.html#l00038">38</a> of file <a class="el" href="_union_element_8h_source.html">UnionElement.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa9a2eb10466c36d4b2171fa0e97cd9b9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9a2eb10466c36d4b2171fa0e97cd9b9">&#9670;&nbsp;</a></span>labels()</h2>
@@ -258,7 +256,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The vector of <code>case</code> labels for this element. Empty for the <code>default</code> case. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_union_element_8h_source.html#l00045">45</a> of file <a class="el" href="_union_element_8h_source.html">UnionElement.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_union_element_8h_source.html#l00046">46</a> of file <a class="el" href="_union_element_8h_source.html">UnionElement.h</a>.</p>
 
 </div>
 </div>
@@ -286,13 +284,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if this is the <code>default</code> element. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_union_8h_source.html#l00105">105</a> of file <a class="el" href="_union_8h_source.html">Union.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_union_element_8h_source.html#l00052">52</a> of file <a class="el" href="_union_element_8h_source.html">UnionElement.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/include/AST/<a class="el" href="_union_element_8h_source.html">UnionElement.h</a></li>
-<li>src/include/AST/<a class="el" href="_union_8h_source.html">Union.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

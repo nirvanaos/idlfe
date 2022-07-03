@@ -122,14 +122,14 @@ $(function() {
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="class_a_s_t_1_1_root.html">Root</a> (<span class="keyword">const</span> std::string&amp; <a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>) :</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="class_a_s_t_1_1_item.html">Item</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::ROOT),</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        main_file_ (std::filesystem::absolute (<a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>))</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        main_file_ (add_file (<a class="code" href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">file</a>))</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {}</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::pair &lt;std::unordered_set &lt;std::string&gt;::iterator, <span class="keywordtype">bool</span>&gt; add_file (<span class="keyword">const</span> std::string&amp; name)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">const</span> std::filesystem::path&amp; add_file (<span class="keyword">const</span> std::string&amp; name)</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> files_.insert (name);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> *files_.insert (std::filesystem::absolute (name)).first;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">operator</span> Symbols&amp; () noexcept</div>
@@ -143,26 +143,35 @@ $(function() {
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    std::unordered_set &lt;std::string&gt; files_;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    std::filesystem::path main_file_;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    Symbols symbols_;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;};</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keyword">struct </span>fs_hash</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">size_t</span> operator () (<span class="keyword">const</span> std::filesystem::path&amp; p)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordflow">return</span> std::filesystem::hash_value (p);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    };</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    std::unordered_set &lt;std::filesystem::path, fs_hash&gt; files_;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keyword">const</span> std::filesystem::path&amp; main_file_;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    Symbols symbols_;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;};</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_root_html"><div class="ttname"><a href="class_a_s_t_1_1_root.html">AST::Root</a></div><div class="ttdoc">Abstract Syntax Tree root.</div><div class="ttdef"><b>Definition:</b> <a href="_root_8h_source.html#l00039">Root.h:42</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_root_html_a687de82cd81741180f83cec285be1aba"><div class="ttname"><a href="class_a_s_t_1_1_root.html#a687de82cd81741180f83cec285be1aba">AST::Root::visit</a></div><div class="ttdeci">bool visit(CodeGen &amp;cg) const</div><div class="ttdoc">Visit all items for the code generation.</div></div>
 <div class="ttc" id="a_item_8h_html"><div class="ttname"><a href="_item_8h.html">Item.h</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
 <div class="ttc" id="a_container_8h_html"><div class="ttname"><a href="_container_8h.html">Container.h</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_container_html"><div class="ttname"><a href="class_a_s_t_1_1_container.html">AST::Container</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00055">Container.h:57</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_container_html"><div class="ttname"><a href="class_a_s_t_1_1_container.html">AST::Container</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00056">Container.h:58</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_root_html_a1fd97331b3366e17df4ba7b37ae967fa"><div class="ttname"><a href="class_a_s_t_1_1_root.html#a1fd97331b3366e17df4ba7b37ae967fa">AST::Root::file</a></div><div class="ttdeci">const std::filesystem::path &amp; file() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_root_8h_source.html#l00045">Root.h:45</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00043">Item.h:44</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00039">Item.h:40</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_code_gen_html"><div class="ttname"><a href="class_a_s_t_1_1_code_gen.html">AST::CodeGen</a></div><div class="ttdoc">Base for code generators. Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="_code_gen_8h_source.html#l00073">CodeGen.h:74</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_ptr_html"><div class="ttname"><a href="class_a_s_t_1_1_ptr.html">AST::Ptr</a></div><div class="ttdoc">AST item smart pointer.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00125">Item.h:126</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00044">Item.h:45</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00040">Item.h:41</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_code_gen_html"><div class="ttname"><a href="class_a_s_t_1_1_code_gen.html">AST::CodeGen</a></div><div class="ttdoc">Base for code generators. Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="_code_gen_8h_source.html#l00074">CodeGen.h:75</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_ptr_html"><div class="ttname"><a href="class_a_s_t_1_1_ptr.html">AST::Ptr</a></div><div class="ttdoc">AST item smart pointer.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00133">Item.h:134</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

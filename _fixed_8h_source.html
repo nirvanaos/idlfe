@@ -96,52 +96,53 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_FIXED_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define NIDL_AST_FIXED_H_</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">   41</a></span>&#160;    uint16_t <a class="code" href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">digits</a> () const noexcept</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">return</span> (uint16_t)digits_;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">   47</a></span>&#160;    uint16_t <a class="code" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">scale</a> () const noexcept</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> (uint16_t)-exponent_;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#a7d9e09b4fae7b29d4a229738c217de42">   53</a></span>&#160;    std::string <a class="code" href="class_a_s_t_1_1_fixed.html#a7d9e09b4fae7b29d4a229738c217de42">to_string</a> () <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#ad96564c3f9a2ff4842f538c738f674a4">   60</a></span>&#160;    std::vector &lt;uint8_t&gt; <a class="code" href="class_a_s_t_1_1_fixed.html#ad96564c3f9a2ff4842f538c738f674a4">to_BCD</a> (int32_t&amp; <a class="code" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">scale</a>) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a> () noexcept</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">static</span> <a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a> normalize (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a>&amp; f) noexcept;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    int32_t digits_;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    int32_t exponent_;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    uint8_t bits_;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    uint8_t lsu_ [31];</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html">   38</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">   42</a></span>&#160;    uint16_t <a class="code" href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">digits</a> () const noexcept</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> (uint16_t)digits_;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">   48</a></span>&#160;    uint16_t <a class="code" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">scale</a> () const noexcept</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> (uint16_t)-exponent_;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#a7d9e09b4fae7b29d4a229738c217de42">   54</a></span>&#160;    std::string <a class="code" href="class_a_s_t_1_1_fixed.html#a7d9e09b4fae7b29d4a229738c217de42">to_string</a> () <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_fixed.html#ad96564c3f9a2ff4842f538c738f674a4">   61</a></span>&#160;    std::vector &lt;uint8_t&gt; <a class="code" href="class_a_s_t_1_1_fixed.html#ad96564c3f9a2ff4842f538c738f674a4">to_BCD</a> (int32_t&amp; <a class="code" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">scale</a>) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a> () noexcept</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">static</span> <a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a> normalize (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_fixed.html">Fixed</a>&amp; f) noexcept;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    int32_t digits_;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    int32_t exponent_;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    uint8_t bits_;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    uint8_t lsu_ [31];</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;};</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_fixed_html_ad96564c3f9a2ff4842f538c738f674a4"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html#ad96564c3f9a2ff4842f538c738f674a4">AST::Fixed::to_BCD</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; to_BCD(int32_t &amp;scale) const</div></div>
-<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_fixed_html_ab011b0bc35fcc6390e6923cb1f663fb0"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">AST::Fixed::digits</a></div><div class="ttdeci">uint16_t digits() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_fixed_8h_source.html#l00041">Fixed.h:41</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_fixed_html_ab011b0bc35fcc6390e6923cb1f663fb0"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">AST::Fixed::digits</a></div><div class="ttdeci">uint16_t digits() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_fixed_8h_source.html#l00042">Fixed.h:42</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_fixed_html_a7d9e09b4fae7b29d4a229738c217de42"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html#a7d9e09b4fae7b29d4a229738c217de42">AST::Fixed::to_string</a></div><div class="ttdeci">std::string to_string() const</div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_fixed_html"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html">AST::Fixed</a></div><div class="ttdoc">Fixed point constant.</div><div class="ttdef"><b>Definition:</b> <a href="_fixed_8h_source.html#l00037">Fixed.h:38</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_fixed_html_a148a03c9cf8d58ae4ef1d9596cc03535"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">AST::Fixed::scale</a></div><div class="ttdeci">uint16_t scale() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_fixed_8h_source.html#l00047">Fixed.h:47</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_fixed_html"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html">AST::Fixed</a></div><div class="ttdoc">Fixed point constant.</div><div class="ttdef"><b>Definition:</b> <a href="_fixed_8h_source.html#l00038">Fixed.h:39</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_fixed_html_a148a03c9cf8d58ae4ef1d9596cc03535"><div class="ttname"><a href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">AST::Fixed::scale</a></div><div class="ttdeci">uint16_t scale() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_fixed_8h_source.html#l00048">Fixed.h:48</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

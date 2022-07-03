@@ -96,52 +96,45 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_FORWARDECLARABLE_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define NIDL_AST_FORWARDECLARABLE_H_</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_item_container_8h.html">ItemContainer.h</a>&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span>Build {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">class </span>Builder;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_forward_declarable.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a> : <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item_container.html">ItemContainer</a></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_forward_declarable.html#a34830c1dd0891918b7756d2ff390abe8">   43</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_forward_declarable.html#a34830c1dd0891918b7756d2ff390abe8">has_forward_dcl</a> ()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">return</span> has_forward_dcl_;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Item::Kind</a> <a class="code" href="class_a_s_t_1_1_item.html#ad148f09586b12dd1eec214c57bae622b">kind</a>, <span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="class_a_s_t_1_1_item_container.html">ItemContainer</a> (<a class="code" href="class_a_s_t_1_1_item.html#ad148f09586b12dd1eec214c57bae622b">kind</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        has_forward_dcl_ (false)</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    {}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> set_has_forward_dcl ()</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        has_forward_dcl_ = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">bool</span> has_forward_dcl_;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>Build {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">class </span>Builder;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_forward_declarable.html">   38</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_forward_declarable.html#a34830c1dd0891918b7756d2ff390abe8">   42</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_forward_declarable.html#a34830c1dd0891918b7756d2ff390abe8">has_forward_dcl</a> ()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> has_forward_dcl_;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a> () :</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        has_forward_dcl_ (false)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> set_has_forward_dcl ()</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        has_forward_dcl_ = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">bool</span> has_forward_dcl_;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_a_s_t_1_1_item_html_ad148f09586b12dd1eec214c57bae622b"><div class="ttname"><a href="class_a_s_t_1_1_item.html#ad148f09586b12dd1eec214c57bae622b">AST::Item::kind</a></div><div class="ttdeci">Kind kind() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00074">Item.h:74</a></div></div>
-<div class="ttc" id="a_item_container_8h_html"><div class="ttname"><a href="_item_container_8h.html">ItemContainer.h</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00033">Array.h:33</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html_a34830c1dd0891918b7756d2ff390abe8"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html#a34830c1dd0891918b7756d2ff390abe8">AST::ForwardDeclarable::has_forward_dcl</a></div><div class="ttdeci">bool has_forward_dcl() const</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00043">ForwardDeclarable.h:43</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00043">Item.h:44</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_container_html"><div class="ttname"><a href="class_a_s_t_1_1_item_container.html">AST::ItemContainer</a></div><div class="ttdoc">The container of AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_item_container_8h_source.html#l00037">ItemContainer.h:41</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html">AST::ForwardDeclarable</a></div><div class="ttdoc">The item that can be forward declared.</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00039">ForwardDeclarable.h:40</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_named_item_html_abf5f13b7ca46a219c3bc12de3ac45982"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">AST::NamedItem::name</a></div><div class="ttdeci">const Identifier &amp; name() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00051">NamedItem.h:51</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html_a34830c1dd0891918b7756d2ff390abe8"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html#a34830c1dd0891918b7756d2ff390abe8">AST::ForwardDeclarable::has_forward_dcl</a></div><div class="ttdeci">bool has_forward_dcl() const</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00042">ForwardDeclarable.h:42</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html">AST::ForwardDeclarable</a></div><div class="ttdoc">The item that can be forward declared.</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00038">ForwardDeclarable.h:39</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
