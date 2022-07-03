@@ -225,20 +225,6 @@ public:
 		return val_.u.fixed;
 	}
 
-	/// \returns Number of digits for `fixed` type.
-	/// \invariant vtype () == VT::FIXED
-	uint16_t fixed_digits () const noexcept
-	{
-		return as_Fixed ().digits ();
-	}
-
-	/// \returns Scale for `fixed` type.
-	/// \invariant vtype () == VT::FIXED
-	uint16_t fixed_scale () const noexcept
-	{
-		return as_Fixed ().scale ();
-	}
-
 	/// Converts value to std::string.
 	/// This method escapes character and string values accordingly to C constant escape rules.
 	std::string to_string () const;
