@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_CONTAINER_H_
 #define NIDL_AST_CONTAINER_H_
+#pragma once
 
 #include "Item.h"
 #include <vector>
@@ -35,10 +36,10 @@ namespace AST {
 /// Sequential container of the AST items.
 template <class T>
 class ContainerT :
-	public std::vector <Ptr <T>>
+	public std::vector <Ptr <const T> >
 {
 protected:
-	typedef std::vector <Ptr <T>> Base;
+	typedef std::vector <Ptr <const T> > Base;
 
 protected:
 	friend class Build::Builder;

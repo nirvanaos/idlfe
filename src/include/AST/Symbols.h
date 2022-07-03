@@ -25,6 +25,7 @@
 */
 #ifndef NIDL_AST_SYMBOLS_H_
 #define NIDL_AST_SYMBOLS_H_
+#pragma once
 
 #include "NamedItem.h"
 #include <set>
@@ -32,16 +33,16 @@
 namespace AST {
 
 class Symbols :
-	public std::set <Ptr <NamedItem>, std::less <>>
+	public std::set <Ptr <NamedItem>, std::less <> >
 {
-	typedef std::set <Ptr <NamedItem>, std::less <>> Base;
+	typedef std::set <Ptr <NamedItem>, std::less <> > Base;
 protected:
 	friend class Build::Builder;
 
 	const Ptr <NamedItem>* find (const Identifier& name) const noexcept;
 
 private:
-	// Methods made outline to reduce size.
+	// Methods made outline to reduce code size.
 	std::pair <iterator, bool> emplace (const NamedItem&);
 
 	std::pair <iterator, bool> insert (const NamedItem& item)

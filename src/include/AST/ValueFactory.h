@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_VALUEFACTORY_H_
 #define NIDL_AST_VALUEFACTORY_H_
+#pragma once
 
 #include "OperationBase.h"
 

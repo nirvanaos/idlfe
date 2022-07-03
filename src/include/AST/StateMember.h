@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_STATEMEMBER_H_
 #define NIDL_AST_STATEMEMBER_H_
+#pragma once
 
 #include "Member.h"
 

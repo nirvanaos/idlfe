@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_PARAMETER_H_
 #define NIDL_AST_PARAMETER_H_
+#pragma once
 
 #include "Member.h"
 

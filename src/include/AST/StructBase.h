@@ -1,4 +1,4 @@
-/// \file ItemContainer.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,40 +24,26 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMCONTAINER_H_
-#define NIDL_AST_ITEMCONTAINER_H_
+#ifndef NIDL_AST_STRUCTBASE_H_
+#define NIDL_AST_STRUCTBASE_H_
+#pragma once
 
-#include "ItemScope.h"
+#include "ItemWithId.h"
 #include "Container.h"
-#include "RepositoryId.h"
+#include "Member.h"
 
 namespace AST {
 
-/// The container of AST items.
-class ItemContainer :
-	public ItemScope,
-	public RepositoryId,
-	public Container
+/// The common base for Struct and Exception.
+class StructBase :
+	public ItemWithId,
+	public ContainerT <Member>
 {
 protected:
-	ItemContainer (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemScope (kind, builder, name),
-		RepositoryId (*this, builder)
+	StructBase (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+		ItemWithId (kind, builder, name)
 	{}
-
-private:
-	friend class Build::Builder;
-
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
-	{
-		if (RepositoryId::prefix (builder, pref, loc))
-			return ItemScope::prefix (builder, pref, loc);
-		else
-			return false;
-	}
 };
-
-typedef std::vector <const ItemContainer*> Containers;
 
 }
 

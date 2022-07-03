@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_UNIONELEMENT_H_
 #define NIDL_AST_UNIONELEMENT_H_
+#pragma once
 
 #include "Member.h"
 #include "Variant.h"
@@ -48,7 +49,10 @@ public:
 	}
 
 	/// \returns `true` if this is the `default` element.
-	bool is_default () const noexcept;
+	bool is_default () const noexcept
+	{
+		return labels_.empty ();
+	}
 
 private:
 	template <class T> friend class Ptr;

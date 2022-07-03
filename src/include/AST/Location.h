@@ -26,8 +26,9 @@
 */
 #ifndef NIDL_AST_LOCATION_H_
 #define NIDL_AST_LOCATION_H_
+#pragma once
 
-#include <string>
+#include <filesystem>
 #include <assert.h>
 
 // Support for the Bison location.
@@ -42,7 +43,7 @@ class Location
 {
 public:
 	/// \returns The file name.
-	const std::string& file () const noexcept
+	const std::filesystem::path& file () const noexcept
 	{
 		assert (file_);
 		return *file_;
@@ -59,7 +60,7 @@ public:
 		line_ (0)
 	{}
 
-	Location (const std::string& file, unsigned line) noexcept :
+	Location (const std::filesystem::path& file, unsigned line) noexcept :
 		file_ (&file),
 		line_ (line)
 	{}
@@ -72,7 +73,7 @@ public:
 	}
 
 private:
-	const std::string* file_;
+	const std::filesystem::path* file_;
 	unsigned line_;
 };
 

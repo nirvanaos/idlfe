@@ -56,14 +56,14 @@ private:
 
 	Root (const std::string& file) :
 		Item (Item::Kind::ROOT),
-		main_file_ (std::filesystem::absolute (file))
+		main_file_ (add_file (file))
 	{}
 
 	friend class Build::Builder;
 
-	std::pair <std::unordered_set <std::string>::iterator, bool> add_file (const std::string& name)
+	const std::filesystem::path& add_file (const std::string& name)
 	{
-		return files_.insert (name);
+		return *files_.insert (std::filesystem::absolute (name)).first;
 	}
 
 	operator Symbols& () noexcept
@@ -77,8 +77,17 @@ private:
 	}
 
 private:
-	std::unordered_set <std::string> files_;
-	std::filesystem::path main_file_;
+
+	struct fs_hash
+	{
+		size_t operator () (const std::filesystem::path& p) const
+		{
+			return std::filesystem::hash_value (p);
+		}
+	};
+
+	std::unordered_set <std::filesystem::path, fs_hash> files_;
+	const std::filesystem::path& main_file_;
 	Symbols symbols_;
 };
 

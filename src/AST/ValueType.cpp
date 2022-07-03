@@ -44,17 +44,17 @@ const char* ValueType::modifier_name () const noexcept
 	return names [(size_t)modifier_];
 }
 
-void ValueType::get_all_containers (Containers& all) const
+void ValueType::get_all_interfaces (IV_Bases& all) const
 {
 	all.reserve (all.size () + bases_.size () + supports_.size () + 1);
 	all.push_back (this);
 	all.insert (all.end (), bases_.begin (), bases_.end ());
 	all.insert (all.end (), supports_.begin (), supports_.end ());
 	for (const ValueType* base : bases_) {
-		base->get_all_containers (all);
+		base->get_all_interfaces (all);
 	}
 	for (const Interface* base : supports_) {
-		base->get_all_containers (all);
+		base->get_all_interfaces (all);
 	}
 }
 

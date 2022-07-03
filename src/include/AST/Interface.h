@@ -26,8 +26,9 @@
 */
 #ifndef NIDL_AST_INTERFACE_H_
 #define NIDL_AST_INTERFACE_H_
+#pragma once
 
-#include "ForwardDeclarable.h"
+#include "IV_Base.h"
 #include <unordered_set>
 
 namespace AST {
@@ -73,7 +74,7 @@ typedef std::vector <const Interface*> Interfaces;
 
 /// %Interface definition.
 class Interface :
-	public ForwardDeclarable,
+	public IV_Base,
 	public InterfaceKind
 {
 public:
@@ -93,10 +94,10 @@ private:
 	friend class Build::Builder;
 	friend class ValueType;
 
-	void get_all_containers (Containers& all) const;
+	void get_all_interfaces (Build::IV_Bases& all) const;
 
 	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
-		ForwardDeclarable (Item::Kind::INTERFACE, builder, name),
+		IV_Base (Item::Kind::INTERFACE, builder, name),
 		InterfaceKind (kind)
 	{}
 
@@ -113,17 +114,15 @@ private:
 
 /// %Interface forward declaration.
 class InterfaceDecl :
-	public NamedItem,
-	public InterfaceKind,
-	public RepositoryId
+	public ItemWithId,
+	public InterfaceKind
 {
 private:
 	template <class T> friend class Ptr;
 
 	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
-		NamedItem (Item::Kind::INTERFACE_DECL, builder, name),
-		InterfaceKind (kind),
-		RepositoryId (*this, builder)
+		ItemWithId (Item::Kind::INTERFACE_DECL, builder, name),
+		InterfaceKind (kind)
 	{}
 };
 

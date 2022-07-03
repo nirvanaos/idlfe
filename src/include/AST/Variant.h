@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_VARIANT_H_
 #define NIDL_AST_VARIANT_H_
+#pragma once
 
 #include "Type.h"
 #include "Fixed.h"

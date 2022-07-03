@@ -70,35 +70,20 @@ bool Container::visit (CodeGen& cg) const
 			case Item::Kind::ATTRIBUTE:
 				cg.leaf (static_cast <const Attribute&> (*item));
 				break;
-			case Item::Kind::EXCEPTION: {
-				const Exception& t = static_cast <const Exception&> (*item);
-				cg.begin (t);
-				unsupported = t.visit (cg) || unsupported;
-				cg.end (t);
-			} break;
+			case Item::Kind::EXCEPTION:
+				cg.leaf (static_cast <const Exception&> (*item));
+				break;
 			case Item::Kind::STRUCT_DECL:
 				cg.leaf (static_cast <const StructDecl&> (*item));
 				break;
-			case Item::Kind::STRUCT: {
-				const Struct& t = static_cast <const Struct&> (*item);
-				cg.begin (t);
-				unsupported = t.visit (cg) || unsupported;
-				cg.end (t);
-			} break;
-			case Item::Kind::MEMBER:
-				cg.leaf (static_cast <const Member&> (*item));
+			case Item::Kind::STRUCT:
+				cg.leaf (static_cast <const Struct&> (*item));
 				break;
 			case Item::Kind::UNION_DECL:
 				cg.leaf (static_cast <const UnionDecl&> (*item));
 				break;
-			case Item::Kind::UNION: {
-				const Union& t = static_cast <const Union&> (*item);
-				cg.begin (t);
-				unsupported = t.visit (cg) || unsupported;
-				cg.end (t);
-			} break;
-			case Item::Kind::UNION_ELEMENT:
-				cg.leaf (static_cast <const UnionElement&> (*item));
+			case Item::Kind::UNION:
+				cg.leaf (static_cast <const Union&> (*item));
 				break;
 			case Item::Kind::ENUM:
 				cg.leaf (static_cast <const Enum&> (*item));

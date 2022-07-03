@@ -26,7 +26,9 @@
 */
 #ifndef NIDL_AST_UNION_H_
 #define NIDL_AST_UNION_H_
+#pragma once
 
+#include "StructBase.h"
 #include "ForwardDeclarable.h"
 #include "UnionElement.h"
 
@@ -34,20 +36,20 @@ namespace AST {
 
 /// `union` forward declaration.
 class UnionDecl :
-	public NamedItem,
-	public RepositoryId
+	public ItemWithId
 {
 private:
 	template <class T> friend class Ptr;
 
 	UnionDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		NamedItem (Item::Kind::UNION_DECL, builder, name),
-		RepositoryId (*this, builder)
+		ItemWithId (Item::Kind::UNION_DECL, builder, name)
 	{}
 };
 
 /// `union` definition.
 class Union :
+	public ItemWithId,
+	public ContainerT <UnionElement>,
 	public ForwardDeclarable
 {
 public:
@@ -68,11 +70,18 @@ public:
 	}
 
 	/// \returns UnionElement for `default` label.
-	/// 
-	/// If union does not have `default` label, returns `nullptr`.
+	///          If union does not have `default` label, returns `nullptr`.
 	const UnionElement* default_element () const noexcept
 	{
 		return default_element_;
+	}
+
+	/// For convenience, the Union may be casted to const StructBase.
+	/// 
+	/// \returns const StructBase&
+	operator const StructBase& () const noexcept
+	{
+		return reinterpret_cast <const StructBase&> (*this);
 	}
 
 	void default_label (const Variant& val)
@@ -90,7 +99,7 @@ private:
 
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name,
 		const Type& discriminator_type) :
-		ForwardDeclarable (Item::Kind::UNION, builder, name),
+		ItemWithId (Item::Kind::UNION, builder, name),
 		discriminator_type_ (discriminator_type),
 		default_element_ (nullptr)
 	{}
@@ -100,12 +109,6 @@ private:
 	const UnionElement* default_element_;
 	Variant default_label_;
 };
-
-inline
-bool UnionElement::is_default () const noexcept
-{
-	return static_cast <const Union&> (*parent ()).default_element () == this;
-}
 
 }
 

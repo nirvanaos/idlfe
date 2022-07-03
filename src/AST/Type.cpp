@@ -41,7 +41,7 @@ Type::Type (BasicType bt) :
 
 Type::Type (const Ptr <NamedItem>* named) :
 	kind_ (named ? Kind::NAMED_TYPE : Kind::VOID),
-	type_ (named ? named : (const Ptr <NamedItem>*)nullptr)
+	type_ (named ? named : nullptr)
 {
 	assert (!named || (*named)->is_type ());
 }

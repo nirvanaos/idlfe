@@ -26,6 +26,7 @@
 */
 #ifndef NIDL_AST_OPERATION_H_
 #define NIDL_AST_OPERATION_H_
+#pragma once
 
 #include "OperationBase.h"
 
