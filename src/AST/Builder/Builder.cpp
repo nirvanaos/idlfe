@@ -1723,6 +1723,9 @@ void Builder::check_complete (const Container& items)
 	for (auto it = items.begin (); it != items.end (); ++it) {
 		const Item& item = **it;
 		switch (item.kind ()) {
+			case Item::Kind::MODULE_ITEMS:
+				check_complete (static_cast <const ModuleItems&> (item));
+				break;
 			case Item::Kind::TYPE_DEF: {
 				const TypeDef& t = static_cast <const TypeDef&> (item);
 				check_complete (t, t);
