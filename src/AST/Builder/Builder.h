@@ -227,7 +227,7 @@ public:
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
 
-	Ptr <Root> finalize ();
+	Ptr <const Root> finalize ();
 
 	void check_anonymous (const Type& type, const SimpleDeclarator& name);
 

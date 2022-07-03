@@ -235,7 +235,7 @@ bool IDL_FrontEnd::compile (const string& file)
 		preprocessed.str (output_tokens.stringify ());
 	}
 
-	AST::Ptr <AST::Root> ast = FE::Driver::parse (file, preprocessed, flags_ & FLAG_DEPRECATE_ANONYMOUS_TYPES);
+	auto ast = FE::Driver::parse (file, preprocessed, flags_ & FLAG_DEPRECATE_ANONYMOUS_TYPES);
 
 	if (ast)
 		try {

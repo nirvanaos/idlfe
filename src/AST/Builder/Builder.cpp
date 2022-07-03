@@ -1686,7 +1686,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (unique_ptr <Eval> (eval));
 }
 
-Ptr <Root> Builder::finalize ()
+Ptr <const Root> Builder::finalize ()
 {
 	if (!err_cnt_ && tree_) {
 		try {

@@ -46,7 +46,7 @@ class Driver :
 	public AST::Build::Builder
 {
 public:
-	static AST::Ptr <AST::Root> parse (const std::string& file, std::istream& yyin, bool anonymous_deprecated)
+	static AST::Ptr <const AST::Root> parse (const std::string& file, std::istream& yyin, bool anonymous_deprecated)
 	{
 		Driver drv (file, yyin, anonymous_deprecated);
 		return drv.parse ();
@@ -70,12 +70,12 @@ private:
 
 	Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated);
 
-	AST::Ptr <AST::Root> parse ()
+	AST::Ptr <const AST::Root> parse ()
 	{
 		if (!parser_.parse ())
 			return finalize ();
 		else
-			return AST::Ptr <AST::Root> ();
+			return AST::Ptr <const AST::Root> ();
 	}
 
 private:
