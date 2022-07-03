@@ -36,8 +36,9 @@ namespace Build {
 Variant EvalEnum::constant (const ScopedName& constant)
 {
 	Variant ret;
-	const NamedItem* item = builder_.lookup (constant);
-	if (item) {
+	const Ptr <NamedItem>* l = builder_.lookup (constant);
+	if (l) {
+		const NamedItem* item = *l;
 		switch (item->kind ()) {
 			case Item::Kind::ENUM_ITEM: {
 				const EnumItem& enum_item = static_cast <const EnumItem&> (*item);

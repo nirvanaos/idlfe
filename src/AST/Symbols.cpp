@@ -35,11 +35,11 @@ std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
 	return Base::emplace (&const_cast <NamedItem&> (item));
 }
 
-const NamedItem* Symbols::find (const Identifier& name) const noexcept
+const Ptr <NamedItem>* Symbols::find (const Identifier& name) const noexcept
 {
 	auto f = Base::find (name);
 	if (f != end ())
-		return *f;
+		return &*f;
 	else
 		return nullptr;
 }

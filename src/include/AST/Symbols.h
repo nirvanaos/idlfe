@@ -39,7 +39,7 @@ class Symbols :
 protected:
 	friend class Build::Builder;
 
-	const NamedItem* find (const Identifier& name) const noexcept;
+	const Ptr <NamedItem>* find (const Identifier& name) const noexcept;
 
 private:
 	// Methods made outline to reduce code size.

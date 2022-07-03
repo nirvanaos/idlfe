@@ -113,8 +113,9 @@ Variant Eval::constant (const ScopedName& constant)
 
 const Constant* Eval::lookup_const (const ScopedName& constant) const
 {
-	const NamedItem* item = builder_.lookup (constant);
-	if (item) {
+	const Ptr <NamedItem>* l = builder_.lookup (constant);
+	if (l) {
+		const NamedItem* item = *l;
 		if (item->kind () != Item::Kind::CONSTANT) {
 			builder_.message (constant, Builder::MessageType::ERROR, constant.stringize () + " is not a constant");
 			see_definition (*item);

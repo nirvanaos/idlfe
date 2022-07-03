@@ -39,11 +39,11 @@ Type::Type (BasicType bt) :
 	type_ (bt)
 {}
 
-Type::Type (const NamedItem* named) :
+Type::Type (const Ptr <NamedItem>* named) :
 	kind_ (named ? Kind::NAMED_TYPE : Kind::VOID),
-	type_ (named ? named : (const NamedItem*)nullptr)
+	type_ (named ? named : nullptr)
 {
-	assert (!named || named->is_type ());
+	assert (!named || (*named)->is_type ());
 }
 
 Type Type::make_sequence (const Type& type, Dim size)

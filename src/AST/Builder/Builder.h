@@ -56,8 +56,7 @@ public:
 		err_out_ (err_out.rdbuf ()),
 		tree_ (Ptr <Root>::make <Root> (file)),
 		anonymous_deprecated_ (anonymous_deprecated),
-		cur_file_ (&tree_->file ()),
-		is_main_file_ (true)
+		cur_file_ (&tree_->file ())
 	{
 		container_stack_.push (tree_);
 		file_stack_.emplace_back (file);
@@ -99,7 +98,7 @@ public:
 	ItemScope* cur_parent () const;
 	Symbols* cur_scope () const;
 
-	const NamedItem* lookup (const ScopedName& scoped_name);
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
 	Type lookup_type (const ScopedName& scoped_name);
 
 	void native (const SimpleDeclarator& name);
@@ -146,7 +145,7 @@ public:
 	void struct_decl (const SimpleDeclarator& name);
 	void struct_begin (const SimpleDeclarator& name);
 
-	const NamedItem* struct_end ()
+	const Ptr <NamedItem>* struct_end ()
 	{
 		return constr_type_end ();
 	}
@@ -165,9 +164,9 @@ public:
 	void union_label (const Variant& label, const Location& loc);
 	void union_default (const Location& loc);
 	void union_element (const Type& type, const Build::Declarator& decl);
-	const NamedItem* union_end ();
+	const Ptr <NamedItem>* union_end ();
 
-	const NamedItem* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
+	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
 	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
 	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
@@ -243,12 +242,12 @@ private:
 	void scope_push (IV_Base* scope);
 	void scope_end ();
 
-	const NamedItem* constr_type_end ();
+	const Ptr <NamedItem>* constr_type_end ();
 
 	Raises lookup_exceptions (const ScopedNames& names);
 
-	std::pair <bool, const NamedItem*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
-	std::pair <bool, const NamedItem*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
+	std::pair <bool, const Ptr <NamedItem>*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
@@ -293,7 +292,6 @@ private:
 
 	std::vector <File> file_stack_;
 	const std::filesystem::path* cur_file_;
-	bool is_main_file_;
 
 	// Current interface data. Also used for value types.
 	struct InterfaceData
@@ -307,8 +305,10 @@ private:
 			all_bases.clear ();
 		}
 
-	} interface_;
+	}
+	interface_;
 
+	// Current operation data
 	struct OperationData
 	{
 		OperationBase* op;
@@ -323,39 +323,49 @@ private:
 			op = nullptr;
 			params.clear ();
 		}
-	} operation_;
+	}
+	operation_;
 
+	// Current attribute data
 	struct AttributeData
 	{
 		Attribute* att;
 
-		AttributeData () :
+		AttributeData () noexcept :
 			att (nullptr)
-		{}
-
-		void clear ()
-		{
-			att = nullptr;
-		}
-	} attribute_;
-
-	struct ConstrType
-	{
-		ItemWithId* obj;
-		Symbols members;
-
-		ConstrType () :
-			obj (nullptr)
 		{}
 
 		void clear () noexcept
 		{
-			obj = nullptr;
+			att = nullptr;
+		}
+	}
+	attribute_;
+
+	// Constructed type: struct, exception, union
+	struct ConstrType
+	{
+		const Ptr <NamedItem>* symbol;
+		Symbols members;
+
+		ConstrType () noexcept :
+			symbol (nullptr)
+		{}
+
+		void clear () noexcept
+		{
+			symbol = nullptr;
 			members.clear ();
 		}
 
-	} constr_type_;
+		NamedItem* obj () noexcept
+		{
+			return symbol ? *symbol : nullptr;
+		}
+	}
+	constr_type_;
 
+	// Current union data
 	struct UnionData
 	{
 		std::unordered_map <Variant::Key, Location> all_labels;
@@ -382,8 +392,10 @@ private:
 				is_default = false;
 				labels.clear ();
 			}
-		} element;
-	} union_;
+		}
+		element;
+	}
+	union_;
 };
 
 }
