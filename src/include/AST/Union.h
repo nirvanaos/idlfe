@@ -28,8 +28,7 @@
 #define NIDL_AST_UNION_H_
 #pragma once
 
-#include "ItemWithId.h"
-#include "Container.h"
+#include "StructBase.h"
 #include "ForwardDeclarable.h"
 #include "UnionElement.h"
 
@@ -77,13 +76,12 @@ public:
 		return default_element_;
 	}
 
-	/// For convenience, the union elements may be accessed as members.
+	/// For convenience, the Union may be casted to const StructBase.
 	/// 
-	/// \returns Union elements as const ConteinerT <Member>.
-	operator const ContainerT <Member>& () const noexcept
+	/// \returns const StructBase&
+	operator const StructBase& () const noexcept
 	{
-		return reinterpret_cast <const ContainerT <Member>&> (
-			static_cast <const ContainerT <UnionElement>&> (*this));
+		return reinterpret_cast <const StructBase&> (*this);
 	}
 
 	void default_label (const Variant& val)
