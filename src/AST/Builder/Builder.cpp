@@ -549,7 +549,7 @@ void Builder::module_begin (const SimpleDeclarator& name)
 			error_name_collision (name, **ins.first);
 			scope_push (nullptr); // Mark new scope as error
 		} else {
-			scope_stack_.push_back (mod);
+			scope_stack_.push_back (&static_cast <Module&> (**ins.first));
 			if (is_main_file ()) {
 				Ptr <ModuleItems> cont = Ptr <ModuleItems>::make <ModuleItems> (std::ref (*mod));
 				container_stack_.top ()->append (*cont);
