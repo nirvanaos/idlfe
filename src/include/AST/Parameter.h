@@ -33,6 +33,9 @@
 namespace AST {
 
 /// The parameter of an operation.
+/// 
+/// \invariant kind () == Item::Kind::PARAMETER
+/// 
 class Parameter :
 	public Member
 {

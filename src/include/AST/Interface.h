@@ -73,6 +73,22 @@ private:
 typedef std::vector <const Interface*> Interfaces;
 
 /// %Interface definition.
+/// 
+/// \invariant kind () == Item::Kind::INTERFACE
+/// 
+/// Child item types:
+/// - Attribute
+/// - Constant
+/// - Enum
+/// - Exception
+/// - Native
+/// - Operation
+/// - StructDecl
+/// - Struct
+/// - TypeDef
+/// - UnionDecl
+/// - Union
+/// 
 class Interface :
 	public IV_Base,
 	public InterfaceKind
@@ -113,6 +129,9 @@ private:
 };
 
 /// %Interface forward declaration.
+/// 
+/// \invariant kind () == Item::Kind::INTERFACE_DECL
+/// 
 class InterfaceDecl :
 	public ItemWithId,
 	public InterfaceKind

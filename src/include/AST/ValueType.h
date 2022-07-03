@@ -39,6 +39,23 @@ class ValueType;
 typedef std::vector <const ValueType*> ValueTypes;
 
 /// Value type definition.
+/// 
+/// \invariant kind () == Item::Kind::VALUE_TYPE
+/// 
+/// Child item types:
+/// - Attribute
+/// - Constant
+/// - Enum
+/// - Exception
+/// - Native
+/// - Operation
+/// - StateMember
+/// - StructDecl
+/// - Struct
+/// - TypeDef
+/// - UnionDecl
+/// - Union
+/// 
 class ValueType :
 	public IV_Base
 {
@@ -107,6 +124,9 @@ private:
 };
 
 /// Value type forward declaration.
+/// 
+/// \invariant kind () == Item::Kind::VALUE_TYPE_DECL
+/// 
 class ValueTypeDecl :
 	public ItemWithId
 {

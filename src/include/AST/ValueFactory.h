@@ -33,6 +33,9 @@
 namespace AST {
 
 /// Value type `factory` operation.
+/// 
+/// \invariant kind () == Item::Kind::VALUE_FACTORY
+/// 
 class ValueFactory :
 	public OperationBase
 {

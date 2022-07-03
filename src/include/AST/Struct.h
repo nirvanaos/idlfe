@@ -36,6 +36,9 @@ namespace AST {
 class Struct;
 
 /// `struct` forward declaration.
+/// 
+/// \invariant kind () == Item::Kind::STRUCT_DECL
+/// 
 class StructDecl :
 	public ItemWithId
 {
@@ -61,6 +64,9 @@ private:
 };
 
 /// `struct` definition.
+/// 
+/// \invariant kind () == Item::Kind::STRUCT
+/// 
 class Struct :
 	public StructBase,
 	public ForwardDeclarable

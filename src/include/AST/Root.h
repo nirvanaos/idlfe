@@ -36,6 +36,25 @@
 namespace AST {
 
 /// \brief Abstract Syntax Tree root.
+/// 
+/// \invariant kind () == Item::Kind::ROOT
+/// 
+/// Child item types:
+/// - Constant
+/// - Enum
+/// - Exception
+/// - Include
+/// - Interface
+/// - ModuleItems
+/// - Native
+/// - StructDecl
+/// - Struct
+/// - TypeDef
+/// - UnionDecl
+/// - Union
+/// - ValueType
+/// - ValueBox
+/// 
 class Root :
 	public Item,
 	public Container

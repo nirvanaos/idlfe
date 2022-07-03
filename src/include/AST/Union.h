@@ -37,6 +37,9 @@ namespace AST {
 class Union;
 
 /// `union` forward declaration.
+/// 
+/// \invariant kind () == Item::Kind::UNION_DECL
+/// 
 class UnionDecl :
 	public ItemWithId
 {
@@ -62,6 +65,9 @@ private:
 };
 
 /// `union` definition.
+/// 
+/// \invariant kind () == Item::Kind::UNION
+/// 
 class Union :
 	public ItemWithId,
 	public ContainerT <UnionElement>,

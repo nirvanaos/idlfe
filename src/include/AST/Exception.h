@@ -33,6 +33,9 @@
 namespace AST {
 
 /// The `exception` declaration.
+/// 
+/// \invariant kind () == Item::Kind::EXCEPTION
+/// 
 class Exception :
 	public StructBase
 {

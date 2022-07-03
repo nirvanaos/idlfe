@@ -1521,21 +1521,23 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the parent definition
 		assert (u->kind () == Item::Kind::UNION);
-		if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
-			Ptr <UnionElement> item;
-			if (decl.array_sizes ().empty ()) {
-				item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
-			} else {
-				Type arr (type, decl.array_sizes ());
-				item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
-			}
-			auto ins = constr_type_.members.insert (*item);
-			if (!ins.second)
-				error_name_collision (decl, **ins.first);
-			else if (is_main_file ()) {
-				u->append (*item);
-				if (union_.element.is_default)
-					u->default_element (*item);
+		if (check_complete_or_ref (type, decl)) {
+			if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
+				Ptr <UnionElement> item;
+				if (decl.array_sizes ().empty ()) {
+					item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
+				} else {
+					Type arr (type, decl.array_sizes ());
+					item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
+				}
+				auto ins = constr_type_.members.insert (*item);
+				if (!ins.second)
+					error_name_collision (decl, **ins.first);
+				else if (is_main_file ()) {
+					u->append (*item);
+					if (union_.element.is_default)
+						u->default_element (*item);
+				}
 			}
 		}
 		union_.element.clear ();
@@ -1737,38 +1739,23 @@ void Builder::check_complete (const Container& items)
 				break;
 			case Item::Kind::OPERATION: {
 				const Operation& op = static_cast <const Operation&> (item);
-				check_complete (op, op); // Return type
+				check_complete_or_ref (op, op); // Return type
 				check_complete (op); // Arguments
 			} break;
 			case Item::Kind::ATTRIBUTE: {
 				const Attribute& att = static_cast <const Attribute&> (item);
-				check_complete (att, att);
+				check_complete_or_ref (att, att);
 			} break;
-			case Item::Kind::EXCEPTION:
-				check_complete (static_cast <const Exception&> (item));
-				break;
 			case Item::Kind::STRUCT_DECL: {
 				const StructDecl& decl = static_cast <const StructDecl&> (item);
 				if (!decl.definition_)
 					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
-			} break;
-			case Item::Kind::STRUCT:
-				check_complete (static_cast <const Struct&> (item));
-				break;
-			case Item::Kind::MEMBER:
-			case Item::Kind::UNION_ELEMENT:
-			case Item::Kind::STATE_MEMBER: {
-				const Member& m = static_cast <const Member&> (item);
-				check_complete (m, m);
 			} break;
 			case Item::Kind::UNION_DECL: {
 				const UnionDecl& decl = static_cast <const UnionDecl&> (item);
 				if (!decl.definition_)
 					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
 			} break;
-			case Item::Kind::UNION:
-				check_complete (static_cast <const Union&> (item));
-				break;
 			case Item::Kind::VALUE_TYPE:
 				check_complete (static_cast <const ValueType&> (item));
 				break;
@@ -1811,21 +1798,7 @@ bool Builder::check_complete (const Type& type, const Location& loc)
 void Builder::check_complete (const OperationBase& op)
 {
 	for (const auto& par : op) {
-		check_complete (*par, *par);
-	}
-}
-
-void Builder::check_complete (const StructBase& s)
-{
-	for (const auto& m : s) {
-		check_complete (*m, *m);
-	}
-}
-
-void Builder::check_complete (const Union& u)
-{
-	for (const auto& m : u) {
-		check_complete (*m, *m);
+		check_complete_or_ref (*par, *par);
 	}
 }
 

@@ -264,8 +264,6 @@ private:
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
 	void check_complete (const OperationBase& op);
-	void check_complete (const StructBase& s);
-	void check_complete (const Union& u);
 
 	static bool is_base_of (const Interface& base, const Interface& derived);
 	static void collect_concrete_interfaces (const ValueType& vt, std::unordered_map <const Interface*, const ValueType*>& interfaces);

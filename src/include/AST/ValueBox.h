@@ -34,6 +34,9 @@
 namespace AST {
 
 /// Boxed value type.
+/// 
+/// \invariant kind () == Item::Kind::VALUE_BOX
+/// 
 class ValueBox :
 	public ItemWithId,
 	public Type
