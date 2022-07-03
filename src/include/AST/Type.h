@@ -188,6 +188,7 @@ private:
 	size_t key_max () const noexcept;
 
 	bool is_complete_or_ref () const noexcept;
+	bool is_complete_or_seq () const noexcept;
 	bool is_complete () const noexcept;
 
 private:

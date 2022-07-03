@@ -256,6 +256,7 @@ private:
 	void add_base_members (const Location& loc, const IV_Bases& bases);
 	bool check_member_name (const NamedItem& item);
 	bool check_complete_or_ref (const Type& type, const Location& loc);
+	bool check_complete_or_seq (const Type& type, const Location& loc);
 
 	typedef std::unordered_map <std::string, const NamedItem&> RepIdMap;
 	void check_rep_ids_unique (RepIdMap& ids, const Symbols& sym);
@@ -264,6 +265,7 @@ private:
 	void check_complete (const Container& items);
 	bool check_complete (const Type& type, const Location& loc);
 	void check_complete (const OperationBase& op);
+	void check_complete (const StructBase& s);
 
 	static bool is_base_of (const Interface& base, const Interface& derived);
 	static void collect_concrete_interfaces (const ValueType& vt, std::unordered_map <const Interface*, const ValueType*>& interfaces);

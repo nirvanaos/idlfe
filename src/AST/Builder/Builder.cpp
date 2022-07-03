@@ -580,7 +580,7 @@ void Builder::native (const SimpleDeclarator& name)
 
 void Builder::type_def (const Type& type, const Declarators& declarators)
 {
-	check_complete_or_ref (type, declarators.front ());
+	check_complete_or_seq (type, declarators.front ());
 	Symbols* scope = cur_scope ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
@@ -778,7 +778,7 @@ void Builder::state_member (bool is_public, const Type& type, const Declarators&
 	if (vt) {
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
 		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
-		if (check_complete_or_ref (type, names.front ())) {
+		if (check_complete_or_seq (type, names.front ())) {
 			for (auto name = names.begin (); name != names.end (); ++name) {
 				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));
 				if (!is_public || check_member_name (*item)) {
@@ -1453,13 +1453,23 @@ bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
 	return true;
 }
 
+bool Builder::check_complete_or_seq (const Type& type, const Location& loc)
+{
+	if (!type.is_complete_or_seq ()) {
+		message (loc, MessageType::ERROR, INCOMPLETE_ERROR);
+		see_declaration_of (type.named_type (), type.named_type ().qualified_name ());
+		return false;
+	}
+	return true;
+}
+
 void Builder::member (const Type& type, const Declarators& names)
 {
 	StructBase* s = static_cast <StructBase*> (constr_type_.obj ());
 	if (s) { // No error in the parent definition
 		assert (s->kind () == Item::Kind::STRUCT || s->kind () == Item::Kind::EXCEPTION);
 
-		if (check_complete_or_ref (type, names.front ())) {
+		if (check_complete_or_seq (type, names.front ())) {
 			for (auto decl = names.begin (); decl != names.end (); ++decl) {
 				Ptr <Member> item;
 				if (decl->array_sizes ().empty ()) {
@@ -1521,7 +1531,7 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the parent definition
 		assert (u->kind () == Item::Kind::UNION);
-		if (check_complete_or_ref (type, decl)) {
+		if (check_complete_or_seq (type, decl)) {
 			if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
 				Ptr <UnionElement> item;
 				if (decl.array_sizes ().empty ()) {
@@ -1536,7 +1546,7 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 				else if (is_main_file ()) {
 					u->append (*item);
 					if (union_.element.is_default)
-						u->default_element (*item);
+						u->default_element_ = item;
 				}
 			}
 		}
@@ -1593,7 +1603,7 @@ const Ptr <NamedItem>* Builder::union_end ()
 							break;
 					}
 				}
-				u->default_label (eval ().cast (dt, move (def), *u));
+				u->default_label_ = eval ().cast (dt, move (def), *u);
 			}
 		}
 		eval_pop ();
@@ -1649,12 +1659,14 @@ void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
 				}
 			}
 		}
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (ref (*this), ref (name), ref (type));
-		auto ins = scope->insert (*item);
-		if (!ins.second)
-			error_name_collision (name, **ins.first);
-		else if (is_main_file ())
-			container_stack_.top ()->append (*item);
+		if (check_complete (type, name)) {
+			Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (ref (*this), ref (name), ref (type));
+			auto ins = scope->insert (*item);
+			if (!ins.second)
+				error_name_collision (name, **ins.first);
+			else if (is_main_file ())
+				container_stack_.top ()->append (*item);
+		}
 	}
 }
 
@@ -1732,7 +1744,7 @@ void Builder::check_complete (const Container& items)
 				break;
 			case Item::Kind::TYPE_DEF: {
 				const TypeDef& t = static_cast <const TypeDef&> (item);
-				check_complete (t, t);
+				check_complete_or_ref (t, t);
 			} break;
 			case Item::Kind::INTERFACE:
 				check_complete (static_cast <const Interface&> (item));
@@ -1751,6 +1763,11 @@ void Builder::check_complete (const Container& items)
 				if (!decl.definition_)
 					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
 			} break;
+			case Item::Kind::STRUCT:
+			case Item::Kind::EXCEPTION:
+			case Item::Kind::UNION:
+				check_complete (static_cast <const StructBase&> (item));
+				break;
 			case Item::Kind::UNION_DECL: {
 				const UnionDecl& decl = static_cast <const UnionDecl&> (item);
 				if (!decl.definition_)
@@ -1799,6 +1816,13 @@ void Builder::check_complete (const OperationBase& op)
 {
 	for (const auto& par : op) {
 		check_complete_or_ref (*par, *par);
+	}
+}
+
+void Builder::check_complete (const StructBase& s)
+{
+	for (const auto& m : s) {
+		check_complete_or_ref (*m, *m);
 	}
 }
 

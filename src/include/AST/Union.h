@@ -105,18 +105,9 @@ public:
 		return reinterpret_cast <const StructBase&> (*this);
 	}
 
-	void default_label (const Variant& val)
-	{
-		default_label_ = val;
-	}
-
-	void default_element (const UnionElement& def) noexcept
-	{
-		default_element_ = &def;
-	}
-
 private:
 	template <class T> friend class Ptr;
+	friend class Build::Builder;
 
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name,
 		const Type& discriminator_type) :
