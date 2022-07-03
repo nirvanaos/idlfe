@@ -1776,6 +1776,10 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::VALUE_TYPE:
 				check_complete (static_cast <const ValueType&> (item));
 				break;
+			case Item::Kind::STATE_MEMBER: {
+				const StateMember& sm = static_cast <const StateMember&> (item);
+				check_complete_or_ref (sm, sm);
+			} break;
 			case Item::Kind::VALUE_BOX: {
 				const ValueBox& vb = static_cast <const ValueBox&> (item);
 				check_complete (vb, vb);
