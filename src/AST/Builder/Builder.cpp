@@ -51,6 +51,8 @@
 
 using namespace std;
 
+#define INCOMPLETE_ERROR "incomplete type is not allowed"
+
 namespace AST {
 namespace Build {
 
@@ -812,7 +814,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::INTERFACE) {
 					if (base->kind () == Item::Kind::INTERFACE_DECL)
-						err = "incomplete type is not allowed";
+						err = INCOMPLETE_ERROR;
 					else
 						err = "invalid base type";
 				} else {
@@ -890,7 +892,7 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::VALUE_TYPE) {
 					if (base->kind () == Item::Kind::VALUE_TYPE_DECL)
-						err = "incomplete type is not allowed";
+						err = INCOMPLETE_ERROR;
 					else
 						err = "invalid base type";
 				} else {
@@ -950,7 +952,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::INTERFACE) {
 					if (base->kind () == Item::Kind::INTERFACE_DECL)
-						err = "incomplete type is not allowed";
+						err = INCOMPLETE_ERROR;
 					else
 						err = "invalid base type";
 				} else {
@@ -1345,16 +1347,16 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
 		auto ins = scope->insert (*def);
 		if (!ins.second) {
-			const NamedItem& item = **ins.first;
-			if (item.kind () != Item::Kind::STRUCT_DECL) {
-				error_name_collision (name, item);
+			StructDecl& decl = static_cast <StructDecl&> (**ins.first);
+			if (decl.kind () != Item::Kind::STRUCT_DECL) {
+				error_name_collision (name, decl);
 				return;
 			}
 
-			const StructDecl& decl = static_cast <const StructDecl&> (item);
 			decl.check_prefix (*this, name);
 			def->set_id (decl);
 			def->set_has_forward_dcl ();
+			decl.definition_ = def;
 			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
 
@@ -1396,16 +1398,16 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 		Ptr <Union> def = Ptr <Union>::make <Union> (ref (*this), ref (name), ref (switch_type));
 		auto ins = scope->insert (*def);
 		if (!ins.second) {
-			const NamedItem& item = **ins.first;
-			if (item.kind () != Item::Kind::UNION_DECL) {
-				error_name_collision (name, item);
+			UnionDecl& decl = static_cast <UnionDecl&> (**ins.first);
+			if (decl.kind () != Item::Kind::UNION_DECL) {
+				error_name_collision (name, decl);
 				return;
 			}
 
-			const UnionDecl& decl = static_cast <const UnionDecl&> (item);
 			decl.check_prefix (*this, name);
 			def->set_id (decl);
 			def->set_has_forward_dcl ();
+			decl.definition_ = def;
 			const_cast <Ptr <NamedItem>&> (*ins.first) = def;
 		}
 
@@ -1444,7 +1446,7 @@ void Builder::exception_begin (const SimpleDeclarator& name)
 bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
 {
 	if (!type.is_complete_or_ref ()) {
-		message (loc, MessageType::ERROR, "incomplete type is not allowed");
+		message (loc, MessageType::ERROR, INCOMPLETE_ERROR);
 		see_declaration_of (type.named_type (), type.named_type ().qualified_name ());
 		return false;
 	}
@@ -1745,6 +1747,11 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::EXCEPTION:
 				check_complete (static_cast <const Exception&> (item));
 				break;
+			case Item::Kind::STRUCT_DECL: {
+				const StructDecl& decl = static_cast <const StructDecl&> (item);
+				if (!decl.definition_)
+					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
+			} break;
 			case Item::Kind::STRUCT:
 				check_complete (static_cast <const Struct&> (item));
 				break;
@@ -1753,6 +1760,11 @@ void Builder::check_complete (const Container& items)
 			case Item::Kind::STATE_MEMBER: {
 				const Member& m = static_cast <const Member&> (item);
 				check_complete (m, m);
+			} break;
+			case Item::Kind::UNION_DECL: {
+				const UnionDecl& decl = static_cast <const UnionDecl&> (item);
+				if (!decl.definition_)
+					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
 			} break;
 			case Item::Kind::UNION:
 				check_complete (static_cast <const Union&> (item));
@@ -1774,7 +1786,7 @@ void Builder::check_complete (const Container& items)
 bool Builder::check_complete (const Type& type, const Location& loc)
 {
 	if (!type.is_complete ()) {
-		message (loc, MessageType::ERROR, "incomplete type is not allowed");
+		message (loc, MessageType::ERROR, INCOMPLETE_ERROR);
 		const NamedItem* decl;
 		switch (type.tkind ()) {
 			case Type::Kind::NAMED_TYPE:

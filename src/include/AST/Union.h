@@ -34,16 +34,31 @@
 
 namespace AST {
 
+class Union;
+
 /// `union` forward declaration.
 class UnionDecl :
 	public ItemWithId
 {
+public:
+	/// \returns `union` definition reference.
+	const Union& definition () const
+	{
+		assert (definition_);
+		return *definition_;
+	}
+
 private:
 	template <class T> friend class Ptr;
+	friend class Build::Builder;
 
 	UnionDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemWithId (Item::Kind::UNION_DECL, builder, name)
+		ItemWithId (Item::Kind::UNION_DECL, builder, name),
+		definition_ (nullptr)
 	{}
+
+private:
+	const Union* definition_;
 };
 
 /// `union` definition.
