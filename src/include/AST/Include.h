@@ -35,6 +35,9 @@
 namespace AST {
 
 /// `#include` file.
+/// 
+/// \invariant kind () == Item::Kind::INCLUDE
+/// 
 class Include :
 	public Item,
 	public Location

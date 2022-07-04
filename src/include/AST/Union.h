@@ -34,19 +34,40 @@
 
 namespace AST {
 
+class Union;
+
 /// `union` forward declaration.
+/// 
+/// \invariant kind () == Item::Kind::UNION_DECL
+/// 
 class UnionDecl :
 	public ItemWithId
 {
+public:
+	/// \returns `union` definition reference.
+	const Union& definition () const
+	{
+		assert (definition_);
+		return *definition_;
+	}
+
 private:
 	template <class T> friend class Ptr;
+	friend class Build::Builder;
 
 	UnionDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemWithId (Item::Kind::UNION_DECL, builder, name)
+		ItemWithId (Item::Kind::UNION_DECL, builder, name),
+		definition_ (nullptr)
 	{}
+
+private:
+	const Union* definition_;
 };
 
 /// `union` definition.
+/// 
+/// \invariant kind () == Item::Kind::UNION
+/// 
 class Union :
 	public ItemWithId,
 	public ContainerT <UnionElement>,
@@ -84,18 +105,9 @@ public:
 		return reinterpret_cast <const StructBase&> (*this);
 	}
 
-	void default_label (const Variant& val)
-	{
-		default_label_ = val;
-	}
-
-	void default_element (const UnionElement& def) noexcept
-	{
-		default_element_ = &def;
-	}
-
 private:
 	template <class T> friend class Ptr;
+	friend class Build::Builder;
 
 	Union (const Build::Builder& builder, const Build::SimpleDeclarator& name,
 		const Type& discriminator_type) :

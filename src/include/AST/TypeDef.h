@@ -34,6 +34,9 @@
 namespace AST {
 
 /// The named type.
+/// 
+/// \invariant kind () == Item::Kind::TYPE_DEF
+/// 
 class TypeDef :
 	public ItemWithId,
 	public Type

@@ -36,6 +36,9 @@ namespace AST {
 class EnumItem;
 
 /// The enumerator.
+/// 
+/// \invariant kind () == Item::Kind::ENUM_ITEM
+/// 
 class EnumItem :
 	public NamedItem
 {
@@ -59,6 +62,9 @@ private:
 };
 
 /// The `enum` declaration.
+/// 
+/// \invariant kind () == Item::Kind::ENUM
+/// 
 class Enum :
 	public ItemWithId,
 	public ContainerT <EnumItem>

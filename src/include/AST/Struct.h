@@ -33,19 +33,40 @@
 
 namespace AST {
 
+class Struct;
+
 /// `struct` forward declaration.
+/// 
+/// \invariant kind () == Item::Kind::STRUCT_DECL
+/// 
 class StructDecl :
 	public ItemWithId
 {
+public:
+	/// \returns `struct` definition reference.
+	const Struct& definition () const
+	{
+		assert (definition_);
+		return *definition_;
+	}
+
 private:
 	template <class T> friend class Ptr;
+	friend class Build::Builder;
 
 	StructDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
-		ItemWithId (Item::Kind::STRUCT_DECL, builder, name)
+		ItemWithId (Item::Kind::STRUCT_DECL, builder, name),
+		definition_ (nullptr)
 	{}
+
+private:
+	const Struct* definition_;
 };
 
 /// `struct` definition.
+/// 
+/// \invariant kind () == Item::Kind::STRUCT
+/// 
 class Struct :
 	public StructBase,
 	public ForwardDeclarable

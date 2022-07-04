@@ -33,6 +33,9 @@
 namespace AST {
 
 /// State member.
+/// 
+/// \invariant kind () == Item::Kind::STATE_MEMBER
+/// 
 class StateMember : public Member
 {
 public:

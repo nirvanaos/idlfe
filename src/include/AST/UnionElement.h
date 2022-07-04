@@ -35,6 +35,9 @@
 namespace AST {
 
 /// `union` element definition.
+/// 
+/// \invariant kind () == Item::Kind::UNION_ELEMENT
+/// 
 class UnionElement :
 	public Member
 {

@@ -34,6 +34,9 @@
 namespace AST {
 
 /// %Module as a scope.
+/// 
+/// \invariant kind () == Item::Kind::MODULE
+/// 
 class Module :
 	public ItemScope
 {
@@ -46,6 +49,24 @@ private:
 };
 
 /// The seqence of items in a module.
+/// 
+/// \invariant kind () == Item::Kind::MODULE_ITEMS
+/// 
+/// Child item types:
+/// - Constant
+/// - Enum
+/// - Exception
+/// - Interface
+/// - ModuleItems
+/// - Native
+/// - StructDecl
+/// - Struct
+/// - TypeDef
+/// - UnionDecl
+/// - Union
+/// - ValueType
+/// - ValueBox
+/// 
 class ModuleItems :
 	public Item,
 	public Container

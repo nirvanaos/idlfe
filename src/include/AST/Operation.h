@@ -33,6 +33,9 @@
 namespace AST {
 
 /// The operation.
+/// 
+/// \invariant kind () == Item::Kind::OPERATION
+/// 
 class Operation :
 	public OperationBase,
 	public Type

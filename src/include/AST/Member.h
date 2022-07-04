@@ -34,6 +34,9 @@
 namespace AST {
 
 /// The item with name and type.
+/// 
+/// \invariant kind () == Item::Kind::MEMBER
+/// 
 class Member :
 	public NamedItem,
 	public Type

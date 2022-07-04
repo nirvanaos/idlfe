@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 - 2022-07-04
+### Changed
+ - StructDecl and UnionDecl now have attribute definition() to obtain definition for declaration.
+### Fixed
+ - Checking for type completeness was fixed.
+
 ## 2.0.0 - 2022-07-03
 Library was completely refactored.
 

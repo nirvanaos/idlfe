@@ -35,6 +35,9 @@
 namespace AST {
 
 /// `const` definition.
+/// 
+/// \invariant kind () == Item::Kind::CONSTANT
+/// 
 class Constant :
 	public NamedItem,
 	public Type,
