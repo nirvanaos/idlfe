@@ -1443,6 +1443,31 @@ void Builder::exception_begin (const SimpleDeclarator& name)
 	}
 }
 
+bool Builder::check_complete (const Type& type, const Location& loc)
+{
+	if (!type.is_complete ()) {
+		message (loc, MessageType::ERROR, INCOMPLETE_ERROR);
+		const NamedItem* decl;
+		switch (type.tkind ()) {
+			case Type::Kind::NAMED_TYPE:
+				decl = &type.named_type ();
+				break;
+			case Type::Kind::SEQUENCE:
+				decl = &type.sequence ().named_type ();
+				break;
+			case Type::Kind::ARRAY:
+				decl = &type.array ().named_type ();
+				break;
+			default:
+				assert (false);
+				return false;
+		}
+		see_declaration_of (*decl, decl->qualified_name ());
+		return false;
+	}
+	return true;
+}
+
 bool Builder::check_complete_or_ref (const Type& type, const Location& loc)
 {
 	if (!type.is_complete_or_ref ()) {
@@ -1659,7 +1684,7 @@ void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
 				}
 			}
 		}
-		if (check_complete (type, name)) {
+		if (check_complete_or_seq (type, name)) {
 			Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (ref (*this), ref (name), ref (type));
 			auto ins = scope->insert (*item);
 			if (!ins.second)
@@ -1734,99 +1759,16 @@ Ptr <const Root> Builder::finalize ()
 	return std::move (tree_);
 }
 
-void Builder::check_complete (const Container& items)
+void Builder::check_complete (const Symbols& symbols)
 {
-	for (auto it = items.begin (); it != items.end (); ++it) {
-		const Item& item = **it;
-		switch (item.kind ()) {
-			case Item::Kind::MODULE_ITEMS:
-				check_complete (static_cast <const ModuleItems&> (item));
-				break;
-			case Item::Kind::TYPE_DEF: {
-				const TypeDef& t = static_cast <const TypeDef&> (item);
-				check_complete_or_ref (t, t);
-			} break;
-			case Item::Kind::INTERFACE:
-				check_complete (static_cast <const Interface&> (item));
-				break;
-			case Item::Kind::OPERATION: {
-				const Operation& op = static_cast <const Operation&> (item);
-				check_complete_or_ref (op, op); // Return type
-				check_complete (op); // Arguments
-			} break;
-			case Item::Kind::ATTRIBUTE: {
-				const Attribute& att = static_cast <const Attribute&> (item);
-				check_complete_or_ref (att, att);
-			} break;
-			case Item::Kind::STRUCT_DECL: {
-				const StructDecl& decl = static_cast <const StructDecl&> (item);
-				if (!decl.definition_)
-					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
-			} break;
-			case Item::Kind::STRUCT:
-			case Item::Kind::EXCEPTION:
-			case Item::Kind::UNION:
-				check_complete (static_cast <const StructBase&> (item));
-				break;
-			case Item::Kind::UNION_DECL: {
-				const UnionDecl& decl = static_cast <const UnionDecl&> (item);
-				if (!decl.definition_)
-					message (decl, MessageType::ERROR, INCOMPLETE_ERROR);
-			} break;
-			case Item::Kind::VALUE_TYPE:
-				check_complete (static_cast <const ValueType&> (item));
-				break;
-			case Item::Kind::STATE_MEMBER: {
-				const StateMember& sm = static_cast <const StateMember&> (item);
-				check_complete_or_ref (sm, sm);
-			} break;
-			case Item::Kind::VALUE_BOX: {
-				const ValueBox& vb = static_cast <const ValueBox&> (item);
-				check_complete (vb, vb);
-			} break;
-			case Item::Kind::VALUE_FACTORY:
-				check_complete (static_cast <const OperationBase&> (item));
-				break;
+	for (const auto& p : symbols) {
+		if (p->kind () == Item::Kind::STRUCT_DECL || p->kind () == Item::Kind::UNION_DECL)
+			message (*p, MessageType::ERROR, INCOMPLETE_ERROR);
+		else {
+			const ItemScope* scope = ItemScope::cast (p);
+			if (scope)
+				check_complete (*scope);
 		}
-	}
-}
-
-bool Builder::check_complete (const Type& type, const Location& loc)
-{
-	if (!type.is_complete ()) {
-		message (loc, MessageType::ERROR, INCOMPLETE_ERROR);
-		const NamedItem* decl;
-		switch (type.tkind ()) {
-			case Type::Kind::NAMED_TYPE:
-				decl = &type.named_type ();
-				break;
-			case Type::Kind::SEQUENCE:
-				decl = &type.sequence ().named_type ();
-				break;
-			case Type::Kind::ARRAY:
-				decl = &type.array ().named_type ();
-				break;
-			default:
-				assert (false);
-				return false;
-		}
-		see_declaration_of (*decl,  decl->qualified_name ());
-		return false;
-	}
-	return true;
-}
-
-void Builder::check_complete (const OperationBase& op)
-{
-	for (const auto& par : op) {
-		check_complete_or_ref (*par, *par);
-	}
-}
-
-void Builder::check_complete (const StructBase& s)
-{
-	for (const auto& m : s) {
-		check_complete_or_ref (*m, *m);
 	}
 }
 
