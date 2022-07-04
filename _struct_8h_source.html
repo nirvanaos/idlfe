@@ -103,42 +103,58 @@ $(function() {
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_struct_decl.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_struct_decl.html">StructDecl</a> :</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="class_a_s_t_1_1_struct_decl.html">StructDecl</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a90b3251f187cb187c91a684c700675f4">Item::Kind::STRUCT_DECL</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>)</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_struct.html">   49</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_struct.html">Struct</a> :</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_struct_base.html">StructBase</a>,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">class </span>Struct;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_struct_decl.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_struct_decl.html">StructDecl</a> :</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_struct_decl.html#a88e2cbeb7d726f49d3ab7efe8d6b0a0c">   47</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_struct.html">Struct</a>&amp; <a class="code" href="class_a_s_t_1_1_struct_decl.html#a88e2cbeb7d726f49d3ab7efe8d6b0a0c">definition</a> ()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        assert (definition_);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> *definition_;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="class_a_s_t_1_1_struct.html">Struct</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="class_a_s_t_1_1_struct_base.html">StructBase</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54ab8223be2455e0ea5a0e63e8f018d6fc3">Item::Kind::STRUCT</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>)</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="class_a_s_t_1_1_struct_decl.html">StructDecl</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a> (<a class="code" href="class_a_s_t_1_1_item.html">Item</a>::<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">Kind</a>::STRUCT_DECL, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        definition_ (nullptr)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {}</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">const</span> Struct* definition_;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_struct.html">   70</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_struct.html">Struct</a> :</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_struct_base.html">StructBase</a>,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_forward_declarable.html">ForwardDeclarable</a></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;{</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="class_a_s_t_1_1_struct.html">Struct</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <a class="code" href="class_a_s_t_1_1_struct_base.html">StructBase</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54ab8223be2455e0ea5a0e63e8f018d6fc3">Item::Kind::STRUCT</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>)</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    {}</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;};</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54ab8223be2455e0ea5a0e63e8f018d6fc3"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54ab8223be2455e0ea5a0e63e8f018d6fc3">AST::Item::Kind::STRUCT</a></div><div class="ttdeci">@ STRUCT</div><div class="ttdoc">class Struct</div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_struct_decl_html_a88e2cbeb7d726f49d3ab7efe8d6b0a0c"><div class="ttname"><a href="class_a_s_t_1_1_struct_decl.html#a88e2cbeb7d726f49d3ab7efe8d6b0a0c">AST::StructDecl::definition</a></div><div class="ttdeci">const Struct &amp; definition() const</div><div class="ttdef"><b>Definition:</b> <a href="_struct_8h_source.html#l00047">Struct.h:47</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54a90b3251f187cb187c91a684c700675f4"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a90b3251f187cb187c91a684c700675f4">AST::Item::Kind::STRUCT_DECL</a></div><div class="ttdeci">@ STRUCT_DECL</div><div class="ttdoc">class StructDecl</div></div>
 <div class="ttc" id="a_struct_base_8h_html"><div class="ttname"><a href="_struct_base_8h.html">StructBase.h</a></div></div>
 <div class="ttc" id="a_forward_declarable_8h_html"><div class="ttname"><a href="_forward_declarable_8h.html">ForwardDeclarable.h</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_struct_decl_html"><div class="ttname"><a href="class_a_s_t_1_1_struct_decl.html">AST::StructDecl</a></div><div class="ttdoc">struct forward declaration.</div><div class="ttdef"><b>Definition:</b> <a href="_struct_8h_source.html#l00037">Struct.h:39</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_struct_decl_html"><div class="ttname"><a href="class_a_s_t_1_1_struct_decl.html">AST::StructDecl</a></div><div class="ttdef"><b>Definition:</b> <a href="_struct_8h_source.html#l00042">Struct.h:44</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00044">Item.h:45</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_with_id_html"><div class="ttname"><a href="class_a_s_t_1_1_item_with_id.html">AST::ItemWithId</a></div><div class="ttdoc">Items which have repository identifiers derive from this class.</div><div class="ttdef"><b>Definition:</b> <a href="_item_with_id_8h_source.html#l00041">ItemWithId.h:42</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_struct_html"><div class="ttname"><a href="class_a_s_t_1_1_struct.html">AST::Struct</a></div><div class="ttdoc">struct definition.</div><div class="ttdef"><b>Definition:</b> <a href="_struct_8h_source.html#l00049">Struct.h:52</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_struct_html"><div class="ttname"><a href="class_a_s_t_1_1_struct.html">AST::Struct</a></div><div class="ttdef"><b>Definition:</b> <a href="_struct_8h_source.html#l00070">Struct.h:73</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_item_html"><div class="ttname"><a href="class_a_s_t_1_1_item.html">AST::Item</a></div><div class="ttdoc">AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00040">Item.h:41</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_struct_base_html"><div class="ttname"><a href="class_a_s_t_1_1_struct_base.html">AST::StructBase</a></div><div class="ttdoc">The common base for Struct and Exception.</div><div class="ttdef"><b>Definition:</b> <a href="_struct_base_8h_source.html#l00038">StructBase.h:41</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_ptr_html"><div class="ttname"><a href="class_a_s_t_1_1_ptr.html">AST::Ptr</a></div><div class="ttdoc">AST item smart pointer.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00133">Item.h:134</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_forward_declarable_html"><div class="ttname"><a href="class_a_s_t_1_1_forward_declarable.html">AST::ForwardDeclarable</a></div><div class="ttdoc">The item that can be forward declared.</div><div class="ttdef"><b>Definition:</b> <a href="_forward_declarable_8h_source.html#l00038">ForwardDeclarable.h:39</a></div></div>

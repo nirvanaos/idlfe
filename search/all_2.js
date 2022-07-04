@@ -16,6 +16,6 @@ var searchData=
   ['containert_3c_20member_20_3e_47',['ContainerT&lt; Member &gt;',['../class_a_s_t_1_1_container_t.html',1,'AST']]],
   ['containert_3c_20parameter_20_3e_48',['ContainerT&lt; Parameter &gt;',['../class_a_s_t_1_1_container_t.html',1,'AST']]],
   ['containert_3c_20unionelement_20_3e_49',['ContainerT&lt; UnionElement &gt;',['../class_a_s_t_1_1_container_t.html',1,'AST']]],
-  ['context_50',['context',['../class_a_s_t_1_1_operation.html#a740e8dcaa475706a298da18ed859b4d4',1,'AST::Operation::context() const noexcept'],['../class_a_s_t_1_1_operation.html#ab9fb421532b5051f176a406187bb9063',1,'AST::Operation::Context()']]],
+  ['context_50',['Context',['../class_a_s_t_1_1_operation.html#ab9fb421532b5051f176a406187bb9063',1,'AST::Operation::Context()'],['../class_a_s_t_1_1_operation.html#a740e8dcaa475706a298da18ed859b4d4',1,'AST::Operation::context() const noexcept']]],
   ['custom_51',['CUSTOM',['../class_a_s_t_1_1_value_type.html#ac2742b2ddf19921ffc9bb992ef5e2fdaa72baef04098f035e8a320b03ad197818',1,'AST::ValueType']]]
 ];

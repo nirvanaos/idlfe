@@ -103,27 +103,27 @@ $(function() {
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_a_s_t.html">AST</a> {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_box.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_value_box.html">ValueBox</a> :</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a>,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_box.html">ValueBox</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp; type) :</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a1f0030799b5ace16ca95ad961005ba9f">Item::Kind::VALUE_BOX</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="class_a_s_t_1_1_type.html#a45fb16e6b46941e13c6e11b834e8bdd9">Type</a> (type)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {}</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_value_box.html">   40</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_value_box.html">ValueBox</a> :</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a>,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_a_s_t_1_1_ptr.html">Ptr</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="class_a_s_t_1_1_value_box.html">ValueBox</a> (<span class="keyword">const</span> Build::Builder&amp; builder, <span class="keyword">const</span> Build::SimpleDeclarator&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>, <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp; type) :</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="class_a_s_t_1_1_item_with_id.html">ItemWithId</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a1f0030799b5ace16ca95ad961005ba9f">Item::Kind::VALUE_BOX</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="class_a_s_t_1_1_type.html#a45fb16e6b46941e13c6e11b834e8bdd9">Type</a> (type)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_type_html"><div class="ttname"><a href="class_a_s_t_1_1_type.html">AST::Type</a></div><div class="ttdoc">An IDL type.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00046">Type.h:47</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54a1f0030799b5ace16ca95ad961005ba9f"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a1f0030799b5ace16ca95ad961005ba9f">AST::Item::Kind::VALUE_BOX</a></div><div class="ttdeci">@ VALUE_BOX</div><div class="ttdoc">class ValueBox</div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_value_box_html"><div class="ttname"><a href="class_a_s_t_1_1_value_box.html">AST::ValueBox</a></div><div class="ttdoc">Boxed value type.</div><div class="ttdef"><b>Definition:</b> <a href="_value_box_8h_source.html#l00037">ValueBox.h:40</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_value_box_html"><div class="ttname"><a href="class_a_s_t_1_1_value_box.html">AST::ValueBox</a></div><div class="ttdef"><b>Definition:</b> <a href="_value_box_8h_source.html#l00040">ValueBox.h:43</a></div></div>
 <div class="ttc" id="a_type_8h_html"><div class="ttname"><a href="_type_8h.html">Type.h</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_with_id_html"><div class="ttname"><a href="class_a_s_t_1_1_item_with_id.html">AST::ItemWithId</a></div><div class="ttdoc">Items which have repository identifiers derive from this class.</div><div class="ttdef"><b>Definition:</b> <a href="_item_with_id_8h_source.html#l00041">ItemWithId.h:42</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_type_html_a45fb16e6b46941e13c6e11b834e8bdd9"><div class="ttname"><a href="class_a_s_t_1_1_type.html#a45fb16e6b46941e13c6e11b834e8bdd9">AST::Type::Type</a></div><div class="ttdeci">Type()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00143">Type.h:143</a></div></div>
