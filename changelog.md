@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1 - 2022-07-06
+### Changed
+ - `Fixed::to_BCD()` Redundant out parameter `scale` was removed.
+### Fixed
+ - Documentation.
+
 ## 2.1.0 - 2022-07-04
 ### Changed
  - StructDecl and UnionDecl now have attribute definition() to obtain definition for declaration.

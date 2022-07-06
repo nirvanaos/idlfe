@@ -1,6 +1,6 @@
 # IDL compiler front-end library
 
-This is a part of the Nirvana project.
+This is a part of the [Nirvana](https://github.com/nirvanaos/home) project.
 
 ## Purpose
 

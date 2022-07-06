@@ -39,11 +39,13 @@ string Fixed::to_string () const
 	return buf;
 }
 
-vector <uint8_t> Fixed::to_BCD (int32_t& scale) const
+vector <uint8_t> Fixed::to_BCD () const
 {
 	size_t len = (digits_ + 2) / 2;
 	vector <uint8_t> bcd (len);
-	decPackedFromNumber (bcd.data (), (int32_t)bcd.size (), &scale, (const decNumber*)this);
+	int32_t s;
+	decPackedFromNumber (bcd.data (), (int32_t)bcd.size (), &s, (const decNumber*)this);
+	assert (s == scale ());
 	return bcd;
 }
 
