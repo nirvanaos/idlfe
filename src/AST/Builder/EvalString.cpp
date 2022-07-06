@@ -115,6 +115,7 @@ Variant EvalWString::literal_wstring (const string& s, const Location& loc, cons
 			wchar_t c = unescape_wchar (p);
 			if (!c)
 				throw_char0 ();
+			v += c;
 		}
 		if (append)
 			v += append->as_wstring ();
