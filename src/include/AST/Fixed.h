@@ -56,9 +56,8 @@ public:
 	/// Converts fixed to binary-coded decimal.
 	/// Returned array is CORBA fixed point CDR compatible.
 	/// 
-	/// \param[out] scale The scale result.
 	/// \returns The BCD bytes.
-	std::vector <uint8_t> to_BCD (int32_t& scale) const;
+	std::vector <uint8_t> to_BCD () const;
 
 	Fixed () noexcept
 	{}

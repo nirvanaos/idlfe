@@ -61,7 +61,7 @@ public:
 
 		STRING, ///< Variant::as_string ()
 		WSTRING, ///< Variant::as_wstring ()
-		FIXED, ///< Variant::fixed_digits (); Variant::fixed_scale ();
+		FIXED, ///< Variant::as_Fixed ();
 
 		ENUM_ITEM, ///< Variant::as_enum_item ()
 		CONSTANT ///< Variant::as_constant ()
@@ -227,6 +227,8 @@ public:
 
 	/// Converts value to std::string.
 	/// This method escapes character and string values accordingly to C constant escape rules.
+	/// This method does not add 'L' prefix to wide strings and characters and does not add 'D'
+	/// suffix to fixed numbers.
 	std::string to_string () const;
 
 	/// \returns `true` if Variant is empty.
