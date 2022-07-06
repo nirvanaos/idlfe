@@ -59,9 +59,9 @@ Type::Type (const Type& type, const FixedArraySizes& sizes) :
 Type::Type (unsigned digits, unsigned scale) :
 	kind_ (Kind::FIXED)
 {
-	assert (digits <= 62 && scale <= digits);
-	type_.fixed.digits = (uint8_t)digits;
-	type_.fixed.scale = (uint8_t)scale;
+	assert (digits <= 31 && scale <= digits);
+	type_.fixed.digits = (uint16_t)digits;
+	type_.fixed.scale = (uint16_t)scale;
 }
 
 Type::Type (Type&& src) noexcept :

@@ -115,16 +115,18 @@ public:
 	// Fixed
 
 	/// \returns Number of digits for fixed type.
+	/// If type is a part of constant definition, returns 0.
 	/// \invariant `tkind () == Kind::FIXED`
-	uint8_t fixed_digits () const noexcept
+	uint16_t fixed_digits () const noexcept
 	{
 		assert (tkind () == Kind::FIXED);
 		return type_.fixed.digits;
 	}
 
 	/// \returns Scale for fixed type.
+	/// If type is a part of constant definition, returns 0.
 	/// \invariant `tkind () == Kind::FIXED`
-	uint8_t fixed_scale () const noexcept
+	uint16_t fixed_scale () const noexcept
 	{
 		assert (tkind () == Kind::FIXED);
 		return type_.fixed.scale;
@@ -225,9 +227,10 @@ private:
 		const Array* array;                // `Kind::ARRAY`
 		struct
 		{
-			uint8_t digits;
-			uint8_t scale;
-		} fixed;                           // `Kind::FIXED`
+			uint16_t digits;
+			uint16_t scale;
+		}
+		fixed;                           // `Kind::FIXED`
 
 		U ()
 		{}
@@ -253,7 +256,8 @@ private:
 		{}
 
 		~U () {}
-	} type_;
+	}
+	type_;
 };
 
 }
