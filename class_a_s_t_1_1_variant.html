@@ -247,7 +247,7 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ac7e32fb73d653f5a09822bfbda758ee2ad002390d7727d576cef45267f1678ea3"></a>WSTRING&#160;</td><td class="fielddoc"><p><a class="el" href="class_a_s_t_1_1_variant.html#a32dcc0bddb0b99a99a1f6a9f34b00df6">Variant::as_wstring</a> () </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7"></a>FIXED&#160;</td><td class="fielddoc"><p>Variant::fixed_digits (); Variant::fixed_scale ();. </p>
+<tr><td class="fieldname"><a id="ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7"></a>FIXED&#160;</td><td class="fielddoc"><p><a class="el" href="class_a_s_t_1_1_variant.html#a4d8c8cc99483764a1d27a77b075afb9a">Variant::as_Fixed</a> ();. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ac7e32fb73d653f5a09822bfbda758ee2a876e73be7e0b9aac31807c438ccce89b"></a>ENUM_ITEM&#160;</td><td class="fielddoc"><p><a class="el" href="class_a_s_t_1_1_variant.html#afdf63c9de33301d7954905471fb68af7">Variant::as_enum_item</a> () </p>
 </td></tr>
@@ -284,7 +284,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Default constructor. Creates empty Valriant. </p>
 
-<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00247">247</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00249">249</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
 </div>
 </div>
@@ -833,7 +833,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_a_s_t_1_1_fixed.html" title="Fixed point constant.">Fixed</a> reference. </dd></dl>
-<dl class="section invariant"><dt>Invariant</dt><dd>vtype () == <a class="el" href="class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7" title="Variant::fixed_digits (); Variant::fixed_scale ();.">VT::FIXED</a> </dd></dl>
+<dl class="section invariant"><dt>Invariant</dt><dd>vtype () == <a class="el" href="class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7" title="Variant::as_Fixed ();.">VT::FIXED</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00222">222</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
@@ -853,7 +853,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Converts value to std::string. This method escapes character and string values accordingly to C constant escape rules. </p>
+<p>Converts value to std::string. This method escapes character and string values accordingly to C constant escape rules. This method does not add 'L' prefix to wide strings and characters and does not add 'D' suffix to fixed numbers. </p>
 
 </div>
 </div>
@@ -881,7 +881,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if <a class="el" href="class_a_s_t_1_1_variant.html" title="Stores the constant value.">Variant</a> is empty. In the valid <a class="el" href="namespace_a_s_t.html" title="Abstract Syntax Tree namespace.">AST</a>, <a class="el" href="class_a_s_t_1_1_variant.html" title="Stores the constant value.">Variant</a> never be empty. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00234">234</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_variant_8h_source.html#l00236">236</a> of file <a class="el" href="_variant_8h_source.html">Variant.h</a>.</p>
 
 </div>
 </div>
