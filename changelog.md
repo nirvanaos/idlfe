@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.3 - 2022-07-06
+### Fixed
+ - Yet another bug in string literals.
+
 ## 2.1.2 - 2022-07-06
 ### Fixed
  - Bug in string literals.
