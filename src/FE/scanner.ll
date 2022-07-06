@@ -46,9 +46,9 @@ Esc_Sequence3           "\\"(x|X){Hex_Digit}{1,2}
 Esc_Sequence            ({Esc_Sequence1}|{Esc_Sequence2}|{Esc_Sequence3})
 Char                    ([^\n\t\"\'\\]|{Esc_Sequence})
 Char_Literal            "'"({Char}|\")"'"
-WChar_Literal           "L"Char_Literal
+WChar_Literal           "L"{Char_Literal}
 String_Literal          \"({Char}|"'")*\"
-WString_Literal         "L"String_Literal
+WString_Literal         "L"{String_Literal}
 Float_Literal1          {Digits}"."{Digits}?(e|E)("+"|"-")?{Digits}  
 Float_Literal2          {Digits}(e|E)("+"|"-")?{Digits}
 Float_Literal3          {Digits}"."{Digits}

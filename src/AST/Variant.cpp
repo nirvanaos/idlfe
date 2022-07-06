@@ -241,7 +241,8 @@ string Variant::to_string () const
 		case VT::STRING:
 			s.reserve (val_.u.s.size () + 2);
 			s += '\"';
-			s += val_.u.s;
+			for (auto pc = val_.u.s.begin (); pc != val_.u.s.end (); ++pc)
+				append (s, *pc);
 			s += '\"';
 			break;
 		case VT::WSTRING:
