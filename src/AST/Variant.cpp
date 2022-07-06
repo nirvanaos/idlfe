@@ -34,18 +34,6 @@ using namespace std;
 
 namespace AST {
 
-Variant::~Variant ()
-{
-	clear ();
-}
-
-Variant::Variant (Variant&& src) noexcept :
-	type_ (src.type_)
-{
-	val_.plain = src.val_.plain;
-	src.reset ();
-}
-
 Variant& Variant::operator = (const Variant& src)
 {
 	clear ();
@@ -56,9 +44,7 @@ Variant& Variant::operator = (const Variant& src)
 Variant& Variant::operator = (Variant&& src) noexcept
 {
 	clear ();
-	type_ = src.type_;
-	val_.plain = src.val_.plain;
-	src.reset ();
+	move (std::move (src));
 	return *this;
 }
 
@@ -72,7 +58,7 @@ void Variant::clear () noexcept
 			val_.u.ws.~basic_string ();
 			break;
 	}
-	reset ();
+	type_ = VT::EMPTY;
 }
 
 void Variant::copy (const Variant& src)
@@ -88,6 +74,22 @@ void Variant::copy (const Variant& src)
 			val_.plain = src.val_.plain;
 	}
 	type_ = src.type_;
+}
+
+void Variant::move (Variant&& src)
+{
+	switch (src.type_) {
+		case VT::STRING:
+			new (&val_.u.s) string (std::move (src.val_.u.s));
+			break;
+		case VT::WSTRING:
+			new (&val_.u.ws) wstring (std::move (src.val_.u.ws));
+			break;
+		default:
+			val_.plain = src.val_.plain;
+	}
+	type_ = src.type_;
+	src.clear ();
 }
 
 const Variant& Variant::dereference_const () const noexcept
@@ -224,32 +226,31 @@ string Variant::to_string () const
 	string s;
 
 	switch (type_) {
-		case VT::CHAR: {
+		case VT::CHAR:
 			s.reserve (3);
 			s += '\'';
 			append (s, as_char ());
 			s += '\'';
-		} break;
-		case VT::WCHAR: {
+			break;
+		case VT::WCHAR:
 			s.reserve (3);
 			s += '\'';
 			append (s, as_wchar ());
 			s += '\'';
-		} break;
-		case VT::STRING: {
+			break;
+		case VT::STRING:
 			s.reserve (val_.u.s.size () + 2);
 			s += '\"';
-			for (auto pc = val_.u.s.begin (); pc != val_.u.s.end (); ++pc)
-				append (s, *pc);
+			s += val_.u.s;
 			s += '\"';
-		} break;
-		case VT::WSTRING: {
+			break;
+		case VT::WSTRING:
 			s.reserve (val_.u.ws.size () + 2);
 			s += '\"';
 			for (auto pc = val_.u.ws.begin (); pc != val_.u.ws.end (); ++pc)
 				append (s, *pc);
 			s += '\"';
-		} break;
+			break;
 		case VT::FIXED:
 			s = val_.u.fixed.to_string ();
 			break;
