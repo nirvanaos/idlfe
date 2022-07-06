@@ -242,7 +242,10 @@ public:
 	const Variant& dereference_const () const noexcept;
 
 	/// Destructor.
-	~Variant ();
+	~Variant ()
+	{
+		clear ();
+	}
 
 	/// Default constructor.
 	/// Creates empty Valriant.
@@ -257,7 +260,10 @@ public:
 	}
 
 	/// Move constructor.
-	Variant (Variant&& src) noexcept;
+	Variant (Variant&& src) noexcept
+	{
+		move (std::move (src));
+	}
 
 	/// Copy assignment.
 	Variant& operator = (const Variant& src);
@@ -398,13 +404,9 @@ public:
 private:
 	friend class Build::Builder;
 
-	void reset () noexcept
-	{
-		type_ = VT::EMPTY;
-	}
-
 	void clear () noexcept;
 	void copy (const Variant& src);
+	void move (Variant&& src);
 
 	static void check_fp ();
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2 - 2022-07-06
+### Fixed
+ - Bug in string literals.
+
 ## 2.1.1 - 2022-07-06
 ### Changed
  - `Fixed::to_BCD()` Redundant out parameter `scale` was removed.
