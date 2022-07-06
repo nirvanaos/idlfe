@@ -33,6 +33,7 @@ namespace AST {
 
 string Fixed::to_string () const
 {
+	assert (digits_ <= 31);
 	char buf [31 + 14];
 	assert (exponent_ > -31);
 	decNumberToString ((const decNumber*)this, buf);
