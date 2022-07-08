@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.4 - 2022-07-08
+### Fixed
+ - Eliminated possible raise() on fixed-point calculation errors.
+
 ## 2.1.3 - 2022-07-06
 ### Fixed
  - Yet another bug in string literals.
