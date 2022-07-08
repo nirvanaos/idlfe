@@ -41,7 +41,8 @@ struct EvalFixed::Context : decContext
 	Context ()
 	{
 		decContextDefault (this, DEC_INIT_BASE);
-		this->digits = DECNUMDIGITS;
+		digits = DECNUMDIGITS;
+		traps = 0;
 	}
 
 	void check () const;
