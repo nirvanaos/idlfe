@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.5 - 2022-07-11
+### Fixed
+ - Bug in `fixed` type processing.
+
 ## 2.1.4 - 2022-07-08
 ### Fixed
  - Eliminated possible raise() on fixed-point calculation errors.

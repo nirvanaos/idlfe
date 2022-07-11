@@ -85,6 +85,9 @@ void Type::copy (const Type& src)
 		case Kind::WSTRING:
 			type_.string_bound = src.type_.string_bound;
 			break;
+		case Kind::FIXED:
+			type_.fixed = src.type_.fixed;
+			break;
 		case Kind::SEQUENCE:
 			type_.sequence = nullptr;
 			type_.sequence = new Sequence (*src.type_.sequence);
