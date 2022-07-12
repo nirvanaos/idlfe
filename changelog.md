@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.6 - 2022-07-12
+### Changed
+ - Fixed constants normalized. Fixed::scale () may be < 0.
+
 ## 2.1.5 - 2022-07-11
 ### Fixed
  - Bug in `fixed` type processing.

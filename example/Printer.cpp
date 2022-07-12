@@ -92,7 +92,13 @@ void Printer::leaf (const Constant& item)
 {
 	out_ << "const ";
 	print_type (item);
-	out_ << ' ' << item.name () << " = " << item.to_string () <<";\n";
+	out_ << ' ' << item.name () << " = ";
+	if (item.vtype () == Variant::VT::WSTRING)
+		out_ << 'L';
+	out_ << item.to_string ();
+	if (item.vtype () == Variant::VT::FIXED)
+		out_ << 'D';
+	out_ <<";\n";
 }
 
 void Printer::begin (const ModuleItems& item)

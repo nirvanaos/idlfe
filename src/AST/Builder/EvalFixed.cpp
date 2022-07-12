@@ -26,7 +26,6 @@
 #include "EvalFixed.h"
 #include "Builder.h"
 #include "../../include/AST/Constant.h"
-#include "decNumber.h"
 #include <stdexcept>
 
 using namespace std;
@@ -36,17 +35,14 @@ namespace Build {
 
 // Fixed evaluator
 
-struct EvalFixed::Context : decContext
+EvalFixed::Context::Context (int numdigits)
 {
-	Context ()
-	{
-		decContextDefault (this, DEC_INIT_BASE);
-		digits = DECNUMDIGITS;
-		traps = 0;
-	}
-
-	void check () const;
-};
+	decContextDefault (this, DEC_INIT_BASE);
+	digits = numdigits;
+	traps = 0;
+	emin = -numdigits;
+	emax = numdigits;
+}
 
 void EvalFixed::Context::check () const
 {
@@ -60,9 +56,11 @@ Variant EvalFixed::literal_fixed (const string& s, const Location& loc)
 	assert (s.back () == 'd' || s.back () == 'D');
 
 	Fixed v;
-	Context ctx;
-	decNumberFromString ((decNumber*)&v, s.substr (0, s.length () - 1).c_str (), &ctx);
 	try {
+		Context ctx (31);
+		decNumberFromString ((decNumber*)&v, s.substr (0, s.length () - 1).c_str (), &ctx);
+		ctx.check ();
+		decNumberReduce ((decNumber*)&v, (const decNumber*)&v, &ctx);
 		ctx.check ();
 	} catch (const exception& ex) {
 		error (loc, ex);

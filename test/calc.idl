@@ -4,3 +4,10 @@
 const fixed B = 3.45789012345678901D;
 
 const fixed C = A * B;
+
+const fixed D = 1000D;
+
+const wchar wc1 = L'c';
+const wchar wc2 = 'c';
+
+const wstring ws = L"abcd";

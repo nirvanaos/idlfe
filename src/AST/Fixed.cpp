@@ -24,19 +24,29 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Fixed.h"
-#include "Builder/decNumber.h"
+#include "Builder/EvalFixed.h"
 #include <assert.h>
 
 using namespace std;
 
 namespace AST {
 
+typedef Build::EvalFixed::Context Context;
+
 string Fixed::to_string () const
 {
 	assert (digits_ <= 31);
 	char buf [31 + 14];
-	assert (exponent_ > -31);
-	decNumberToString ((const decNumber*)this, buf);
+	if (exponent_ > 0) {
+		decNumber exp;
+		decNumberZero (&exp);
+		decNumber dn;
+		Context ctx (31);
+		decNumberRescale (&dn, (const decNumber*)this, &exp, &ctx);
+		ctx.check ();
+		decNumberToEngString (&dn, buf);
+	} else
+		decNumberToEngString ((const decNumber*)this, buf);
 	return buf;
 }
 
@@ -53,9 +63,7 @@ vector <uint8_t> Fixed::to_BCD () const
 Fixed Fixed::normalize (const Fixed& f) noexcept
 {
 	if (f.digits_ > 31) {
-		decContext ctx;
-		decContextDefault (&ctx, DEC_INIT_BASE);
-		ctx.digits = 31;
+		Context ctx (31);
 		Fixed ret;
 		decNumberReduce ((decNumber*)&ret, (const decNumber*)&f, &ctx);
 		return ret;
