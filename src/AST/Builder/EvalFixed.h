@@ -27,6 +27,7 @@
 #define NIDL_AST_EVALFIXED_H_
 
 #include "Eval.h"
+#include "decNumber.h"
 
 namespace AST {
 namespace Build {
@@ -34,8 +35,14 @@ namespace Build {
 /// Fixed evaluator
 class EvalFixed : public Eval
 {
-	struct Context;
 public:
+	struct Context : decContext
+	{
+		Context (int numdigits = DECNUMDIGITS);
+
+		void check () const;
+	};
+
 	EvalFixed (Builder& builder) :
 		Eval (builder)
 	{}
