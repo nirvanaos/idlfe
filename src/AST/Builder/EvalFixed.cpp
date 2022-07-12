@@ -27,7 +27,6 @@
 #include "Builder.h"
 #include "../../include/AST/Constant.h"
 #include <stdexcept>
-#include <limits>
 
 using namespace std;
 
@@ -42,7 +41,7 @@ EvalFixed::Context::Context (int numdigits)
 	digits = numdigits;
 	traps = 0;
 	emin = -numdigits;
-	emax = numeric_limits <int16_t>::max ();
+	emax = numdigits;
 }
 
 void EvalFixed::Context::check () const

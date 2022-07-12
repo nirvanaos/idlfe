@@ -39,6 +39,8 @@ class Fixed
 {
 public:
 	/// \returns Number of digits.
+	/// 
+	/// \invariant digits () <= 31
 	uint16_t digits () const noexcept
 	{
 		return (uint16_t)digits_;
@@ -46,6 +48,7 @@ public:
 
 	/// \returns Number of digits after decimal point.
 	/// 
+	/// \invariant scale () <= digits ()
 	/// Note that scale may be negative due to removeing the trailing zeros.
 	/// For example, 1000D will have digits() == 1 and scale() == -3.
 	int16_t scale () const noexcept
