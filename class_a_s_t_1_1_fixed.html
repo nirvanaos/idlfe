@@ -82,8 +82,8 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab011b0bc35fcc6390e6923cb1f663fb0"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">digits</a> () const noexcept</td></tr>
 <tr class="separator:ab011b0bc35fcc6390e6923cb1f663fb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a148a03c9cf8d58ae4ef1d9596cc03535"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_fixed.html#a148a03c9cf8d58ae4ef1d9596cc03535">scale</a> () const noexcept</td></tr>
-<tr class="separator:a148a03c9cf8d58ae4ef1d9596cc03535"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9afa1d1e54cf2592321929d0ecdebf36"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_fixed.html#a9afa1d1e54cf2592321929d0ecdebf36">scale</a> () const noexcept</td></tr>
+<tr class="separator:a9afa1d1e54cf2592321929d0ecdebf36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d9e09b4fae7b29d4a229738c217de42"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_fixed.html#a7d9e09b4fae7b29d4a229738c217de42">to_string</a> () const</td></tr>
 <tr class="separator:a7d9e09b4fae7b29d4a229738c217de42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa0546ca83de64c2148e69e471b35b3e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_fixed.html#aaa0546ca83de64c2148e69e471b35b3e">to_BCD</a> () const</td></tr>
@@ -116,14 +116,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Number of digits for <code>fixed</code> type. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of digits.</dd></dl>
+<dl class="section invariant"><dt>Invariant</dt><dd>digits () &lt;= 31 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_fixed_8h_source.html#l00042">42</a> of file <a class="el" href="_fixed_8h_source.html">Fixed.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_fixed_8h_source.html#l00044">44</a> of file <a class="el" href="_fixed_8h_source.html">Fixed.h</a>.</p>
 
 </div>
 </div>
-<a id="a148a03c9cf8d58ae4ef1d9596cc03535"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a148a03c9cf8d58ae4ef1d9596cc03535">&#9670;&nbsp;</a></span>scale()</h2>
+<a id="a9afa1d1e54cf2592321929d0ecdebf36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9afa1d1e54cf2592321929d0ecdebf36">&#9670;&nbsp;</a></span>scale()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -132,7 +133,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint16_t AST::Fixed::scale </td>
+          <td class="memname">int16_t AST::Fixed::scale </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -144,9 +145,10 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Scale for <code>fixed</code> type. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of digits after decimal point.</dd></dl>
+<dl class="section invariant"><dt>Invariant</dt><dd>scale () &lt;= digits () Note that scale may be negative due to removeing the trailing zeros. For example, 1000D will have <a class="el" href="class_a_s_t_1_1_fixed.html#ab011b0bc35fcc6390e6923cb1f663fb0">digits()</a> == 1 and <a class="el" href="class_a_s_t_1_1_fixed.html#a9afa1d1e54cf2592321929d0ecdebf36">scale()</a> == -3. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_fixed_8h_source.html#l00048">48</a> of file <a class="el" href="_fixed_8h_source.html">Fixed.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_fixed_8h_source.html#l00054">54</a> of file <a class="el" href="_fixed_8h_source.html">Fixed.h</a>.</p>
 
 </div>
 </div>
