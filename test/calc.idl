@@ -11,3 +11,17 @@ const wchar wc1 = L'c';
 const wchar wc2 = 'c';
 
 const wstring ws = L"abcd";
+
+module TimeBase {
+
+	typedef unsigned long long TimeT;
+
+};
+
+const TimeBase::TimeT MICROSECOND = 10;
+const TimeBase::TimeT MILLISECOND = MICROSECOND * 1000;
+const TimeBase::TimeT SECOND = MILLISECOND * 1000;
+const TimeBase::TimeT MINUTE = SECOND * 60;
+const TimeBase::TimeT HOUR = MINUTE * 60;
+const TimeBase::TimeT DAY = HOUR * 24;
+

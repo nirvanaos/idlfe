@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.7 - 2022-08-10
+### Fixed
+ - Overflow in `unsigned long long` constant calculation.
+
 ## 2.1.6 - 2022-07-12
 ### Changed
  - Fixed constants normalized. Fixed::scale () may be < 0.

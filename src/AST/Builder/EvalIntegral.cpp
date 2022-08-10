@@ -161,9 +161,9 @@ Variant EvalIntegral::expr (const Variant& cl, char op, const Variant& cr, const
 				}
 				return ret;
 			} else {
-				uint64_t lv = l.to_unsigned_long (), ret = 0;
+				uint64_t lv = l.to_unsigned_long_long (), ret = 0;
 				if ('>' == op || '<' == op) {
-					uint64_t shift = r.to_unsigned_long_long ();
+					uint64_t shift = r.to_unsigned_long ();
 					if (shift > 32)
 						throw range_error ("Shift size is too large.");
 					ret = op == '>' ? lv >> shift : lv << shift;
