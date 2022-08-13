@@ -32,6 +32,11 @@
 #include <string>
 #include <vector>
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-private-field"
+#endif
+
 namespace AST {
 
 /// %Fixed point constant.
@@ -80,5 +85,9 @@ private:
 };
 
 }
+
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 #endif

@@ -38,6 +38,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 namespace AST {
 
 class Root;

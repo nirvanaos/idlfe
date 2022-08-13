@@ -30,6 +30,10 @@
 #include "../include/AST/Enum.h"
 #include <stdexcept>
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 using namespace std;
 
 namespace AST {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.8 - 2022-08-13
+### Fixed
+ - Bug: enum from #include was empty.
+
 ## 2.1.7 - 2022-08-10
 ### Fixed
  - Overflow in `unsigned long long` constant calculation.

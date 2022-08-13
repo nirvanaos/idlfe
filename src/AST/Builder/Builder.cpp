@@ -1659,8 +1659,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 						message (*item, MessageType::ERROR, "too many enumerators");
 						break;
 					}
-					if (is_main_file ())
-						def->append (*enumerator);
+					def->append (*enumerator);
 				}
 			}
 			return &*ins.first;
