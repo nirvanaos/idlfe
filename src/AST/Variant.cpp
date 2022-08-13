@@ -30,6 +30,10 @@
 #include <limits>
 #include <cfenv>
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 using namespace std;
 
 namespace AST {
