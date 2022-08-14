@@ -33,7 +33,7 @@
 
 namespace AST{
 
-/// The operation base.
+/// \brief An operation base.
 class OperationBase :
 	public NamedItem,
 	public ContainerT <Parameter>

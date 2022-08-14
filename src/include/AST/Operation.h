@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The operation.
+/// \brief An operation.
 /// 
 /// \invariant kind () == Item::Kind::OPERATION
 /// 

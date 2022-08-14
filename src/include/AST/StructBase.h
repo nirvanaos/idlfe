@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// The common base for Struct and Exception.
+/// \brief The common base for Struct and Exception.
 class StructBase :
 	public ItemWithId,
 	public ContainerT <Member>

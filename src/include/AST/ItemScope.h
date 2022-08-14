@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The named item which defines a scope.
+/// \brief The named item which defines a scope.
 class ItemScope :
 	public ItemWithId
 {

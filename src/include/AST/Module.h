@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// %Module as a scope.
+/// \brief The `module` as a scope.
 /// 
 /// \invariant kind () == Item::Kind::MODULE
 /// 
@@ -48,7 +48,7 @@ private:
 	{}
 };
 
-/// The seqence of items in a module.
+/// \brief The seqence of items in a `module`.
 /// 
 /// \invariant kind () == Item::Kind::MODULE_ITEMS
 /// 

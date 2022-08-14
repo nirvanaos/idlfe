@@ -40,7 +40,7 @@ class SimpleDeclarator;
 
 class ItemScope;
 
-/// The named AST item.
+/// \brief A named AST item.
 class NamedItem :
 	public Item,
 	public Location

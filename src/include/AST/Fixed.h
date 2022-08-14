@@ -39,7 +39,7 @@
 
 namespace AST {
 
-/// %Fixed point constant.
+/// \brief A fixed point constant.
 class Fixed
 {
 public:

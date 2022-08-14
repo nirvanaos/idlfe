@@ -36,7 +36,7 @@ namespace AST {
 
 class Union;
 
-/// `union` forward declaration.
+/// \brief `union` forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::UNION_DECL
 /// 
@@ -64,7 +64,7 @@ private:
 	const Union* definition_;
 };
 
-/// `union` definition.
+/// \brief `union` definition.
 /// 
 /// \invariant kind () == Item::Kind::UNION
 /// 

@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// State member.
+/// \brief State member.
 /// 
 /// \invariant kind () == Item::Kind::STATE_MEMBER
 /// 

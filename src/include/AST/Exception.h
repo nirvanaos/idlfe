@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The `exception` declaration.
+/// \brief The `exception` declaration.
 /// 
 /// \invariant kind () == Item::Kind::EXCEPTION
 /// 

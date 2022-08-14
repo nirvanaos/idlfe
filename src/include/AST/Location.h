@@ -38,7 +38,7 @@ class location;
 
 namespace AST {
 
-/// Stores the location information.
+/// \brief Stores the location information.
 class Location
 {
 public:

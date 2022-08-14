@@ -35,7 +35,7 @@ namespace AST {
 
 class Struct;
 
-/// `struct` forward declaration.
+/// \brief The `struct` forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::STRUCT_DECL
 /// 
@@ -63,7 +63,7 @@ private:
 	const Struct* definition_;
 };
 
-/// `struct` definition.
+/// \brief The `struct` definition.
 /// 
 /// \invariant kind () == Item::Kind::STRUCT
 /// 

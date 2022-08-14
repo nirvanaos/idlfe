@@ -35,7 +35,7 @@ namespace AST {
 
 class EnumItem;
 
-/// The enumerator.
+/// \brief The enumerator.
 /// 
 /// \invariant kind () == Item::Kind::ENUM_ITEM
 /// 
@@ -61,7 +61,7 @@ private:
 	const NamedItem& enum_type_;
 };
 
-/// The `enum` declaration.
+/// \brief The `enum` declaration.
 /// 
 /// \invariant kind () == Item::Kind::ENUM
 /// 

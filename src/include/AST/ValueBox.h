@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// Boxed value type.
+/// \brief Boxed value type.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_BOX
 /// 

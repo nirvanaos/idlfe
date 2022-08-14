@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// `const` definition.
+/// \brief `const` definition.
 /// 
 /// \invariant kind () == Item::Kind::CONSTANT
 /// 

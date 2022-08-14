@@ -38,7 +38,7 @@ class ValueType;
 /// The sequence of value types.
 typedef std::vector <const ValueType*> ValueTypes;
 
-/// Value type definition.
+/// \brief Value type definition.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_TYPE
 /// 
@@ -123,7 +123,7 @@ private:
 	Interfaces supports_;
 };
 
-/// Value type forward declaration.
+/// \brief Value type forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_TYPE_DECL
 /// 

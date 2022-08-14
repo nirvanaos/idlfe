@@ -34,7 +34,7 @@ namespace Build {
 class Builder;
 }
 
-/// The item that can be forward declared.
+/// \brief The item that can be forward declared.
 class ForwardDeclarable
 {
 public:

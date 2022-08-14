@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The 'native` type.
+/// \brief A 'native` type.
 /// 
 /// \invariant kind () == Item::Kind::NATIVE
 /// 

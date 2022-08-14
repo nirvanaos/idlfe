@@ -36,7 +36,7 @@ namespace AST {
 
 template <class T> class Ptr;
 
-/// AST item.
+/// \brief An AST item.
 class Item
 {
 public:

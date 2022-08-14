@@ -35,7 +35,7 @@ namespace AST {
 
 class Interface;
 
-/// The kind of interface.
+/// \brief The kind of interface.
 class InterfaceKind
 {
 public:
@@ -69,10 +69,10 @@ private:
 	Kind kind_;
 };
 
-/// The sequence of interfaces.
+/// \brief The sequence of interfaces.
 typedef std::vector <const Interface*> Interfaces;
 
-/// %Interface definition.
+/// \brief %Interface definition.
 /// 
 /// \invariant kind () == Item::Kind::INTERFACE
 /// 
@@ -128,7 +128,7 @@ private:
 	Interfaces bases_;
 };
 
-/// %Interface forward declaration.
+/// \brief %Interface forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::INTERFACE_DECL
 /// 

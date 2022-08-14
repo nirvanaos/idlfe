@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// Sequential container of the AST items.
+/// \brief Sequential container of the AST items.
 template <class T>
 class ContainerT :
 	public std::vector <Ptr <const T> >
@@ -52,7 +52,7 @@ protected:
 
 class CodeGen;
 
-/// Sequential container of the AST items.
+/// \brief Sequential container of the AST items.
 class Container :
 	public ContainerT <Item>
 {

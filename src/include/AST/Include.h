@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// `#include` file.
+/// \brief `#include` file.
 /// 
 /// \invariant kind () == Item::Kind::INCLUDE
 /// 

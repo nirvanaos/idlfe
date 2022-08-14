@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// The parameter of an operation.
+/// \brief A parameter of an operation.
 /// 
 /// \invariant kind () == Item::Kind::PARAMETER
 /// 

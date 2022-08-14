@@ -70,7 +70,7 @@ public:
 	void message (const std::exception& ex);
 
 	/// \returns Count of messages of the MessageType::ERROR type.
-	unsigned error_count () const
+	unsigned error_count () const noexcept
 	{
 		return err_cnt_;
 	}

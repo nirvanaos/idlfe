@@ -37,7 +37,7 @@ struct Version
 	uint16_t major, minor;
 };
 
-/// Items which have repository identifiers derive from this class.
+/// \brief Items which have repository identifiers derive from this class.
 class ItemWithId : public NamedItem
 {
 public:

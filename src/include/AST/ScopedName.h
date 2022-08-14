@@ -35,7 +35,7 @@
 
 namespace AST {
 
-/// The scoped name.
+/// \brief A scoped name.
 struct ScopedName : 
 	std::vector <Identifier>,
 	Location

@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// The common base for Interface and ValueType.
+/// \brief The common base for Interface and ValueType.
 class IV_Base :
 	public ItemScope,
 	public Container,

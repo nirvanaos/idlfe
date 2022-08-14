@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// Value type `factory` operation.
+/// \brief Value type `factory` operation.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_FACTORY
 /// 

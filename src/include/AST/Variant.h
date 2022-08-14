@@ -36,7 +36,7 @@ namespace AST {
 class EnumItem;
 class Constant;
 
-/// Stores the constant value.
+/// \brief Stores the constant value.
 class Variant
 {
 public:

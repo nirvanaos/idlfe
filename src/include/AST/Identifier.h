@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// An identifier.
+/// \brief An identifier.
 class Identifier : public std::string
 {
 public:

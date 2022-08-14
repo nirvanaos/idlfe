@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// `union` element definition.
+/// \brief `union` element definition.
 /// 
 /// \invariant kind () == Item::Kind::UNION_ELEMENT
 /// 

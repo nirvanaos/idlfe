@@ -32,7 +32,7 @@
 
 namespace AST {
 
-/// Set of named items.
+/// \brief Set of the named items.
 class Symbols :
 	public std::set <Ptr <NamedItem>, std::less <> >
 {

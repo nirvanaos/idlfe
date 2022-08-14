@@ -42,7 +42,7 @@ typedef uint32_t Dim;
 class Sequence;
 class Array;
 
-/// An IDL type.
+/// \brief An IDL type.
 class Type
 {
 public:
