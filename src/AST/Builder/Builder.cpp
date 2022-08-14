@@ -1162,16 +1162,22 @@ Raises Builder::lookup_exceptions (const ScopedNames& names)
 		const Ptr <NamedItem>* l = lookup (*name);
 		if (l) {
 			const NamedItem* item = *l;
-			if (item->kind () != Item::Kind::EXCEPTION) {
-				message (*name, MessageType::ERROR, name->stringize () + " is not an exception type");
-				see_declaration_of (*item, item->qualified_name ());
-			} else {
-				auto ins = unique.emplace (item, *name);
-				if (!ins.second) {
-					message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
-					see_prev_declaration (ins.first->second);
-				} else
-					exceptions.push_back (static_cast <const Exception*> (item));
+			switch (item->kind ()) {
+				case Item::Kind::EXCEPTION:
+				case Item::Kind::NATIVE:
+				{
+					auto ins = unique.emplace (item, *name);
+					if (!ins.second) {
+						message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
+						see_prev_declaration (ins.first->second);
+					} else
+						exceptions.push_back (static_cast <const Exception*> (item));
+				}
+				break;
+
+				default:
+					message (*name, MessageType::ERROR, name->stringize () + " is not an exception or native type");
+					see_declaration_of (*item, item->qualified_name ());
 			}
 		}
 	}
