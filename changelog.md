@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0 - 2022-08-14
+## Changed
+ - Allow native type in the exception list, as it required by the standard.
+ - Added class BE::MessageOut for the convenient compiler messages output.
+ 
 ## 2.1.8 - 2022-08-13
 ### Fixed
  - Bug: enum from #include was empty.
