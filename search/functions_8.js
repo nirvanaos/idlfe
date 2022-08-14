@@ -1,16 +1,17 @@
 var searchData=
 [
-  ['identifier_387',['Identifier',['../class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f',1,'AST::Identifier::Identifier()'],['../class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a',1,'AST::Identifier::Identifier(const char *s, size_t len)'],['../class_a_s_t_1_1_identifier.html#a068e9fc4f819fafe552295c497012214',1,'AST::Identifier::Identifier(const char *s)']]],
-  ['idl_5ffrontend_388',['IDL_FrontEnd',['../class_i_d_l___front_end.html#aa26e9f94caeb7b989d15d4a5d658b41d',1,'IDL_FrontEnd']]],
-  ['indent_389',['indent',['../class_b_e_1_1_indented_out.html#aac0bd5956e0256fe8576b864c4590364',1,'BE::IndentedOut']]],
-  ['indentation_390',['indentation',['../class_b_e_1_1_indented_out.html#afe96d46e81dde9a4a208e651790e1f13',1,'BE::IndentedOut']]],
-  ['indentedout_391',['IndentedOut',['../class_b_e_1_1_indented_out.html#ae569086dad2343507469a9fed49eaeb0',1,'BE::IndentedOut::IndentedOut()'],['../class_b_e_1_1_indented_out.html#a5310d0d97ef304b5e35ef2bc2c227df2',1,'BE::IndentedOut::IndentedOut(const std::filesystem::path &amp;file)']]],
-  ['interface_5fkind_392',['interface_kind',['../class_a_s_t_1_1_interface_kind.html#a626d28171bd0a4ffc7040487ed814ba7',1,'AST::InterfaceKind']]],
-  ['is_5fabstract_393',['is_abstract',['../class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8',1,'AST::ValueTypeDecl']]],
-  ['is_5fdefault_394',['is_default',['../class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749',1,'AST::UnionElement']]],
-  ['is_5fforward_5fdecl_395',['is_forward_decl',['../class_a_s_t_1_1_item.html#a26025c1208f44b6644ef8d8275955e18',1,'AST::Item']]],
-  ['is_5fintegral_396',['is_integral',['../namespace_a_s_t.html#a2150985b6dde17c2b16f2322701cd7b7',1,'AST']]],
-  ['is_5fpublic_397',['is_public',['../class_a_s_t_1_1_state_member.html#a2ddfa8e658cb167bf87963bc1c728d0a',1,'AST::StateMember']]],
-  ['is_5fsigned_398',['is_signed',['../namespace_a_s_t.html#ae8805c20baa9e6353468841f749fdd9b',1,'AST']]],
-  ['is_5ftype_399',['is_type',['../class_a_s_t_1_1_item.html#acd9449375591a1341de75a29367fce3d',1,'AST::Item']]]
+  ['identifier_410',['Identifier',['../class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f',1,'AST::Identifier::Identifier()'],['../class_a_s_t_1_1_identifier.html#a3ec341ba908cc0d525f3955616edfc0a',1,'AST::Identifier::Identifier(const char *s, size_t len)'],['../class_a_s_t_1_1_identifier.html#a068e9fc4f819fafe552295c497012214',1,'AST::Identifier::Identifier(const char *s)']]],
+  ['idl_5ffrontend_411',['IDL_FrontEnd',['../class_i_d_l___front_end.html#a0cd7f37e84aaf20a5e77686e9a2bcbde',1,'IDL_FrontEnd']]],
+  ['indent_412',['indent',['../class_b_e_1_1_indented_out.html#aac0bd5956e0256fe8576b864c4590364',1,'BE::IndentedOut']]],
+  ['indentation_413',['indentation',['../class_b_e_1_1_indented_out.html#afe96d46e81dde9a4a208e651790e1f13',1,'BE::IndentedOut']]],
+  ['indentedout_414',['IndentedOut',['../class_b_e_1_1_indented_out.html#ae569086dad2343507469a9fed49eaeb0',1,'BE::IndentedOut::IndentedOut()'],['../class_b_e_1_1_indented_out.html#a5310d0d97ef304b5e35ef2bc2c227df2',1,'BE::IndentedOut::IndentedOut(const std::filesystem::path &amp;file)']]],
+  ['insert_415',['insert',['../class_a_s_t_1_1_symbols.html#a4a774d873e08baebe18de6a05ec7ae82',1,'AST::Symbols']]],
+  ['interface_5fkind_416',['interface_kind',['../class_a_s_t_1_1_interface_kind.html#a626d28171bd0a4ffc7040487ed814ba7',1,'AST::InterfaceKind']]],
+  ['is_5fabstract_417',['is_abstract',['../class_a_s_t_1_1_value_type_decl.html#ad5a2d34290346fbdd9de6e4b247e89d8',1,'AST::ValueTypeDecl']]],
+  ['is_5fdefault_418',['is_default',['../class_a_s_t_1_1_union_element.html#a92bcc5e263465c69fb14e0adcfca7749',1,'AST::UnionElement']]],
+  ['is_5fforward_5fdecl_419',['is_forward_decl',['../class_a_s_t_1_1_item.html#a26025c1208f44b6644ef8d8275955e18',1,'AST::Item']]],
+  ['is_5fintegral_420',['is_integral',['../namespace_a_s_t.html#a2150985b6dde17c2b16f2322701cd7b7',1,'AST']]],
+  ['is_5fpublic_421',['is_public',['../class_a_s_t_1_1_state_member.html#a2ddfa8e658cb167bf87963bc1c728d0a',1,'AST::StateMember']]],
+  ['is_5fsigned_422',['is_signed',['../namespace_a_s_t.html#ae8805c20baa9e6353468841f749fdd9b',1,'AST']]],
+  ['is_5ftype_423',['is_type',['../class_a_s_t_1_1_item.html#acd9449375591a1341de75a29367fce3d',1,'AST::Item']]]
 ];

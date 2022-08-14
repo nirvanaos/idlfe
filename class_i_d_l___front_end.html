@@ -96,14 +96,16 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:aa26e9f94caeb7b989d15d4a5d658b41d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#aa26e9f94caeb7b989d15d4a5d658b41d">IDL_FrontEnd</a> (unsigned flags=0)</td></tr>
-<tr class="separator:aa26e9f94caeb7b989d15d4a5d658b41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a0cd7f37e84aaf20a5e77686e9a2bcbde">IDL_FrontEnd</a> (unsigned flags=0, std::ostream &amp;<a class="el" href="class_i_d_l___front_end.html#af732fa1affdac7fa13d040cd8c65101a">err_out</a>=std::cerr)</td></tr>
+<tr class="separator:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48852b706ce523a906a9138647518bb8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">parse_command_line</a> (<a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html">CmdLine</a> &amp;args)</td></tr>
 <tr class="separator:a48852b706ce523a906a9138647518bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a254a4a366be92150108415e5f5cdbee4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a254a4a366be92150108415e5f5cdbee4">print_usage_info</a> (const char *exe_name)</td></tr>
 <tr class="separator:a254a4a366be92150108415e5f5cdbee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe271bfdf968951672734b28b0380524"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#abe271bfdf968951672734b28b0380524">generate_code</a> (const ::<a class="el" href="class_a_s_t_1_1_root.html">AST::Root</a> &amp;tree)=0</td></tr>
 <tr class="separator:abe271bfdf968951672734b28b0380524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af732fa1affdac7fa13d040cd8c65101a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#af732fa1affdac7fa13d040cd8c65101a">err_out</a> () const noexcept</td></tr>
+<tr class="separator:af732fa1affdac7fa13d040cd8c65101a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
@@ -124,10 +126,10 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#_a0">IDL_Print.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00048">48</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00050">50</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa26e9f94caeb7b989d15d4a5d658b41d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa26e9f94caeb7b989d15d4a5d658b41d">&#9670;&nbsp;</a></span>IDL_FrontEnd()</h2>
+<a id="a0cd7f37e84aaf20a5e77686e9a2bcbde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cd7f37e84aaf20a5e77686e9a2bcbde">&#9670;&nbsp;</a></span>IDL_FrontEnd()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,8 +141,18 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
           <td class="memname">IDL_FrontEnd::IDL_FrontEnd </td>
           <td>(</td>
           <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code></td><td>)</td>
+          <td class="paramname"><em>flags</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>err_out</em> = <code>std::cerr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -153,11 +165,12 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">flags</td><td>The flags. Currently only <a class="el" href="class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0" title="Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.">IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES</a> is supported. </td></tr>
+    <tr><td class="paramname">err_out</td><td>Compiler messages output stream. Default is std::cerr. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00127">127</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00129">129</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -365,6 +378,34 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 </dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a3">IDL_Print.cpp</a>.</dd>
 </dl>
+
+</div>
+</div>
+<a id="af732fa1affdac7fa13d040cd8c65101a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af732fa1affdac7fa13d040cd8c65101a">&#9670;&nbsp;</a></span>err_out()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; IDL_FrontEnd::err_out </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Compiler messages output stream. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00170">170</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>

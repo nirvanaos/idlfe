@@ -94,8 +94,8 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">* Send comments and/or bug reports to:</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">*  popov.nirvana@gmail.com</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_OPERATIONBASE_H_</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define NIDL_AST_OPERATIONBASE_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef IDLFE_AST_OPERATIONBASE_H_</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define IDLFE_AST_OPERATIONBASE_H_</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_parameter_8h.html">Parameter.h</a>&quot;</span></div>
@@ -108,7 +108,7 @@ $(function() {
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">public</span> <a class="code" href="class_a_s_t_1_1_container_t.html">ContainerT</a> &lt;Parameter&gt;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">   43</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">Raises</a>&amp; <a class="code" href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">raises</a> () const noexcept</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">   43</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">Raises</a>&amp; <a class="code" href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">raises</a> () const noexcept</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">return</span> raises_;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
@@ -121,13 +121,13 @@ $(function() {
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>Build::Builder;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">raises</a> (<a class="code" href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">Raises</a>&amp;&amp; exceptions)</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">raises</a> (<a class="code" href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">Raises</a>&amp;&amp; exceptions)</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        raises_ = std::move (exceptions);</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">Raises</a> raises_;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">Raises</a> raises_;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
@@ -138,13 +138,13 @@ $(function() {
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_ad148f09586b12dd1eec214c57bae622b"><div class="ttname"><a href="class_a_s_t_1_1_item.html#ad148f09586b12dd1eec214c57bae622b">AST::Item::kind</a></div><div class="ttdeci">Kind kind() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00075">Item.h:75</a></div></div>
 <div class="ttc" id="a_parameter_8h_html"><div class="ttname"><a href="_parameter_8h.html">Parameter.h</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_operation_base_html"><div class="ttname"><a href="class_a_s_t_1_1_operation_base.html">AST::OperationBase</a></div><div class="ttdoc">The operation base.</div><div class="ttdef"><b>Definition:</b> <a href="_operation_base_8h_source.html#l00037">OperationBase.h:40</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html_acaccdc382a27591c846187d671a0f6b1"><div class="ttname"><a href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">AST::Raises</a></div><div class="ttdeci">std::vector&lt; const Exception * &gt; Raises</div><div class="ttdoc">The user exceptions.</div><div class="ttdef"><b>Definition:</b> <a href="_exception_8h_source.html#l00051">Exception.h:51</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_operation_base_html"><div class="ttname"><a href="class_a_s_t_1_1_operation_base.html">AST::OperationBase</a></div><div class="ttdoc">An operation base.</div><div class="ttdef"><b>Definition:</b> <a href="_operation_base_8h_source.html#l00037">OperationBase.h:40</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_operation_base_html_ab79425b37a27a19b469b53366e697838"><div class="ttname"><a href="class_a_s_t_1_1_operation_base.html#ab79425b37a27a19b469b53366e697838">AST::OperationBase::raises</a></div><div class="ttdeci">const Raises &amp; raises() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_operation_base_8h_source.html#l00043">OperationBase.h:43</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54">AST::Item::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdoc">The kind of item.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00044">Item.h:45</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html_ab02196bc8efb9f7ce3b2e7e0babd7b6d"><div class="ttname"><a href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">AST::Raises</a></div><div class="ttdeci">std::vector&lt; const ItemWithId * &gt; Raises</div><div class="ttdef"><b>Definition:</b> <a href="_exception_8h_source.html#l00055">Exception.h:55</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_container_t_html"><div class="ttname"><a href="class_a_s_t_1_1_container_t.html">AST::ContainerT</a></div><div class="ttdoc">Sequential container of the AST items.</div><div class="ttdef"><b>Definition:</b> <a href="_container_8h_source.html#l00038">Container.h:40</a></div></div>
 <div class="ttc" id="a_exception_8h_html"><div class="ttname"><a href="_exception_8h.html">Exception.h</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_named_item_html"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html">AST::NamedItem</a></div><div class="ttdoc">The named AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00044">NamedItem.h:47</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_named_item_html"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html">AST::NamedItem</a></div><div class="ttdoc">A named AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00044">NamedItem.h:47</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_named_item_html_abf5f13b7ca46a219c3bc12de3ac45982"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">AST::NamedItem::name</a></div><div class="ttdeci">const Identifier &amp; name() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00050">NamedItem.h:50</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

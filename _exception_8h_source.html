@@ -94,8 +94,8 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">* Send comments and/or bug reports to:</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">*  popov.nirvana@gmail.com</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef NIDL_AST_EXCEPTION_H_</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define NIDL_AST_EXCEPTION_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#ifndef IDLFE_AST_EXCEPTION_H_</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define IDLFE_AST_EXCEPTION_H_</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_struct_base_8h.html">StructBase.h</a>&quot;</span></div>
@@ -113,16 +113,16 @@ $(function() {
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {}</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">   51</a></span>&#160;<span class="keyword">typedef</span> std::vector &lt;const Exception*&gt; <a class="code" href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">Raises</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">   55</a></span>&#160;<span class="keyword">typedef</span> std::vector &lt;const ItemWithId*&gt; <a class="code" href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">Raises</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
-<div class="ttc" id="anamespace_a_s_t_html_acaccdc382a27591c846187d671a0f6b1"><div class="ttname"><a href="namespace_a_s_t.html#acaccdc382a27591c846187d671a0f6b1">AST::Raises</a></div><div class="ttdeci">std::vector&lt; const Exception * &gt; Raises</div><div class="ttdoc">The user exceptions.</div><div class="ttdef"><b>Definition:</b> <a href="_exception_8h_source.html#l00051">Exception.h:51</a></div></div>
 <div class="ttc" id="a_struct_base_8h_html"><div class="ttname"><a href="_struct_base_8h.html">StructBase.h</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_exception_html"><div class="ttname"><a href="class_a_s_t_1_1_exception.html">AST::Exception</a></div><div class="ttdef"><b>Definition:</b> <a href="_exception_8h_source.html#l00039">Exception.h:41</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_exception_html"><div class="ttname"><a href="class_a_s_t_1_1_exception.html">AST::Exception</a></div><div class="ttdoc">The exception declaration.</div><div class="ttdef"><b>Definition:</b> <a href="_exception_8h_source.html#l00039">Exception.h:41</a></div></div>
+<div class="ttc" id="anamespace_a_s_t_html_ab02196bc8efb9f7ce3b2e7e0babd7b6d"><div class="ttname"><a href="namespace_a_s_t.html#ab02196bc8efb9f7ce3b2e7e0babd7b6d">AST::Raises</a></div><div class="ttdeci">std::vector&lt; const ItemWithId * &gt; Raises</div><div class="ttdef"><b>Definition:</b> <a href="_exception_8h_source.html#l00055">Exception.h:55</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_struct_base_html"><div class="ttname"><a href="class_a_s_t_1_1_struct_base.html">AST::StructBase</a></div><div class="ttdoc">The common base for Struct and Exception.</div><div class="ttdef"><b>Definition:</b> <a href="_struct_base_8h_source.html#l00038">StructBase.h:41</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54acccc265b14c17af799a1834f4fbbe7cf"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54acccc265b14c17af799a1834f4fbbe7cf">AST::Item::Kind::EXCEPTION</a></div><div class="ttdeci">@ EXCEPTION</div><div class="ttdoc">class Exception</div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_ptr_html"><div class="ttname"><a href="class_a_s_t_1_1_ptr.html">AST::Ptr</a></div><div class="ttdoc">AST item smart pointer.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00133">Item.h:134</a></div></div>
