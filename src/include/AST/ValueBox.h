@@ -1,4 +1,4 @@
-/// \file ValueBox.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_VALUEBOX_H_
-#define NIDL_AST_VALUEBOX_H_
+#ifndef IDLFE_AST_VALUEBOX_H_
+#define IDLFE_AST_VALUEBOX_H_
 #pragma once
 
 #include "ItemWithId.h"
@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// Boxed value type.
+/// \brief Boxed value type.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_BOX
 /// 

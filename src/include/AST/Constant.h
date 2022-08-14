@@ -1,4 +1,4 @@
-/// \file Constant.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_CONSTANT_H_
-#define NIDL_AST_CONSTANT_H_
+#ifndef IDLFE_AST_CONSTANT_H_
+#define IDLFE_AST_CONSTANT_H_
 #pragma once
 
 #include "NamedItem.h"
@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// `const` definition.
+/// \brief `const` definition.
 /// 
 /// \invariant kind () == Item::Kind::CONSTANT
 /// 

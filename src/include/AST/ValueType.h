@@ -1,4 +1,4 @@
-/// \file ValueType.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_VALUETYPE_H_
-#define NIDL_AST_VALUETYPE_H_
+#ifndef IDLFE_AST_VALUETYPE_H_
+#define IDLFE_AST_VALUETYPE_H_
 #pragma once
 
 #include "Interface.h"
@@ -38,7 +38,7 @@ class ValueType;
 /// The sequence of value types.
 typedef std::vector <const ValueType*> ValueTypes;
 
-/// Value type definition.
+/// \brief Value type definition.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_TYPE
 /// 
@@ -123,7 +123,7 @@ private:
 	Interfaces supports_;
 };
 
-/// Value type forward declaration.
+/// \brief Value type forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::VALUE_TYPE_DECL
 /// 

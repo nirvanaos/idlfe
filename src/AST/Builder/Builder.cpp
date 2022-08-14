@@ -56,16 +56,6 @@ using namespace std;
 namespace AST {
 namespace Build {
 
-void Builder::message (const Location& l, MessageType mt, const string& err)
-{
-	static const char* const msg_types [] = { "error", "warning", "message" };
-
-	err_out_ << l.file ().string () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
-
-	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
-		throw runtime_error ("Too many errors, compilation aborted.");
-}
-
 void Builder::pragma (const char* s, const Location& loc)
 {
 	assert (*s == '#');
@@ -1172,16 +1162,22 @@ Raises Builder::lookup_exceptions (const ScopedNames& names)
 		const Ptr <NamedItem>* l = lookup (*name);
 		if (l) {
 			const NamedItem* item = *l;
-			if (item->kind () != Item::Kind::EXCEPTION) {
-				message (*name, MessageType::ERROR, name->stringize () + " is not an exception type");
-				see_declaration_of (*item, item->qualified_name ());
-			} else {
-				auto ins = unique.emplace (item, *name);
-				if (!ins.second) {
-					message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
-					see_prev_declaration (ins.first->second);
-				} else
-					exceptions.push_back (static_cast <const Exception*> (item));
+			switch (item->kind ()) {
+				case Item::Kind::EXCEPTION:
+				case Item::Kind::NATIVE:
+				{
+					auto ins = unique.emplace (item, *name);
+					if (!ins.second) {
+						message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
+						see_prev_declaration (ins.first->second);
+					} else
+						exceptions.push_back (static_cast <const Exception*> (item));
+				}
+				break;
+
+				default:
+					message (*name, MessageType::ERROR, name->stringize () + " is not an exception or native type");
+					see_declaration_of (*item, item->qualified_name ());
 			}
 		}
 	}
@@ -1744,16 +1740,16 @@ void Builder::eval_push (const Type& t, const Location& loc)
 
 Ptr <const Root> Builder::finalize ()
 {
-	if (!err_cnt_ && tree_) {
+	if (!error_count () && tree_) {
 		try {
 			check_complete (*tree_);
 			RepIdMap ids;
 			check_rep_ids_unique (ids, *tree_);
 		} catch (const runtime_error& err) {
-			err_out_ << err.what () << endl;
+			message (err);
 		}
 	}
-	if (err_cnt_)
+	if (error_count ())
 		tree_ = nullptr;
 	return std::move (tree_);
 }

@@ -1,4 +1,4 @@
-/// \file Native.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,15 +24,15 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_NATIVE_H_
-#define NIDL_AST_NATIVE_H_
+#ifndef IDLFE_AST_NATIVE_H_
+#define IDLFE_AST_NATIVE_H_
 #pragma once
 
 #include "ItemWithId.h"
 
 namespace AST {
 
-/// The 'native` type.
+/// \brief A 'native` type.
 /// 
 /// \invariant kind () == Item::Kind::NATIVE
 /// 

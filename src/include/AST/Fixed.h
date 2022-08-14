@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_FIXED_H_
-#define NIDL_AST_FIXED_H_
+#ifndef IDLFE_AST_FIXED_H_
+#define IDLFE_AST_FIXED_H_
 #pragma once
 
 #include <stdint.h>
@@ -39,7 +39,7 @@
 
 namespace AST {
 
-/// %Fixed point constant.
+/// \brief A fixed point constant.
 class Fixed
 {
 public:

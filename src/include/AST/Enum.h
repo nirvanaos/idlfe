@@ -1,4 +1,4 @@
-/// \file Enum.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ENUM_H_
-#define NIDL_AST_ENUM_H_
+#ifndef IDLFE_AST_ENUM_H_
+#define IDLFE_AST_ENUM_H_
 #pragma once
 
 #include "ItemWithId.h"
@@ -35,7 +35,7 @@ namespace AST {
 
 class EnumItem;
 
-/// The enumerator.
+/// \brief The enumerator.
 /// 
 /// \invariant kind () == Item::Kind::ENUM_ITEM
 /// 
@@ -61,7 +61,7 @@ private:
 	const NamedItem& enum_type_;
 };
 
-/// The `enum` declaration.
+/// \brief The `enum` declaration.
 /// 
 /// \invariant kind () == Item::Kind::ENUM
 /// 

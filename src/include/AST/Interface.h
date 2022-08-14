@@ -1,4 +1,4 @@
-/// \file Interface.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_INTERFACE_H_
-#define NIDL_AST_INTERFACE_H_
+#ifndef IDLFE_AST_INTERFACE_H_
+#define IDLFE_AST_INTERFACE_H_
 #pragma once
 
 #include "IV_Base.h"
@@ -35,7 +35,7 @@ namespace AST {
 
 class Interface;
 
-/// The kind of interface.
+/// \brief The kind of interface.
 class InterfaceKind
 {
 public:
@@ -69,10 +69,10 @@ private:
 	Kind kind_;
 };
 
-/// The sequence of interfaces.
+/// \brief The sequence of interfaces.
 typedef std::vector <const Interface*> Interfaces;
 
-/// %Interface definition.
+/// \brief %Interface definition.
 /// 
 /// \invariant kind () == Item::Kind::INTERFACE
 /// 
@@ -128,7 +128,7 @@ private:
 	Interfaces bases_;
 };
 
-/// %Interface forward declaration.
+/// \brief %Interface forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::INTERFACE_DECL
 /// 

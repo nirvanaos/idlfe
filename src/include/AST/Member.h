@@ -1,4 +1,4 @@
-/// \file Member.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_MEMBER_H_
-#define NIDL_AST_MEMBER_H_
+#ifndef IDLFE_AST_MEMBER_H_
+#define IDLFE_AST_MEMBER_H_
 #pragma once
 
 #include "NamedItem.h"
@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// The item with name and type.
+/// \brief The item with name and type.
 /// 
 /// \invariant kind () == Item::Kind::MEMBER
 /// 

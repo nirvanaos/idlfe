@@ -1,4 +1,4 @@
-/// \file Struct.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_STRUCT_H_
-#define NIDL_AST_STRUCT_H_
+#ifndef IDLFE_AST_STRUCT_H_
+#define IDLFE_AST_STRUCT_H_
 #pragma once
 
 #include "StructBase.h"
@@ -35,7 +35,7 @@ namespace AST {
 
 class Struct;
 
-/// `struct` forward declaration.
+/// \brief The `struct` forward declaration.
 /// 
 /// \invariant kind () == Item::Kind::STRUCT_DECL
 /// 
@@ -63,7 +63,7 @@ private:
 	const Struct* definition_;
 };
 
-/// `struct` definition.
+/// \brief The `struct` definition.
 /// 
 /// \invariant kind () == Item::Kind::STRUCT
 /// 

@@ -23,8 +23,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_DECNUMBER_H_
-#define NIDL_AST_DECNUMBER_H_
+#ifndef IDLFE_AST_DECNUMBER_H_
+#define IDLFE_AST_DECNUMBER_H_
+#pragma once
 
 // All calculations are performed with double precision 62 digits
 #define DECNUMDIGITS 62

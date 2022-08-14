@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_STRUCTBASE_H_
-#define NIDL_AST_STRUCTBASE_H_
+#ifndef IDLFE_AST_STRUCTBASE_H_
+#define IDLFE_AST_STRUCTBASE_H_
 #pragma once
 
 #include "ItemWithId.h"
@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// The common base for Struct and Exception.
+/// \brief The common base for Struct and Exception.
 class StructBase :
 	public ItemWithId,
 	public ContainerT <Member>

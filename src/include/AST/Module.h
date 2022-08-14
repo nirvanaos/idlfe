@@ -1,4 +1,4 @@
-/// \file Module.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_MODULE_H_
-#define NIDL_AST_MODULE_H_
+#ifndef IDLFE_AST_MODULE_H_
+#define IDLFE_AST_MODULE_H_
 #pragma once
 
 #include "ItemScope.h"
@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// %Module as a scope.
+/// \brief The `module` as a scope.
 /// 
 /// \invariant kind () == Item::Kind::MODULE
 /// 
@@ -48,7 +48,7 @@ private:
 	{}
 };
 
-/// The seqence of items in a module.
+/// \brief The seqence of items in a `module`.
 /// 
 /// \invariant kind () == Item::Kind::MODULE_ITEMS
 /// 

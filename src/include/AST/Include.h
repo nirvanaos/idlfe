@@ -1,4 +1,4 @@
-/// \file Include.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_INCLUDE_H_
-#define NIDL_AST_INCLUDE_H_
+#ifndef IDLFE_AST_INCLUDE_H_
+#define IDLFE_AST_INCLUDE_H_
 #pragma once
 
 #include "Item.h"
@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// `#include` file.
+/// \brief `#include` file.
 /// 
 /// \invariant kind () == Item::Kind::INCLUDE
 /// 

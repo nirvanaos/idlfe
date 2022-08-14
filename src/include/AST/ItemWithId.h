@@ -1,4 +1,4 @@
-/// \file NamedItem.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMWITHID_H_
-#define NIDL_AST_ITEMWITHID_H_
+#ifndef IDLFE_AST_ITEMWITHID_H_
+#define IDLFE_AST_ITEMWITHID_H_
 #pragma once
 
 #include "NamedItem.h"
@@ -37,7 +37,7 @@ struct Version
 	uint16_t major, minor;
 };
 
-/// Items which have repository identifiers derive from this class.
+/// \brief Items which have repository identifiers derive from this class.
 class ItemWithId : public NamedItem
 {
 public:

@@ -1,4 +1,4 @@
-/// \file IDL_FrontEnd.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,10 +24,12 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_IDL_FRONTEND_H_
-#define NIDL_IDL_FRONTEND_H_
+#ifndef IDLFE_IDL_FRONTEND_H_
+#define IDLFE_IDL_FRONTEND_H_
+#pragma once
 
 #include <string>
+#include <iostream>
 #include <assert.h>
 
 namespace AST {
@@ -119,14 +121,15 @@ protected:
 	static const unsigned FLAG_DEPRECATE_ANONYMOUS_TYPES = 1;
 
 protected:
-
 	/// Constructor
 	/// 
 	/// \param flags The flags.
 	///              Currently only IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES is supported.
-	IDL_FrontEnd (unsigned flags = 0) :
+	/// \param err_out Compiler messages output stream. Default is std::cerr.
+	IDL_FrontEnd (unsigned flags = 0, std::ostream& err_out = std::cerr) :
 		flags_ (flags),
-		arguments_ (nullptr)
+		arguments_ (nullptr),
+		err_out_ (err_out)
 	{}
 
 	/// Parse command line parameter.
@@ -163,6 +166,12 @@ protected:
 	///                           Other exceptions will cause the compilation interruption.
 	virtual void generate_code (const ::AST::Root& tree) = 0;
 
+	/// \returns Compiler messages output stream.
+	std::ostream& err_out () const noexcept
+	{
+		return err_out_;
+	}
+
 private:
 	bool compile (const std::string& file);
 
@@ -170,6 +179,7 @@ private:
 	unsigned flags_;
 	struct Arguments;
 	Arguments* arguments_;
+	std::ostream& err_out_;
 };
 
 /// \example IDL_Print.cpp

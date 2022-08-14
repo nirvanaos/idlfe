@@ -1,4 +1,4 @@
-/// \file CodeGen.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_CODEGEN_H_
-#define NIDL_AST_CODEGEN_H_
+#ifndef IDLFE_AST_CODEGEN_H_
+#define IDLFE_AST_CODEGEN_H_
 #pragma once
 
 #if __cplusplus < 201703L && _MSVC_LANG < 201703L

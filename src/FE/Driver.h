@@ -23,8 +23,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_FE_DRIVER_H_
-#define NIDL_FE_DRIVER_H_
+#ifndef IDLFE_FE_DRIVER_H_
+#define IDLFE_FE_DRIVER_H_
+#pragma once
 
 #if !defined(yyFlexLexerOnce)
 #include "FlexLexer.h"
@@ -46,9 +47,9 @@ class Driver :
 	public AST::Build::Builder
 {
 public:
-	static AST::Ptr <const AST::Root> parse (const std::string& file, std::istream& yyin, bool anonymous_deprecated)
+	static AST::Ptr <const AST::Root> parse (const std::string& file, std::istream& yyin, bool anonymous_deprecated, std::ostream& err_out)
 	{
-		Driver drv (file, yyin, anonymous_deprecated);
+		Driver drv (file, yyin, anonymous_deprecated, err_out);
 		return drv.parse ();
 	}
 
@@ -68,7 +69,7 @@ private:
 		return *this;
 	}
 
-	Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated);
+	Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated, std::ostream& err_out);
 
 	AST::Ptr <const AST::Root> parse ()
 	{

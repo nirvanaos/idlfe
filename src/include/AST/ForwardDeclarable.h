@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_FORWARDECLARABLE_H_
-#define NIDL_AST_FORWARDECLARABLE_H_
+#ifndef IDLFE_AST_FORWARDECLARABLE_H_
+#define IDLFE_AST_FORWARDECLARABLE_H_
 #pragma once
 
 namespace AST {
@@ -34,7 +34,7 @@ namespace Build {
 class Builder;
 }
 
-/// The item that can be forward declared.
+/// \brief The item that can be forward declared.
 class ForwardDeclarable
 {
 public:

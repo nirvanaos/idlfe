@@ -1,4 +1,3 @@
-/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,43 +23,34 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef IDLFE_AST_SEQUENCE_H_
-#define IDLFE_AST_SEQUENCE_H_
-#pragma once
+#include "../include/BE/MessageOut.h"
+#include "../include/AST/Location.h"
 
-#include "Type.h"
+using namespace std;
 
-namespace AST {
+namespace BE {
 
-/// \brief The `sequence` type descriptor.
-class Sequence :
-	public Type
+MessageOut::MessageOut (ostream& err_out, unsigned max_err_cnt) :
+	out_ (err_out.rdbuf ()),
+	max_err_cnt_ (max_err_cnt),
+	err_cnt_ (0)
+{}
+
+void MessageOut::message (const AST::Location& l, MessageType mt, const string& msg)
 {
-public:
-	/// \returns The size bound or 0 if no limit.
-	Dim bound () const noexcept
-	{
-		return bound_;
-	}
+	static const char* const msg_types [] = { "error", "warning", "message" };
 
-	/// Obsolete. Use Sequence::bound () instead.
-	Dim size () const noexcept
-	{
-		return bound ();
-	}
+	if (l)
+		out_ << l.file ().string () << '(' << l.line () << "): ";
+	out_ << msg_types [(size_t)mt] << ": " << msg << endl;
 
-private:
-	friend class Type;
-
-	Sequence (const Type& type, Dim bound = 0) :
-		Type (type),
-		bound_ (bound)
-	{}
-
-private:
-	Dim bound_;
-};
-
+	if (mt == MessageType::ERROR && (++err_cnt_ >= max_err_cnt_))
+		throw runtime_error ("too many errors, compilation aborted");
 }
 
-#endif
+void MessageOut::message (const std::exception& ex)
+{
+	out_ << ex.what () << endl;
+}
+
+}

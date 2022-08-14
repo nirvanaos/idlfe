@@ -1,4 +1,4 @@
-/// \file Container.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_CONTAINER_H_
-#define NIDL_AST_CONTAINER_H_
+#ifndef IDLFE_AST_CONTAINER_H_
+#define IDLFE_AST_CONTAINER_H_
 #pragma once
 
 #include "Item.h"
@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// Sequential container of the AST items.
+/// \brief Sequential container of the AST items.
 template <class T>
 class ContainerT :
 	public std::vector <Ptr <const T> >
@@ -52,7 +52,7 @@ protected:
 
 class CodeGen;
 
-/// Sequential container of the AST items.
+/// \brief Sequential container of the AST items.
 class Container :
 	public ContainerT <Item>
 {

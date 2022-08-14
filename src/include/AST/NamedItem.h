@@ -1,4 +1,4 @@
-/// \file NamedItem.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_NAMEDITEM_H_
-#define NIDL_AST_NAMEDITEM_H_
+#ifndef IDLFE_AST_NAMEDITEM_H_
+#define IDLFE_AST_NAMEDITEM_H_
 #pragma once
 
 #include "Item.h"
@@ -40,7 +40,7 @@ class SimpleDeclarator;
 
 class ItemScope;
 
-/// The named AST item.
+/// \brief A named AST item.
 class NamedItem :
 	public Item,
 	public Location

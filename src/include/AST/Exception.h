@@ -1,4 +1,4 @@
-/// \file Exception.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,15 +24,15 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_EXCEPTION_H_
-#define NIDL_AST_EXCEPTION_H_
+#ifndef IDLFE_AST_EXCEPTION_H_
+#define IDLFE_AST_EXCEPTION_H_
 #pragma once
 
 #include "StructBase.h"
 
 namespace AST {
 
-/// The `exception` declaration.
+/// \brief The `exception` declaration.
 /// 
 /// \invariant kind () == Item::Kind::EXCEPTION
 /// 
@@ -48,7 +48,11 @@ private:
 };
 
 /// The user exceptions.
-typedef std::vector <const Exception*> Raises;
+/// Item types may be:
+/// - Exception
+/// - Native
+/// 
+typedef std::vector <const ItemWithId*> Raises;
 
 }
 

@@ -1,4 +1,4 @@
-/// \file Type.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_TYPE_H_
-#define NIDL_AST_TYPE_H_
+#ifndef IDLFE_AST_TYPE_H_
+#define IDLFE_AST_TYPE_H_
 #pragma once
 
 #include "BasicType.h"
@@ -42,7 +42,7 @@ typedef uint32_t Dim;
 class Sequence;
 class Array;
 
-/// An IDL type.
+/// \brief An IDL type.
 class Type
 {
 public:

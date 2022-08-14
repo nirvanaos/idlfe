@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_IV_BASE_H_
-#define NIDL_AST_IV_BASE_H_
+#ifndef IDLFE_AST_IV_BASE_H_
+#define IDLFE_AST_IV_BASE_H_
 #pragma once
 
 #include "ItemScope.h"
@@ -34,7 +34,7 @@
 
 namespace AST {
 
-/// The common base for Interface and ValueType.
+/// \brief The common base for Interface and ValueType.
 class IV_Base :
 	public ItemScope,
 	public Container,

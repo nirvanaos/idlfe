@@ -24,8 +24,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_INDENTEDOUT_H_
-#define NIDL_INDENTEDOUT_H_
+#ifndef IDLFE_BE_INDENTEDOUT_H_
+#define IDLFE_BE_INDENTEDOUT_H_
+#pragma once
 
 #include <fstream>
 #include <filesystem>
