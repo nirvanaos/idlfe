@@ -37,29 +37,46 @@ class Location;
 
 namespace BE {
 
+/// Compiler messages output.
 class MessageOut
 {
 public:
-	MessageOut (std::ostream& err_out = std::cerr, unsigned max_err_cnt = 20);
+	/// Constructor.
+	/// 
+	/// \param out Output stream. Default is std::cerr.
+	/// \param max_err_cnt Maximal error count.
+	///   When count of MessageType::ERROR messages reaches this limit,
+	///   the std::runtime_error exception is thrown.
+	MessageOut (std::ostream& out = std::cerr, unsigned max_err_cnt = 20);
 
+	/// Message types.
 	enum class MessageType
 	{
-		ERROR,
-		WARNING,
-		MESSAGE
+		ERROR,   ///< Error message.
+		WARNING, ///< Warning message.
+		MESSAGE  ///< Informational message.
 	};
 
-	void message (const AST::Location& l, MessageType mt, const std::string& err);
+	/// Print message to the output stream.
+	/// 
+	/// \param l AST::Location info.
+	/// \param mt The message type.
+	/// \param msg The message.
+	void message (const AST::Location& l, MessageType mt, const std::string& msg);
 
+	/// Print exception information to the output stream.
+	///
+	/// \param ex An exception.
 	void message (const std::exception& ex);
 
+	/// \returns Count of messages of the MessageType::ERROR type.
 	unsigned error_count () const
 	{
 		return err_cnt_;
 	}
 
 private:
-	std::ostream err_out_;
+	std::ostream out_;
 	const unsigned max_err_cnt_;
 	unsigned err_cnt_;
 };

@@ -31,18 +31,18 @@ using namespace std;
 namespace BE {
 
 MessageOut::MessageOut (ostream& err_out, unsigned max_err_cnt) :
-	err_out_ (err_out.rdbuf ()),
+	out_ (err_out.rdbuf ()),
 	max_err_cnt_ (max_err_cnt),
 	err_cnt_ (0)
 {}
 
-void MessageOut::message (const AST::Location& l, MessageType mt, const string& err)
+void MessageOut::message (const AST::Location& l, MessageType mt, const string& msg)
 {
 	static const char* const msg_types [] = { "error", "warning", "message" };
 
 	if (l)
-		err_out_ << l.file ().string () << '(' << l.line () << "): ";
-	err_out_ << msg_types [(size_t)mt] << ": " << err << endl;
+		out_ << l.file ().string () << '(' << l.line () << "): ";
+	out_ << msg_types [(size_t)mt] << ": " << msg << endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= max_err_cnt_))
 		throw runtime_error ("too many errors, compilation aborted");
@@ -50,7 +50,7 @@ void MessageOut::message (const AST::Location& l, MessageType mt, const string& 
 
 void MessageOut::message (const std::exception& ex)
 {
-	err_out_ << ex.what () << endl;
+	out_ << ex.what () << endl;
 }
 
 }
