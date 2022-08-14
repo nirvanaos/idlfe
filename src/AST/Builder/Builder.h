@@ -23,14 +23,16 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_BUILDER_H_
-#define NIDL_AST_BUILDER_H_
+#ifndef IDLFE_AST_BUILDER_H_
+#define IDLFE_AST_BUILDER_H_
+#pragma once
 
 #include "../../include/AST/Root.h"
 #include "../../include/AST/ValueType.h"
 #include "../../include/AST/Parameter.h"
 #include "../../include/AST/ScopedName.h"
 #include "../../include/AST/Exception.h"
+#include "../../include/BE/MessageOut.h"
 #include "Eval.h"
 #include "Declarators.h"
 #include <ostream>
@@ -52,23 +54,17 @@ class Union;
 
 namespace Build {
 
-class Builder
+class Builder : public BE::MessageOut
 {
 public:
 	Builder (const std::string& file, std::ostream& err_out, bool anonymous_deprecated) :
-		err_cnt_ (0),
-		err_out_ (err_out.rdbuf ()),
+		BE::MessageOut (err_out),
 		tree_ (Ptr <Root>::make <Root> (file)),
 		anonymous_deprecated_ (anonymous_deprecated),
 		cur_file_ (&tree_->file ())
 	{
 		container_stack_.push (tree_);
 		file_stack_.emplace_back (file);
-	}
-
-	unsigned err_cnt () const
-	{
-		return err_cnt_;
 	}
 
 	static const int FILE_FLAG_START = 0x1;
@@ -87,15 +83,6 @@ public:
 	{
 		return file_stack_.size () <= 1;
 	}
-
-	enum class MessageType
-	{
-		ERROR,
-		WARNING,
-		MESSAGE
-	};
-
-	void message (const Location& l, MessageType mt, const std::string& err);
 
 	const std::string& prefix () const;
 
@@ -274,8 +261,6 @@ private:
 	void check_complete (const Symbols& symbols);
 
 private:
-	unsigned err_cnt_;
-	std::ostream err_out_;
 	Ptr <Root> tree_;
 	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;

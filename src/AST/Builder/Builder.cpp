@@ -56,16 +56,6 @@ using namespace std;
 namespace AST {
 namespace Build {
 
-void Builder::message (const Location& l, MessageType mt, const string& err)
-{
-	static const char* const msg_types [] = { "error", "warning", "message" };
-
-	err_out_ << l.file ().string () << '(' << l.line () << "): " << msg_types [(size_t)mt] << ": " << err << endl;
-
-	if (mt == MessageType::ERROR && (++err_cnt_ >= 20))
-		throw runtime_error ("Too many errors, compilation aborted.");
-}
-
 void Builder::pragma (const char* s, const Location& loc)
 {
 	assert (*s == '#');
@@ -1744,16 +1734,16 @@ void Builder::eval_push (const Type& t, const Location& loc)
 
 Ptr <const Root> Builder::finalize ()
 {
-	if (!err_cnt_ && tree_) {
+	if (!error_count () && tree_) {
 		try {
 			check_complete (*tree_);
 			RepIdMap ids;
 			check_rep_ids_unique (ids, *tree_);
 		} catch (const runtime_error& err) {
-			err_out_ << err.what () << endl;
+			message (err);
 		}
 	}
-	if (err_cnt_)
+	if (error_count ())
 		tree_ = nullptr;
 	return std::move (tree_);
 }
