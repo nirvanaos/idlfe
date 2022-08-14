@@ -31,8 +31,8 @@ using namespace std;
 namespace FE {
 
 Driver::Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated) :
-	yyFlexLexer (yyin, cout),
-	AST::Build::Builder (file, cout, anonymous_deprecated),
+	yyFlexLexer (yyin, cerr),
+	AST::Build::Builder (file, cerr, anonymous_deprecated),
 	parser_ (*this)
 {}
 
