@@ -1,4 +1,4 @@
-/// \file Root.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ROOT_H_
-#define NIDL_AST_ROOT_H_
+#ifndef IDLFE_AST_ROOT_H_
+#define IDLFE_AST_ROOT_H_
+#pragma once
 
 #include "Item.h"
 #include "Symbols.h"
@@ -96,7 +97,6 @@ private:
 	}
 
 private:
-
 	struct fs_hash
 	{
 		size_t operator () (const std::filesystem::path& p) const

@@ -1,4 +1,4 @@
-/// \file Interface.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_INTERFACE_H_
-#define NIDL_AST_INTERFACE_H_
+#ifndef IDLFE_AST_INTERFACE_H_
+#define IDLFE_AST_INTERFACE_H_
 #pragma once
 
 #include "IV_Base.h"

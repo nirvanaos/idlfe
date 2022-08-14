@@ -23,8 +23,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_SYMBOLS_H_
-#define NIDL_AST_SYMBOLS_H_
+#ifndef IDLFE_AST_SYMBOLS_H_
+#define IDLFE_AST_SYMBOLS_H_
 #pragma once
 
 #include "NamedItem.h"
@@ -32,19 +32,28 @@
 
 namespace AST {
 
+/// Set of named items.
 class Symbols :
 	public std::set <Ptr <NamedItem>, std::less <> >
 {
 	typedef std::set <Ptr <NamedItem>, std::less <> > Base;
-protected:
-	friend class Build::Builder;
-
+public:
+	/// Find a symbol.
+	/// 
+	/// \param name Item name.
+	/// \returns NamedItem pointer if found, otherwise `nullptr`.
 	const Ptr <NamedItem>* find (const Identifier& name) const noexcept;
 
-private:
-	// Methods made outline to reduce code size.
-	std::pair <iterator, bool> emplace (const NamedItem&);
+	/// Add named item to symbols.
+	/// 
+	/// \param item A NamedItem.
+	/// \returns std::pair <iterator, bool>.
+	std::pair <iterator, bool> emplace (const NamedItem& item);
 
+	/// Add named item to symbols.
+	/// 
+	/// \param item A NamedItem.
+	/// \returns std::pair <iterator, bool>.
 	std::pair <iterator, bool> insert (const NamedItem& item)
 	{
 		return emplace (item);

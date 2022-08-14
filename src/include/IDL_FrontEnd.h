@@ -1,4 +1,4 @@
-/// \file IDL_FrontEnd.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_IDL_FRONTEND_H_
-#define NIDL_IDL_FRONTEND_H_
+#ifndef IDLFE_IDL_FRONTEND_H_
+#define IDLFE_IDL_FRONTEND_H_
+#pragma once
 
 #include <string>
 #include <assert.h>

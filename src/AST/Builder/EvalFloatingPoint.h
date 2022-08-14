@@ -23,8 +23,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_EVALFLOATINGPOINT_H_
-#define NIDL_AST_EVALFLOATINGPOINT_H_
+#ifndef IDLFE_AST_EVALFLOATINGPOINT_H_
+#define IDLFE_AST_EVALFLOATINGPOINT_H_
+#pragma once
 
 #include "EvalIntegral.h"
 

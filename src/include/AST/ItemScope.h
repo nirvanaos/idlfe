@@ -1,4 +1,4 @@
-/// \file ItemScope.h
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -24,8 +24,8 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_AST_ITEMSCOPE_H_
-#define NIDL_AST_ITEMSCOPE_H_
+#ifndef IDLFE_AST_ITEMSCOPE_H_
+#define IDLFE_AST_ITEMSCOPE_H_
 
 #include "ItemWithId.h"
 #include "Symbols.h"
@@ -36,7 +36,41 @@ namespace AST {
 class ItemScope :
 	public ItemWithId
 {
+public:
+	/// \returns Symbols reference.
+	operator Symbols& () noexcept
+	{
+		return symbols_;
+	}
+
+	/// \returns Symbols const reference.
+	operator const Symbols& () const noexcept
+	{
+		return symbols_;
+	}
+
+	/// Cast NamedItem to ItemScope.
+	/// If \p item points to object derived from ItemScope, returns ItemScope pointer.
+	/// Otherwise returns `nullptr`.
+	///
+	/// \param item NamedItem pointer.
+	/// \returns ItemScope pointer or `nullptr`.
+	static const ItemScope* cast (const NamedItem* item) noexcept
+	{
+		return cast (const_cast <NamedItem*> (item));
+	}
+
+	/// Cast NamedItem to ItemScope.
+	/// If \p item points to object derived from ItemScope, returns ItemScope pointer.
+	/// Otherwise returns `nullptr`.
+	///
+	/// \param item NamedItem pointer.
+	/// \returns ItemScope pointer or `nullptr`.
+	static ItemScope* cast (NamedItem* item) noexcept;
+
 protected:
+	friend class Build::Builder;
+
 	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
@@ -46,25 +80,6 @@ protected:
 	}
 
 private:
-	friend class Build::Builder;
-
-	operator Symbols& () noexcept
-	{
-		return symbols_;
-	}
-
-	operator const Symbols& () const noexcept
-	{
-		return symbols_;
-	}
-
-	static const ItemScope* cast (const NamedItem* item) noexcept
-	{
-		return cast (const_cast <NamedItem*> (item));
-	}
-
-	static ItemScope* cast (NamedItem* item) noexcept;
-
 	const std::string& prefix () const noexcept
 	{
 		return prefix_;

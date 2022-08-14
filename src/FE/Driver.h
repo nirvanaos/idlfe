@@ -23,8 +23,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#ifndef NIDL_FE_DRIVER_H_
-#define NIDL_FE_DRIVER_H_
+#ifndef IDLFE_FE_DRIVER_H_
+#define IDLFE_FE_DRIVER_H_
+#pragma once
 
 #if !defined(yyFlexLexerOnce)
 #include "FlexLexer.h"
