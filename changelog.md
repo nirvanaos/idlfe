@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1 - 2022-10-01
+### Fixed
+ - Union discriminator type.
+
 ## 3.0.0 - 2022-08-14
 ## Changed
  - Allow native type in the exception list, as it required by the standard.
