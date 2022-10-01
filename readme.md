@@ -36,7 +36,7 @@ See: https://www.omg.org/spec/IDL/4.2/
 
 ## How to use
 
-Install nirvanaos.idlfe.vc.1.#.# NuGet package.
+Install nirvanaos.idlfe.vc.#.#.# NuGet package.
 
 ## How to build
 
