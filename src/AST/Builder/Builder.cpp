@@ -1374,7 +1374,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 		switch (t.tkind ()) {
 			case Type::Kind::BASIC_TYPE: {
 				BasicType bt = t.basic_type ();
-				if (is_integral (bt))
+				if (is_integral (bt) && bt != BasicType::OCTET && bt != BasicType::WCHAR)
 					type_OK = true;
 			} break;
 
