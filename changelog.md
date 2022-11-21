@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.2 - 2022-11-21
+### Fixed
+ - Validate context strings.
+
 ## 3.0.1 - 2022-10-01
 ### Fixed
  - Union discriminator type.
