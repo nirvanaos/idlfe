@@ -1191,10 +1191,13 @@ void Builder::operation_context (const Variants& strings)
 		assert (op->kind () == Item::Kind::OPERATION);
 		Operation::Context ctx;
 		for (auto it = strings.begin (); it != strings.end (); ++it) {
-			if (!it->empty ()) {
-				assert (it->vtype () == Variant::VT::STRING);
-				ctx.push_back (it->as_string ());
-			}
+			assert (it->vtype () == Variant::VT::STRING);
+			// Validate
+			const string& id = it->as_string ();
+			size_t asterick = id.find ('*');
+			if (id.empty () || asterick == 0 || asterick < id.length () - 1)
+				message (*op, MessageType::ERROR, "Invalid context ID: \"" + id + "\"");
+			ctx.push_back (id);
 		}
 
 		static_cast <Operation*> (op)->context (move (ctx));
