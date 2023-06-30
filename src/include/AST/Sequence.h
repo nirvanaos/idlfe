@@ -49,6 +49,12 @@ public:
 		return bound ();
 	}
 
+	/// Check types for equality.
+	bool operator == (const Sequence& rhs) const noexcept
+	{
+		return Type::operator == (rhs) && bound () == rhs.bound ();
+	}
+
 private:
 	friend class Type;
 

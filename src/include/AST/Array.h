@@ -44,6 +44,12 @@ public:
 		return dimensions_;
 	}
 
+	/// Check types for equality.
+	bool operator == (const Array& rhs) const noexcept
+	{
+		return Type::operator == (rhs) && dimensions () == rhs.dimensions ();
+	}
+
 private:
 	friend class Type;
 
