@@ -94,6 +94,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a3ec341ba908cc0d525f3955616edfc0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a068e9fc4f819fafe552295c497012214"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_identifier.html#a068e9fc4f819fafe552295c497012214">Identifier</a> (const char *s)</td></tr>
 <tr class="separator:a068e9fc4f819fafe552295c497012214"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ba524562d65ad2131f43b23a9ce8ec0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_identifier.html#a2ba524562d65ad2131f43b23a9ce8ec0">valid</a> () const noexcept</td></tr>
+<tr class="separator:a2ba524562d65ad2131f43b23a9ce8ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4acb5e20af50e925227081db5922107b"><td class="memItemLeft" align="right" valign="top"><a id="a4acb5e20af50e925227081db5922107b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_identifier.html#a4acb5e20af50e925227081db5922107b">operator==</a> (const char *s) const noexcept</td></tr>
+<tr class="memdesc:a4acb5e20af50e925227081db5922107b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Case-insensitive equivalency. <br /></td></tr>
+<tr class="separator:a4acb5e20af50e925227081db5922107b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An identifier. </p>
@@ -134,9 +140,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 <p>CORBA identifiers may be "escaped" by the underscore.</p>
-<p>See 7.2.3.2 of <a href="https://www.omg.org/spec/IDL/4.2/">https://www.omg.org/spec/IDL/4.2/</a> The constructor removes leading undescore. </p>
+<p>See 7.2.3.2 of <a href="https://www.omg.org/spec/IDL/4.2/">https://www.omg.org/spec/IDL/4.2/</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00049">49</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00048">48</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
 
 </div>
 </div>
@@ -164,9 +170,37 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 <p>CORBA identifiers may be "escaped" by the underscore.</p>
-<p>See 7.2.3.2 of <a href="https://www.omg.org/spec/IDL/4.2/">https://www.omg.org/spec/IDL/4.2/</a> The constructor removes leading undescore. </p>
+<p>See 7.2.3.2 of <a href="https://www.omg.org/spec/IDL/4.2/">https://www.omg.org/spec/IDL/4.2/</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00057">57</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_identifier_8h_source.html#l00055">55</a> of file <a class="el" href="_identifier_8h_source.html">Identifier.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2ba524562d65ad2131f43b23a9ce8ec0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ba524562d65ad2131f43b23a9ce8ec0">&#9670;&nbsp;</a></span>valid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AST::Identifier::valid </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Check for reserved word collision.</p>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if identifier is valid. </dd></dl>
 
 </div>
 </div>
