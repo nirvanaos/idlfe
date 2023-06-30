@@ -114,30 +114,35 @@ const char* const Identifier::reserved_words_ [] = {
 	"uint64"
 };
 
-inline bool ci_compare (char l, char r) noexcept
+static inline bool ci_lt (char l, char r) noexcept
 {
 	return Identifier::tolower (l) < Identifier::tolower (r);
 }
 
+static inline bool ci_eq (char l, char r) noexcept
+{
+	return Identifier::tolower (l) == Identifier::tolower (r);
+}
+
 bool Identifier::operator < (const Identifier& r) const noexcept
 {
-	return std::lexicographical_compare (begin (), end (), r.begin (), r.end (), ci_compare);
+	return std::lexicographical_compare (begin (), end (), r.begin (), r.end (), ci_lt);
 }
 
 bool operator < (const Identifier& l, const char* r) noexcept
 {
-	return std::lexicographical_compare (l.begin (), l.end (), r, r + strlen (r), ci_compare);
+	return std::lexicographical_compare (l.begin (), l.end (), r, r + strlen (r), ci_lt);
 }
 
 bool operator < (const char* l, const Identifier& r) noexcept
 {
-	return std::lexicographical_compare (l, l + strlen (l), r.begin (), r.end (), ci_compare);
+	return std::lexicographical_compare (l, l + strlen (l), r.begin (), r.end (), ci_lt);
 }
 
 bool Identifier::operator == (const char* s) const noexcept
 {
 	size_t len = strlen (s);
-	return size () == len && std::equal (begin (), end (), s, ci_compare);
+	return size () == len && std::equal (begin (), end (), s, ci_eq);
 }
 
 bool Identifier::valid () const noexcept
