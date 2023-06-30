@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 - 2023-11-21
+### Fixed
+ - Identifier validation.
+
 ## 3.1.0 - 2023-11-21
 ### Added
  - Equality operator for Type.
