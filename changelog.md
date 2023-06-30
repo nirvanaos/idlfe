@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.2 - 2023-11-21
+### Fixed
+ - Bug.
+
 ## 3.1.1 - 2023-11-21
 ### Fixed
  - Identifier validation.
