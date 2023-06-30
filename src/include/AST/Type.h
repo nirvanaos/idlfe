@@ -161,6 +161,9 @@ public:
 	/// Move assignment.
 	Type& operator = (Type&& src) noexcept;
 
+	/// Check types for equality.
+	bool operator == (const Type& rhs) const noexcept;
+
 	Type (BasicType bt);
 
 	static Type make_string (Dim size = 0)

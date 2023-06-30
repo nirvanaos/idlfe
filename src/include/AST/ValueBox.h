@@ -44,7 +44,7 @@ class ValueBox :
 private:
 	template <class T> friend class Ptr;
 
-	ValueBox (const Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
+	ValueBox (Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& type) :
 		ItemWithId (Item::Kind::VALUE_BOX, builder, name),
 		Type (type)
 	{}

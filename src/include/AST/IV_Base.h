@@ -41,7 +41,7 @@ class IV_Base :
 	public ForwardDeclarable
 {
 protected:
-	IV_Base (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	IV_Base (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (kind, builder, name)
 	{}
 

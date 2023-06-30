@@ -59,7 +59,7 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	Operation (const Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
+	Operation (Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
 		OperationBase (Item::Kind::OPERATION, builder, name),
 		Type (type),
 		oneway_ (oneway)

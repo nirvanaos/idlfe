@@ -143,6 +143,37 @@ const Type& Type::dereference_type () const noexcept
 	return *t;
 }
 
+bool Type::operator == (const Type& rhs) const noexcept
+{
+	if (tkind () == rhs.tkind ()) {
+		switch (tkind ()) {
+		case Kind::VOID:
+			return true;
+
+		case Kind::BASIC_TYPE:
+			return basic_type () == rhs.basic_type ();
+
+		case Kind::NAMED_TYPE:
+			return &named_type () == &rhs.named_type ();
+
+		case Kind::STRING:
+		case Kind::WSTRING:
+			return string_bound () == rhs.string_bound ();
+
+		case Kind::FIXED:
+			return fixed_digits () == rhs.fixed_digits () && fixed_scale () == rhs.fixed_scale ();
+
+		case Kind::SEQUENCE:
+			return sequence () == rhs.sequence ();
+
+		case Kind::ARRAY:
+			return array () == rhs.array ();
+		}
+	}
+
+	return false;
+}
+
 size_t Type::key_max () const noexcept
 {
 	if (tkind () == Kind::BASIC_TYPE) {

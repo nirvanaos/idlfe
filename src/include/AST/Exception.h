@@ -42,7 +42,7 @@ class Exception :
 private:
 	template <class T> friend class Ptr;
 
-	Exception (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	Exception (Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		StructBase (Item::Kind::EXCEPTION, builder, name)
 	{}
 };

@@ -34,7 +34,7 @@
 
 namespace AST {
 
-ItemScope::ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+ItemScope::ItemScope (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
 	ItemWithId (kind, builder, name),
 	prefix_ (builder.prefix ())
 {}

@@ -108,7 +108,11 @@ void IndentedOut::open (const std::filesystem::path& file)
 {
 	if (is_open ())
 		throw runtime_error ("File is already open");
-	create_directories (file.parent_path ());
+	{
+		auto parent = file.parent_path ();
+		if (!parent.empty ())
+			create_directories (parent);
+	}
 	ofstream::open (file);
 	if (!is_open ())
 		throw runtime_error (string ("Can not open file: ") + file.string ());

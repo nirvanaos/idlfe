@@ -65,7 +65,7 @@ ItemWithId* ItemWithId::cast (NamedItem* item) noexcept
 	return p;
 }
 
-ItemWithId::ItemWithId (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+ItemWithId::ItemWithId (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
 	NamedItem (kind, builder, name),
 	data_ (builder.prefix ())
 {}

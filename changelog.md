@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.1.0 - 2023-11-21
+### Added
+ - Equality operator for Type.
+### Changed
+ - Allow repeated typedef and native declarations.
+### Fixed
+ - Directory creation in BE::IndentedOut.
+ - Check for collision with reserved words.
+
 ## 3.0.2 - 2022-11-21
 ### Fixed
  - Validate context strings.

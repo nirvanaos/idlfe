@@ -45,18 +45,24 @@ public:
 	/// CORBA identifiers may be "escaped" by the underscore.
 	/// 
 	/// See 7.2.3.2 of https://www.omg.org/spec/IDL/4.2/
-	/// The constructor removes leading undescore.
 	Identifier (const char* s, size_t len) :
-		std::string ('_' == *s ? s + 1 : s, '_' == *s ? len - 1 : len)
+		std::string (s, len)
 	{}
 
 	/// CORBA identifiers may be "escaped" by the underscore.
 	/// 
 	/// See 7.2.3.2 of https://www.omg.org/spec/IDL/4.2/
-	/// The constructor removes leading undescore.
 	Identifier (const char* s) :
-		std::string ('_' == *s ? s + 1 : s)
+		std::string (s)
 	{}
+
+	/// Check for reserved word collision.
+	/// 
+	/// \returns `true` if identifier is valid.
+	bool valid () const noexcept;
+
+	/// Case-insensitive equivalency.
+	bool operator == (const char* s) const noexcept;
 
 	Identifier (const Identifier&) = default;
 	Identifier (Identifier&&) = default;
@@ -68,7 +74,16 @@ public:
 	{
 		return ('A' <= c && c <= 'Z') ? c + 32 : c;
 	}
+
+private:
+	static const char* const reserved_words_ [];
 };
+
+/// Case-insensitive compare.
+bool operator < (const Identifier& l, const char* r) noexcept;
+
+/// Case-insensitive compare.
+bool operator < (const char* l, const Identifier& r) noexcept;
 
 }
 

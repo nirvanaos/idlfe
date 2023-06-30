@@ -26,9 +26,93 @@
 #include "../include/AST/Identifier.h"
 #include <algorithm>
 
-using namespace std;
-
 namespace AST {
+
+const char* const Identifier::reserved_words_ [] = {
+	"abstract",
+	"any",
+	"alias",
+	"attribute",
+	"bitfield",
+	"bitmask",
+	"bitset",
+	"boolean",
+	"case",
+	"char",
+	"component",
+	"connector",
+	"const",
+	"consumes",
+	"context",
+	"custom",
+	"default",
+	"double",
+	"exception",
+	"emits",
+	"enum",
+	"eventtype",
+	"factory",
+	"FALSE",
+	"finder",
+	"fixed",
+	"float",
+	"getraises",
+	"home",
+	"import",
+	"in",
+	"inout",
+	"interface",
+	"local",
+	"long",
+	"manages",
+	"map",
+	"mirrorport",
+	"module",
+	"multiple",
+	"native",
+	"Object",
+	"octet",
+	"oneway",
+	"out",
+	"primarykey",
+	"private",
+	"port",
+	"porttype",
+	"provides",
+	"public",
+	"publishes",
+	"raises",
+	"readonly",
+	"setraises",
+	"sequence",
+	"short",
+	"string",
+	"struct",
+	"supports",
+	"switch",
+	"TRUE",
+	"truncatable",
+	"typedef",
+	"typeid",
+	"typename",
+	"typeprefix",
+	"unsigned",
+	"union",
+	"uses",
+	"ValueBase",
+	"valuetype",
+	"void",
+	"wchar",
+	"wstring",
+	"int8",
+	"uint8",
+	"int16",
+	"int32",
+	"int64",
+	"uint16",
+	"uint32",
+	"uint64"
+};
 
 inline bool ci_compare (char l, char r) noexcept
 {
@@ -37,7 +121,28 @@ inline bool ci_compare (char l, char r) noexcept
 
 bool Identifier::operator < (const Identifier& r) const noexcept
 {
-	return lexicographical_compare (begin (), end (), r.begin (), r.end (), ci_compare);
+	return std::lexicographical_compare (begin (), end (), r.begin (), r.end (), ci_compare);
+}
+
+bool operator < (const Identifier& l, const char* r) noexcept
+{
+	return std::lexicographical_compare (l.begin (), l.end (), r, r + strlen (r), ci_compare);
+}
+
+bool operator < (const char* l, const Identifier& r) noexcept
+{
+	return std::lexicographical_compare (l, l + strlen (l), r.begin (), r.end (), ci_compare);
+}
+
+bool Identifier::operator == (const char* s) const noexcept
+{
+	size_t len = strlen (s);
+	return size () == len && std::equal (begin (), end (), s, ci_compare);
+}
+
+bool Identifier::valid () const noexcept
+{
+	return ('_' == front () || !std::binary_search (reserved_words_, std::end (reserved_words_), *this));
 }
 
 }

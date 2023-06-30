@@ -30,11 +30,21 @@ using namespace AST::Build;
 
 namespace AST {
 
-NamedItem::NamedItem (Kind kind, const Builder& builder, const SimpleDeclarator& name) :
+Identifier NamedItem::unescape (Builder& builder, const SimpleDeclarator& name)
+{
+	if (!name.valid ())
+		builder.message (name, Builder::MessageType::ERROR, "Identifier \'" + name + "\' is invalid.");
+	Identifier id (name);
+	if ('_' == id.front ())
+		id.erase (0, 1);
+	return id;
+}
+
+NamedItem::NamedItem (Kind kind, Builder& builder, const SimpleDeclarator& name) :
 	Item (kind),
 	Location (name),
 	parent_ (builder.cur_parent ()),
-	name_ (name)
+	name_ (unescape (builder, name))
 {}
 
 std::string NamedItem::qualified_name () const
