@@ -561,9 +561,18 @@ void Builder::native (const SimpleDeclarator& name)
 	if (scope) {
 		Ptr <NamedItem> def = Ptr <NamedItem>::make <Native> (ref (*this), ref (name));
 		auto ins = scope->insert (*def);
-		if (!ins.second)
-			error_name_collision (name, **ins.first);
-		else if (is_main_file ())
+		if (!ins.second) {
+			const NamedItem& item = **ins.first;
+			if (item.kind () == Item::Kind::NATIVE) {
+				const Native& prev = static_cast <const Native&> (item);
+				prev.check_prefix (*this, name);
+			} else
+				error_name_collision (name, **ins.first);
+
+			return;
+		}
+
+		if (is_main_file ())
 			container_stack_.top ()->append (*def);
 	}
 }
@@ -574,17 +583,29 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 	Symbols* scope = cur_scope ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			Ptr <NamedItem> def;
+			Ptr <TypeDef> def;
 			if (decl->array_sizes ().empty ())
-				def = Ptr <NamedItem>::make <TypeDef> (ref (*this), ref (*decl), ref (type));
+				def = Ptr <TypeDef>::make <TypeDef> (ref (*this), ref (*decl), ref (type));
 			else {
 				Type arr (type, decl->array_sizes ());
-				def = Ptr <NamedItem>::make <TypeDef> (ref (*this), ref (*decl), ref (arr));
+				def = Ptr <TypeDef>::make <TypeDef> (ref (*this), ref (*decl), ref (arr));
 			}
 			auto ins = scope->insert (*def);
-			if (!ins.second)
-				error_name_collision (*decl, **ins.first);
-			else if (is_main_file ())
+			if (!ins.second) {
+				const NamedItem& item = **ins.first;
+				if (item.kind () == Item::Kind::TYPE_DEF) {
+					const TypeDef& prev = static_cast <const TypeDef&> (item);
+					if (!(static_cast <const Type&> (prev) == *def))
+						error_name_collision (*decl, **ins.first);
+					else
+						prev.check_prefix (*this, *decl);
+				} else
+					error_name_collision (*decl, **ins.first);
+
+				continue;
+			}
+			
+			if (is_main_file ())
 				container_stack_.top ()->append (*def);
 		}
 	}
@@ -656,7 +677,6 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				error_interface_kind (name, ik, prev_ik, item);
 
 			rid->check_prefix (*this, name);
-			decl->set_id (*rid);
 			return; // Ignore second declaration
 		}
 
@@ -697,7 +717,6 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 				error_valuetype_mod (name, is_abstract, item);
 
 			rid->check_prefix (*this, name);
-			decl->set_id (*rid);
 			return; // Ignore second declaration
 		}
 
