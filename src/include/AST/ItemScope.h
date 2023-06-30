@@ -71,7 +71,7 @@ public:
 protected:
 	friend class Build::Builder;
 
-	ItemScope (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
+	ItemScope (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
 	{

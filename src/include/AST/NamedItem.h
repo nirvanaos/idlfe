@@ -65,7 +65,10 @@ public:
 	ScopedName scoped_name () const;
 
 protected:
-	NamedItem (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
+	NamedItem (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
+
+private:
+	static Identifier unescape (Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 private:
 	const ItemScope* parent_;

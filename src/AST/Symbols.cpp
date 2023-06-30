@@ -37,6 +37,12 @@ std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
 
 const Ptr <NamedItem>* Symbols::find (const Identifier& name) const noexcept
 {
+	if (name.front () == '_') {
+		Identifier tmp (name);
+		tmp.erase (0, 1);
+		return find (tmp);
+	}
+
 	auto f = Base::find (name);
 	if (f != end ())
 		return &*f;

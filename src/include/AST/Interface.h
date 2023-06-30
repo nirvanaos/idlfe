@@ -112,7 +112,7 @@ private:
 
 	void get_all_interfaces (Build::IV_Bases& all) const;
 
-	Interface (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
+	Interface (Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		IV_Base (Item::Kind::INTERFACE, builder, name),
 		InterfaceKind (kind)
 	{}
@@ -139,7 +139,7 @@ class InterfaceDecl :
 private:
 	template <class T> friend class Ptr;
 
-	InterfaceDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
+	InterfaceDecl (Build::Builder& builder, const Build::SimpleDeclarator& name, InterfaceKind kind = InterfaceKind ()) :
 		ItemWithId (Item::Kind::INTERFACE_DECL, builder, name),
 		InterfaceKind (kind)
 	{}

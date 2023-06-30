@@ -52,7 +52,7 @@ public:
 	}
 
 protected:
-	ItemWithId (Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name);
+	ItemWithId (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
 
 	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
 

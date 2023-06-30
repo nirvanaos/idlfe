@@ -43,7 +43,7 @@ class Module :
 private:
 	template <class T> friend class Ptr;
 
-	Module (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	Module (Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		ItemScope (Kind::MODULE, builder, name)
 	{}
 };

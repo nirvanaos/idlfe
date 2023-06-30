@@ -42,7 +42,7 @@ class ValueFactory :
 private:
 	template <class T> friend class Ptr;
 
-	ValueFactory (const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	ValueFactory (Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		OperationBase (Item::Kind::VALUE_FACTORY, builder, name)
 	{}
 };

@@ -46,7 +46,7 @@ public:
 	}
 
 protected:
-	OperationBase (Item::Kind kind, const Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	OperationBase (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
 		NamedItem (kind, builder, name)
 	{}
 

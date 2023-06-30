@@ -90,7 +90,7 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	ValueType (const Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
+	ValueType (Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
 		IV_Base (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
@@ -140,7 +140,7 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	ValueTypeDecl (const Build::Builder& builder, const Build::SimpleDeclarator& name, bool abstr) :
+	ValueTypeDecl (Build::Builder& builder, const Build::SimpleDeclarator& name, bool abstr) :
 		ItemWithId (Item::Kind::VALUE_TYPE_DECL, builder, name),
 		is_abstract_ (abstr)
 	{}
