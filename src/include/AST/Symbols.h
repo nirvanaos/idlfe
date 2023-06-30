@@ -42,7 +42,7 @@ public:
 	/// 
 	/// \param name Item name.
 	/// \returns NamedItem pointer if found, otherwise `nullptr`.
-	const Ptr <NamedItem>* find (const Identifier& name) const noexcept;
+	const Ptr <NamedItem>* find (const Identifier& name) const;
 
 	/// Add named item to symbols.
 	/// 

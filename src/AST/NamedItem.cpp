@@ -32,11 +32,11 @@ namespace AST {
 
 Identifier NamedItem::unescape (Builder& builder, const SimpleDeclarator& name)
 {
-	if (!name.valid ())
-		builder.message (name, Builder::MessageType::ERROR, "Identifier \'" + name + "\' is invalid.");
 	Identifier id (name);
 	if ('_' == id.front ())
 		id.erase (0, 1);
+	else
+		builder.validate_id (name, name);
 	return id;
 }
 
