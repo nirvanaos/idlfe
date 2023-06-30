@@ -293,10 +293,10 @@ void Builder::see_declaration_of (const Location& loc, const string& name)
 const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 {
 	auto name = scoped_name.begin ();
+	validate_id (*name, scoped_name);
 	pair <bool, const Ptr <NamedItem>*> f = { false, nullptr };
 	if (scoped_name.from_root) {
-		const Symbols& scope = *tree_;
-		const Ptr <NamedItem>* p = scope.find (*name);
+		const Ptr <NamedItem>* p = find (*tree_, *name);
 		f = make_pair (p, p);
 	} else {
 		for (ScopeStack::const_iterator it = scope_stack_.end (); it != scope_stack_.begin ();) {
@@ -310,12 +310,13 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 		}
 
 		if (!f.first) {
-			const Ptr <NamedItem>* p = static_cast <const Symbols&> (*tree_).find (*name);
+			const Ptr <NamedItem>* p = find (*tree_, *name);
 			f = make_pair (p, p);
 		}
 	}
 
 	while (f.second && scoped_name.end () != ++name) {
+		validate_id (*name, scoped_name);
 		const ItemScope* scope = ItemScope::cast (*f.second);
 		if (scope) {
 			f = lookup (*scope, *name, scoped_name);
@@ -348,10 +349,16 @@ pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, con
 		} break;
 
 		default: {
-			const Ptr <NamedItem>* p = static_cast <const Symbols&> (scope).find (name);
+			const Ptr <NamedItem>* p = find (scope, name);
 			return make_pair (p, p);
 		}
 	}
+}
+
+void Builder::validate_id (const Identifier& name, const Location& loc)
+{
+	if (!name.valid ())
+		message (loc, Builder::MessageType::ERROR, "Identifier \'" + name + "\' is invalid.");
 }
 
 std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& containers, const Identifier& name, const Location& loc)
@@ -360,7 +367,7 @@ std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& contai
 	unordered_set <const Ptr <NamedItem>*> found;
 	for (const IV_Base* cont : containers) {
 		if (unique.insert (cont).second) {
-			auto p = static_cast <const Symbols&> (*cont).find (name);
+			auto p = find (*cont, name);
 			if (p)
 				found.insert (p);
 		}

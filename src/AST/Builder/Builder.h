@@ -221,6 +221,8 @@ public:
 
 	void check_anonymous (const Type& type, const SimpleDeclarator& name);
 
+	void validate_id (const Identifier& name, const Location& loc);
+
 private:
 	bool prefix_valid (const std::string& pref, const Location& loc);
 	void prefix (const std::string& pref, const Location& loc);
@@ -239,6 +241,11 @@ private:
 
 	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
 	std::pair <bool, const Ptr <NamedItem>*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
+	
+	static const Ptr <NamedItem>* find (const Symbols& symbols, const Identifier& name)
+	{
+		return symbols.find (name);
+	}
 
 	void error_name_collision (const SimpleDeclarator& name, const Location& prev_loc);
 	void error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc);
