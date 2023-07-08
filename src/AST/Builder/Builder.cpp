@@ -1531,7 +1531,7 @@ void Builder::member (const Type& type, const Declarators& names)
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
 					error_name_collision (*decl, **ins.first);
-				else if (is_main_file ())
+				else
 					s->append (*item);
 			}
 		}
@@ -1593,7 +1593,7 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
 					error_name_collision (decl, **ins.first);
-				else if (is_main_file ()) {
+				else {
 					u->append (*item);
 					if (union_.element.is_default)
 						u->default_element_ = item;
