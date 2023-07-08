@@ -1,14 +1,18 @@
 # Changelog
 
-## 3.1.2 - 2023-11-21
+## 3.1.3 - 2023-07-08
 ### Fixed
  - Bug.
 
-## 3.1.1 - 2023-11-21
+## 3.1.2 - 2023-06-30
+### Fixed
+ - Bug.
+
+## 3.1.1 - 2023-06-30
 ### Fixed
  - Identifier validation.
 
-## 3.1.0 - 2023-11-21
+## 3.1.0 - 2023-06-30
 ### Added
  - Equality operator for Type.
 ### Changed
