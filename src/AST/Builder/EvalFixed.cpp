@@ -28,8 +28,6 @@
 #include "../../include/AST/Constant.h"
 #include <stdexcept>
 
-using namespace std;
-
 namespace AST {
 namespace Build {
 
@@ -47,10 +45,10 @@ EvalFixed::Context::Context (int numdigits)
 void EvalFixed::Context::check () const
 {
 	if (status)
-		throw runtime_error (decContextStatusToString (this));
+		throw std::runtime_error (decContextStatusToString (this));
 }
 
-Variant EvalFixed::literal_fixed (const string& s, const Location& loc)
+Variant EvalFixed::literal_fixed (const std::string& s, const Location& loc)
 {
 	assert (!s.empty ());
 	assert (s.back () == 'd' || s.back () == 'D');
@@ -62,7 +60,7 @@ Variant EvalFixed::literal_fixed (const string& s, const Location& loc)
 		ctx.check ();
 		decNumberReduce ((decNumber*)&v, (const decNumber*)&v, &ctx);
 		ctx.check ();
-	} catch (const exception& ex) {
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
@@ -110,7 +108,7 @@ Variant EvalFixed::expr (const Variant& l, char op, const Variant& r, const Loca
 			}
 			ctx.check ();
 			return ret;
-		} catch (const exception& ex) {
+		} catch (const std::exception& ex) {
 			error (loc, ex);
 		}
 	}
@@ -134,7 +132,7 @@ Variant EvalFixed::expr (char op, const Variant& v, const Location& loc)
 					return Variant ();
 			}
 			return ret;
-		} catch (const exception& ex) {
+		} catch (const std::exception& ex) {
 			error (loc, ex);
 		}
 	}
@@ -145,7 +143,7 @@ Variant EvalFixed::cast (const Type& t, Variant&& v, const Location& loc)
 {
 	assert (t.dereference_type ().tkind () == Type::Kind::FIXED);
 	assert (v.empty () || v.dereference_const ().vtype () == Variant::VT::FIXED);
-	return move (v);
+	return std::move (v);
 }
 
 }

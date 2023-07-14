@@ -26,8 +26,6 @@
 #include "../include/AST/Interface.h"
 #include "Builder/Builder.h"
 
-using namespace std;
-
 namespace AST {
 
 using namespace Build;
@@ -55,13 +53,13 @@ void Interface::get_all_interfaces (IV_Bases& all) const
 
 Interfaces Interface::get_all_bases () const
 {
-	unordered_set <const Interface*> bset;
+	std::unordered_set <const Interface*> bset;
 	Interfaces bvec;
 	get_all_bases (bset, bvec);
 	return bvec;
 }
 
-void Interface::get_all_bases (unordered_set <const Interface*>& bset, Interfaces& bvec) const
+void Interface::get_all_bases (std::unordered_set <const Interface*>& bset, Interfaces& bvec) const
 {
 	for (const Interface* base : bases_) {
 		if (bset.insert (base).second) {

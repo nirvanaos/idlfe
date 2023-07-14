@@ -49,8 +49,6 @@
 #include <stdexcept>
 #include <algorithm>
 
-using namespace std;
-
 #define INCOMPLETE_ERROR "incomplete type is not allowed"
 
 namespace AST {
@@ -70,17 +68,17 @@ void Builder::pragma (const char* s, const Location& loc)
 		const char* end = s + 1;
 		while (!isspace (*end))
 			++end;
-		string pr (s, end - s);
+		std::string pr (s, end - s);
 		if (pr == "ID") {
 			s = end + 1;
 			ScopedName name (loc);
-			string id;
+			std::string id;
 			if (get_scoped_name (s, name) && get_quoted_string (s, id, loc) && !id.empty ()) {
 				type_id (name, id, loc);
 				return;
 			}
 		} else if (pr == "prefix") {
-			string pref;
+			std::string pref;
 			if (get_quoted_string (s, pref, loc)) {
 				prefix (pref, loc);
 				return;
@@ -94,7 +92,7 @@ void Builder::pragma (const char* s, const Location& loc)
 				Version ver;
 				char* endptr;
 				unsigned long u = strtoul (s, &endptr, 10);
-				if (endptr > s && u <= numeric_limits <uint16_t>::max ()) {
+				if (endptr > s && u <= std::numeric_limits <uint16_t>::max ()) {
 					ver.major = (uint16_t)u;
 					s = endptr;
 					while (isspace (*s))
@@ -104,7 +102,7 @@ void Builder::pragma (const char* s, const Location& loc)
 						while (isspace (*s))
 							++s;
 						u = strtoul (s, &endptr, 10);
-						if (endptr > s && u <= numeric_limits <uint16_t>::max ()) {
+						if (endptr > s && u <= std::numeric_limits <uint16_t>::max ()) {
 							ver.minor = (uint16_t)u;
 							ItemWithId* rep_id = lookup_rep_id (name);
 							if (rep_id)
@@ -115,7 +113,7 @@ void Builder::pragma (const char* s, const Location& loc)
 				}
 			}
 		} else {
-			message (loc, MessageType::WARNING, string ("unknown pragma ") + pr);
+			message (loc, MessageType::WARNING, std::string ("unknown pragma ") + pr);
 			return;
 		}
 	}
@@ -152,7 +150,7 @@ ItemWithId* Builder::lookup_rep_id (const ScopedName& name)
 void Builder::type_prefix (const ScopedName& name, const Variant& s, const Location& id_loc)
 {
 	if (!s.empty ()) {
-		const string& pref = s.as_string ();
+		const std::string& pref = s.as_string ();
 		if (name.empty ())
 			prefix (pref, name);
 		else {
@@ -179,14 +177,14 @@ bool Builder::get_quoted_string (const char*& ps, std::string& qs, const Locatio
 		++p;
 	if ('"' == *p) {
 		++p;
-		string s;
+		std::string s;
 		while ('"' != *p) {
 			try {
 				char c = Eval::unescape_char (p);
 				if (!c)
 					break;
 				s += c;
-			} catch (const exception& ex) {
+			} catch (const std::exception& ex) {
 				message (loc, MessageType::ERROR, ex.what ());
 				return false;
 			}
@@ -195,7 +193,7 @@ bool Builder::get_quoted_string (const char*& ps, std::string& qs, const Locatio
 			ps = p + 1;
 			return true;
 		} else
-			message (loc, MessageType::ERROR, string ("invalid string: ") + ps);
+			message (loc, MessageType::ERROR, std::string ("invalid string: ") + ps);
 	}
 	return false;
 }
@@ -254,7 +252,7 @@ void Builder::linemarker (const std::string& name, const Location& loc, int flag
 	if (flags & FILE_FLAG_START) {
 		// Use #include at global scope only.
 		if (is_main_file () && container_stack_.size () == 1)
-			tree_->append (*Ptr <Item>::make <Include> (filesystem::path (name), flags & FILE_FLAG_SYSTEM, ref (loc)));
+			tree_->append (*Ptr <Item>::make <Include> (std::filesystem::path (name), flags & FILE_FLAG_SYSTEM, std::ref (loc)));
 		file_stack_.emplace_back (name);
 	} else {
 		// Leave include file
@@ -285,19 +283,19 @@ void Builder::see_prev_declaration (const Location& loc)
 	message (loc, MessageType::MESSAGE, "see previous declaration");
 }
 
-void Builder::see_declaration_of (const Location& loc, const string& name)
+void Builder::see_declaration_of (const Location& loc, const std::string& name)
 {
-	message (loc, MessageType::MESSAGE, string ("see declaration of ") + name);
+	message (loc, MessageType::MESSAGE, "see declaration of " + name);
 }
 
 const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 {
 	auto name = scoped_name.begin ();
 	validate_id (*name, scoped_name);
-	pair <bool, const Ptr <NamedItem>*> f = { false, nullptr };
+	std::pair <bool, const Ptr <NamedItem>*> f = { false, nullptr };
 	if (scoped_name.from_root) {
 		const Ptr <NamedItem>* p = find (*tree_, *name);
-		f = make_pair (p, p);
+		f = std::make_pair (p, p);
 	} else {
 		for (ScopeStack::const_iterator it = scope_stack_.end (); it != scope_stack_.begin ();) {
 			--it;
@@ -311,7 +309,7 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 
 		if (!f.first) {
 			const Ptr <NamedItem>* p = find (*tree_, *name);
-			f = make_pair (p, p);
+			f = std::make_pair (p, p);
 		}
 	}
 
@@ -327,12 +325,12 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 	}
 
 	if (!f.first)
-		message (scoped_name, MessageType::ERROR, string ("symbol not found: ") + scoped_name.stringize ());
+		message (scoped_name, MessageType::ERROR, "symbol not found: " + scoped_name.stringize ());
 
 	return f.second;
 }
 
-pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, const Identifier& name, const Location& loc)
+std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, const Identifier& name, const Location& loc)
 {
 	switch (scope.kind ()) {
 
@@ -350,7 +348,7 @@ pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, con
 
 		default: {
 			const Ptr <NamedItem>* p = find (scope, name);
-			return make_pair (p, p);
+			return std::make_pair (p, p);
 		}
 	}
 }
@@ -363,8 +361,8 @@ void Builder::validate_id (const Identifier& name, const Location& loc)
 
 std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& containers, const Identifier& name, const Location& loc)
 {
-	unordered_set <const IV_Base*> unique;
-	unordered_set <const Ptr <NamedItem>*> found;
+	std::unordered_set <const IV_Base*> unique;
+	std::unordered_set <const Ptr <NamedItem>*> found;
 	for (const IV_Base* cont : containers) {
 		if (unique.insert (cont).second) {
 			auto p = find (*cont, name);
@@ -374,14 +372,14 @@ std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& contai
 	}
 	if (found.size () > 1) {
 		// Ambiguous
-		message (loc, Builder::MessageType::ERROR, string ("ambiguous name ") + name);
+		message (loc, Builder::MessageType::ERROR, "ambiguous name " + name);
 		auto it = found.begin ();
 		const NamedItem* p = **it;
-		message (*p, Builder::MessageType::MESSAGE, string ("could be ") + p->qualified_name ());
+		message (*p, Builder::MessageType::MESSAGE, "could be " + p->qualified_name ());
 		++it;
 		for (;;) {
 			p = **it;
-			string msg = string ("or ") + p->qualified_name ();
+			std::string msg = "or " + p->qualified_name ();
 			if (found.end () == ++it) {
 				msg += '.';
 				message (*p, Builder::MessageType::MESSAGE, msg);
@@ -389,11 +387,11 @@ std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& contai
 			} else
 				message (*p, Builder::MessageType::MESSAGE, msg);
 		}
-		return make_pair (true, nullptr);
+		return std::make_pair (true, nullptr);
 	} else if (!found.empty ())
-		return make_pair (true, *found.begin ());
+		return std::make_pair (true, *found.begin ());
 	else
-		return make_pair (false, nullptr);
+		return std::make_pair (false, nullptr);
 }
 
 unsigned Builder::positive_int (const Variant& v, const Location& loc)
@@ -404,7 +402,7 @@ unsigned Builder::positive_int (const Variant& v, const Location& loc)
 		if (i)
 			return i;
 		message (loc, Builder::MessageType::ERROR, "expected positive integer");
-	} catch (const exception& ex) {
+	} catch (const std::exception& ex) {
 		message (loc, Builder::MessageType::ERROR, ex.what ());
 	}
 	return 1;
@@ -470,7 +468,7 @@ void Builder::scope_end ()
 	}
 }
 
-const string& Builder::prefix () const
+const std::string& Builder::prefix () const
 {
 	const ItemScope* scope = cur_parent ();
 	if (scope)
@@ -520,7 +518,7 @@ bool Builder::prefix_valid (const std::string& pref, const Location& loc)
 						default:
 							if (!isalnum (c)) {
 								valid = false;
-								string msg = "invalid character '";
+								std::string msg = "invalid character '";
 								Variant::append (msg, c);
 								msg += "' in the prefix";
 								message (loc, MessageType::ERROR, msg);
@@ -546,7 +544,7 @@ void Builder::module_begin (const SimpleDeclarator& name)
 {
 	Symbols* scope = scope_begin ();
 	if (scope) {
-		Ptr <Module> mod = Ptr <Module>::make <Module> (ref (*this), ref (name));
+		Ptr <Module> mod = Ptr <Module>::make <Module> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*mod);
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::MODULE) {
 			error_name_collision (name, **ins.first);
@@ -566,7 +564,7 @@ void Builder::native (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
-		Ptr <NamedItem> def = Ptr <NamedItem>::make <Native> (ref (*this), ref (name));
+		Ptr <NamedItem> def = Ptr <NamedItem>::make <Native> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*def);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -592,10 +590,10 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
 			Ptr <TypeDef> def;
 			if (decl->array_sizes ().empty ())
-				def = Ptr <TypeDef>::make <TypeDef> (ref (*this), ref (*decl), ref (type));
+				def = Ptr <TypeDef>::make <TypeDef> (std::ref (*this), std::ref (*decl), std::ref (type));
 			else {
 				Type arr (type, decl->array_sizes ());
-				def = Ptr <TypeDef>::make <TypeDef> (ref (*this), ref (*decl), ref (arr));
+				def = Ptr <TypeDef>::make <TypeDef> (std::ref (*this), std::ref (*decl), std::ref (arr));
 			}
 			auto ins = scope->insert (*def);
 			if (!ins.second) {
@@ -620,7 +618,7 @@ void Builder::type_def (const Type& type, const Declarators& declarators)
 
 void Builder::error_interface_kind (const SimpleDeclarator& name, InterfaceKind new_kind, InterfaceKind prev_kind, const Location& prev_loc)
 {
-	string msg;
+	std::string msg;
 	if (new_kind.interface_kind () != InterfaceKind::Kind::UNCONSTRAINED) {
 		msg += new_kind.interface_kind_name ();
 		msg += ' ';
@@ -638,7 +636,7 @@ void Builder::error_interface_kind (const SimpleDeclarator& name, InterfaceKind 
 
 void Builder::error_valuetype_mod (const SimpleDeclarator& name, bool is_abstract, const Location& prev_loc)
 {
-	string msg;
+	std::string msg;
 	if (is_abstract)
 		msg += "abstract ";
 	msg += "valuetype ";
@@ -656,7 +654,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
-		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (ref (*this), name, ik);
+		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (std::ref (*this), name, ik);
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -696,7 +694,7 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
-		Ptr <ValueTypeDecl> decl = Ptr <ValueTypeDecl>::make <ValueTypeDecl> (ref (*this), name, is_abstract);
+		Ptr <ValueTypeDecl> decl = Ptr <ValueTypeDecl>::make <ValueTypeDecl> (std::ref (*this), name, is_abstract);
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -736,7 +734,7 @@ void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 {
 	Symbols* scope = scope_begin ();
 	if (scope) {
-		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (ref (*this), ref (name), ik);
+		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (std::ref (*this), std::ref (name), ik);
 		auto ins = scope->insert (*itf);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -763,7 +761,7 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 {
 	Symbols* scope = scope_begin ();
 	if (scope) {
-		Ptr <ValueType> vt = Ptr <ValueType>::make <ValueType> (ref (*this), ref (name), mod);
+		Ptr <ValueType> vt = Ptr <ValueType>::make <ValueType> (std::ref (*this), std::ref (name), mod);
 		auto ins = scope->insert (*vt);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -796,7 +794,7 @@ void Builder::state_member (bool is_public, const Type& type, const Declarators&
 		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
 		if (check_complete_or_seq (type, names.front ())) {
 			for (auto name = names.begin (); name != names.end (); ++name) {
-				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (ref (*this), is_public, ref (type), ref (*name));
+				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public, std::ref (type), std::ref (*name));
 				if (!is_public || check_member_name (*item)) {
 					auto ins = static_cast <Symbols&> (*vt).insert (*item);
 					if (!ins.second)
@@ -822,7 +820,7 @@ void Builder::interface_bases (const ScopedNames& bases)
 		assert (itf->interface_kind () != InterfaceKind::PSEUDO);
 
 		// Process bases
-		unordered_map <const Item*, Location> direct_bases;
+		std::unordered_map <const Item*, Location> direct_bases;
 		for (auto base_name = bases.begin (); base_name != bases.end (); ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
 			if (pbase) {
@@ -893,13 +891,13 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
 		if (truncatable) {
 			if (vt->modifier () != ValueType::Modifier::NONE)
-				message (bases.front (), MessageType::ERROR, string (vt->modifier_name ()) + " valuetype may not be truncatable");
+				message (bases.front (), MessageType::ERROR, std::string (vt->modifier_name ()) + " valuetype may not be truncatable");
 			else
 				vt->set_truncatable ();
 		}
 
 		// Process bases
-		unordered_map <const Item*, Location> direct_bases;
+		std::unordered_map <const Item*, Location> direct_bases;
 		bool first = true;
 		for (auto base_name = bases.begin (); base_name != bases.end (); first = false, ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
@@ -959,7 +957,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
 
 		// Process bases
-		unordered_map <const Item*, Location> direct_bases;
+		std::unordered_map <const Item*, Location> direct_bases;
 		bool first = true;
 		for (auto base_name = interfaces.begin (); base_name != interfaces.end (); first = false, ++base_name) {
 			const Ptr <NamedItem>* pbase = lookup (*base_name);
@@ -1003,7 +1001,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 		// that the valuetype supports through inheritance.This rule does not apply to abstract interfaces that the valuetype supports.
 
 		// Collect all concrete base interfaces
-		unordered_map <const Interface*, const ValueType*> concrete_interfaces;
+		std::unordered_map <const Interface*, const ValueType*> concrete_interfaces;
 		collect_concrete_interfaces (*vt, concrete_interfaces);
 
 		if (!concrete_interfaces.empty ()) {
@@ -1030,7 +1028,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 }
 
 void Builder::collect_concrete_interfaces (const ValueType& vt,
-	unordered_map <const Interface*, const ValueType*>& interfaces)
+	std::unordered_map <const Interface*, const ValueType*>& interfaces)
 {
 	for (auto base : vt.bases ()) {
 		const Interfaces& supports = base->supports ();
@@ -1072,9 +1070,9 @@ void Builder::add_base_members (const Location& loc, const IV_Bases& bases)
 						NamedItem* member = static_cast <NamedItem*> (const_cast <Item*> (item));
 						auto ins = interface_.all_members.insert (*member);
 						if (!ins.second) {
-							message (loc, MessageType::ERROR, string ("member name collision: ") + member->name ());
-							message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
-							message (*member, MessageType::MESSAGE, string ("see ") + member->qualified_name ());
+							message (loc, MessageType::ERROR, "member name collision: " + member->name ());
+							message (**ins.first, MessageType::MESSAGE, "see " + (*ins.first)->qualified_name ());
+							message (*member, MessageType::MESSAGE, "see " + member->qualified_name ());
 						}
 					} break;
 				}
@@ -1092,8 +1090,8 @@ bool Builder::check_member_name (const NamedItem& item)
 #endif
 	auto ins = interface_.all_members.insert (item);
 	if (!ins.second) {
-		message (item, MessageType::ERROR, string ("member name collision: ") + item.name ());
-		message (**ins.first, MessageType::MESSAGE, string ("see ") + (*ins.first)->qualified_name ());
+		message (item, MessageType::ERROR, "member name collision: " + item.name ());
+		message (**ins.first, MessageType::MESSAGE, "see " + (*ins.first)->qualified_name ());
 	}
 	return ins.second;
 }
@@ -1112,7 +1110,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored");
 			oneway = false;
 		}
-		Ptr <OperationBase> op = Ptr <OperationBase>::make <Operation> (ref (*this), oneway, ref (type), ref (name));
+		Ptr <OperationBase> op = Ptr <OperationBase>::make <Operation> (std::ref (*this), oneway, std::ref (type), std::ref (name));
 		if (check_member_name (*op)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*op);
 			if (!ins.second)
@@ -1136,7 +1134,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	if (parent) {
 		assert (parent->kind () == Item::Kind::VALUE_TYPE);
 		assert (static_cast <const ValueType*> (parent)->modifier () != ValueType::Modifier::ABSTRACT);
-		Ptr <OperationBase> op = Ptr <OperationBase>::make <ValueFactory> (ref (*this), ref (name));
+		Ptr <OperationBase> op = Ptr <OperationBase>::make <ValueFactory> (std::ref (*this), std::ref (name));
 		if (check_member_name (*op)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*op);
 			if (!ins.second)
@@ -1163,10 +1161,10 @@ void Builder::parameter (Parameter::Attribute att, const Type& type, const Simpl
 				itf_op->oneway_clear ();
 			}
 		}
-		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (ref (*this), att, ref (type), ref (name));
+		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (std::ref (*this), att, std::ref (type), std::ref (name));
 		auto ins = operation_.params.insert (*par);
 		if (!ins.second)
-			message (name, MessageType::ERROR, string ("duplicated parameter ") + name);
+			message (name, MessageType::ERROR, "duplicated parameter " + name);
 		else if (is_main_file ())
 			op->append (*par);
 	}
@@ -1182,7 +1180,7 @@ void Builder::raises (const ScopedNames& names)
 
 Raises Builder::lookup_exceptions (const ScopedNames& names)
 {
-	unordered_map <const Item*, Location> unique;
+	std::unordered_map <const Item*, Location> unique;
 	Raises exceptions;
 	for (auto name = names.begin (); name != names.end (); ++name) {
 		const Ptr <NamedItem>* l = lookup (*name);
@@ -1194,7 +1192,7 @@ Raises Builder::lookup_exceptions (const ScopedNames& names)
 				{
 					auto ins = unique.emplace (item, *name);
 					if (!ins.second) {
-						message (*name, MessageType::ERROR, string ("duplicated exception specification ") + name->stringize ());
+						message (*name, MessageType::ERROR, "duplicated exception specification " + name->stringize ());
 						see_prev_declaration (ins.first->second);
 					} else
 						exceptions.push_back (static_cast <const Exception*> (item));
@@ -1219,7 +1217,7 @@ void Builder::operation_context (const Variants& strings)
 		for (auto it = strings.begin (); it != strings.end (); ++it) {
 			assert (it->vtype () == Variant::VT::STRING);
 			// Validate
-			const string& id = it->as_string ();
+			const std::string& id = it->as_string ();
 			size_t asterick = id.find ('*');
 			if (id.empty () || asterick == 0 || asterick < id.length () - 1)
 				message (*op, MessageType::ERROR, "Invalid context ID: \"" + id + "\"");
@@ -1246,7 +1244,7 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
-		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (ref (*this), readonly, ref (type), ref (name));
+		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (std::ref (*this), readonly, std::ref (type), std::ref (name));
 		if (check_member_name (*item)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*item);
 			if (!ins.second)
@@ -1305,7 +1303,7 @@ void Builder::struct_decl (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) { // No error in the parent scope declaration
-		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (ref (*this), ref (name));
+		Ptr <StructDecl> decl = Ptr <StructDecl>::make <StructDecl> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -1337,7 +1335,7 @@ void Builder::union_decl (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) { // No error in the parent scope declaration
-		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (ref (*this), ref (name));
+		Ptr <UnionDecl> decl = Ptr <UnionDecl>::make <UnionDecl> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*decl);
 		if (!ins.second) {
 			const NamedItem& item = **ins.first;
@@ -1369,7 +1367,7 @@ void Builder::struct_begin (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) { // No error in parent scope declaration
-		Ptr <Struct> def = Ptr <Struct>::make <Struct> (ref (*this), ref (name));
+		Ptr <Struct> def = Ptr <Struct>::make <Struct> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*def);
 		if (!ins.second) {
 			StructDecl& decl = static_cast <StructDecl&> (**ins.first);
@@ -1420,7 +1418,7 @@ void Builder::union_begin (const SimpleDeclarator& name, const Type& switch_type
 			return;
 		}
 
-		Ptr <Union> def = Ptr <Union>::make <Union> (ref (*this), ref (name), ref (switch_type));
+		Ptr <Union> def = Ptr <Union>::make <Union> (std::ref (*this), std::ref (name), std::ref (switch_type));
 		auto ins = scope->insert (*def);
 		if (!ins.second) {
 			UnionDecl& decl = static_cast <UnionDecl&> (**ins.first);
@@ -1454,7 +1452,7 @@ void Builder::exception_begin (const SimpleDeclarator& name)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) { // No error in the parent scope declaration
-		Ptr <Exception> def = Ptr <Exception>::make <Exception> (ref (*this), ref (name));
+		Ptr <Exception> def = Ptr <Exception>::make <Exception> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*def);
 		if (!ins.second) {
 			error_name_collision (name, **ins.first);
@@ -1523,10 +1521,10 @@ void Builder::member (const Type& type, const Declarators& names)
 			for (auto decl = names.begin (); decl != names.end (); ++decl) {
 				Ptr <Member> item;
 				if (decl->array_sizes ().empty ()) {
-					item = Ptr <Member>::make <Member> (ref (*this), ref (type), ref (*decl));
+					item = Ptr <Member>::make <Member> (std::ref (*this), std::ref (type), std::ref (*decl));
 				} else {
 					Type arr (type, decl->array_sizes ());
-					item = Ptr <Member>::make <Member> (ref (*this), ref (arr), ref (*decl));
+					item = Ptr <Member>::make <Member> (std::ref (*this), std::ref (arr), std::ref (*decl));
 				}
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
@@ -1585,10 +1583,10 @@ void Builder::union_element (const Type& type, const Build::Declarator& decl)
 			if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
 				Ptr <UnionElement> item;
 				if (decl.array_sizes ().empty ()) {
-					item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (type), ref (decl));
+					item = Ptr <UnionElement>::make <UnionElement> (std::ref (*this), std::move (union_.element.labels), std::ref (type), std::ref (decl));
 				} else {
 					Type arr (type, decl.array_sizes ());
-					item = Ptr <UnionElement>::make <UnionElement> (ref (*this), move (union_.element.labels), ref (arr), ref (decl));
+					item = Ptr <UnionElement>::make <UnionElement> (std::ref (*this), std::move (union_.element.labels), std::ref (arr), std::ref (decl));
 				}
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
@@ -1621,7 +1619,7 @@ const Ptr <NamedItem>* Builder::union_end ()
 				// Find default discriminator value
 				Variant def;
 				if (dt.tkind () == Type::Kind::BASIC_TYPE) {
-					Variant::Key max_key = numeric_limits <Variant::Key>::min ();
+					Variant::Key max_key = std::numeric_limits <Variant::Key>::min ();
 					const Variant* max_label = nullptr;
 					for (const auto& el : *u) {
 						for (const auto& label : el->labels ()) {
@@ -1653,7 +1651,7 @@ const Ptr <NamedItem>* Builder::union_end ()
 							break;
 					}
 				}
-				u->default_label_ = eval ().cast (dt, move (def), *u);
+				u->default_label_ = eval ().cast (dt, std::move (def), *u);
 			}
 		}
 		eval_pop ();
@@ -1667,7 +1665,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 	assert (!items.empty ());
 	Symbols* scope = cur_scope ();
 	if (scope) { // No error in the parent scope
-		Ptr <Enum> def = Ptr <Enum>::make <Enum> (ref (*this), ref (name));
+		Ptr <Enum> def = Ptr <Enum>::make <Enum> (std::ref (*this), std::ref (name));
 		auto ins = scope->insert (*def);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
@@ -1675,12 +1673,12 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 			if (is_main_file ())
 				container_stack_.top ()->append (*def);
 			for (auto item = items.begin (); item != items.end (); ++item) {
-				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (ref (*this), ref (*def), ref (*item));
+				Ptr <EnumItem> enumerator = Ptr <EnumItem>::make <EnumItem> (std::ref (*this), std::ref (*def), std::ref (*item));
 				auto ins = scope->insert (*enumerator);
 				if (!ins.second)
 					error_name_collision (*item, **ins.first);
 				else {
-					if (def->size () == numeric_limits <uint32_t>::max ()) {
+					if (def->size () == std::numeric_limits <uint32_t>::max ()) {
 						message (*item, MessageType::ERROR, "too many enumerators");
 						break;
 					}
@@ -1709,7 +1707,7 @@ void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
 			}
 		}
 		if (check_complete_or_seq (type, name)) {
-			Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (ref (*this), ref (name), ref (type));
+			Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (std::ref (*this), std::ref (name), std::ref (type));
 			auto ins = scope->insert (*item);
 			if (!ins.second)
 				error_name_collision (name, **ins.first);
@@ -1723,7 +1721,8 @@ void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& v
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (ref (*this), ref (t), ref (name), eval ().cast (t, move (val), loc));
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (std::ref (*this), std::ref (t),
+			std::ref (name), eval ().cast (t, std::move (val), loc));
 		auto ins = scope->insert (*item);
 		if (!ins.second)
 			error_name_collision (name, **ins.first);
@@ -1764,7 +1763,7 @@ void Builder::eval_push (const Type& t, const Location& loc)
 		message (loc, MessageType::ERROR, "invalid constant type");
 		eval = new Eval (*this);
 	}
-	eval_stack_.push (unique_ptr <Eval> (eval));
+	eval_stack_.push (std::unique_ptr <Eval> (eval));
 }
 
 Ptr <const Root> Builder::finalize ()
@@ -1774,7 +1773,7 @@ Ptr <const Root> Builder::finalize ()
 			check_complete (*tree_);
 			RepIdMap ids;
 			check_rep_ids_unique (ids, *tree_);
-		} catch (const runtime_error& err) {
+		} catch (const std::runtime_error& err) {
 			message (err);
 		}
 	}
@@ -1813,7 +1812,7 @@ void Builder::check_unique (RepIdMap& ids, const ItemWithId& rid)
 {
 	auto ins = ids.emplace (rid.repository_id (), rid);
 	if (!ins.second && &ins.first->second != &rid) {
-		message (rid, Builder::MessageType::ERROR, string ("repository ID ") + ins.first->first + " is duplicated");
+		message (rid, Builder::MessageType::ERROR, "repository ID " + ins.first->first + " is duplicated");
 		see_declaration_of (ins.first->second, ins.first->second.qualified_name ());
 	}
 }

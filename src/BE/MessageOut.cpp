@@ -26,31 +26,29 @@
 #include "../include/BE/MessageOut.h"
 #include "../include/AST/Location.h"
 
-using namespace std;
-
 namespace BE {
 
-MessageOut::MessageOut (ostream& err_out, unsigned max_err_cnt) :
+MessageOut::MessageOut (std::ostream& err_out, unsigned max_err_cnt) :
 	out_ (err_out.rdbuf ()),
 	max_err_cnt_ (max_err_cnt),
 	err_cnt_ (0)
 {}
 
-void MessageOut::message (const AST::Location& l, MessageType mt, const string& msg)
+void MessageOut::message (const AST::Location& l, MessageType mt, const std::string& msg)
 {
 	static const char* const msg_types [] = { "error", "warning", "message" };
 
 	if (l)
 		out_ << l.file ().string () << '(' << l.line () << "): ";
-	out_ << msg_types [(size_t)mt] << ": " << msg << endl;
+	out_ << msg_types [(size_t)mt] << ": " << msg << std::endl;
 
 	if (mt == MessageType::ERROR && (++err_cnt_ >= max_err_cnt_))
-		throw runtime_error ("too many errors, compilation aborted");
+		throw std::runtime_error ("too many errors, compilation aborted");
 }
 
 void MessageOut::message (const std::exception& ex)
 {
-	out_ << ex.what () << endl;
+	out_ << ex.what () << std::endl;
 }
 
 }

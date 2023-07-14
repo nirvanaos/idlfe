@@ -25,8 +25,6 @@
 */
 #include "../include/AST/ScopedName.h"
 
-using namespace std;
-
 namespace AST {
 
 ScopedName::ScopedName (const Location& loc, bool root, const Identifier& name) :
@@ -36,10 +34,10 @@ ScopedName::ScopedName (const Location& loc, bool root, const Identifier& name) 
 	push_back (name);
 }
 
-string ScopedName::stringize () const
+std::string ScopedName::stringize () const
 {
 	const_iterator name = begin ();
-	string ret;
+	std::string ret;
 	if (!from_root) {
 		ret = *name;
 		++name;

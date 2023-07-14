@@ -26,8 +26,6 @@
 #include "../include/AST/ValueType.h"
 #include "Builder/Builder.h"
 
-using namespace std;
-
 namespace AST {
 
 using namespace Build;

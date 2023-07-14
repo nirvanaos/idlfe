@@ -26,8 +26,6 @@
 #include "../include/AST/Item.h"
 #include <algorithm>
 
-using namespace std;
-
 namespace AST {
 
 bool Item::is_type () const noexcept
@@ -47,7 +45,7 @@ bool Item::is_type () const noexcept
 		Kind::VALUE_BOX
 	};
 
-	return find (kinds, end (kinds), kind_) != end (kinds);
+	return std::find (kinds, std::end (kinds), kind_) != std::end (kinds);
 }
 
 bool Item::is_forward_decl () const noexcept
@@ -59,7 +57,7 @@ bool Item::is_forward_decl () const noexcept
 		Kind::VALUE_TYPE_DECL
 	};
 
-	return find (kinds, end (kinds), kind_) != end (kinds);
+	return std::find (kinds, std::end (kinds), kind_) != std::end (kinds);
 }
 
 }

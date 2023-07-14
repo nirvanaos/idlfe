@@ -29,20 +29,18 @@
 #include <stdexcept>
 #include <cfenv>
 
-using namespace std;
-
 namespace AST {
 namespace Build {
 
-Variant EvalFloatingPoint::literal_float (const string& s, const Location& loc)
+Variant EvalFloatingPoint::literal_float (const std::string& s, const Location& loc)
 {
 	try {
 		size_t idx;
-		long double d = stold (s, &idx);
+		long double d = std::stold (s, &idx);
 		if (idx != s.size ())
-			throw runtime_error ("Invalid floating-point constant.");
+			throw std::runtime_error ("Invalid floating-point constant.");
 		return Variant (d);
-	} catch (const exception& ex) {
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
@@ -108,7 +106,7 @@ Variant EvalFloatingPoint::expr (const Variant& cl, char op, const Variant& cr, 
 				else if (ex & FE_DIVBYZERO)
 					zero_divide (op);
 				return ret;
-			} catch (const exception& ex) {
+			} catch (const std::exception& ex) {
 				error (loc, ex);
 			}
 		}
@@ -137,7 +135,7 @@ Variant EvalFloatingPoint::expr (char op, const Variant& cv, const Location& loc
 						return Variant ();
 				}
 				return d;
-			} catch (const exception& ex) {
+			} catch (const std::exception& ex) {
 				error (loc, ex);
 			}
 		}
@@ -169,7 +167,7 @@ Variant EvalFloatingPoint::cast (const Type& t, Variant&& v, const Location& loc
 			if (v.vtype () == Variant::VT::CONSTANT)
 				ret = v;
 
-		} catch (const exception& ex) {
+		} catch (const std::exception& ex) {
 			error (loc, ex);
 		}
 	}
