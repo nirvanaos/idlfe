@@ -793,12 +793,19 @@ void Builder::state_member (bool is_public, const Type& type, const Declarators&
 		assert (vt->kind () == Item::Kind::VALUE_TYPE);
 		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
 		if (check_complete_or_seq (type, names.front ())) {
-			for (auto name = names.begin (); name != names.end (); ++name) {
-				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public, std::ref (type), std::ref (*name));
+			for (auto decl = names.begin (); decl != names.end (); ++decl) {
+				Ptr <NamedItem> item;
+				if (decl->array_sizes ().empty ()) {
+					item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public, std::ref (type), std::ref (*decl));
+				} else {
+					Type arr (type, decl->array_sizes ());
+					item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public, std::ref (arr), std::ref (*decl));
+				}
+
 				if (!is_public || check_member_name (*item)) {
 					auto ins = static_cast <Symbols&> (*vt).insert (*item);
 					if (!ins.second)
-						error_name_collision (*name, **ins.first); // Name collides with nested type.
+						error_name_collision (*decl, **ins.first); // Name collides with nested type.
 					else {
 						// We always append member to the container, whatever it is the main file or not.
 						// We need it to build all_operations for derived interfaces.
