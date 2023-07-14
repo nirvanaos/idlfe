@@ -582,19 +582,22 @@ void Builder::native (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::type_def (const Type& type, const Declarators& declarators)
+Type Builder::make_type (const Type& t, const Declarator& decl)
+{
+	if (decl.array_sizes ().empty ())
+		return t;
+	else
+		return Type (t, decl.array_sizes ());
+}
+
+void Builder::type_def (Type& type, const Declarators& declarators)
 {
 	check_complete_or_seq (type, declarators.front ());
 	Symbols* scope = cur_scope ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
-			Ptr <TypeDef> def;
-			if (decl->array_sizes ().empty ())
-				def = Ptr <TypeDef>::make <TypeDef> (std::ref (*this), std::ref (*decl), std::ref (type));
-			else {
-				Type arr (type, decl->array_sizes ());
-				def = Ptr <TypeDef>::make <TypeDef> (std::ref (*this), std::ref (*decl), std::ref (arr));
-			}
+			Ptr <TypeDef> def = Ptr <TypeDef>::make <TypeDef> (std::ref (*this), std::ref (*decl),
+				make_type (type, *decl));
 			auto ins = scope->insert (*def);
 			if (!ins.second) {
 				const NamedItem& item = **ins.first;
@@ -785,7 +788,7 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 	}
 }
 
-void Builder::state_member (bool is_public, const Type& type, const Declarators& names)
+void Builder::state_member (bool is_public, Type& type, const Declarators& names)
 {
 	assert (!scope_stack_.empty ());
 	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
@@ -794,13 +797,8 @@ void Builder::state_member (bool is_public, const Type& type, const Declarators&
 		assert (vt->modifier () != ValueType::Modifier::ABSTRACT);
 		if (check_complete_or_seq (type, names.front ())) {
 			for (auto decl = names.begin (); decl != names.end (); ++decl) {
-				Ptr <NamedItem> item;
-				if (decl->array_sizes ().empty ()) {
-					item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public, std::ref (type), std::ref (*decl));
-				} else {
-					Type arr (type, decl->array_sizes ());
-					item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public, std::ref (arr), std::ref (*decl));
-				}
+				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public,
+					make_type (type, *decl), std::ref (*decl));
 
 				if (!is_public || check_member_name (*item)) {
 					auto ins = static_cast <Symbols&> (*vt).insert (*item);
@@ -1103,7 +1101,7 @@ bool Builder::check_member_name (const NamedItem& item)
 	return ins.second;
 }
 
-void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name)
+void Builder::operation_begin (bool oneway, Type& type, const SimpleDeclarator& name)
 {
 	assert (!scope_stack_.empty ());
 	assert (!operation_.op); // operation_end () must be called
@@ -1117,7 +1115,7 @@ void Builder::operation_begin (bool oneway, const Type& type, const SimpleDeclar
 			message (name, MessageType::WARNING, "'oneway' operation must be 'void'. The 'oneway' attribute will be ignored");
 			oneway = false;
 		}
-		Ptr <OperationBase> op = Ptr <OperationBase>::make <Operation> (std::ref (*this), oneway, std::ref (type), std::ref (name));
+		Ptr <OperationBase> op = Ptr <OperationBase>::make <Operation> (std::ref (*this), oneway, std::move (type), std::ref (name));
 		if (check_member_name (*op)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*op);
 			if (!ins.second)
@@ -1156,7 +1154,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name)
+void Builder::parameter (Parameter::Attribute att, Type& type, const SimpleDeclarator& name)
 {
 	OperationBase* op = operation_.op;
 	if (op) {
@@ -1168,7 +1166,7 @@ void Builder::parameter (Parameter::Attribute att, const Type& type, const Simpl
 				itf_op->oneway_clear ();
 			}
 		}
-		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (std::ref (*this), att, std::ref (type), std::ref (name));
+		Ptr <Parameter> par = Ptr <Parameter>::make <Parameter> (std::ref (*this), att, std::move (type), std::ref (name));
 		auto ins = operation_.params.insert (*par);
 		if (!ins.second)
 			message (name, MessageType::ERROR, "duplicated parameter " + name);
@@ -1235,7 +1233,7 @@ void Builder::operation_context (const Variants& strings)
 	}
 }
 
-void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators)
+void Builder::attribute (bool readonly, Type& type, const SimpleDeclarators& declarators)
 {
 	for (auto name = declarators.begin (); name != declarators.end (); ++name) {
 		attribute_begin (readonly, type, *name);
@@ -1243,7 +1241,7 @@ void Builder::attribute (bool readonly, const Type& type, const SimpleDeclarator
 	}
 }
 
-void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name)
+void Builder::attribute_begin (bool readonly, Type& type, const SimpleDeclarator& name)
 {
 	assert (!scope_stack_.empty ());
 	assert (!attribute_.att); // attribute_end () must be called
@@ -1251,7 +1249,7 @@ void Builder::attribute_begin (bool readonly, const Type& type, const SimpleDecl
 	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
 	if (parent) {
 		assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
-		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (std::ref (*this), readonly, std::ref (type), std::ref (name));
+		Ptr <Attribute> item = Ptr <Attribute>::make <Attribute> (std::ref (*this), readonly, std::move (type), std::ref (name));
 		if (check_member_name (*item)) {
 			auto ins = static_cast <Symbols&> (*parent).insert (*item);
 			if (!ins.second)
@@ -1518,7 +1516,7 @@ bool Builder::check_complete_or_seq (const Type& type, const Location& loc)
 	return true;
 }
 
-void Builder::member (const Type& type, const Declarators& names)
+void Builder::member (Type& type, const Declarators& names)
 {
 	StructBase* s = static_cast <StructBase*> (constr_type_.obj ());
 	if (s) { // No error in the parent definition
@@ -1526,13 +1524,8 @@ void Builder::member (const Type& type, const Declarators& names)
 
 		if (check_complete_or_seq (type, names.front ())) {
 			for (auto decl = names.begin (); decl != names.end (); ++decl) {
-				Ptr <Member> item;
-				if (decl->array_sizes ().empty ()) {
-					item = Ptr <Member>::make <Member> (std::ref (*this), std::ref (type), std::ref (*decl));
-				} else {
-					Type arr (type, decl->array_sizes ());
-					item = Ptr <Member>::make <Member> (std::ref (*this), std::ref (arr), std::ref (*decl));
-				}
+				Ptr <Member> item = Ptr <Member>::make <Member> (std::ref (*this),
+					make_type (type, *decl), std::ref (*decl));
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
 					error_name_collision (*decl, **ins.first);
@@ -1581,20 +1574,15 @@ void Builder::union_default (const Location& loc)
 	}
 }
 
-void Builder::union_element (const Type& type, const Build::Declarator& decl)
+void Builder::union_element (Type& type, const Build::Declarator& decl)
 {
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the parent definition
 		assert (u->kind () == Item::Kind::UNION);
 		if (check_complete_or_seq (type, decl)) {
 			if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
-				Ptr <UnionElement> item;
-				if (decl.array_sizes ().empty ()) {
-					item = Ptr <UnionElement>::make <UnionElement> (std::ref (*this), std::move (union_.element.labels), std::ref (type), std::ref (decl));
-				} else {
-					Type arr (type, decl.array_sizes ());
-					item = Ptr <UnionElement>::make <UnionElement> (std::ref (*this), std::move (union_.element.labels), std::ref (arr), std::ref (decl));
-				}
+				Ptr <UnionElement> item = Ptr <UnionElement>::make <UnionElement> (std::ref (*this),
+					std::move (union_.element.labels), make_type (type, decl), std::ref (decl));
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
 					error_name_collision (decl, **ins.first);

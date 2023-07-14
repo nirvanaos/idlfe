@@ -57,8 +57,8 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	Parameter (Build::Builder& builder, Attribute att, const Type& type, const Build::SimpleDeclarator& name) :
-		Member (builder, type, name, Item::Kind::PARAMETER),
+	Parameter (Build::Builder& builder, Attribute att, Type&& type, const Build::SimpleDeclarator& name) :
+		Member (builder, std::move (type), name, Item::Kind::PARAMETER),
 		attribute_ (att)
 	{}
 

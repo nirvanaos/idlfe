@@ -105,9 +105,9 @@ public:
 	void interface_begin (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
 	void interface_bases (const ScopedNames& bases);
 
-	void operation_begin (bool oneway, const Type& type, const SimpleDeclarator& name);
+	void operation_begin (bool oneway, Type& type, const SimpleDeclarator& name);
 
-	void parameter (Parameter::Attribute att, const Type& type, const SimpleDeclarator& name);
+	void parameter (Parameter::Attribute att, Type& type, const SimpleDeclarator& name);
 	
 	void raises (const ScopedNames& names);
 	void operation_context (const Variants& strings);
@@ -117,9 +117,9 @@ public:
 		operation_.clear ();
 	}
 
-	void attribute (bool readonly, const Type& type, const SimpleDeclarators& declarators);
+	void attribute (bool readonly, Type& type, const SimpleDeclarators& declarators);
 
-	void attribute_begin (bool readonly, const Type& type, const SimpleDeclarator& name);
+	void attribute_begin (bool readonly, Type& type, const SimpleDeclarator& name);
 	
 	void getraises (const ScopedNames& names);
 	void setraises (const ScopedNames& names);
@@ -131,7 +131,7 @@ public:
 
 	void interface_end ();
 
-	void type_def (const Type& type, const Declarators& declarators);
+	void type_def (Type& type, const Declarators& declarators);
 
 	void struct_decl (const SimpleDeclarator& name);
 	void struct_begin (const SimpleDeclarator& name);
@@ -148,13 +148,13 @@ public:
 		constr_type_end ();
 	}
 
-	void member (const Type& type, const Declarators& names);
+	void member (Type& type, const Declarators& names);
 
 	void union_decl (const SimpleDeclarator& name);
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
 	void union_label (const Variant& label, const Location& loc);
 	void union_default (const Location& loc);
-	void union_element (const Type& type, const Build::Declarator& decl);
+	void union_element (Type& type, const Build::Declarator& decl);
 	const Ptr <NamedItem>* union_end ();
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
@@ -163,7 +163,7 @@ public:
 	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
 	void valuetype_bases (bool truncatable, const ScopedNames& bases);
 	void valuetype_supports (const ScopedNames& interfaces);
-	void state_member (bool is_public, const Type& type, const Declarators& names);
+	void state_member (bool is_public, Type& type, const Declarators& names);
 
 	void valuetype_factory_begin (const SimpleDeclarator& name);
 
@@ -266,6 +266,8 @@ private:
 	static void collect_concrete_interfaces (const ValueType& vt, std::unordered_map <const Interface*, const ValueType*>& interfaces);
 
 	void check_complete (const Symbols& symbols);
+
+	static Type make_type (const Type& t, const Declarator& decl);
 
 private:
 	Ptr <Root> tree_;

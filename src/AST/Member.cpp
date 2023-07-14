@@ -23,17 +23,18 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
+#include "../include/AST/Member.h"
 #include "Builder/Builder.h"
 
 namespace AST {
 
 using namespace Build;
 
-Member::Member (Builder& builder, const Type& t, const Build::SimpleDeclarator& name, Item::Kind kind) :
+Member::Member (Builder& builder, Type&& t, const Build::SimpleDeclarator& name, Item::Kind kind) :
 	NamedItem (kind, builder, name),
-	Type (t)
+	Type (std::move (t))
 {
-	builder.check_anonymous (t, name);
+	builder.check_anonymous (*this, name);
 }
 
 }

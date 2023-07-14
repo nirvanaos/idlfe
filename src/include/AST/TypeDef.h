@@ -44,9 +44,9 @@ class TypeDef :
 private:
 	template <class T> friend class Ptr;
 
-	TypeDef (Build::Builder& builder, const Build::SimpleDeclarator& name, const Type& t) :
+	TypeDef (Build::Builder& builder, const Build::SimpleDeclarator& name, Type&& t) :
 		ItemWithId (Item::Kind::TYPE_DEF, builder, name),
-		Type (t)
+		Type (std::move (t))
 	{}
 };
 

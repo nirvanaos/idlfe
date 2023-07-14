@@ -48,8 +48,8 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	StateMember (Build::Builder& builder, bool is_public, const Type& t, const Build::SimpleDeclarator& name) :
-		Member (builder, t, name, Item::Kind::STATE_MEMBER),
+	StateMember (Build::Builder& builder, bool is_public, Type&& t, const Build::SimpleDeclarator& name) :
+		Member (builder, std::move (t), name, Item::Kind::STATE_MEMBER),
 		is_public_ (is_public)
 	{}
 
