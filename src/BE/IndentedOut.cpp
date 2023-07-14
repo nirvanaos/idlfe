@@ -25,8 +25,6 @@
 */
 #include "../include/BE/IndentedOut.h"
 
-using namespace std;
-
 namespace BE {
 
 inline
@@ -99,7 +97,7 @@ void IndentedOut::IndentedStreambuf::empty_line ()
 IndentedOut::IndentedOut ()
 {}
 
-IndentedOut::IndentedOut (const filesystem::path& file)
+IndentedOut::IndentedOut (const std::filesystem::path& file)
 {
 	open (file);
 }
@@ -107,15 +105,15 @@ IndentedOut::IndentedOut (const filesystem::path& file)
 void IndentedOut::open (const std::filesystem::path& file)
 {
 	if (is_open ())
-		throw runtime_error ("File is already open");
+		throw std::runtime_error ("File is already open");
 	{
 		auto parent = file.parent_path ();
 		if (!parent.empty ())
 			create_directories (parent);
 	}
-	ofstream::open (file);
+	std::ofstream::open (file);
 	if (!is_open ())
-		throw runtime_error (string ("Can not open file: ") + file.string ());
+		throw std::runtime_error ("Can not open file: " + file.string ());
 	isbuf_.init (*this);
 }
 
@@ -123,7 +121,7 @@ void IndentedOut::close ()
 {
 	if (is_open ()) {
 		isbuf_.term (*this);
-		ofstream::close ();
+		std::ofstream::close ();
 	}
 }
 

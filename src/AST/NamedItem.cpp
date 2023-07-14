@@ -25,7 +25,6 @@
 */
 #include "Builder/Builder.h"
 
-using namespace std;
 using namespace AST::Build;
 
 namespace AST {
@@ -49,7 +48,7 @@ NamedItem::NamedItem (Kind kind, Builder& builder, const SimpleDeclarator& name)
 
 std::string NamedItem::qualified_name () const
 {
-	string qn;
+	std::string qn;
 	if (parent_)
 		qn = parent_->qualified_name ();
 	qn += "::";

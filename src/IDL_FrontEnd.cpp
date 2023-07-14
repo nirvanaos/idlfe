@@ -39,12 +39,10 @@
 
 #include "simplecpp/simplecpp.h"
 
-using namespace std;
-
 struct IDL_FrontEnd::Arguments
 {
 	simplecpp::DUI preprocessor;
-	vector <string> files;
+	std::vector <std::string> files;
 };
 
 bool IDL_FrontEnd::CmdLine::next () noexcept
@@ -65,7 +63,7 @@ const char* IDL_FrontEnd::CmdLine::parameter (const char* switch_end)
 		if ('-' != *p)
 			return p;
 	}
-	throw invalid_argument (string ("Missing parameter for switch ") + arg ());
+	throw std::invalid_argument (std::string ("Missing parameter for switch ") + arg ());
 }
 
 int IDL_FrontEnd::main (int argc, char* argv []) noexcept
@@ -83,14 +81,14 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				for (;;) {
 					const char* a = cl.arg ();
 					if (!parse_command_line (cl))
-						throw invalid_argument (string ("Invalid switch: ") + cl.arg ());
+						throw std::invalid_argument (std::string ("Invalid switch: ") + cl.arg ());
 					if (cl.end ())
 						break;
 					if (a == cl.arg ())
-						throw runtime_error ("args.next () must be called for advance to the next argument.");
+						throw std::runtime_error ("args.next () must be called for advance to the next argument.");
 				}
-			} catch (const invalid_argument& ex) {
-				cerr << ex.what () << endl;
+			} catch (const std::invalid_argument& ex) {
+				std::cerr << ex.what () << std::endl;
 				print_usage_info (cl.exe_file ());
 				ret = -1;
 			}
@@ -117,16 +115,16 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 			}
 
 			for (const auto& file : arguments_->files) {
-				cout << file << endl;
+				std::cout << file << std::endl;
 				if (!compile (file))
 					ret = -1;
 			}
 		}
-	} catch (const exception& ex) {
-		cerr << ex.what () << endl;
+	} catch (const std::exception& ex) {
+		std::cerr << ex.what () << std::endl;
 		ret = -1;
 	} catch (...) {
-		cerr << "Unknown exception." << endl;
+		std::cerr << "Unknown exception." << std::endl;
 		ret = -1;
 	}
 
@@ -136,8 +134,8 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 
 void IDL_FrontEnd::print_usage_info (const char* exe_name)
 {
-	cout << "Based on the Nirvana IDL compiler front-end library. Copyright (c) 2021 Igor Popov.\n";
-	cout << "Usage: " << exe_name << " {file | option}.\n"
+	std::cout << "Based on the Nirvana IDL compiler front-end library. Copyright (c) 2021 Igor Popov.\n"
+		"Usage: " << exe_name << " {file | option}.\n"
 		"\toption = \"-\"{\"-\"}'...' [parameter].\n"
 		"\tfile = parameter.\n"
 		"\tparameter = (!\"-\")'...'.\n"
@@ -187,23 +185,23 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 	return recognized;
 }
 
-bool IDL_FrontEnd::compile (const string& file)
+bool IDL_FrontEnd::compile (const std::string& file)
 {
-	istringstream preprocessed;
+	std::istringstream preprocessed;
 
 	{ // Perform preprocessing
 		using namespace simplecpp;
 		OutputList output_list;
-		vector <string> files;
-		ifstream f (file);
+		std::vector <std::string> files;
+		std::ifstream f (file);
 		if (!f.is_open ()) {
-			cerr << "Can not open file " << file << endl;
+			std::cerr << "Can not open file " << file << std::endl;
 			return false;
 		}
 		TokenList rawtokens (f, files, file, &output_list);
 
 		rawtokens.removeComments ();
-		map <string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
+		std::map <std::string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
 		for (auto i = included.begin (); i != included.end (); ++i)
 			i->second->removeComments ();
 
@@ -213,7 +211,7 @@ bool IDL_FrontEnd::compile (const string& file)
 		if (!output_list.empty ()) {
 			bool fatal = false;
 			for (const simplecpp::Output& output : output_list) {
-				cerr << output.location.file () << '(' << output.location.line << "): ";
+				std::cerr << output.location.file () << '(' << output.location.line << "): ";
 				const char* type = "warning: ";
 				switch (output.type) {
 					case simplecpp::Output::ERROR:
@@ -226,7 +224,7 @@ bool IDL_FrontEnd::compile (const string& file)
 						type = "error: ";
 						break;
 				}
-				cerr << type << output.msg << endl;
+				std::cerr << type << output.msg << std::endl;
 			}
 			if (fatal)
 				return false;
@@ -240,8 +238,8 @@ bool IDL_FrontEnd::compile (const string& file)
 	if (ast)
 		try {
 			generate_code (*ast);
-		} catch (const runtime_error& ex) {
-			cerr << ex.what () << endl;
+		} catch (const std::runtime_error& ex) {
+			std::cerr << ex.what () << std::endl;
 			return false;
 		}
 

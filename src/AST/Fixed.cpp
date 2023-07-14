@@ -27,13 +27,11 @@
 #include "Builder/EvalFixed.h"
 #include <assert.h>
 
-using namespace std;
-
 namespace AST {
 
 typedef Build::EvalFixed::Context Context;
 
-string Fixed::to_string () const
+std::string Fixed::to_string () const
 {
 	assert (digits_ <= 31);
 	char buf [31 + 14];
@@ -50,10 +48,10 @@ string Fixed::to_string () const
 	return buf;
 }
 
-vector <uint8_t> Fixed::to_BCD () const
+std::vector <uint8_t> Fixed::to_BCD () const
 {
 	size_t len = (digits_ + 2) / 2;
-	vector <uint8_t> bcd (len);
+	std::vector <uint8_t> bcd (len);
 	int32_t s;
 	decPackedFromNumber (bcd.data (), (int32_t)bcd.size (), &s, (const decNumber*)this);
 	assert (s == scale ());

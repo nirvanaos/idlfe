@@ -34,8 +34,6 @@
 #pragma GCC diagnostic ignored "-Wswitch"
 #endif
 
-using namespace std;
-
 namespace AST {
 
 Variant& Variant::operator = (const Variant& src)
@@ -69,10 +67,10 @@ void Variant::copy (const Variant& src)
 {
 	switch (src.type_) {
 		case VT::STRING:
-			new (&val_.u.s) string (src.val_.u.s);
+			new (&val_.u.s) std::string (src.val_.u.s);
 			break;
 		case VT::WSTRING:
-			new (&val_.u.ws) wstring (src.val_.u.ws);
+			new (&val_.u.ws) std::wstring (src.val_.u.ws);
 			break;
 		default:
 			val_.plain = src.val_.plain;
@@ -84,10 +82,10 @@ void Variant::move (Variant&& src)
 {
 	switch (src.type_) {
 		case VT::STRING:
-			new (&val_.u.s) string (std::move (src.val_.u.s));
+			new (&val_.u.s) std::string (std::move (src.val_.u.s));
 			break;
 		case VT::WSTRING:
-			new (&val_.u.ws) wstring (std::move (src.val_.u.ws));
+			new (&val_.u.ws) std::wstring (std::move (src.val_.u.ws));
 			break;
 		default:
 			val_.plain = src.val_.plain;
@@ -107,7 +105,7 @@ const Variant& Variant::dereference_const () const noexcept
 
 [[noreturn]] void Variant::throw_out_of_range ()
 {
-	throw range_error ("Value out of range.");
+	throw std::range_error ("Value out of range.");
 }
 
 uint8_t Variant::to_octet () const
@@ -183,9 +181,9 @@ void Variant::check_fp ()
 {
 	int ex = fetestexcept (FE_ALL_EXCEPT);
 	if (ex & FE_OVERFLOW)
-		throw overflow_error ("Conversion overflow.");
+		throw std::overflow_error ("Conversion overflow.");
 	else if (ex & FE_UNDERFLOW)
-		throw underflow_error ("Conversion underflow.");
+		throw std::underflow_error ("Conversion underflow.");
 }
 
 float Variant::to_float () const
@@ -225,9 +223,9 @@ long double Variant::to_long_double () const
 	return ret;
 }
 
-string Variant::to_string () const
+std::string Variant::to_string () const
 {
-	string s;
+	std::string s;
 
 	switch (type_) {
 		case VT::CHAR:
@@ -277,7 +275,7 @@ string Variant::to_string () const
 	return s;
 }
 
-void Variant::append (string& s, unsigned c)
+void Variant::append (std::string& s, unsigned c)
 {
 	assert (c <= 0xFFFF);
 
@@ -304,7 +302,7 @@ void Variant::append (string& s, unsigned c)
 		{ '\v', 'v' }
 	};
 		
-	for (auto p = escapes; p != end (escapes); ++p) {
+	for (auto p = escapes; p != std::end (escapes); ++p) {
 		if (p->c == c) {
 			s += '\\';
 			s += p->esc;

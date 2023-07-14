@@ -59,9 +59,9 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	Operation (Build::Builder& builder, bool oneway, const Type& type, const Build::SimpleDeclarator& name) :
+	Operation (Build::Builder& builder, bool oneway, Type&& type, const Build::SimpleDeclarator& name) :
 		OperationBase (Item::Kind::OPERATION, builder, name),
-		Type (type),
+		Type (std::move (type)),
 		oneway_ (oneway)
 	{}
 

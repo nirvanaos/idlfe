@@ -26,8 +26,6 @@
 #include "Driver.h"
 #include <assert.h>
 
-using namespace std;
-
 namespace FE {
 
 Driver::Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated, std::ostream& err_out) :
@@ -57,7 +55,7 @@ void Driver::preprocessor_directive (const char* const dir)
 				if (*s == '\"') {
 					const char* end = strchr (s + 1, '\"');
 					if (end) {
-						line (string (s + 1, end - s - 1));
+						line (std::string (s + 1, end - s - 1));
 						yylineno = l;
 						return;
 					}
@@ -92,7 +90,7 @@ void Driver::preprocessor_directive (const char* const dir)
 							} else
 								break;
 						}
-						linemarker (string (name, nameend - name), AST::Location (file (), lineno () - 1), flags);
+						linemarker (std::string (name, nameend - name), AST::Location (file (), lineno () - 1), flags);
 						yylineno = l;
 						return;
 					}
@@ -100,7 +98,7 @@ void Driver::preprocessor_directive (const char* const dir)
 			}
 		}
 	}
-	message (AST::Location (file (), lineno () - 1), MessageType::ERROR, string ("invalid preprocessor directive: ") + dir);
+	message (AST::Location (file (), lineno () - 1), MessageType::ERROR, std::string ("invalid preprocessor directive: ") + dir);
 }
 
 void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
@@ -136,7 +134,7 @@ void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
 		{ "T_SCOPE", "::" }
 	};
 
-	string msg = cmsg;
+	std::string msg = cmsg;
 
 	for (size_t pos = 0; (pos = msg.find ('_')) != msg.npos;) {
 		if ((pos > 0) && (pos == 1 || (' ' == msg [pos - 2])) && ('T' == msg [pos - 1]) && isalpha (msg [pos + 1])) {
@@ -149,16 +147,16 @@ void Driver::parser_error (const yy::location& loc, const std::string& cmsg)
 					if (!isupper (c) && '_' != c)
 						break;
 				}
-				string name = msg.substr (pos - 1, nameend - pos + 1);
+				std::string name = msg.substr (pos - 1, nameend - pos + 1);
 				const Punct* punct = nullptr;
-				for (const Punct* p = punctuators; p < end (punctuators); ++p) {
+				for (const Punct* p = punctuators; p < std::end (punctuators); ++p) {
 					if (name == p->name) {
 						punct = p;
 						break;
 					}
 				}
 				if (punct) {
-					string val = "'";
+					std::string val = "'";
 					val += punct->value;
 					val += '\'';
 					msg.replace (pos - 1, name.length (), val);

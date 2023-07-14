@@ -26,8 +26,6 @@
 #include "../include/AST/Symbols.h"
 #include "../include/AST/ItemScope.h"
 
-using namespace std;
-
 namespace AST {
 
 std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)

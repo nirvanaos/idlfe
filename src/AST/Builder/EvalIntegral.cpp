@@ -29,8 +29,6 @@
 #include "SafeInt/SafeInt.hpp"
 #include <stdexcept>
 
-using namespace std;
-
 namespace AST {
 namespace Build {
 
@@ -41,7 +39,7 @@ Variant EvalIntegral::literal_boolean (bool v, const Location& loc)
 	return Variant (v);
 }
 
-Variant EvalIntegral::literal_char (const string& s, const Location& loc)
+Variant EvalIntegral::literal_char (const std::string& s, const Location& loc)
 {
 	try {
 		assert (s.size () > 2);
@@ -52,13 +50,13 @@ Variant EvalIntegral::literal_char (const string& s, const Location& loc)
 		if (p != &s.back ())
 			invalid_char_const ();
 		return Variant (v);
-	} catch (const exception& ex) {
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
 }
 
-Variant EvalIntegral::literal_wchar (const string& s, const Location& loc)
+Variant EvalIntegral::literal_wchar (const std::string& s, const Location& loc)
 {
 	try {
 		assert (s.size () > 3);
@@ -70,24 +68,24 @@ Variant EvalIntegral::literal_wchar (const string& s, const Location& loc)
 		if (p != &s.back ())
 			invalid_char_const ();
 		return Variant (v);
-	} catch (const exception& ex) {
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
 }
 
-Variant EvalIntegral::literal_int (const string& s, const Location& loc)
+Variant EvalIntegral::literal_int (const std::string& s, const Location& loc)
 {
 	try {
 		size_t idx;
-		uint64_t ull = stoull (s, &idx, 0);
+		uint64_t ull = std::stoull (s, &idx, 0);
 		if (idx != s.size ())
-			throw runtime_error ("Invalid integer constant.");
-		if (ull > numeric_limits <uint32_t>::max ())
+			throw std::runtime_error ("Invalid integer constant.");
+		if (ull > std::numeric_limits <uint32_t>::max ())
 			return Variant (ull);
 		else
 			return Variant ((uint32_t)ull);
-	} catch (const exception& ex) {
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
@@ -120,7 +118,7 @@ Variant EvalIntegral::expr (const Variant& cl, char op, const Variant& cr, const
 				if ('>' == op || '<' == op) {
 					uint32_t shift = r.to_unsigned_long ();
 					if (shift > 32)
-						throw range_error ("Shift size is too large.");
+						throw std::range_error ("Shift size is too large.");
 					ret = op == '>' ? lv >> shift : lv << shift;
 				} else {
 					int64_t rv = r.to_long_long ();
@@ -165,7 +163,7 @@ Variant EvalIntegral::expr (const Variant& cl, char op, const Variant& cr, const
 				if ('>' == op || '<' == op) {
 					uint64_t shift = r.to_unsigned_long ();
 					if (shift > 32)
-						throw range_error ("Shift size is too large.");
+						throw std::range_error ("Shift size is too large.");
 					ret = op == '>' ? lv >> shift : lv << shift;
 				} else {
 					uint64_t rv = r.to_unsigned_long_long ();
@@ -206,7 +204,7 @@ Variant EvalIntegral::expr (const Variant& cl, char op, const Variant& cr, const
 				}
 				return ret;
 			}
-		} catch (const exception& ex) {
+		} catch (const std::exception& ex) {
 			error (loc, ex);
 		}
 	}
@@ -248,14 +246,14 @@ Variant EvalIntegral::expr (char op, const Variant& cv, const Location& loc)
 						return u;
 						break;
 					case '~':
-						return numeric_limits <uint32_t>::max () - u;;
+						return std::numeric_limits <uint32_t>::max () - u;;
 						break;
 					default:
 						invalid_operation (op, loc);
 						return Variant ();
 				}
 			}
-		} catch (const exception& ex) {
+		} catch (const std::exception& ex) {
 			error (loc, ex);
 		}
 	}
@@ -310,7 +308,7 @@ Variant EvalIntegral::cast (const Type& t, Variant&& v, const Location& loc)
 				case Variant::VT::WCHAR:
 					ret = v;
 			}
-		} catch (const exception& ex) {
+		} catch (const std::exception& ex) {
 			error (loc, ex);
 		}
 	}

@@ -34,7 +34,6 @@
 #include "../include/AST/ValueBox.h"
 #include "../include/AST/Module.h"
 
-using namespace std;
 using namespace AST::Build;
 
 namespace AST {
@@ -73,7 +72,7 @@ ItemWithId::ItemWithId (Kind kind, Build::Builder& builder, const Build::SimpleD
 bool ItemWithId::check_prefix (Builder& builder, const Location& loc) const noexcept
 {
 	if (!data_.explicit_ [EXPLICIT_ID] && !data_.explicit_ [EXPLICIT_PREFIX]) {
-		const string& pref = builder.prefix ();
+		const std::string& pref = builder.prefix ();
 		if (data_.prefix_or_id != pref) {
 			builder.message (loc, Builder::MessageType::ERROR, qualified_name () + " is already declared with different prefix \"" + data_.prefix_or_id
 				+ "\". Current prefix is \"" + pref + "\".");
@@ -132,11 +131,11 @@ void ItemWithId::pragma_version (Builder& builder, const Version v, const Locati
 	}
 }
 
-string ItemWithId::repository_id () const
+std::string ItemWithId::repository_id () const
 {
 	if (data_.explicit_ [EXPLICIT_ID])
 		return data_.prefix_or_id;
-	string id;
+	std::string id;
 	id.reserve (5 + data_.prefix_or_id.length ());
 	id = "IDL:";
 	if (!data_.prefix_or_id.empty ()) {
@@ -151,9 +150,9 @@ string ItemWithId::repository_id () const
 		id += *it;
 	}
 	id += ':';
-	id += to_string (data_.version.major);
+	id += std::to_string (data_.version.major);
 	id += '.';
-	id += to_string (data_.version.minor);
+	id += std::to_string (data_.version.minor);
 	return id;
 }
 

@@ -28,8 +28,6 @@
 #include "../../include/AST/Enum.h"
 #include "../../include/AST/Constant.h"
 
-using namespace std;
-
 namespace AST {
 namespace Build {
 
@@ -60,7 +58,7 @@ Variant EvalEnum::constant (const ScopedName& constant)
 
 Variant EvalEnum::cast (const Type& t, Variant&& v, const Location& loc)
 {
-	return move (v);
+	return std::move (v);
 }
 
 }

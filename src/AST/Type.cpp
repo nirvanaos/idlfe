@@ -34,8 +34,6 @@
 #pragma GCC diagnostic ignored "-Wswitch"
 #endif
 
-using namespace std;
-
 namespace AST {
 
 Type::Type (BasicType bt) :
@@ -57,7 +55,7 @@ Type Type::make_sequence (const Type& type, Dim size)
 
 Type::Type (const Type& type, const FixedArraySizes& sizes) :
 	kind_ (Kind::ARRAY),
-	type_ (new Array (type, vector <Dim> (sizes.begin (), sizes.end ())))
+	type_ (new Array (type, std::vector <Dim> (sizes.begin (), sizes.end ())))
 {}
 
 Type::Type (unsigned digits, unsigned scale) :
@@ -186,13 +184,13 @@ size_t Type::key_max () const noexcept
 			case BasicType::WCHAR:
 			case BasicType::USHORT:
 			case BasicType::SHORT:
-				return numeric_limits <uint16_t>::max ();
+				return std::numeric_limits <uint16_t>::max ();
 			case BasicType::ULONG:
 			case BasicType::LONG:
-				return numeric_limits <uint32_t>::max ();
+				return std::numeric_limits <uint32_t>::max ();
 			case BasicType::ULONGLONG:
 			case BasicType::LONGLONG:
-				return numeric_limits <size_t>::max ();
+				return std::numeric_limits <size_t>::max ();
 		}
 	} else if (tkind () == Kind::NAMED_TYPE) {
 		const NamedItem& en = named_type ();

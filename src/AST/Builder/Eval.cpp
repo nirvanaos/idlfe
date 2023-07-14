@@ -27,8 +27,6 @@
 #include "Builder.h"
 #include "../../include/AST/Constant.h"
 
-using namespace std;
-
 namespace AST {
 namespace Build {
 
@@ -39,7 +37,7 @@ void Eval::invalid_literal_type (const Location& loc) const
 
 void Eval::invalid_operation (char op, const Location& loc) const
 {
-	string sop;
+	std::string sop;
 	switch (op) {
 		case '>':
 			sop = ">>";
@@ -50,7 +48,7 @@ void Eval::invalid_operation (char op, const Location& loc) const
 		default:
 			sop = op;
 	}
-	builder_.message (loc, Builder::MessageType::ERROR, string ("operation ") + sop + " is invalid in this context");
+	builder_.message (loc, Builder::MessageType::ERROR, "operation " + sop + " is invalid in this context");
 }
 
 void Eval::error (const Location& loc, const std::exception& ex) const
@@ -58,43 +56,43 @@ void Eval::error (const Location& loc, const std::exception& ex) const
 	builder_.message (loc, Builder::MessageType::ERROR, ex.what ());
 }
 
-Variant Eval::literal_char (const string& s, const Location& loc)
+Variant Eval::literal_char (const std::string& s, const Location& loc)
 {
 	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_wchar (const string& s, const Location& loc)
+Variant Eval::literal_wchar (const std::string& s, const Location& loc)
 {
 	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_int (const string& s, const Location& loc)
+Variant Eval::literal_int (const std::string& s, const Location& loc)
 {
 	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_float (const string& s, const Location& loc)
+Variant Eval::literal_float (const std::string& s, const Location& loc)
 {
 	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_string (const string& s, const Location& loc, const Variant* append)
+Variant Eval::literal_string (const std::string& s, const Location& loc, const Variant* append)
 {
 	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_wstring (const string& s, const Location& loc, const Variant* append)
+Variant Eval::literal_wstring (const std::string& s, const Location& loc, const Variant* append)
 {
 	invalid_literal_type (loc);
 	return Variant ();
 }
 
-Variant Eval::literal_fixed (const string& s, const Location& loc)
+Variant Eval::literal_fixed (const std::string& s, const Location& loc)
 {
 	invalid_literal_type (loc);
 	return Variant ();
@@ -127,12 +125,12 @@ const Constant* Eval::lookup_const (const ScopedName& constant) const
 
 void Eval::see_definition (const NamedItem& item) const
 {
-	builder_.message (item, Builder::MessageType::MESSAGE, string ("see definition of ") + item.qualified_name ());
+	builder_.message (item, Builder::MessageType::MESSAGE, "see definition of " + item.qualified_name ());
 }
 
 void Eval::invalid_constant_type (const ScopedName& constant) const
 {
-	builder_.message (constant, Builder::MessageType::ERROR, string ("constant ") + constant.stringize () + " type is invalid");
+	builder_.message (constant, Builder::MessageType::ERROR, "constant " + constant.stringize () + " type is invalid");
 }
 
 Variant Eval::expr (const Variant& l, char op, const Variant& r, const Location& loc)
@@ -219,7 +217,7 @@ char Eval::unescape_char (const char*& p)
 {
 	unsigned c = unescape_wchar (p);
 	if (c > 0xFF)
-		throw runtime_error ("Character out of range.");
+		throw std::runtime_error ("Character out of range.");
 	return (char)c;
 }
 
@@ -255,27 +253,27 @@ unsigned Eval::from_hex (const char*& p, unsigned maxlen)
 
 [[noreturn]] void Eval::invalid_escape_seq ()
 {
-	throw runtime_error ("Invalid escape sequence.");
+	throw std::runtime_error ("Invalid escape sequence.");
 }
 
 [[noreturn]] void Eval::invalid_char_const ()
 {
-	throw runtime_error ("Invalid character constant.");
+	throw std::runtime_error ("Invalid character constant.");
 }
 
 [[noreturn]] void Eval::overflow (char op)
 {
-	throw overflow_error (string ("Overflow in ") + op + " operation.");
+	throw std::overflow_error (std::string ("Overflow in ") + op + " operation.");
 }
 
 [[noreturn]] void Eval::underflow (char op)
 {
-	throw underflow_error (string ("Underflow in ") + op + " operation.");
+	throw std::underflow_error (std::string ("Underflow in ") + op + " operation.");
 }
 
 [[noreturn]] void Eval::zero_divide (char op)
 {
-	throw runtime_error (string ("Divide by zero in ") + op + " operation.");
+	throw std::runtime_error (std::string ("Divide by zero in ") + op + " operation.");
 }
 
 }

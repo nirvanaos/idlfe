@@ -60,8 +60,8 @@ private:
 	friend class Build::Builder;
 	template <class T> friend class Ptr;
 
-	Attribute (Build::Builder& builder, bool readonly, const Type& type, const Build::SimpleDeclarator& name) :
-		Member (builder, type, name, Item::Kind::ATTRIBUTE),
+	Attribute (Build::Builder& builder, bool readonly, Type&& type, const Build::SimpleDeclarator& name) :
+		Member (builder, std::move (type), name, Item::Kind::ATTRIBUTE),
 		readonly_ (readonly)
 	{}
 

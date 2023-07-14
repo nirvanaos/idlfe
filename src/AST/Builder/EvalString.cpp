@@ -28,8 +28,6 @@
 #include "../../include/AST/Constant.h"
 #include <stdexcept>
 
-using namespace std;
-
 namespace AST {
 namespace Build {
 
@@ -40,12 +38,12 @@ void EvalStringBase::error_length (const Location& loc) const
 
 [[noreturn]] void EvalStringBase::throw_char0 ()
 {
-	throw runtime_error ("A string literal shall not contain the character \'\\0\'.");
+	throw std::runtime_error ("A string literal shall not contain the character \'\\0\'.");
 }
 
 // String evaluator
 
-Variant EvalString::literal_string (const string& s, const Location& loc, const Variant* append)
+Variant EvalString::literal_string (const std::string& s, const Location& loc, const Variant* append)
 {
 	try {
 		assert (s.size () >= 2);
@@ -53,7 +51,7 @@ Variant EvalString::literal_string (const string& s, const Location& loc, const 
 		assert (s.back () == '\"');
 		const char* p = &s.front () + 1;
 		const char* end = &s.back ();
-		string v;
+		std::string v;
 		v.reserve (s.size ());
 		while (p < end) {
 			char c = unescape_char (p);
@@ -63,8 +61,8 @@ Variant EvalString::literal_string (const string& s, const Location& loc, const 
 		}
 		if (append)
 			v += append->as_string ();
-		return Variant (move (v));
-	} catch (const exception& ex) {
+		return Variant (std::move (v));
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
@@ -95,12 +93,12 @@ Variant EvalString::cast (const Type& t, Variant&& v, const Location& loc)
 			return Variant ();
 		}
 	}
-	return move (v);
+	return std::move (v);
 }
 
 // Wide string evaluator
 
-Variant EvalWString::literal_wstring (const string& s, const Location& loc, const Variant* append)
+Variant EvalWString::literal_wstring (const std::string& s, const Location& loc, const Variant* append)
 {
 	try {
 		assert (s.size () >= 3);
@@ -109,7 +107,7 @@ Variant EvalWString::literal_wstring (const string& s, const Location& loc, cons
 		assert (s.back () == '\"');
 		const char* p = &s.front () + 2;
 		const char* end = &s.back ();
-		wstring v;
+		std::wstring v;
 		v.reserve (s.size ());
 		while (p < end) {
 			wchar_t c = unescape_wchar (p);
@@ -119,8 +117,8 @@ Variant EvalWString::literal_wstring (const string& s, const Location& loc, cons
 		}
 		if (append)
 			v += append->as_wstring ();
-		return Variant (move (v));
-	} catch (const exception& ex) {
+		return Variant (std::move (v));
+	} catch (const std::exception& ex) {
 		error (loc, ex);
 		return Variant ();
 	}
@@ -151,7 +149,7 @@ Variant EvalWString::cast (const Type& t, Variant&& v, const Location& loc)
 			return Variant ();
 		}
 	}
-	return move (v);
+	return std::move (v);
 }
 
 }
