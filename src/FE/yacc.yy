@@ -163,7 +163,6 @@ class Driver;
 %nterm <AST::Type> template_type_spec;
 %nterm <AST::Type> sequence_type;
 
-%nterm <AST::Type> constr_type_spec;
 %nterm <AST::Type> struct_type;
 %nterm <AST::Type> union_type;
 %nterm <AST::Type> switch_type_spec;
@@ -479,12 +478,11 @@ type_dcl
 
 type_spec
 	: simple_type_spec { $$ = $1; }
-	| constr_type_spec
 	;
 
 simple_type_spec
 	: base_type_spec { $$ = $1; }
-  | template_type_spec { $$ = $1; }
+	| template_type_spec { $$ = $1; }
 	| scoped_name { $$ = drv.lookup_type ($1); }
 	;
 
@@ -505,12 +503,6 @@ template_type_spec
 	| string_type
 	| wide_string_type
 	| fixed_pt_type
-	;
-
-constr_type_spec
-	: struct_type
-	| union_type
-	| enum_type
 	;
 
 declarators
