@@ -24,7 +24,6 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Symbols.h"
-#include "../include/AST/ItemScope.h"
 
 namespace AST {
 

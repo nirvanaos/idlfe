@@ -29,6 +29,10 @@
 #include "SafeInt/SafeInt.hpp"
 #include <stdexcept>
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 namespace AST {
 namespace Build {
 

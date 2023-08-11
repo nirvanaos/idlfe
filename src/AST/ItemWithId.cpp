@@ -23,16 +23,12 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
+#include "../include/AST/ItemWithId.h"
 #include "../include/AST/Builder.h"
-#include "../include/AST/Struct.h"
-#include "../include/AST/Union.h"
-#include "../include/AST/Enum.h"
-#include "../include/AST/TypeDef.h"
-#include "../include/AST/Native.h"
-#include "../include/AST/Exception.h"
-#include "../include/AST/ValueType.h"
-#include "../include/AST/ValueBox.h"
-#include "../include/AST/Module.h"
+
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
 
 namespace AST {
 

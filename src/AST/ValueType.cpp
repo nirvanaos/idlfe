@@ -24,7 +24,6 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/ValueType.h"
-#include "../include/AST/Builder.h"
 
 namespace AST {
 

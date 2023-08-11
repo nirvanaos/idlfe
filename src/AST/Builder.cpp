@@ -33,7 +33,6 @@
 #include "../include/AST/Struct.h"
 #include "../include/AST/Union.h"
 #include "../include/AST/Enum.h"
-#include "../include/AST/Exception.h"
 #include "../include/AST/UnionElement.h"
 #include "../include/AST/Constant.h"
 #include "../include/AST/StateMember.h"
@@ -48,6 +47,10 @@
 #include "Builder/EvalEnum.h"
 #include <stdexcept>
 #include <algorithm>
+
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
 
 #define INCOMPLETE_ERROR "incomplete type is not allowed"
 

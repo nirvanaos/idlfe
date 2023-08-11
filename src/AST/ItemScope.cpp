@@ -26,6 +26,10 @@
 #include "../include/AST/ItemScope.h"
 #include "../include/AST/Builder.h"
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 namespace AST {
 
 ItemScope::ItemScope (Item::Kind kind, Builder& builder, const SimpleDeclarator& name) :

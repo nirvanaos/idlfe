@@ -27,9 +27,19 @@
 #define IDLFE_FE_DRIVER_H_
 #pragma once
 
+#ifdef _MSC_BUILD
+#pragma warning (push)
+#pragma warning (disable:4065)
+#endif
+
 #if !defined(yyFlexLexerOnce)
 #include "FlexLexer.h"
 #endif
+
+#ifdef _MSC_BUILD
+#pragma warning (pop)
+#endif
+
 #include "../include/AST/Builder.h"
 
 #include "../include/IDL_FrontEnd.h"
@@ -62,7 +72,52 @@ public:
 
 	void preprocessor_directive (const char*);
 
+	void pragma (const char* s, const AST::Location& loc)
+	{
+		AST::Builder::pragma (s, loc);
+	}
+
 	void parser_error (const yy::location& loc, const std::string& msg);
+
+	AST::Type lookup_type (const AST::ScopedName& scoped_name)
+	{
+		return AST::Builder::lookup_type (scoped_name);
+	}
+
+	void eval_push (const AST::Type& t, const AST::Location& loc)
+	{
+		AST::Builder::eval_push (t, loc);
+	}
+
+	void eval_pop ()
+	{
+		AST::Builder::eval_pop ();
+	}
+
+	AST::Build::Eval& eval () const
+	{
+		return AST::Builder::eval ();
+	}
+
+	unsigned positive_int (const AST::Variant& v, const AST::Location& loc)
+	{
+		return AST::Builder::positive_int (v, loc);
+	}
+
+	AST::Type fixed_pt_type (unsigned digits, unsigned scale, const AST::Location& loc)
+	{
+		return AST::Builder::fixed_pt_type (digits, scale, loc);
+	}
+
+	void type_id (const AST::ScopedName& name, const AST::Variant& id, const AST::Location& id_loc)
+	{
+		AST::Builder::type_id (name, id, id_loc);
+	}
+
+	void type_prefix (const AST::ScopedName& name, const AST::Variant& s, const AST::Location& id_loc)
+	{
+		AST::Builder::type_prefix (name, s, id_loc);
+	}
 
 private:
 	/// Returns reference to FlexLexer.

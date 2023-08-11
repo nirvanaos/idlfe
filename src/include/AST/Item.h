@@ -36,7 +36,7 @@ namespace AST {
 
 template <class T> class Ptr;
 
-/// \brief An AST item.
+/// \brief An %AST item.
 class Item
 {
 public:
@@ -126,7 +126,7 @@ private:
 	mutable unsigned ref_cnt_;
 };
 
-/// \brief AST item smart pointer.
+/// \brief %AST item smart pointer.
 /// 
 /// \tparam T the item type.
 template <class T>

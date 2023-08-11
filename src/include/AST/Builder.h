@@ -1,3 +1,4 @@
+// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -41,25 +42,290 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#if defined (__GNUG__) || defined (__clang__)
-#pragma GCC diagnostic ignored "-Wswitch"
-#endif
-
 namespace AST {
 
 namespace Build {
 class Eval;
+class EvalEnum;
 }
 
-class Root;
 class OperationBase;
 class Attribute;
 class StructBase;
 class Union;
 
+/// \brief The %AST builder.
 class Builder : public BE::MessageOut
 {
 public:
+	/// \brief Currenttly parsed IDL file path.
+	const std::filesystem::path& file () const noexcept
+	{
+		return *cur_file_;
+	}
+
+	/// \brief Test if currently parsed file is main.
+	///
+	/// \returns `true` if currently parsed file is compiled file.
+	///          `false` if currently parsed file is included file.
+	bool is_main_file () const noexcept
+	{
+		return file_stack_.size () <= 1;
+	}
+
+	/// \returns Repository id prefix. See the `typeprefix` IDL keyword.
+	const std::string& prefix () const;
+
+	/// \returns Current symbols scope.
+	Symbols* cur_scope () const;
+
+	/// \brief Create native type.
+	/// 
+	/// \param name Native type name.
+	void native (const SimpleDeclarator& name);
+
+	/// \brief Begin module.
+	/// 
+	/// \param name The module name.
+	void module_begin (const SimpleDeclarator& name);
+
+	/// \brief End module.
+	void module_end ()
+	{
+		scope_end ();
+	}
+
+	/// \brief Create interface forward declaration.
+	/// 
+	/// \param name The interface name.
+	/// \param ik The interface kind.
+	void interface_decl (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
+
+	/// \brief Begin interface definition.
+	/// 
+	/// \param name The interface name.
+	/// \param ik The interface kind.
+	void interface_begin (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
+
+	/// \brief Set current interface bases.
+	/// 
+	/// \param bases Base names.
+	void interface_bases (const ScopedNames& bases);
+
+	/// \brief Begin operation definition for the current interface or valuetype.
+	/// 
+	/// \param oneway `true` for `oneway` operations.
+	/// \param type Return type.
+	/// \param name The operation name.
+	void operation_begin (bool oneway, Type& type, const SimpleDeclarator& name);
+
+	/// \brief Add parameter to the current operation.
+	/// 
+	/// \param att The parameter attribute.
+	/// \param type The parameter type.
+	/// \param name The parameter name.
+	void parameter (Parameter::Attribute att, Type& type, const SimpleDeclarator& name);
+	
+	/// \brief Set raises for the current operation.
+	/// 
+	/// \param names Exception names.
+	void raises (const ScopedNames& names);
+
+	/// \brief Set context for the current operation.
+	/// 
+	/// \param strings Context strings.
+	void operation_context (const Variants& strings);
+
+	/// \brief End of the operation definition.
+	void operation_end ()
+	{
+		operation_.clear ();
+	}
+
+	/// \brief Add attributes to the current interface or valuetype.
+	/// 
+	/// \param readonly `true` if attributes are read-only.
+	/// \param type The attributes type.
+	/// \param declarators The attribute names.
+	void attribute (bool readonly, Type& type, const SimpleDeclarators& declarators);
+
+	/// \brief Begin attribute definition for the current interface or valuetype.
+	///
+	/// \param readonly `true` if attribute is read-only.
+	/// \param type The attribute type.
+	/// \param name The attribute name.
+	void attribute_begin (bool readonly, Type& type, const SimpleDeclarator& name);
+	
+	/// \brief Set getraises for the current attribute.
+	/// 
+	/// \param names Exception names.
+	void getraises (const ScopedNames& names);
+
+	/// \brief Set setraises for the current attribute.
+	/// 
+	/// \param names Exception names.
+	void setraises (const ScopedNames& names);
+
+	/// \brief End of the attribute definition.
+	void attribute_end ()
+	{
+		attribute_.clear ();
+	}
+
+	/// \brief End of the interface definition.
+	void interface_end ();
+
+	/// \brief Create type alias.
+	/// 
+	/// \param type The type.
+	/// \param declarators Type aliases.
+	void type_def (Type& type, const Declarators& declarators);
+
+	/// \brief Create structure forward declaration.
+	/// 
+	/// \param name The structure name.
+	void struct_decl (const SimpleDeclarator& name);
+
+	/// \brief Begin of the structure definition.
+	/// 
+	/// \param name The structure name.
+	void struct_begin (const SimpleDeclarator& name);
+
+	/// \brief End of the structure definition.
+	/// \returns The pointer to definition.
+	const Ptr <NamedItem>* struct_end ()
+	{
+		return constr_type_end ();
+	}
+
+	/// \brief Begin of the exception definition.
+	/// 
+	/// \param name The exception name.
+	void exception_begin (const SimpleDeclarator& name);
+
+	/// \brief End of the exception definition.
+	void exception_end ()
+	{
+		constr_type_end ();
+	}
+
+	/// \brief Add members to the current structure or exception.
+	/// 
+	/// \param type The members type.
+	/// \param names The member names.
+	void member (Type& type, const Declarators& names);
+
+	/// \brief Create union forward declaration.
+	/// 
+	/// \param name The union name.
+	void union_decl (const SimpleDeclarator& name);
+
+	/// \brief Begin of the union definition.
+	/// 
+	/// \param name The union name.
+	/// \param switch_type The union discriminator type.
+	/// \param type_loc Discriminator type location.
+	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
+
+	/// \brief Create label for the current union.
+	/// 
+	/// \param label The constant.
+	/// \param loc The label location.
+	void union_label (const Variant& label, const Location& loc);
+
+	/// \brief Create default label for the current union.
+	/// 
+	/// \param loc The label location.
+	void union_default (const Location& loc);
+
+	/// \brief Create union element for the current label.
+	/// 
+	/// \param type The element type.
+	/// \param decl The element name.
+	void union_element (Type& type, const Declarator& decl);
+	
+	/// \brief End of the union definition.
+	/// \returns The pointer to definition.
+	const Ptr <NamedItem>* union_end ();
+
+	/// \brief Create enum type.
+	/// 
+	/// \param name The enum type name.
+	/// \param items The enum items.
+	/// \returns The pointer to definition.
+	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
+
+	/// \brief Create valuetype forward declaration.
+	/// 
+	/// \param name The valuetype name.
+	/// \param is_abstract `true` for abstract valuetype.
+	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
+
+	/// \brief Begin valuetype definition.
+	/// 
+	/// \param name The valuetype name.
+	/// \param mod The valuetype modifier.
+	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
+
+	/// \brief Set current valuetype bases.
+	/// 
+	/// \param truncatable `true` if valuetype is truncatable.
+	/// \param bases Base names.
+	void valuetype_bases (bool truncatable, const ScopedNames& bases);
+
+	/// \brief Set current valuetype supported interfaces.
+	/// 
+	/// \param interfaces Supported interface names.
+	void valuetype_supports (const ScopedNames& interfaces);
+
+	/// \brief Add members to the current valuetype.
+	/// 
+	/// \param is_public `true` for public members.
+	/// \param type The members type.
+	/// \param names The member names.
+	void state_member (bool is_public, Type& type, const Declarators& names);
+
+	/// \brief Begin valuetype factory.
+	/// 
+	/// \param name The valuetype factory name.
+	void valuetype_factory_begin (const SimpleDeclarator& name);
+
+	/// \brief End valuetype factory.
+	/// 
+	/// \param name The valuetype factory name.
+	void valuetype_factory_end ()
+	{
+		operation_end ();
+	}
+
+	/// \brief End of the valuetype definition.
+	void valuetype_end ()
+	{
+		interface_end ();
+	}
+
+	/// Create value box definition.
+	/// 
+	/// \param name The value box name.
+	/// \param type Boxed type.
+	void valuetype_box (const SimpleDeclarator& name, const Type& type);
+
+	/// Create constant definition.
+	/// 
+	/// \param t The constant type.
+	/// \param name The constant name.
+	/// \param val The constant value.
+	/// \param loc The constant location.
+	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
+
+	void see_prev_declaration (const Location& loc);
+	void see_declaration_of (const Location& loc, const std::string& name);
+
+	void check_anonymous (const Type& type, const SimpleDeclarator& name);
+
+	void validate_id (const Identifier& name, const Location& loc);
+
+protected:
 	Builder () = delete;
 	Builder (const Builder&) = delete;
 	Builder& operator = (const Builder&) = delete;
@@ -71,119 +337,13 @@ public:
 	static const int FILE_FLAG_SYSTEM = 0x2;
 	void linemarker (const std::string& name, const Location& loc, int flags);
 	void line (const std::string& filename);
-
-	void pragma (const char*, const Location& loc);
-
-	const std::filesystem::path& file () const noexcept
-	{
-		return *cur_file_;
-	}
-
-	bool is_main_file () const noexcept
-	{
-		return file_stack_.size () <= 1;
-	}
-
-	const std::string& prefix () const;
-
-	ItemScope* cur_parent () const;
-	Symbols* cur_scope () const;
-
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
+	void pragma (const char* s, const Location& loc);
 	Type lookup_type (const ScopedName& scoped_name);
-
-	void native (const SimpleDeclarator& name);
-
-	void module_begin (const SimpleDeclarator& name);
-
-	void module_end ()
-	{
-		scope_end ();
-	}
-
-	void interface_decl (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
-	void interface_begin (const SimpleDeclarator& name, InterfaceKind ik = InterfaceKind ());
-	void interface_bases (const ScopedNames& bases);
-
-	void operation_begin (bool oneway, Type& type, const SimpleDeclarator& name);
-
-	void parameter (Parameter::Attribute att, Type& type, const SimpleDeclarator& name);
-	
-	void raises (const ScopedNames& names);
-	void operation_context (const Variants& strings);
-
-	void operation_end ()
-	{
-		operation_.clear ();
-	}
-
-	void attribute (bool readonly, Type& type, const SimpleDeclarators& declarators);
-
-	void attribute_begin (bool readonly, Type& type, const SimpleDeclarator& name);
-	
-	void getraises (const ScopedNames& names);
-	void setraises (const ScopedNames& names);
-
-	void attribute_end ()
-	{
-		attribute_.clear ();
-	}
-
-	void interface_end ();
-
-	void type_def (Type& type, const Declarators& declarators);
-
-	void struct_decl (const SimpleDeclarator& name);
-	void struct_begin (const SimpleDeclarator& name);
-
-	const Ptr <NamedItem>* struct_end ()
-	{
-		return constr_type_end ();
-	}
-
-	void exception_begin (const SimpleDeclarator& name);
-
-	void exception_end ()
-	{
-		constr_type_end ();
-	}
-
-	void member (Type& type, const Declarators& names);
-
-	void union_decl (const SimpleDeclarator& name);
-	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
-	void union_label (const Variant& label, const Location& loc);
-	void union_default (const Location& loc);
-	void union_element (Type& type, const Declarator& decl);
-	const Ptr <NamedItem>* union_end ();
-
-	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
-
-	void valuetype_decl (const SimpleDeclarator& name, bool is_abstract = false);
-	void valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier mod = ValueType::Modifier::NONE);
-	void valuetype_bases (bool truncatable, const ScopedNames& bases);
-	void valuetype_supports (const ScopedNames& interfaces);
-	void state_member (bool is_public, Type& type, const Declarators& names);
-
-	void valuetype_factory_begin (const SimpleDeclarator& name);
-
-	void valuetype_factory_end ()
-	{
-		operation_end ();
-	}
-
-	void valuetype_end ()
-	{
-		interface_end ();
-	}
-
-	void valuetype_box (const SimpleDeclarator& name, const Type& type);
+	Ptr <Root> finalize ();
 
 	void eval_push (const Type& t, const Location& loc);
 	void eval_pop ();
 	Build::Eval& eval () const;
-
-	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
 
 	unsigned positive_int (const Variant& v, const Location& loc);
 
@@ -204,16 +364,13 @@ public:
 
 	void type_prefix (const ScopedName& name, const Variant& s, const Location& id_loc);
 
-	void see_prev_declaration (const Location& loc);
-	void see_declaration_of (const Location& loc, const std::string& name);
-
-	Ptr <Root> finalize ();
-
-	void check_anonymous (const Type& type, const SimpleDeclarator& name);
-
-	void validate_id (const Identifier& name, const Location& loc);
-
 private:
+	friend class NamedItem;
+	friend class Build::Eval;
+	friend class Build::EvalEnum;
+
+	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
+	ItemScope* cur_parent () const;
 	bool prefix_valid (const std::string& pref, const Location& loc);
 	void prefix (const std::string& pref, const Location& loc);
 	bool get_quoted_string (const char*& s, std::string& qs, const Location& loc);

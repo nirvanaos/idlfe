@@ -33,7 +33,7 @@
 
 namespace AST {
 
-/// \brief Type alias.
+/// \brief %Type alias.
 /// 
 /// \invariant kind () == Item::Kind::TYPE_DEF
 /// 

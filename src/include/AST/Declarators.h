@@ -1,3 +1,4 @@
+/// \file
 /*
 * Nirvana IDL front-end library.
 *
@@ -33,6 +34,7 @@
 
 namespace AST {
 
+/// \brief The IDL simple declarator.
 class SimpleDeclarator :
 	public Identifier,
 	public Location
@@ -41,6 +43,10 @@ public:
 	SimpleDeclarator ()
 	{}
 
+	/// Constructor.
+	/// 
+	/// \param name The name.
+	/// \param loc The location.
 	SimpleDeclarator (const Identifier& name, const Location& loc) :
 		Identifier (name),
 		Location (loc)
@@ -53,10 +59,13 @@ public:
 	SimpleDeclarator& operator = (SimpleDeclarator&&) = default;
 };
 
+/// \brief The IDL simple declarators.
 typedef std::forward_list <SimpleDeclarator> SimpleDeclarators;
 
+/// \brief Array dimensions.
 typedef std::forward_list <unsigned> FixedArraySizes;
 
+/// \brief The IDL declarator.
 class Declarator :
 	public SimpleDeclarator
 {
@@ -64,11 +73,20 @@ public:
 	Declarator ()
 	{}
 
+	/// Array declarator.
+	/// 
+	/// \param name The name.
+	/// \param loc The location.
+	/// \param array Array sizes.
 	Declarator (const Identifier& name, const Location& loc, const FixedArraySizes& array) :
 		SimpleDeclarator (name, loc),
 		array_ (array)
 	{}
 
+	/// Simple declarator.
+	/// 
+	/// \param name The name.
+	/// \param loc The location.
 	Declarator (const Identifier& name, const Location& loc) :
 		SimpleDeclarator (name, loc)
 	{}
@@ -87,6 +105,7 @@ public:
 	Declarator& operator = (const Declarator&) = default;
 	Declarator& operator = (Declarator&&) = default;
 
+	/// \returns Array dimensions.
 	const FixedArraySizes& array_sizes () const
 	{
 		return array_;
@@ -96,6 +115,7 @@ private:
 	FixedArraySizes array_;
 };
 
+/// \brief The IDL declarators.
 typedef std::forward_list <Declarator> Declarators;
 
 }

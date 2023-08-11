@@ -39,6 +39,10 @@
 
 #include "simplecpp/simplecpp.h"
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 struct IDL_FrontEnd::Arguments
 {
 	simplecpp::DUI preprocessor;

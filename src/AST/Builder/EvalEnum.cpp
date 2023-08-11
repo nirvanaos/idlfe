@@ -28,6 +28,10 @@
 #include "../../include/AST/Enum.h"
 #include "../../include/AST/Constant.h"
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 namespace AST {
 namespace Build {
 

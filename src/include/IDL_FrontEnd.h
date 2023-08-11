@@ -176,7 +176,7 @@ protected:
 	/// \param tree AST.
 	/// \throw std::runtime_error For displaying the error message and compile next file.
 	///                           Other exceptions will cause the compilation interruption.
-	virtual void generate_code (AST::Root& tree) = 0;
+	virtual void generate_code (const AST::Root& tree) = 0;
 
 private:
 	bool compile (const std::string& file);
