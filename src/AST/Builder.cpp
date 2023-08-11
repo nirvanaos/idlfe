@@ -1295,7 +1295,7 @@ void Builder::setraises (const ScopedNames& names)
 		att->setraises (lookup_exceptions (names));
 }
 
-void Builder::interface_end ()
+const Interface* Builder::interface_end ()
 {
 	assert (!scope_stack_.empty ());
 	
@@ -1319,6 +1319,7 @@ void Builder::interface_end ()
 	}
 	scope_end ();
 	interface_.clear ();
+	return static_cast <const Interface*> (itf);
 }
 
 void Builder::struct_decl (const SimpleDeclarator& name)

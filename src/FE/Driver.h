@@ -119,6 +119,13 @@ public:
 		AST::Builder::type_prefix (name, s, id_loc);
 	}
 
+	void interface_end ()
+	{
+		const AST::Interface* itf = AST::Builder::interface_end ();
+		if (itf)
+			compiler_.interface_end (*itf, *this);
+	}
+
 private:
 	/// Returns reference to FlexLexer.
 	virtual Driver& driver ()

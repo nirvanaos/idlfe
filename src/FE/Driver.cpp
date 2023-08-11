@@ -32,7 +32,9 @@ Driver::Driver (IDL_FrontEnd& compiler, const std::string& file, std::istream& y
 	yyFlexLexer (yyin, compiler.err_out ()),
 	AST::Builder (compiler, file),
 	parser_ (*this)
-{}
+{
+	compiler_.start (*this);
+}
 
 void Driver::preprocessor_directive (const char* const dir)
 {

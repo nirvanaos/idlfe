@@ -173,7 +173,8 @@ public:
 	}
 
 	/// \brief End of the interface definition.
-	void interface_end ();
+	/// \returns Created interface pointer.
+	const Interface* interface_end ();
 
 	/// \brief Create type alias.
 	/// 
@@ -416,9 +417,11 @@ private:
 
 	static Type make_type (const Type& t, const Declarator& decl);
 
-private:
+protected:
 	IDL_FrontEnd& compiler_;
 	Ptr <Root> tree_;
+
+private:
 	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
