@@ -53,9 +53,9 @@ public:
 
 private:
 	template <class T> friend class Ptr;
-	friend class Build::Builder;
+	friend class Builder;
 
-	UnionDecl (Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	UnionDecl (Builder& builder, const SimpleDeclarator& name) :
 		ItemWithId (Item::Kind::UNION_DECL, builder, name),
 		definition_ (nullptr)
 	{}
@@ -107,9 +107,9 @@ public:
 
 private:
 	template <class T> friend class Ptr;
-	friend class Build::Builder;
+	friend class Builder;
 
-	Union (Build::Builder& builder, const Build::SimpleDeclarator& name,
+	Union (Builder& builder, const SimpleDeclarator& name,
 		const Type& discriminator_type) :
 		ItemWithId (Item::Kind::UNION, builder, name),
 		discriminator_type_ (discriminator_type),

@@ -30,9 +30,7 @@
 
 namespace AST {
 
-namespace Build {
 class Builder;
-}
 
 /// \brief The item that can be forward declared.
 class ForwardDeclarable
@@ -50,7 +48,7 @@ protected:
 	{}
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	void set_has_forward_dcl ()
 	{

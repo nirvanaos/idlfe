@@ -33,12 +33,9 @@
 
 namespace AST {
 
-namespace Build {
 class Builder;
-class SimpleDeclarator;
-}
-
 class ItemScope;
+class SimpleDeclarator;
 
 /// \brief A named AST item.
 class NamedItem :
@@ -65,10 +62,10 @@ public:
 	ScopedName scoped_name () const;
 
 protected:
-	NamedItem (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
+	NamedItem (Kind kind, Builder& builder, const SimpleDeclarator& name);
 
 private:
-	static Identifier unescape (Build::Builder& builder, const Build::SimpleDeclarator& name);
+	static Identifier unescape (Builder& builder, const SimpleDeclarator& name);
 
 private:
 	const ItemScope* parent_;

@@ -42,7 +42,7 @@ protected:
 	typedef std::vector <Ptr <const T> > Base;
 
 protected:
-	friend class Build::Builder;
+	friend class Builder;
 
 	void append (T& item)
 	{
@@ -63,7 +63,7 @@ public:
 	bool visit (CodeGen& cg) const;
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	void append (Item& item);
 };

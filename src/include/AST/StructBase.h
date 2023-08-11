@@ -40,7 +40,7 @@ class StructBase :
 	public ContainerT <Member>
 {
 protected:
-	StructBase (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	StructBase (Kind kind, Builder& builder, const SimpleDeclarator& name) :
 		ItemWithId (kind, builder, name)
 	{}
 };

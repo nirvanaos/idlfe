@@ -52,9 +52,9 @@ public:
 
 private:
 	template <class T> friend class Ptr;
-	friend class Build::Builder;
+	friend class Builder;
 
-	StructDecl (Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	StructDecl (Builder& builder, const SimpleDeclarator& name) :
 		ItemWithId (Item::Kind::STRUCT_DECL, builder, name),
 		definition_ (nullptr)
 	{}
@@ -73,9 +73,9 @@ class Struct :
 {
 private:
 	template <class T> friend class Ptr;
-	friend class Build::Builder;
+	friend class Builder;
 
-	Struct (Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	Struct (Builder& builder, const SimpleDeclarator& name) :
 		StructBase (Item::Kind::STRUCT, builder, name)
 	{}
 };

@@ -24,7 +24,7 @@
 *  popov.nirvana@gmail.com
 */
 #include "Eval.h"
-#include "Builder.h"
+#include "../../include/AST/Builder.h"
 #include "../../include/AST/Constant.h"
 
 namespace AST {

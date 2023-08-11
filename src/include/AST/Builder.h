@@ -27,14 +27,15 @@
 #define IDLFE_AST_BUILDER_H_
 #pragma once
 
-#include "../../include/AST/Root.h"
-#include "../../include/AST/ValueType.h"
-#include "../../include/AST/Parameter.h"
-#include "../../include/AST/ScopedName.h"
-#include "../../include/AST/Exception.h"
-#include "../../include/BE/MessageOut.h"
-#include "Eval.h"
+#include "../IDL_FrontEnd.h"
+#include "Root.h"
+#include "ValueType.h"
+#include "Parameter.h"
+#include "ScopedName.h"
+#include "Exception.h"
 #include "Declarators.h"
+#include "Variant.h"
+#include "../BE/MessageOut.h"
 #include <ostream>
 #include <stack>
 #include <unordered_map>
@@ -46,26 +47,25 @@
 
 namespace AST {
 
+namespace Build {
+class Eval;
+}
+
 class Root;
 class OperationBase;
 class Attribute;
 class StructBase;
 class Union;
 
-namespace Build {
-
 class Builder : public BE::MessageOut
 {
 public:
-	Builder (const std::string& file, std::ostream& err_out, bool anonymous_deprecated) :
-		BE::MessageOut (err_out),
-		tree_ (Ptr <Root>::make <Root> (file)),
-		anonymous_deprecated_ (anonymous_deprecated),
-		cur_file_ (&tree_->file ())
-	{
-		container_stack_.push (tree_);
-		file_stack_.emplace_back (file);
-	}
+	Builder () = delete;
+	Builder (const Builder&) = delete;
+	Builder& operator = (const Builder&) = delete;
+
+	Builder (IDL_FrontEnd& compiler, const std::string& file);
+	~Builder ();
 
 	static const int FILE_FLAG_START = 0x1;
 	static const int FILE_FLAG_SYSTEM = 0x2;
@@ -154,7 +154,7 @@ public:
 	void union_begin (const SimpleDeclarator& name, const Type& switch_type, const Location& type_loc);
 	void union_label (const Variant& label, const Location& loc);
 	void union_default (const Location& loc);
-	void union_element (Type& type, const Build::Declarator& decl);
+	void union_element (Type& type, const Declarator& decl);
 	const Ptr <NamedItem>* union_end ();
 
 	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
@@ -180,18 +180,8 @@ public:
 	void valuetype_box (const SimpleDeclarator& name, const Type& type);
 
 	void eval_push (const Type& t, const Location& loc);
-
-	void eval_pop ()
-	{
-		assert (!eval_stack_.empty ());
-		eval_stack_.pop ();
-	}
-
-	Eval& eval () const
-	{
-		assert (!eval_stack_.empty ());
-		return *eval_stack_.top ();
-	}
+	void eval_pop ();
+	Build::Eval& eval () const;
 
 	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
 
@@ -217,7 +207,7 @@ public:
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
 
-	Ptr <const Root> finalize ();
+	Ptr <Root> finalize ();
 
 	void check_anonymous (const Type& type, const SimpleDeclarator& name);
 
@@ -270,12 +260,12 @@ private:
 	static Type make_type (const Type& t, const Declarator& decl);
 
 private:
+	IDL_FrontEnd& compiler_;
 	Ptr <Root> tree_;
 	typedef std::vector <ItemScope*> ScopeStack;
 	ScopeStack scope_stack_;
 	std::stack <Container*> container_stack_;
-	std::stack <std::unique_ptr <Eval> > eval_stack_;
-	bool anonymous_deprecated_;
+	std::stack <std::unique_ptr <Build::Eval> > eval_stack_;
 
 	struct File
 	{
@@ -395,7 +385,6 @@ private:
 	union_;
 };
 
-}
 }
 
 #endif

@@ -44,7 +44,7 @@ class Member :
 protected:
 	template <class T> friend class Ptr;
 
-	Member (Build::Builder& builder, Type&& t, const Build::SimpleDeclarator& name, Item::Kind kind = Item::Kind::MEMBER);
+	Member (Builder& builder, Type&& t, const SimpleDeclarator& name, Item::Kind kind = Item::Kind::MEMBER);
 };
 
 }

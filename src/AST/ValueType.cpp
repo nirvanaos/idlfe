@@ -24,11 +24,9 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/ValueType.h"
-#include "Builder/Builder.h"
+#include "../include/AST/Builder.h"
 
 namespace AST {
-
-using namespace Build;
 
 const char* ValueType::modifier_name () const noexcept
 {

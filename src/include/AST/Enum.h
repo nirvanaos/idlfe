@@ -52,7 +52,7 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	EnumItem (Build::Builder& builder, const NamedItem& enum_type, const Build::SimpleDeclarator& name) :
+	EnumItem (Builder& builder, const NamedItem& enum_type, const SimpleDeclarator& name) :
 		NamedItem (Item::Kind::ENUM_ITEM, builder, name),
 		enum_type_ (enum_type)
 	{}
@@ -72,7 +72,7 @@ class Enum :
 private:
 	template <class T> friend class Ptr;
 
-	Enum (Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	Enum (Builder& builder, const SimpleDeclarator& name) :
 		ItemWithId (Item::Kind::ENUM, builder, name)
 	{}
 };

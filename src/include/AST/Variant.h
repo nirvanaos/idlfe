@@ -30,6 +30,7 @@
 
 #include "Type.h"
 #include "Fixed.h"
+#include <forward_list>
 
 namespace AST {
 
@@ -402,7 +403,7 @@ public:
 	}
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	void clear () noexcept;
 	void copy (const Variant& src);
@@ -496,9 +497,7 @@ private:
 	} val_;
 };
 
-namespace Build {
 typedef std::forward_list <Variant> Variants;
-}
 
 }
 

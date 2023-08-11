@@ -64,6 +64,21 @@ public:
 	/// \returns The file name.
 	static const char* filename (const char* path) noexcept;
 
+	/// \returns Compiler messages output stream.
+	std::ostream& err_out () const noexcept
+	{
+		return err_out_;
+	}
+
+	/// \returns Flags parameter specified in constructor.
+	unsigned flags () const noexcept
+	{
+		return flags_;
+	}
+
+	/// Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.
+	static const unsigned FLAG_DEPRECATE_ANONYMOUS_TYPES = 1;
+
 protected:
 
 	/// Command line argument iterator.
@@ -117,9 +132,6 @@ protected:
 		const char* const* end_;
 	};
 
-	/// Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.
-	static const unsigned FLAG_DEPRECATE_ANONYMOUS_TYPES = 1;
-
 protected:
 	/// Constructor
 	/// 
@@ -164,13 +176,7 @@ protected:
 	/// \param tree AST.
 	/// \throw std::runtime_error For displaying the error message and compile next file.
 	///                           Other exceptions will cause the compilation interruption.
-	virtual void generate_code (const ::AST::Root& tree) = 0;
-
-	/// \returns Compiler messages output stream.
-	std::ostream& err_out () const noexcept
-	{
-		return err_out_;
-	}
+	virtual void generate_code (AST::Root& tree) = 0;
 
 private:
 	bool compile (const std::string& file);

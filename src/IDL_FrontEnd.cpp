@@ -233,7 +233,7 @@ bool IDL_FrontEnd::compile (const std::string& file)
 		preprocessed.str (output_tokens.stringify ());
 	}
 
-	auto ast = FE::Driver::parse (file, preprocessed, flags_ & FLAG_DEPRECATE_ANONYMOUS_TYPES, err_out_);
+	auto ast = FE::Driver::parse (*this, file, preprocessed);
 
 	if (ast)
 		try {

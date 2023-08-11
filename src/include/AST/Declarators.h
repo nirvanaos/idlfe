@@ -27,12 +27,11 @@
 #define IDLFE_AST_DECLARATORS_H_
 #pragma once
 
-#include "../../include/AST/Identifier.h"
-#include "../../include/AST/Location.h"
+#include "Identifier.h"
+#include "Location.h"
 #include <forward_list>
 
 namespace AST {
-namespace Build {
 
 class SimpleDeclarator :
 	public Identifier,
@@ -99,7 +98,6 @@ private:
 
 typedef std::forward_list <Declarator> Declarators;
 
-}
 }
 
 #endif

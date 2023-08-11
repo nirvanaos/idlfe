@@ -23,9 +23,9 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "Builder/Builder.h"
-
-using namespace AST::Build;
+#include "../include/AST/NamedItem.h"
+#include "../include/AST/Declarators.h"
+#include "../include/AST/Builder.h"
 
 namespace AST {
 

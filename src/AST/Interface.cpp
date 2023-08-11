@@ -24,11 +24,8 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Interface.h"
-#include "Builder/Builder.h"
 
 namespace AST {
-
-using namespace Build;
 
 const char* InterfaceKind::interface_kind_name () const noexcept
 {

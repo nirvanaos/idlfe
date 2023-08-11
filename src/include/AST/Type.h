@@ -188,7 +188,7 @@ public:
 	Type (const Ptr <NamedItem>* named);
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	size_t key_max () const noexcept;
 

@@ -24,17 +24,11 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/ItemScope.h"
-#include "../include/AST/Module.h"
-#include "../include/AST/Interface.h"
-#include "../include/AST/Struct.h"
-#include "../include/AST/Union.h"
-#include "../include/AST/Exception.h"
-#include "../include/AST/ValueType.h"
-#include "Builder/Builder.h"
+#include "../include/AST/Builder.h"
 
 namespace AST {
 
-ItemScope::ItemScope (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
+ItemScope::ItemScope (Item::Kind kind, Builder& builder, const SimpleDeclarator& name) :
 	ItemWithId (kind, builder, name),
 	prefix_ (builder.prefix ())
 {}

@@ -17,6 +17,9 @@ To create an IDL compiler:
 
 * Derive your compiler class from `class IDL_FrontEnd`.
 * Derive your back-end code generator from `class AST::CodeGen`.
+* Override pure virtual method `IDL_FrontEnd::generate_code(AST::Root& tree)`.
+
+For the example see: https://github.com/nirvanaos/idlfe/tree/master/example
 
 API reference: https://nirvanaos.github.io/idlfe/
 

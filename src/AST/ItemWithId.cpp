@@ -23,7 +23,7 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "Builder/Builder.h"
+#include "../include/AST/Builder.h"
 #include "../include/AST/Struct.h"
 #include "../include/AST/Union.h"
 #include "../include/AST/Enum.h"
@@ -33,8 +33,6 @@
 #include "../include/AST/ValueType.h"
 #include "../include/AST/ValueBox.h"
 #include "../include/AST/Module.h"
-
-using namespace AST::Build;
 
 namespace AST {
 
@@ -64,7 +62,7 @@ ItemWithId* ItemWithId::cast (NamedItem* item) noexcept
 	return p;
 }
 
-ItemWithId::ItemWithId (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
+ItemWithId::ItemWithId (Kind kind, Builder& builder, const SimpleDeclarator& name) :
 	NamedItem (kind, builder, name),
 	data_ (builder.prefix ())
 {}
@@ -83,7 +81,7 @@ bool ItemWithId::check_prefix (Builder& builder, const Location& loc) const noex
 	return true;
 }
 
-bool ItemWithId::prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+bool ItemWithId::prefix (Builder& builder, const std::string& pref, const Location& loc)
 {
 	if (!data_.explicit_ [EXPLICIT_ID]) {
 		if (data_.explicit_ [EXPLICIT_PREFIX]) {

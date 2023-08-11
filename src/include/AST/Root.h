@@ -79,7 +79,7 @@ private:
 		main_file_ (add_file (file))
 	{}
 
-	friend class Build::Builder;
+	friend class Builder;
 
 	const std::filesystem::path& add_file (const std::string& name)
 	{

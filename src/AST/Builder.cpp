@@ -23,36 +23,50 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "Builder.h"
-#include "EvalIntegral.h"
-#include "EvalFloatingPoint.h"
-#include "EvalString.h"
-#include "EvalFixed.h"
-#include "EvalEnum.h"
-#include "../../include/AST/Include.h"
-#include "../../include/AST/Module.h"
-#include "../../include/AST/Native.h"
-#include "../../include/AST/TypeDef.h"
-#include "../../include/AST/Operation.h"
-#include "../../include/AST/Attribute.h"
-#include "../../include/AST/Struct.h"
-#include "../../include/AST/Union.h"
-#include "../../include/AST/Enum.h"
-#include "../../include/AST/Exception.h"
-#include "../../include/AST/UnionElement.h"
-#include "../../include/AST/Constant.h"
-#include "../../include/AST/StateMember.h"
-#include "../../include/AST/ValueFactory.h"
-#include "../../include/AST/ValueBox.h"
-#include "../../include/AST/Sequence.h"
-#include "../../include/AST/Array.h"
+#include "../include/AST/Builder.h"
+#include "../include/AST/Include.h"
+#include "../include/AST/Module.h"
+#include "../include/AST/Native.h"
+#include "../include/AST/TypeDef.h"
+#include "../include/AST/Operation.h"
+#include "../include/AST/Attribute.h"
+#include "../include/AST/Struct.h"
+#include "../include/AST/Union.h"
+#include "../include/AST/Enum.h"
+#include "../include/AST/Exception.h"
+#include "../include/AST/UnionElement.h"
+#include "../include/AST/Constant.h"
+#include "../include/AST/StateMember.h"
+#include "../include/AST/ValueFactory.h"
+#include "../include/AST/ValueBox.h"
+#include "../include/AST/Sequence.h"
+#include "../include/AST/Array.h"
+#include "Builder/EvalIntegral.h"
+#include "Builder/EvalFloatingPoint.h"
+#include "Builder/EvalString.h"
+#include "Builder/EvalFixed.h"
+#include "Builder/EvalEnum.h"
 #include <stdexcept>
 #include <algorithm>
 
 #define INCOMPLETE_ERROR "incomplete type is not allowed"
 
 namespace AST {
-namespace Build {
+
+using namespace Build;
+
+Builder::Builder (IDL_FrontEnd& compiler, const std::string& file) :
+	BE::MessageOut (compiler.err_out ()),
+	compiler_ (compiler),
+	tree_ (Ptr <Root>::make <Root> (file)),
+	cur_file_ (&tree_->file ())
+{
+	container_stack_.push (tree_);
+	file_stack_.emplace_back (file);
+}
+
+Builder::~Builder ()
+{}
 
 void Builder::pragma (const char* s, const Location& loc)
 {
@@ -1229,7 +1243,7 @@ void Builder::operation_context (const Variants& strings)
 			ctx.push_back (id);
 		}
 
-		static_cast <Operation*> (op)->context (move (ctx));
+		static_cast <Operation*> (op)->context (std::move (ctx));
 	}
 }
 
@@ -1574,7 +1588,7 @@ void Builder::union_default (const Location& loc)
 	}
 }
 
-void Builder::union_element (Type& type, const Build::Declarator& decl)
+void Builder::union_element (Type& type, const Declarator& decl)
 {
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the parent definition
@@ -1761,7 +1775,19 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (std::unique_ptr <Eval> (eval));
 }
 
-Ptr <const Root> Builder::finalize ()
+void Builder::eval_pop ()
+{
+	assert (!eval_stack_.empty ());
+	eval_stack_.pop ();
+}
+
+Build::Eval& Builder::eval () const
+{
+	assert (!eval_stack_.empty ());
+	return *eval_stack_.top ();
+}
+
+Ptr <Root> Builder::finalize ()
 {
 	if (!error_count () && tree_) {
 		try {
@@ -1814,7 +1840,7 @@ void Builder::check_unique (RepIdMap& ids, const ItemWithId& rid)
 
 void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
 {
-	if (anonymous_deprecated_) {
+	if (compiler_.flags () & IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES) {
 		bool anonymous = false;
 		switch (type.tkind ()) {
 			case Type::Kind::STRING:
@@ -1832,5 +1858,4 @@ void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
 	}
 }
 
-}
 }

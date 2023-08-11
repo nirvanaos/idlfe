@@ -30,7 +30,9 @@
 #if !defined(yyFlexLexerOnce)
 #include "FlexLexer.h"
 #endif
-#include "../AST/Builder/Builder.h"
+#include "../include/AST/Builder.h"
+
+#include "../include/IDL_FrontEnd.h"
 #include <iostream>
 #include <filesystem>
 
@@ -44,12 +46,12 @@ namespace FE {
 /// The proxy class between Flex, Bison and `AST::Builder`.
 class Driver :
 	public yyFlexLexer,
-	public AST::Build::Builder
+	public AST::Builder
 {
 public:
-	static AST::Ptr <const AST::Root> parse (const std::string& file, std::istream& yyin, bool anonymous_deprecated, std::ostream& err_out)
+	static AST::Ptr <AST::Root> parse (IDL_FrontEnd& compiler, const std::string& file, std::istream& yyin)
 	{
-		Driver drv (file, yyin, anonymous_deprecated, err_out);
+		Driver drv (compiler, file, yyin);
 		return drv.parse ();
 	}
 
@@ -69,14 +71,14 @@ private:
 		return *this;
 	}
 
-	Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated, std::ostream& err_out);
+	Driver (IDL_FrontEnd& compiler, const std::string& file, std::istream& yyin);
 
-	AST::Ptr <const AST::Root> parse ()
+	AST::Ptr <AST::Root> parse ()
 	{
 		if (!parser_.parse ())
 			return finalize ();
 		else
-			return AST::Ptr <const AST::Root> ();
+			return AST::Ptr <AST::Root> ();
 	}
 
 private:
