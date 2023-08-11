@@ -53,12 +53,13 @@ class OperationBase;
 class Attribute;
 class StructBase;
 class Union;
+class Module;
 
 /// \brief The %AST builder.
 class Builder : public BE::MessageOut
 {
 public:
-	/// \brief Currenttly parsed IDL file path.
+	/// \brief Currently parsed IDL file path.
 	const std::filesystem::path& file () const noexcept
 	{
 		return *cur_file_;
@@ -76,8 +77,40 @@ public:
 	/// \returns Repository id prefix. See the `typeprefix` IDL keyword.
 	const std::string& prefix () const;
 
+	/// \brief Set repository id prefix for item. See the `typeprefix` IDL keyword.
+	/// 
+	/// \param name Item name.
+	/// \param s Prefix string.
+	/// \param id_loc `typeprefix` location.
+	void type_prefix (const ScopedName& name, const Variant& s, const Location& id_loc);
+
+	/// \brief Set repository id for item. See the `typeid` IDL keyword.
+	/// 
+	/// \param name Item name.
+	/// \param id Repository id.
+	/// \param id_loc `typeid` location.
+	void type_id (const ScopedName& name, const Variant& id, const Location& id_loc)
+	{
+		if (!id.empty ())
+			type_id (name, id.as_string (), id_loc);
+	}
+
+	/// \brief Set repository id version for item. See `#pragma version`.
+	/// \param name Item name.
+	/// \param ver Item version.
+	/// \param loc location.
+	void pragma_version (const ScopedName& name, const Version& ver, const Location& loc)
+	{
+		ItemWithId* rep_id = lookup_rep_id (name);
+		if (rep_id)
+			rep_id->pragma_version (*this, ver, loc);
+	}
+
 	/// \returns Current symbols scope.
 	Symbols* cur_scope () const;
+
+	/// \returns Current parent scope or `nullptr` for the root scope.
+	ItemScope* cur_parent () const;
 
 	/// \brief Create native type.
 	/// 
@@ -87,11 +120,14 @@ public:
 	/// \brief Begin module.
 	/// 
 	/// \param name The module name.
+	/// \returns Module definition.
 	void module_begin (const SimpleDeclarator& name);
 
 	/// \brief End module.
 	void module_end ()
 	{
+		assert (!scope_stack_.empty ());
+		assert (scope_stack_.back ()->kind () == Item::Kind::MODULE);
 		scope_end ();
 	}
 
@@ -173,8 +209,10 @@ public:
 	}
 
 	/// \brief End of the interface definition.
-	/// \returns Created interface pointer.
-	const Interface* interface_end ();
+	void interface_end ()
+	{
+		iv_end (Item::Kind::INTERFACE);
+	}
 
 	/// \brief Create type alias.
 	/// 
@@ -302,7 +340,7 @@ public:
 	/// \brief End of the valuetype definition.
 	void valuetype_end ()
 	{
-		interface_end ();
+		iv_end (Item::Kind::VALUE_TYPE);
 	}
 
 	/// Create value box definition.
@@ -357,21 +395,12 @@ protected:
 			return Type::make_fixed (digits, scale);
 	}
 
-	void type_id (const ScopedName& name, const Variant& id, const Location& id_loc)
-	{
-		if (!id.empty ())
-			type_id (name, id.as_string (), id_loc);
-	}
-
-	void type_prefix (const ScopedName& name, const Variant& s, const Location& id_loc);
-
 private:
 	friend class NamedItem;
 	friend class Build::Eval;
 	friend class Build::EvalEnum;
 
 	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
-	ItemScope* cur_parent () const;
 	bool prefix_valid (const std::string& pref, const Location& loc);
 	void prefix (const std::string& pref, const Location& loc);
 	bool get_quoted_string (const char*& s, std::string& qs, const Location& loc);
@@ -382,6 +411,7 @@ private:
 	Symbols* scope_begin ();
 	void scope_push (IV_Base* scope);
 	void scope_end ();
+	void iv_end (Item::Kind kind);
 
 	const Ptr <NamedItem>* constr_type_end ();
 

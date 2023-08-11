@@ -1,6 +1,7 @@
 // IDL_Print.cpp Demonstrates the IDL compiler class.
 #include "IDL_Print.h"
 #include "Printer.h"
+#include "AST/Builder.h"
 #include <iostream>
 
 using namespace std;
@@ -37,3 +38,15 @@ void IDL_Print::generate_code (const AST::Root& tree)
 		cerr << "Warning, some unsupported Building Blocks were ignored.\n";
 }
 
+using namespace AST;
+
+void IDL_Print::start (Builder& builder)
+{
+	builder.module_begin (SimpleDeclarator ("Messaging", Location ()));
+	builder.type_prefix (ScopedName (Location (), true, "Messaging"), "omg.org", Location ());
+	builder.native (SimpleDeclarator ("ExceptionHolder", Location ()));
+	builder.pragma_version (ScopedName (Location (), false, "ExceptionHolder"), { 3, 1 }, Location ());
+	builder.interface_begin (SimpleDeclarator ("ReplyHandler", Location ()), InterfaceKind::UNCONSTRAINED);
+	builder.interface_end ();
+	builder.module_end ();
+}

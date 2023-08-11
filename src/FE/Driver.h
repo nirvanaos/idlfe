@@ -109,21 +109,14 @@ public:
 		return AST::Builder::fixed_pt_type (digits, scale, loc);
 	}
 
-	void type_id (const AST::ScopedName& name, const AST::Variant& id, const AST::Location& id_loc)
-	{
-		AST::Builder::type_id (name, id, id_loc);
-	}
-
-	void type_prefix (const AST::ScopedName& name, const AST::Variant& s, const AST::Location& id_loc)
-	{
-		AST::Builder::type_prefix (name, s, id_loc);
-	}
-
 	void interface_end ()
 	{
-		const AST::Interface* itf = AST::Builder::interface_end ();
-		if (itf)
-			compiler_.interface_end (*itf, *this);
+		AST::ItemScope* itf = cur_parent ();
+		AST::Builder::interface_end ();
+		if (itf) {
+			assert (itf->kind () == AST::Item::Kind::INTERFACE);
+			compiler_.interface_end (static_cast <AST::Interface&> (*itf), *this);
+		}
 	}
 
 private:

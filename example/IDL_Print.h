@@ -22,6 +22,8 @@ private:
 	// Override generate_code to build output from the AST.
 	virtual void generate_code (const AST::Root& tree) override;
 
+	virtual void start (AST::Builder& builder) override;
+
 private:
 	std::filesystem::path out_dir_;
 };

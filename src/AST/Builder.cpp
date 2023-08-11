@@ -66,6 +66,9 @@ Builder::Builder (IDL_FrontEnd& compiler, const std::string& file) :
 {
 	container_stack_.push (tree_);
 	file_stack_.emplace_back (file);
+	file_stack_.emplace_back (std::string ());
+	compiler_.start (*this);
+	file_stack_.pop_back ();
 }
 
 Builder::~Builder ()
@@ -121,9 +124,7 @@ void Builder::pragma (const char* s, const Location& loc)
 						u = strtoul (s, &endptr, 10);
 						if (endptr > s && u <= std::numeric_limits <uint16_t>::max ()) {
 							ver.minor = (uint16_t)u;
-							ItemWithId* rep_id = lookup_rep_id (name);
-							if (rep_id)
-								rep_id->pragma_version (*this, ver, loc);
+							pragma_version (name, ver, loc);
 							return;
 						}
 					}
@@ -1295,13 +1296,13 @@ void Builder::setraises (const ScopedNames& names)
 		att->setraises (lookup_exceptions (names));
 }
 
-const Interface* Builder::interface_end ()
+void Builder::iv_end (Item::Kind kind)
 {
 	assert (!scope_stack_.empty ());
 	
 	ItemScope* itf = scope_stack_.back ();
 	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
+		assert (itf->kind () == kind);
 		// Delete all operations and attributes from scope
 		Symbols& scope = *itf;
 		for (auto it = scope.begin (); it != scope.end ();) {
@@ -1319,7 +1320,6 @@ const Interface* Builder::interface_end ()
 	}
 	scope_end ();
 	interface_.clear ();
-	return static_cast <const Interface*> (itf);
 }
 
 void Builder::struct_decl (const SimpleDeclarator& name)

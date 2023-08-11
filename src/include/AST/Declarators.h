@@ -52,6 +52,15 @@ public:
 		Location (loc)
 	{}
 
+	/// Constructor.
+	/// 
+	/// \param name The name.
+	/// \param loc The location.
+	SimpleDeclarator (Identifier&& name, const Location& loc) :
+		Identifier (std::move (name)),
+		Location (loc)
+	{}
+
 	SimpleDeclarator (const SimpleDeclarator&) = default;
 	SimpleDeclarator (SimpleDeclarator&&) = default;
 
@@ -83,12 +92,30 @@ public:
 		array_ (array)
 	{}
 
+	/// Array declarator.
+	/// 
+	/// \param name The name.
+	/// \param loc The location.
+	/// \param array Array sizes.
+	Declarator (Identifier&& name, const Location& loc, const FixedArraySizes& array) :
+		SimpleDeclarator (std::move (name), loc),
+		array_ (array)
+	{}
+
 	/// Simple declarator.
 	/// 
 	/// \param name The name.
 	/// \param loc The location.
 	Declarator (const Identifier& name, const Location& loc) :
 		SimpleDeclarator (name, loc)
+	{}
+
+	/// Simple declarator.
+	/// 
+	/// \param name The name.
+	/// \param loc The location.
+	Declarator (Identifier&& name, const Location& loc) :
+		SimpleDeclarator (std::move (name), loc)
 	{}
 
 	Declarator (const SimpleDeclarator& decl) :
