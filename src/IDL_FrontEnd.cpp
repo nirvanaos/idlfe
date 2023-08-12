@@ -118,6 +118,21 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				}
 			}
 
+			for (auto& fi : arguments_->preprocessor.includes) {
+				std::filesystem::path file (fi);
+				if (!file.is_absolute ()) {
+					for (const auto& inc : arguments_->preprocessor.includePaths) {
+						std::filesystem::path tmp (inc);
+						tmp /= file;
+						std::error_code ec;
+						if (std::filesystem::exists (tmp, ec)) {
+							fi = tmp.string ();
+							break;
+						}
+					}
+				}
+			}
+
 			for (const auto& file : arguments_->files) {
 				std::cout << file << std::endl;
 				if (!compile (file))
