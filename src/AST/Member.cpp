@@ -32,6 +32,7 @@ Member::Member (Builder& builder, Type&& t, const SimpleDeclarator& name, Item::
 	NamedItem (kind, builder, name),
 	Type (std::move (t))
 {
+	assert (tkind () != Type::Kind::VOID);
 	builder.check_anonymous (*this, name);
 }
 

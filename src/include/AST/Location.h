@@ -60,8 +60,8 @@ public:
 		line_ (0)
 	{}
 
-	Location (const std::filesystem::path& file, unsigned line) noexcept :
-		file_ (&file),
+	Location (const std::filesystem::path* file, unsigned line) noexcept :
+		file_ (file),
 		line_ (line)
 	{}
 

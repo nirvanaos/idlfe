@@ -201,7 +201,7 @@ protected:
 	/// 
 	/// \param itf The parsed interface.
 	/// \param builder The %AST builder.
-	virtual void interface_end (AST::Interface& itf, AST::Builder& builder)
+	virtual void interface_end (const AST::Interface& itf, AST::Builder& builder)
 	{}
 
 private:

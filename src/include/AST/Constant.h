@@ -46,9 +46,9 @@ class Constant :
 private:
 	template <class T> friend class Ptr;
 
-	Constant (Builder& builder, const Type& type, const SimpleDeclarator& name, Variant&& val) :
+	Constant (Builder& builder, Type&& type, const SimpleDeclarator& name, Variant&& val) :
 		NamedItem (Item::Kind::CONSTANT, builder, name),
-		Type (type),
+		Type (std::move (type)),
 		Variant (val.vtype () == Variant::VT::FIXED ? Variant (Fixed::normalize (val.as_Fixed ())) : std::move (val))
 	{}
 };

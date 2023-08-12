@@ -60,10 +60,13 @@ class Builder : public BE::MessageOut
 {
 public:
 	/// \brief Currently parsed IDL file path.
-	const std::filesystem::path& file () const noexcept
+	const std::filesystem::path* file () const noexcept
 	{
-		return *cur_file_;
+		return cur_file_;
 	}
+
+	/// \returns Current location.
+	Location location () const;
 
 	/// \brief Test if currently parsed file is main.
 	///
@@ -106,11 +109,8 @@ public:
 			rep_id->pragma_version (*this, ver, loc);
 	}
 
-	/// \returns Current symbols scope.
-	Symbols* cur_scope () const;
-
-	/// \returns Current parent scope or `nullptr` for the root scope.
-	ItemScope* cur_parent () const;
+	/// \returns Current parent item or `nullptr` if parent item is invalid.
+	const Item* cur_parent () const;
 
 	/// \brief Create native type.
 	/// 
@@ -153,14 +153,14 @@ public:
 	/// \param oneway `true` for `oneway` operations.
 	/// \param type Return type.
 	/// \param name The operation name.
-	void operation_begin (bool oneway, Type& type, const SimpleDeclarator& name);
+	void operation_begin (bool oneway, Type&& type, const SimpleDeclarator& name);
 
 	/// \brief Add parameter to the current operation.
 	/// 
 	/// \param att The parameter attribute.
 	/// \param type The parameter type.
 	/// \param name The parameter name.
-	void parameter (Parameter::Attribute att, Type& type, const SimpleDeclarator& name);
+	void parameter (Parameter::Attribute att, Type&& type, const SimpleDeclarator& name);
 	
 	/// \brief Set raises for the current operation.
 	/// 
@@ -183,14 +183,14 @@ public:
 	/// \param readonly `true` if attributes are read-only.
 	/// \param type The attributes type.
 	/// \param declarators The attribute names.
-	void attribute (bool readonly, Type& type, const SimpleDeclarators& declarators);
+	void attribute (bool readonly, Type&& type, const SimpleDeclarators& declarators);
 
 	/// \brief Begin attribute definition for the current interface or valuetype.
 	///
 	/// \param readonly `true` if attribute is read-only.
 	/// \param type The attribute type.
 	/// \param name The attribute name.
-	void attribute_begin (bool readonly, Type& type, const SimpleDeclarator& name);
+	void attribute_begin (bool readonly, Type&& type, const SimpleDeclarator& name);
 	
 	/// \brief Set getraises for the current attribute.
 	/// 
@@ -218,7 +218,7 @@ public:
 	/// 
 	/// \param type The type.
 	/// \param declarators Type aliases.
-	void type_def (Type& type, const Declarators& declarators);
+	void type_def (Type&& type, const Declarators& declarators);
 
 	/// \brief Create structure forward declaration.
 	/// 
@@ -252,7 +252,7 @@ public:
 	/// 
 	/// \param type The members type.
 	/// \param names The member names.
-	void member (Type& type, const Declarators& names);
+	void member (Type&& type, const Declarators& names);
 
 	/// \brief Create union forward declaration.
 	/// 
@@ -281,7 +281,7 @@ public:
 	/// 
 	/// \param type The element type.
 	/// \param decl The element name.
-	void union_element (Type& type, const Declarator& decl);
+	void union_element (Type&& type, const Declarator& decl);
 	
 	/// \brief End of the union definition.
 	/// \returns The pointer to definition.
@@ -322,7 +322,7 @@ public:
 	/// \param is_public `true` for public members.
 	/// \param type The members type.
 	/// \param names The member names.
-	void state_member (bool is_public, Type& type, const Declarators& names);
+	void state_member (bool is_public, Type&& type, const Declarators& names);
 
 	/// \brief Begin valuetype factory.
 	/// 
@@ -343,19 +343,25 @@ public:
 		iv_end (Item::Kind::VALUE_TYPE);
 	}
 
-	/// Create value box definition.
+	/// \brief Create value box definition.
 	/// 
 	/// \param name The value box name.
 	/// \param type Boxed type.
-	void valuetype_box (const SimpleDeclarator& name, const Type& type);
+	void valuetype_box (const SimpleDeclarator& name, Type&& type);
 
-	/// Create constant definition.
+	/// \brief Create constant definition.
 	/// 
 	/// \param t The constant type.
 	/// \param name The constant name.
 	/// \param val The constant value.
 	/// \param loc The constant location.
-	void constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
+	void constant (Type&& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
+
+	/// \brief Find type by name.
+	/// 
+	/// \param scoped_name The scoped name.
+	/// \returns Type.
+	Type lookup_type (const ScopedName& scoped_name);
 
 	void see_prev_declaration (const Location& loc);
 	void see_declaration_of (const Location& loc, const std::string& name);
@@ -377,7 +383,6 @@ protected:
 	void linemarker (const std::string& name, const Location& loc, int flags);
 	void line (const std::string& filename);
 	void pragma (const char* s, const Location& loc);
-	Type lookup_type (const ScopedName& scoped_name);
 	Ptr <Root> finalize ();
 
 	void eval_push (const Type& t, const Location& loc);
@@ -408,6 +413,7 @@ private:
 	ItemWithId* lookup_rep_id (const ScopedName& name);
 	void type_id (const ScopedName& name, const std::string& id, const Location& id_loc);
 
+	Symbols* cur_scope () const;
 	Symbols* scope_begin ();
 	void scope_push (IV_Base* scope);
 	void scope_end ();
@@ -445,7 +451,7 @@ private:
 
 	void check_complete (const Symbols& symbols);
 
-	static Type make_type (const Type& t, const Declarator& decl);
+	static Type make_type (Type&& t, const Declarator& decl);
 
 protected:
 	IDL_FrontEnd& compiler_;

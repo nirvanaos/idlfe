@@ -1,8 +1,10 @@
 # Changelog
 
-## 3.2.0 - 2023-08-11
+## 3.2.0 - 2023-08-12
 ### Added
  - class `AST::Builder` provides possibility for the AST modification.
+ - `IDL_FrontEnd::interface_end ()` callback for AMI IDL generation.
+ - `AST` classes extended.
 
 ## 3.1.5 - 2023-07-16
 ### Fixed

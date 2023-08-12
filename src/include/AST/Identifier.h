@@ -56,6 +56,13 @@ public:
 		std::string (s)
 	{}
 
+	/// CORBA identifiers may be "escaped" by the underscore.
+	/// 
+	/// See 7.2.3.2 of https://www.omg.org/spec/IDL/4.2/
+	Identifier (std::string&& s) noexcept :
+		std::string (std::move (s))
+	{}
+
 	/// Check for reserved word collision.
 	/// 
 	/// \returns `true` if identifier is valid.

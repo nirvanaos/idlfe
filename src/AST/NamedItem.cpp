@@ -46,11 +46,31 @@ NamedItem::NamedItem (Kind kind, Builder& builder, const SimpleDeclarator& name)
 	name_ (unescape (builder, name))
 {}
 
+const ItemScope* NamedItem::parent () const noexcept
+{
+	if (parent_ && parent_->kind () != Item::Kind::ROOT)
+		return &static_cast <const ItemScope&> (*parent_);
+	else
+		return nullptr;
+}
+
+const Symbols* NamedItem::parent_scope () const noexcept
+{
+	if (parent_) {
+		if (parent_->kind () != Item::Kind::ROOT)
+			return &static_cast <const Symbols&> (static_cast <const ItemScope&> (*parent_));
+		else
+			return &static_cast <const Symbols&> (static_cast <const Root&> (*parent_));
+	} else
+		return nullptr;
+}
+
 std::string NamedItem::qualified_name () const
 {
 	std::string qn;
-	if (parent_)
-		qn = parent_->qualified_name ();
+	const ItemScope* par = parent ();
+	if (par)
+		qn = par->qualified_name ();
 	qn += "::";
 	qn += name_;
 	return qn;
@@ -59,8 +79,9 @@ std::string NamedItem::qualified_name () const
 ScopedName NamedItem::scoped_name () const
 {
 	ScopedName sn;
-	if (parent_) {
-		sn = parent_->scoped_name ();
+	const ItemScope* par = parent ();
+	if (par) {
+		sn = par->scoped_name ();
 		sn.push_back (name_);
 	} else
 		sn = ScopedName (*this, true, name_);

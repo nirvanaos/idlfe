@@ -35,7 +35,7 @@
 
 namespace AST {
 
-/// \brief A scoped name.
+/// \brief A scoped name: sequence of identifiers.
 struct ScopedName : 
 	std::vector <Identifier>,
 	Location
@@ -46,24 +46,72 @@ struct ScopedName :
 	/// \returns The name converted to string.
 	std::string stringize () const;
 
+	/// \brief Create empty name.
 	ScopedName () :
 		from_root (false)
 	{}
 
+	/// \brief Create empty name with location.
+	/// 
+	/// \param loc Location.
 	ScopedName (const Location& loc) :
 		Location (loc),
 		from_root (false)
 	{}
 
+	/// \brief Create single-element name.
+	/// 
+	/// \param loc Location.
+	/// \param root `true` if it is a root-scoped name, i.e. started from "::".
+	/// \param name The name.
 	ScopedName (const Location& loc, bool root, const Identifier& name);
 
+	/// \brief Create single-element name.
+	/// 
+	/// \param loc Location.
+	/// \param root `true` if it is a root-scoped name, i.e. started from "::".
+	/// \param name The name.
+	ScopedName (const Location& loc, bool root, Identifier&& name) noexcept;
+
+	/// \brief Create multi-element name.
+	/// 
+	/// \param loc Location.
+	/// \param root `true` if it is a root-scoped name, i.e. started from "::".
+	/// \param names Name components.
+	ScopedName (const Location& loc, bool root, std::initializer_list <const char*> names) :
+		Location (loc),
+		from_root (root)
+	{
+		reserve (names.size ());
+		for (auto n : names) {
+			emplace_back (n);
+		}
+	}
+
+	/// \brief Copy constructor.
 	ScopedName (const ScopedName&) = default;
+
+	/// \brief Move constructor.
 	ScopedName (ScopedName&&) = default;
 
+	/// \brief Assignment.
 	ScopedName& operator = (const ScopedName&) = default;
+
+	/// \brief Assignment.
 	ScopedName& operator = (ScopedName&&) = default;
+
+	/// \brief Test for equality.
+	/// 
+	/// \param rhs Other ScopedName.
+	/// \returns `true` if the names are equal.
+	bool operator == (const ScopedName& rhs) const noexcept
+	{
+		return from_root == rhs.from_root &&
+			static_cast <const std::vector <Identifier>&> (*this) == (rhs);
+	}
 };
 
+/// Sequence of scoped names.
 typedef std::forward_list <ScopedName> ScopedNames;
 
 }

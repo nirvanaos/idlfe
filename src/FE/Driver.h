@@ -67,7 +67,7 @@ public:
 
 	yy::location location () const
 	{
-		return yy::location (&file (), lineno ());
+		return yy::location (file (), lineno ());
 	}
 
 	void preprocessor_directive (const char*);
@@ -111,11 +111,13 @@ public:
 
 	void interface_end ()
 	{
-		AST::ItemScope* itf = cur_parent ();
+		const AST::Item* item = cur_parent ();
 		AST::Builder::interface_end ();
-		if (itf) {
-			assert (itf->kind () == AST::Item::Kind::INTERFACE);
-			compiler_.interface_end (static_cast <AST::Interface&> (*itf), *this);
+		if (item) { // Valid interface
+			assert (item->kind () == AST::Item::Kind::INTERFACE);
+			const AST::Interface& itf = static_cast <const AST::Interface&> (*item);
+			if (itf.parent_scope ()) // Valid parent
+				compiler_.interface_end (itf, *this);
 		}
 	}
 
