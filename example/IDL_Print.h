@@ -23,7 +23,7 @@ private:
 	// Override generate_code to build output from the AST.
 	virtual void generate_code (const AST::Root& tree) override;
 
-	virtual void start (AST::Builder& builder) override;
+	virtual void file_begin (const std::filesystem::path& file, AST::Builder& builder) override;
 	virtual void interface_end (const AST::Interface& itf, AST::Builder& builder) override;
 
 	AST::Identifier make_ami_id (const AST::Interface& itf, const char* suffix);

@@ -68,7 +68,7 @@ Builder::Builder (IDL_FrontEnd& compiler, const std::string& file) :
 	container_stack_.push (tree_);
 	file_stack_.emplace_back (file);
 	file_stack_.emplace_back (std::string ());
-	compiler_.start (*this);
+	compiler_.file_begin (*cur_file_, *this);
 	file_stack_.pop_back ();
 }
 

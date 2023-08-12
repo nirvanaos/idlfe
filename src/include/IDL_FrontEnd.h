@@ -28,9 +28,10 @@
 #define IDLFE_IDL_FRONTEND_H_
 #pragma once
 
+#include <assert.h>
 #include <string>
 #include <iostream>
-#include <assert.h>
+#include <filesystem>
 
 namespace AST {
 class Root;
@@ -187,12 +188,12 @@ protected:
 	///                           Other exceptions will cause the compilation interruption.
 	virtual void generate_code (const AST::Root& tree) = 0;
 
-	/// \brief Start of the file parsing.
+	/// \brief Begin of the file parsing.
 	/// 
-	/// User can override this method to inject some initial items to the empty %AST.
-	/// 
+	/// \param file The IDL file path.
 	/// \param builder The %AST builder.
-	virtual void start (AST::Builder& builder)
+	///   User can use this object to inject some initial items to the empty %AST.
+	virtual void file_begin (const std::filesystem::path& file, AST::Builder& builder)
 	{}
 
 	/// \brief End of the interface parsing.

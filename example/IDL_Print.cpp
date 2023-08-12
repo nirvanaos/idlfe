@@ -40,8 +40,10 @@ void IDL_Print::generate_code (const AST::Root& tree)
 
 using namespace AST;
 
-void IDL_Print::start (Builder& builder)
+void IDL_Print::file_begin (const std::filesystem::path& file, Builder& builder)
 {
+	ami_map_.clear ();
+
 	Location loc = builder.location ();
 	builder.module_begin (SimpleDeclarator ("Messaging", loc));
 	builder.type_prefix (ScopedName (Location (), true, "Messaging"), "omg.org", loc);
