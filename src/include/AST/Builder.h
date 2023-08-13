@@ -74,7 +74,7 @@ public:
 	///          `false` if currently parsed file is included file.
 	bool is_main_file () const noexcept
 	{
-		return file_stack_.size () <= 1;
+		return cur_file_ == &tree_->file ();
 	}
 
 	/// \returns Repository id prefix. See the `typeprefix` IDL keyword.
