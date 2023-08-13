@@ -72,7 +72,7 @@ CORBA_Identifier	_?[a-zA-Z][a-zA-Z0-9_]*
 [\n]			;
 "//"[^\n]*		;
 "#pragma"[^\n]*\n {
-  driver ().pragma (YYText (), yy::location (&driver ().file (), driver ().lineno () - 1));
+  driver ().pragma (YYText (), yy::location (driver ().file (), driver ().lineno () - 1));
 }
 "#"[^\n]*\n {
   driver ().preprocessor_directive (YYText ());

@@ -90,12 +90,12 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	ValueType (Build::Builder& builder, const Build::SimpleDeclarator& name, Modifier modifier) :
+	ValueType (Builder& builder, const SimpleDeclarator& name, Modifier modifier) :
 		IV_Base (Item::Kind::VALUE_TYPE, builder, name),
 		modifier_ (modifier)
 	{}
 
-	friend class Build::Builder;
+	friend class Builder;
 
 	const char* modifier_name () const noexcept;
 
@@ -115,7 +115,7 @@ private:
 		supports_.push_back (&itf);
 	}
 
-	void get_all_interfaces (Build::IV_Bases& all) const;
+	void get_all_interfaces (IV_Bases& all) const;
 
 private:
 	Modifier modifier_;
@@ -140,7 +140,7 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	ValueTypeDecl (Build::Builder& builder, const Build::SimpleDeclarator& name, bool abstr) :
+	ValueTypeDecl (Builder& builder, const SimpleDeclarator& name, bool abstr) :
 		ItemWithId (Item::Kind::VALUE_TYPE_DECL, builder, name),
 		is_abstract_ (abstr)
 	{}

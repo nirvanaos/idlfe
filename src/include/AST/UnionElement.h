@@ -60,7 +60,7 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	UnionElement (Build::Builder& builder, std::vector <Variant>&& labels, Type&& t, const Build::SimpleDeclarator& name) :
+	UnionElement (Builder& builder, std::vector <Variant>&& labels, Type&& t, const SimpleDeclarator& name) :
 		Member (builder, std::move (t), name, Item::Kind::UNION_ELEMENT),
 		labels_ (std::move (labels))
 	{}

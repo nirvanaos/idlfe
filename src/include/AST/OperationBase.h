@@ -46,12 +46,12 @@ public:
 	}
 
 protected:
-	OperationBase (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	OperationBase (Item::Kind kind, Builder& builder, const SimpleDeclarator& name) :
 		NamedItem (kind, builder, name)
 	{}
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	void raises (Raises&& exceptions)
 	{

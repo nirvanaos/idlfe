@@ -69,11 +69,11 @@ public:
 	static ItemScope* cast (NamedItem* item) noexcept;
 
 protected:
-	friend class Build::Builder;
+	friend class Builder;
 
-	ItemScope (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
+	ItemScope (Item::Kind kind, Builder& builder, const SimpleDeclarator& name);
 
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+	virtual bool prefix (Builder& builder, const std::string& pref, const Location& loc)
 	{
 		prefix_ = pref;
 		return true;

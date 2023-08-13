@@ -24,13 +24,11 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Member.h"
-#include "Builder/Builder.h"
+#include "../include/AST/Builder.h"
 
 namespace AST {
 
-using namespace Build;
-
-Member::Member (Builder& builder, Type&& t, const Build::SimpleDeclarator& name, Item::Kind kind) :
+Member::Member (Builder& builder, Type&& t, const SimpleDeclarator& name, Item::Kind kind) :
 	NamedItem (kind, builder, name),
 	Type (std::move (t))
 {

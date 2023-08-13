@@ -71,6 +71,18 @@ public:
 	/// \returns `true` if unsuppported building blocks were occurred.
 	bool visit (CodeGen& cg) const;
 
+	/// \returns Symbols reference.
+	operator Symbols& () noexcept
+	{
+		return symbols_;
+	}
+
+	/// \returns Symbols const reference.
+	operator const Symbols& () const noexcept
+	{
+		return symbols_;
+	}
+
 private:
 	template <class T> friend class Ptr;
 
@@ -79,21 +91,11 @@ private:
 		main_file_ (add_file (file))
 	{}
 
-	friend class Build::Builder;
+	friend class Builder;
 
 	const std::filesystem::path& add_file (const std::string& name)
 	{
 		return *files_.insert (std::filesystem::absolute (name)).first;
-	}
-
-	operator Symbols& () noexcept
-	{
-		return symbols_;
-	}
-
-	operator const Symbols& () const noexcept
-	{
-		return symbols_;
 	}
 
 private:

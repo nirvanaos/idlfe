@@ -23,36 +23,57 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "Builder.h"
-#include "EvalIntegral.h"
-#include "EvalFloatingPoint.h"
-#include "EvalString.h"
-#include "EvalFixed.h"
-#include "EvalEnum.h"
-#include "../../include/AST/Include.h"
-#include "../../include/AST/Module.h"
-#include "../../include/AST/Native.h"
-#include "../../include/AST/TypeDef.h"
-#include "../../include/AST/Operation.h"
-#include "../../include/AST/Attribute.h"
-#include "../../include/AST/Struct.h"
-#include "../../include/AST/Union.h"
-#include "../../include/AST/Enum.h"
-#include "../../include/AST/Exception.h"
-#include "../../include/AST/UnionElement.h"
-#include "../../include/AST/Constant.h"
-#include "../../include/AST/StateMember.h"
-#include "../../include/AST/ValueFactory.h"
-#include "../../include/AST/ValueBox.h"
-#include "../../include/AST/Sequence.h"
-#include "../../include/AST/Array.h"
+#include "../include/AST/Builder.h"
+#include "../include/AST/Include.h"
+#include "../include/AST/Module.h"
+#include "../include/AST/Native.h"
+#include "../include/AST/TypeDef.h"
+#include "../include/AST/Operation.h"
+#include "../include/AST/Attribute.h"
+#include "../include/AST/Struct.h"
+#include "../include/AST/Union.h"
+#include "../include/AST/Enum.h"
+#include "../include/AST/UnionElement.h"
+#include "../include/AST/Constant.h"
+#include "../include/AST/StateMember.h"
+#include "../include/AST/ValueFactory.h"
+#include "../include/AST/ValueBox.h"
+#include "../include/AST/Sequence.h"
+#include "../include/AST/Array.h"
+#include "Builder/EvalIntegral.h"
+#include "Builder/EvalFloatingPoint.h"
+#include "Builder/EvalString.h"
+#include "Builder/EvalFixed.h"
+#include "Builder/EvalEnum.h"
+#include "../FE/Driver.h"
 #include <stdexcept>
 #include <algorithm>
+
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
 
 #define INCOMPLETE_ERROR "incomplete type is not allowed"
 
 namespace AST {
-namespace Build {
+
+using namespace Build;
+
+Builder::Builder (IDL_FrontEnd& compiler, const std::string& file) :
+	BE::MessageOut (compiler.err_out ()),
+	compiler_ (compiler),
+	tree_ (Ptr <Root>::make <Root> (file)),
+	cur_file_ (&tree_->file ())
+{
+	container_stack_.push (tree_);
+	file_stack_.emplace_back (file);
+	file_stack_.emplace_back (std::string ());
+	compiler_.file_begin (*cur_file_, *this);
+	file_stack_.pop_back ();
+}
+
+Builder::~Builder ()
+{}
 
 void Builder::pragma (const char* s, const Location& loc)
 {
@@ -104,9 +125,7 @@ void Builder::pragma (const char* s, const Location& loc)
 						u = strtoul (s, &endptr, 10);
 						if (endptr > s && u <= std::numeric_limits <uint16_t>::max ()) {
 							ver.minor = (uint16_t)u;
-							ItemWithId* rep_id = lookup_rep_id (name);
-							if (rep_id)
-								rep_id->pragma_version (*this, ver, loc);
+							pragma_version (name, ver, loc);
 							return;
 						}
 					}
@@ -420,12 +439,12 @@ Type Builder::lookup_type (const ScopedName& scoped_name)
 	return Type (item);
 }
 
-ItemScope* Builder::cur_parent () const
+const Item* Builder::cur_parent () const
 {
 	if (!scope_stack_.empty ())
 		return scope_stack_.back ();
 	else
-		return nullptr;
+		return tree_;
 }
 
 Symbols* Builder::cur_scope () const
@@ -470,9 +489,8 @@ void Builder::scope_end ()
 
 const std::string& Builder::prefix () const
 {
-	const ItemScope* scope = cur_parent ();
-	if (scope)
-		return scope->prefix ();
+	if (!scope_stack_.empty ())
+		return scope_stack_.back ()->prefix ();
 	else
 		return file_stack_.back ().prefix;
 }
@@ -548,7 +566,7 @@ void Builder::module_begin (const SimpleDeclarator& name)
 		auto ins = scope->insert (*mod);
 		if (!ins.second && (*ins.first)->kind () != Item::Kind::MODULE) {
 			error_name_collision (name, **ins.first);
-			scope_push (nullptr); // Mark new scope as error
+			scope_push (nullptr); // Mark new scope as invalid
 		} else {
 			scope_stack_.push_back (&static_cast <Module&> (**ins.first));
 			if (is_main_file ()) {
@@ -582,22 +600,22 @@ void Builder::native (const SimpleDeclarator& name)
 	}
 }
 
-Type Builder::make_type (const Type& t, const Declarator& decl)
+Type Builder::make_type (Type&& t, const Declarator& decl)
 {
 	if (decl.array_sizes ().empty ())
-		return t;
+		return std::move (t);
 	else
 		return Type (t, decl.array_sizes ());
 }
 
-void Builder::type_def (Type& type, const Declarators& declarators)
+void Builder::type_def (Type&& type, const Declarators& declarators)
 {
 	check_complete_or_seq (type, declarators.front ());
 	Symbols* scope = cur_scope ();
 	if (scope) {
 		for (auto decl = declarators.begin (); decl != declarators.end (); ++decl) {
 			Ptr <TypeDef> def = Ptr <TypeDef>::make <TypeDef> (std::ref (*this), std::ref (*decl),
-				make_type (type, *decl));
+				make_type (Type (type), *decl));
 			auto ins = scope->insert (*def);
 			if (!ins.second) {
 				const NamedItem& item = **ins.first;
@@ -672,7 +690,7 @@ void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 				case Item::Kind::INTERFACE: {
 					const Interface& itf = static_cast <const Interface&> (item);
 					rid = &itf;
-					prev_ik = itf;
+					prev_ik = itf.interface_kind ();
 				} break;
 			}
 
@@ -788,7 +806,7 @@ void Builder::valuetype_begin (const SimpleDeclarator& name, ValueType::Modifier
 	}
 }
 
-void Builder::state_member (bool is_public, Type& type, const Declarators& names)
+void Builder::state_member (bool is_public, Type&& type, const Declarators& names)
 {
 	assert (!scope_stack_.empty ());
 	ValueType* vt = static_cast <ValueType*> (scope_stack_.back ());
@@ -798,7 +816,7 @@ void Builder::state_member (bool is_public, Type& type, const Declarators& names
 		if (check_complete_or_seq (type, names.front ())) {
 			for (auto decl = names.begin (); decl != names.end (); ++decl) {
 				Ptr <NamedItem> item = Ptr <NamedItem>::make <StateMember> (std::ref (*this), is_public,
-					make_type (type, *decl), std::ref (*decl));
+					make_type (Type (type), *decl), std::ref (*decl));
 
 				if (!is_public || check_member_name (*item)) {
 					auto ins = static_cast <Symbols&> (*vt).insert (*item);
@@ -1070,6 +1088,7 @@ void Builder::add_base_members (const Location& loc, const IV_Bases& bases)
 						if (!member->is_public ())
 							break; // Private members are not accessible via DynAny.
 					}
+						[[fallthrough]];
 					case Item::Kind::OPERATION:
 					case Item::Kind::ATTRIBUTE: {
 						NamedItem* member = static_cast <NamedItem*> (const_cast <Item*> (item));
@@ -1091,7 +1110,8 @@ bool Builder::check_member_name (const NamedItem& item)
 #ifdef _DEBUG
 	assert (!scope_stack_.empty ());
 	IV_Base* parent = static_cast <IV_Base*> (scope_stack_.back ());
-	assert (parent && parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
+	assert (parent);
+	assert (parent->kind () == Item::Kind::INTERFACE || parent->kind () == Item::Kind::VALUE_TYPE);
 #endif
 	auto ins = interface_.all_members.insert (item);
 	if (!ins.second) {
@@ -1101,7 +1121,7 @@ bool Builder::check_member_name (const NamedItem& item)
 	return ins.second;
 }
 
-void Builder::operation_begin (bool oneway, Type& type, const SimpleDeclarator& name)
+void Builder::operation_begin (bool oneway, Type&& type, const SimpleDeclarator& name)
 {
 	assert (!scope_stack_.empty ());
 	assert (!operation_.op); // operation_end () must be called
@@ -1154,7 +1174,7 @@ void Builder::valuetype_factory_begin (const SimpleDeclarator& name)
 	}
 }
 
-void Builder::parameter (Parameter::Attribute att, Type& type, const SimpleDeclarator& name)
+void Builder::parameter (Parameter::Attribute att, Type&& type, const SimpleDeclarator& name)
 {
 	OperationBase* op = operation_.op;
 	if (op) {
@@ -1229,19 +1249,19 @@ void Builder::operation_context (const Variants& strings)
 			ctx.push_back (id);
 		}
 
-		static_cast <Operation*> (op)->context (move (ctx));
+		static_cast <Operation*> (op)->context (std::move (ctx));
 	}
 }
 
-void Builder::attribute (bool readonly, Type& type, const SimpleDeclarators& declarators)
+void Builder::attribute (bool readonly, Type&& type, const SimpleDeclarators& declarators)
 {
 	for (auto name = declarators.begin (); name != declarators.end (); ++name) {
-		attribute_begin (readonly, type, *name);
+		attribute_begin (readonly, Type (type), *name);
 		attribute_end ();
 	}
 }
 
-void Builder::attribute_begin (bool readonly, Type& type, const SimpleDeclarator& name)
+void Builder::attribute_begin (bool readonly, Type&& type, const SimpleDeclarator& name)
 {
 	assert (!scope_stack_.empty ());
 	assert (!attribute_.att); // attribute_end () must be called
@@ -1278,13 +1298,13 @@ void Builder::setraises (const ScopedNames& names)
 		att->setraises (lookup_exceptions (names));
 }
 
-void Builder::interface_end ()
+void Builder::iv_end (Item::Kind kind)
 {
 	assert (!scope_stack_.empty ());
 	
 	ItemScope* itf = scope_stack_.back ();
 	if (itf) {
-		assert (itf->kind () == Item::Kind::INTERFACE || itf->kind () == Item::Kind::VALUE_TYPE);
+		assert (itf->kind () == kind);
 		// Delete all operations and attributes from scope
 		Symbols& scope = *itf;
 		for (auto it = scope.begin (); it != scope.end ();) {
@@ -1516,7 +1536,7 @@ bool Builder::check_complete_or_seq (const Type& type, const Location& loc)
 	return true;
 }
 
-void Builder::member (Type& type, const Declarators& names)
+void Builder::member (Type&& type, const Declarators& names)
 {
 	StructBase* s = static_cast <StructBase*> (constr_type_.obj ());
 	if (s) { // No error in the parent definition
@@ -1525,7 +1545,7 @@ void Builder::member (Type& type, const Declarators& names)
 		if (check_complete_or_seq (type, names.front ())) {
 			for (auto decl = names.begin (); decl != names.end (); ++decl) {
 				Ptr <Member> item = Ptr <Member>::make <Member> (std::ref (*this),
-					make_type (type, *decl), std::ref (*decl));
+					make_type (Type (type), *decl), std::ref (*decl));
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
 					error_name_collision (*decl, **ins.first);
@@ -1574,7 +1594,7 @@ void Builder::union_default (const Location& loc)
 	}
 }
 
-void Builder::union_element (Type& type, const Build::Declarator& decl)
+void Builder::union_element (Type&& type, const Declarator& decl)
 {
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the parent definition
@@ -1582,7 +1602,7 @@ void Builder::union_element (Type& type, const Build::Declarator& decl)
 		if (check_complete_or_seq (type, decl)) {
 			if (union_.element.is_default || !union_.element.labels.empty ()) { // No error in labels
 				Ptr <UnionElement> item = Ptr <UnionElement>::make <UnionElement> (std::ref (*this),
-					std::move (union_.element.labels), make_type (type, decl), std::ref (decl));
+					std::move (union_.element.labels), make_type (std::move (type), decl), std::ref (decl));
 				auto ins = constr_type_.members.insert (*item);
 				if (!ins.second)
 					error_name_collision (decl, **ins.first);
@@ -1686,7 +1706,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 	return nullptr;
 }
 
-void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
+void Builder::valuetype_box (const SimpleDeclarator& name, Type&& type)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
@@ -1702,7 +1722,7 @@ void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
 			}
 		}
 		if (check_complete_or_seq (type, name)) {
-			Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (std::ref (*this), std::ref (name), std::ref (type));
+			Ptr <NamedItem> item = Ptr <NamedItem>::make <ValueBox> (std::ref (*this), std::ref (name), std::move (type));
 			auto ins = scope->insert (*item);
 			if (!ins.second)
 				error_name_collision (name, **ins.first);
@@ -1712,11 +1732,11 @@ void Builder::valuetype_box (const SimpleDeclarator& name, const Type& type)
 	}
 }
 
-void Builder::constant (const Type& t, const SimpleDeclarator& name, Variant&& val, const Location& loc)
+void Builder::constant (Type&& t, const SimpleDeclarator& name, Variant&& val, const Location& loc)
 {
 	Symbols* scope = cur_scope ();
 	if (scope) {
-		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (std::ref (*this), std::ref (t),
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (std::ref (*this), std::move (t),
 			std::ref (name), eval ().cast (t, std::move (val), loc));
 		auto ins = scope->insert (*item);
 		if (!ins.second)
@@ -1761,7 +1781,19 @@ void Builder::eval_push (const Type& t, const Location& loc)
 	eval_stack_.push (std::unique_ptr <Eval> (eval));
 }
 
-Ptr <const Root> Builder::finalize ()
+void Builder::eval_pop ()
+{
+	assert (!eval_stack_.empty ());
+	eval_stack_.pop ();
+}
+
+Build::Eval& Builder::eval () const
+{
+	assert (!eval_stack_.empty ());
+	return *eval_stack_.top ();
+}
+
+Ptr <Root> Builder::finalize ()
 {
 	if (!error_count () && tree_) {
 		try {
@@ -1814,7 +1846,7 @@ void Builder::check_unique (RepIdMap& ids, const ItemWithId& rid)
 
 void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
 {
-	if (anonymous_deprecated_) {
+	if (compiler_.flags () & IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES) {
 		bool anonymous = false;
 		switch (type.tkind ()) {
 			case Type::Kind::STRING:
@@ -1832,5 +1864,8 @@ void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
 	}
 }
 
+Location Builder::location () const
+{
+	return Location (file (), static_cast <const FE::Driver&> (*this).lineno ());
 }
 }

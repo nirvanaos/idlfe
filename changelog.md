@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.0 - 2023-08-13
+### Added
+ - class `AST::Builder` provides possibility for the AST modification.
+ - `IDL_FrontEnd::interface_end ()` callback for AMI IDL generation.
+ - `AST` classes extended.
+
 ## 3.1.5 - 2023-07-16
 ### Fixed
  - IDL parser bug.
@@ -26,7 +32,7 @@
 ### Changed
  - Allow repeated typedef and native declarations.
 ### Fixed
- - Directory creation in BE::IndentedOut.
+ - Directory creation in `BE::IndentedOut`.
  - Check for collision with reserved words.
 
 ## 3.0.2 - 2022-11-21
@@ -40,7 +46,7 @@
 ## 3.0.0 - 2022-08-14
 ## Changed
  - Allow native type in the exception list, as it required by the standard.
- - Added class BE::MessageOut for the convenient compiler messages output.
+ - Added class `BE::MessageOut` for the convenient compiler messages output.
  - Messages are redirected to `std::cerr` by default, instead of `std::cout`.
  - Added parameter `std::ostream& err_out` to `IDL_FrontEnd` constructor.
  

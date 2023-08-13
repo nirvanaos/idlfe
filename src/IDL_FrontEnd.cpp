@@ -39,6 +39,10 @@
 
 #include "simplecpp/simplecpp.h"
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 struct IDL_FrontEnd::Arguments
 {
 	simplecpp::DUI preprocessor;
@@ -110,6 +114,21 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 							inc = sem + 1;
 						else
 							break;
+					}
+				}
+			}
+
+			for (auto& fi : arguments_->preprocessor.includes) {
+				std::filesystem::path file (fi);
+				if (!file.is_absolute ()) {
+					for (const auto& inc : arguments_->preprocessor.includePaths) {
+						std::filesystem::path tmp (inc);
+						tmp /= file;
+						std::error_code ec;
+						if (std::filesystem::exists (tmp, ec)) {
+							fi = tmp.string ();
+							break;
+						}
 					}
 				}
 			}
@@ -233,7 +252,7 @@ bool IDL_FrontEnd::compile (const std::string& file)
 		preprocessed.str (output_tokens.stringify ());
 	}
 
-	auto ast = FE::Driver::parse (file, preprocessed, flags_ & FLAG_DEPRECATE_ANONYMOUS_TYPES, err_out_);
+	auto ast = FE::Driver::parse (*this, file, preprocessed);
 
 	if (ast)
 		try {

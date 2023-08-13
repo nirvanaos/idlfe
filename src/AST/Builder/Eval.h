@@ -33,10 +33,10 @@ namespace AST {
 
 struct ScopedName;
 class Constant;
+class Builder;
 
 namespace Build {
 
-class Builder;
 /// Evaluator base.
 class Eval
 {

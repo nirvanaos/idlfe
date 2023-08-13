@@ -59,13 +59,13 @@ public:
 private:
 	template <class T> friend class Ptr;
 
-	Operation (Build::Builder& builder, bool oneway, Type&& type, const Build::SimpleDeclarator& name) :
+	Operation (Builder& builder, bool oneway, Type&& type, const SimpleDeclarator& name) :
 		OperationBase (Item::Kind::OPERATION, builder, name),
 		Type (std::move (type)),
 		oneway_ (oneway)
 	{}
 
-	friend class Build::Builder;
+	friend class Builder;
 
 	void oneway_clear ()
 	{

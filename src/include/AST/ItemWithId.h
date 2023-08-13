@@ -52,20 +52,20 @@ public:
 	}
 
 protected:
-	ItemWithId (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
+	ItemWithId (Kind kind, Builder& builder, const SimpleDeclarator& name);
 
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc);
+	virtual bool prefix (Builder& builder, const std::string& pref, const Location& loc);
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	static ItemWithId* cast (NamedItem* item) noexcept;
 
-	bool check_prefix (Build::Builder& builder, const Location& loc) const noexcept;
+	bool check_prefix (Builder& builder, const Location& loc) const noexcept;
 
-	void type_id (Build::Builder& builder, const std::string& id, const Location& loc);
+	void type_id (Builder& builder, const std::string& id, const Location& loc);
 
-	void pragma_version (Build::Builder& builder, const Version v, const Location& loc);
+	void pragma_version (Builder& builder, const Version v, const Location& loc);
 
 	void set_id (const ItemWithId& src)
 	{

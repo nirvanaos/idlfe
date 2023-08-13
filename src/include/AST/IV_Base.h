@@ -41,14 +41,14 @@ class IV_Base :
 	public ForwardDeclarable
 {
 protected:
-	IV_Base (Item::Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	IV_Base (Item::Kind kind, Builder& builder, const SimpleDeclarator& name) :
 		ItemScope (kind, builder, name)
 	{}
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
-	virtual bool prefix (Build::Builder& builder, const std::string& pref, const Location& loc)
+	virtual bool prefix (Builder& builder, const std::string& pref, const Location& loc)
 	{
 		if (ItemWithId::prefix (builder, pref, loc))
 			return ItemScope::prefix (builder, pref, loc);
@@ -57,11 +57,7 @@ private:
 	}
 };
 
-namespace Build {
-
 typedef std::vector <const IV_Base*> IV_Bases;
-
-}
 
 }
 

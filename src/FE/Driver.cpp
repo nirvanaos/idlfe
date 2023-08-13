@@ -28,9 +28,9 @@
 
 namespace FE {
 
-Driver::Driver (const std::string& file, std::istream& yyin, bool anonymous_deprecated, std::ostream& err_out) :
-	yyFlexLexer (yyin, err_out),
-	AST::Build::Builder (file, err_out, anonymous_deprecated),
+Driver::Driver (IDL_FrontEnd& compiler, const std::string& file, std::istream& yyin) :
+	yyFlexLexer (yyin, compiler.err_out ()),
+	AST::Builder (compiler, file),
 	parser_ (*this)
 {}
 

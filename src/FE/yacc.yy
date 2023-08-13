@@ -38,10 +38,11 @@
 namespace FE {
 class Driver;
 }
-#include "../AST/Builder/Declarators.h"
+#include "../include/AST/Declarators.h"
 #include "../include/AST/ScopedName.h"
 #include "../include/AST/Variant.h"
 #include "../include/AST/Parameter.h"
+#include "../AST/Builder/Eval.h"
 }
 
 %param {FE::Driver& drv}
@@ -182,19 +183,19 @@ class Driver;
 %nterm <unsigned> positive_int_const;
 %nterm <unsigned> fixed_array_size;
 
-%nterm <AST::Build::FixedArraySizes> fixed_array_sizes;
-%nterm <AST::Build::Declarator> array_declarator;
-%nterm <AST::Build::Declarator> complex_declarator;
-%nterm <AST::Build::Declarator> declarator;
-%nterm <AST::Build::SimpleDeclarator> simple_declarator;
-%nterm <AST::Build::Declarators> declarators;
-%nterm <AST::Build::SimpleDeclarators> simple_declarators;
+%nterm <AST::FixedArraySizes> fixed_array_sizes;
+%nterm <AST::Declarator> array_declarator;
+%nterm <AST::Declarator> complex_declarator;
+%nterm <AST::Declarator> declarator;
+%nterm <AST::SimpleDeclarator> simple_declarator;
+%nterm <AST::Declarators> declarators;
+%nterm <AST::SimpleDeclarators> simple_declarators;
 
 %nterm <bool> op_attribute;
 
 %nterm <AST::Parameter::Attribute> param_attribute;
 
-%nterm <AST::Build::Variants> string_literals;
+%nterm <AST::Variants> string_literals;
 
 %%
 
@@ -304,7 +305,7 @@ value_forward_dcl
 	;
 
 value_box_dcl
-	: T_valuetype simple_declarator type_spec { drv.valuetype_box ($2, $3); }
+	: T_valuetype simple_declarator type_spec { drv.valuetype_box ($2, std::move ($3)); }
 	;
 
 value_abs_dcl
@@ -360,8 +361,8 @@ value_element
 	;
 
 state_member
-	: T_public type_spec declarators T_SEMICOLON { drv.state_member (true, $2, $3); }
-	| T_private type_spec declarators T_SEMICOLON { drv.state_member (false, $2, $3); }
+	: T_public type_spec declarators T_SEMICOLON { drv.state_member (true, std::move ($2), $3); }
+	| T_private type_spec declarators T_SEMICOLON { drv.state_member (false, std::move ($2), $3); }
 	;
 
 init_dcl
@@ -381,11 +382,11 @@ init_param_dcls
 	;
 
 init_param_dcl
-	: T_in param_type_spec simple_declarator { drv.parameter (AST::Parameter::Attribute::IN, $2, $3); }
+	: T_in param_type_spec simple_declarator { drv.parameter (AST::Parameter::Attribute::IN, std::move ($2), $3); }
 	;
 
 const_dcl
-	: T_const const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant ($2, $3, std::move ($6), @6); }
+	: T_const const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant (std::move ($2), $3, std::move ($6), @6); }
 	;
 
 const_type
@@ -469,7 +470,7 @@ positive_int_const
 	;
 
 type_dcl
-	: T_typedef type_spec declarators { drv.type_def ($2, $3); }
+	: T_typedef type_spec declarators { drv.type_def (std::move ($2), $3); }
 	| struct_type
 	| union_type
 	| enum_type
@@ -506,7 +507,7 @@ template_type_spec
 	;
 
 declarators
-	: declarator { $$ = AST::Build::Declarators (1, $1); }
+	: declarator { $$ = AST::Declarators (1, $1); }
 	| declarator T_COMMA declarators { $$ = $3; $$.push_front ($1); }
 	;
 
@@ -516,7 +517,7 @@ declarator
 	;
 
 simple_declarator
-	: T_identifier { $$ = AST::Build::SimpleDeclarator ($1, @1); }
+	: T_identifier { $$ = AST::SimpleDeclarator ($1, @1); }
 	;
 
 complex_declarator
@@ -609,7 +610,7 @@ member_list
 	;
 
 member
-	: type_spec declarators T_SEMICOLON { drv.member ($1, $2); }
+	: type_spec declarators T_SEMICOLON { drv.member (std::move ($1), $2); }
 	;
 
 union_type
@@ -644,7 +645,7 @@ case_label
 	;
 
 element_spec
-	: type_spec declarator { drv.union_element ($1, $2); }
+	: type_spec declarator { drv.union_element (std::move ($1), $2); }
 	;
 
 enum_type
@@ -671,7 +672,7 @@ wide_string_type
 	;
 
 array_declarator
-	: T_identifier fixed_array_sizes { $$ = AST::Build::Declarator ($1, @1, $2); }
+	: T_identifier fixed_array_sizes { $$ = AST::Declarator ($1, @1, $2); }
 	;
 
 fixed_array_sizes
@@ -689,13 +690,13 @@ attr_dcl
 	;
 
 readonly_attr_spec
-	: T_readonly T_attribute param_type_spec simple_declarator { drv.attribute_begin (true, $3, $4); } raises_expr { drv.attribute_end (); }
-	| T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, $3, $4); }
+	: T_readonly T_attribute param_type_spec simple_declarator { drv.attribute_begin (true, std::move ($3), $4); } raises_expr { drv.attribute_end (); }
+	| T_readonly T_attribute param_type_spec simple_declarators { drv.attribute (true, std::move ($3), $4); }
 	;
 
 attr_spec
-	: T_attribute param_type_spec simple_declarator { drv.attribute_begin (false, $2, $3); } attr_raises_expr { drv.attribute_end (); }
-	| T_attribute param_type_spec simple_declarators { drv.attribute (false, $2, $3); }
+	: T_attribute param_type_spec simple_declarator { drv.attribute_begin (false, std::move ($2), $3); } attr_raises_expr { drv.attribute_end (); }
+	| T_attribute param_type_spec simple_declarators { drv.attribute (false, std::move ($2), $3); }
 	;
 
 attr_raises_expr
@@ -713,7 +714,7 @@ set_excep_expr
 	;
 
 simple_declarators
-	: simple_declarator { $$ = AST::Build::SimpleDeclarators (1, $1); }
+	: simple_declarator { $$ = AST::SimpleDeclarators (1, $1); }
 	| simple_declarator T_COMMA simple_declarators { $$ = $3; $$.push_front ($1); }
 	;
 
@@ -730,7 +731,7 @@ members
 	;
 
 op_dcl
-	: op_attribute op_type_spec simple_declarator { drv.operation_begin ($1, $2, $3); }
+	: op_attribute op_type_spec simple_declarator { drv.operation_begin ($1, std::move ($2), $3); }
 			parameter_dcls operation_raises context_expr { drv.operation_end (); }
 	;
 
@@ -755,7 +756,7 @@ param_dcls
 	;
 
 param_dcl
-	: param_attribute param_type_spec simple_declarator { drv.parameter ($1, $2, $3); }
+	: param_attribute param_type_spec simple_declarator { drv.parameter ($1, std:: move ($2), $3); }
 	;
 
 param_attribute
@@ -780,7 +781,7 @@ context_expr
 	;
 
 string_literals
-	: string_literal { $$ = AST::Build::Variants (1, $1); }
+	: string_literal { $$ = AST::Variants (1, $1); }
 	| string_literal T_COMMA string_literals { $$ = $3; $$.push_front ($1); }
 	;
 

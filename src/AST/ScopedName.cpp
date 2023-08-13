@@ -34,6 +34,13 @@ ScopedName::ScopedName (const Location& loc, bool root, const Identifier& name) 
 	push_back (name);
 }
 
+ScopedName::ScopedName (const Location& loc, bool root, Identifier&& name) noexcept :
+	Location (loc),
+	from_root (root)
+{
+	push_back (std::move (name));
+}
+
 std::string ScopedName::stringize () const
 {
 	const_iterator name = begin ();

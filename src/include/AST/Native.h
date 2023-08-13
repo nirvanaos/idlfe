@@ -42,7 +42,7 @@ class Native :
 private:
 	template <class T> friend class Ptr;
 
-	Native (Build::Builder& builder, const Build::SimpleDeclarator& name) :
+	Native (Builder& builder, const SimpleDeclarator& name) :
 		ItemWithId (Kind::NATIVE, builder, name)
 	{}
 };

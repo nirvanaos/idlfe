@@ -33,14 +33,12 @@
 
 namespace AST {
 
-namespace Build {
 class Builder;
-class SimpleDeclarator;
-}
-
 class ItemScope;
+class SimpleDeclarator;
+class Symbols;
 
-/// \brief A named AST item.
+/// \brief A named %AST item.
 class NamedItem :
 	public Item,
 	public Location
@@ -52,11 +50,8 @@ public:
 		return name_;
 	}
 
-	/// \returns The parent scope or `nullptr`.
-	const ItemScope* parent () const noexcept
-	{
-		return parent_;
-	}
+	/// \returns The parent item or `nullptr`.
+	const ItemScope* parent () const noexcept;
 
 	/// \returns The fully qualified name of the item.
 	std::string qualified_name () const;
@@ -64,14 +59,18 @@ public:
 	/// \returns The fully qualified ScopedName of the item.
 	ScopedName scoped_name () const;
 
+	/// \returns The parent scope.
+	///          For items from valid %AST it never returns `nullptr`.
+	const Symbols* parent_scope () const noexcept;
+
 protected:
-	NamedItem (Kind kind, Build::Builder& builder, const Build::SimpleDeclarator& name);
+	NamedItem (Kind kind, Builder& builder, const SimpleDeclarator& name);
 
 private:
-	static Identifier unescape (Build::Builder& builder, const Build::SimpleDeclarator& name);
+	static Identifier unescape (Builder& builder, const SimpleDeclarator& name);
 
 private:
-	const ItemScope* parent_;
+	const Item* parent_;
 	const Identifier name_;
 };
 

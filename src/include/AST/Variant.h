@@ -30,6 +30,7 @@
 
 #include "Type.h"
 #include "Fixed.h"
+#include <forward_list>
 
 namespace AST {
 
@@ -43,7 +44,7 @@ public:
 	/// Value vtype. 
 	enum class VT
 	{
-		EMPTY, ///< In the valid AST, Variant never has this type.
+		EMPTY, ///< In the valid %AST, Variant never has this type.
 
 		BOOLEAN, ///< Variant::as_bool ()
 		OCTET, ///< Variant::as_octet ()
@@ -247,8 +248,7 @@ public:
 		clear ();
 	}
 
-	/// Default constructor.
-	/// Creates empty Valriant.
+	/// VT::EMPTY
 	Variant () :
 		type_ (VT::EMPTY)
 	{}
@@ -265,86 +265,111 @@ public:
 		move (std::move (src));
 	}
 
-	/// Copy assignment.
-	Variant& operator = (const Variant& src);
-
-	/// Move assignment.
-	Variant& operator = (Variant&& src) noexcept;
-
+	/// VT::BOOLEAN
 	Variant (bool v) noexcept :
 		type_ (VT::BOOLEAN),
 		val_ ((uint64_t)v)
 	{}
 
+	/// VT::CHAR
 	Variant (char v) noexcept :
 		type_ (VT::CHAR),
 		val_ ((uint64_t)v)
 	{}
 
+	/// VT::WCHAR
 	Variant (wchar_t v) noexcept :
 		type_ (VT::WCHAR),
 		val_ ((uint64_t)v)
 	{}
 
+	/// VT::LONG
 	Variant (int32_t v) noexcept :
 		type_ (VT::LONG),
 		val_ ((int64_t)v)
 	{}
 
+	/// VT::ULONG
 	Variant (uint32_t v) noexcept :
 		type_ (VT::ULONG),
 		val_ ((int64_t)v)
 	{}
 
+	/// VT::LONGLONG
 	Variant (int64_t v) noexcept :
 		type_ (VT::LONGLONG),
 		val_ (v)
 	{}
 
+	/// VT::ULONGLONG
 	Variant (uint64_t v) noexcept :
 		type_ (VT::ULONGLONG),
 		val_ (v)
 	{}
 
+	/// VT::FLOAT
 	Variant (float v) noexcept :
 		type_ (VT::FLOAT),
 		val_ ((long double)v)
 	{}
 
+	/// VT::DOUBLE
 	Variant (double v) noexcept :
 		type_ (VT::DOUBLE),
 		val_ ((long double)v)
 	{}
 
+	/// VT::LONGDOUBLE
 	Variant (long double v) noexcept :
 		type_ (VT::LONGDOUBLE),
 		val_ (v)
 	{}
 
+	/// VT::STRING
 	Variant (std::string&& v) noexcept :
 		type_ (VT::STRING),
 		val_ (std::move (v))
 	{}
 
+	/// VT::STRING
+	Variant (const char* s) :
+		Variant (std::string (s))
+	{}
+
+	/// VT::WSTRING
 	Variant (std::wstring&& v) noexcept :
 		type_ (VT::WSTRING),
 		val_ (std::move (v))
 	{}
 
+	/// VT::WSTRING
+	Variant (const wchar_t* s) :
+		Variant (std::wstring (s))
+	{}
+
+	/// VT::FIXED
 	Variant (const Fixed& v) noexcept :
 		type_ (VT::FIXED),
 		val_ (v)
 	{}
 
+	/// VT::ENUM_ITEM
 	Variant (const EnumItem& item) noexcept :
 		type_ (VT::ENUM_ITEM),
 		val_ (item)
 	{}
 
+	/// VT::CONSTANT
 	Variant (const Constant& constant) noexcept :
 		type_ (VT::CONSTANT),
 		val_ (constant)
 	{}
+
+	/// Copy assignment.
+	Variant& operator = (const Variant& src);
+
+	/// Move assignment.
+	Variant& operator = (Variant&& src) noexcept;
 
 	bool to_boolean () const
 	{
@@ -402,7 +427,7 @@ public:
 	}
 
 private:
-	friend class Build::Builder;
+	friend class Builder;
 
 	void clear () noexcept;
 	void copy (const Variant& src);
@@ -496,9 +521,7 @@ private:
 	} val_;
 };
 
-namespace Build {
 typedef std::forward_list <Variant> Variants;
-}
 
 }
 

@@ -23,6 +23,7 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
+#include "../include/AST/Variant.h"
 #include "../include/AST/Constant.h"
 #include "../include/AST/Enum.h"
 #include "Builder/SafeInt/SafeInt.hpp"

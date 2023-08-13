@@ -36,4 +36,3 @@ void IDL_Print::generate_code (const AST::Root& tree)
 	if (tree.visit (printer))
 		cerr << "Warning, some unsupported Building Blocks were ignored.\n";
 }
-
