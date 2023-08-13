@@ -199,6 +199,8 @@ protected:
 	/// \brief End of the interface parsing.
 	/// 
 	/// User can override this method for interface post-processing, e. g. AMI IDL generation.
+	/// This method is called on the end of interface from the IDL file. It is not called
+	/// on Builder::interface_end () call.
 	/// 
 	/// \param itf The parsed interface.
 	/// \param builder The %AST builder.
