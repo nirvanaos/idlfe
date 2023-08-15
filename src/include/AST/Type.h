@@ -79,7 +79,7 @@ public:
 	{
 		assert (tkind () == Kind::NAMED_TYPE);
 		assert (type_.named_type);
-		return **type_.named_type;
+		return *type_.named_type;
 	}
 
 	/// \returns The string size bound if string has limited size. If size is not limited, returns 0.
@@ -185,7 +185,7 @@ public:
 		return Type (digits, scale);
 	}
 
-	Type (const Ptr <NamedItem>* named);
+	Type (const NamedItem* named);
 
 private:
 	friend class Builder;
@@ -224,7 +224,7 @@ private:
 	union U
 	{
 		BasicType basic_type;              // `Kind::BASIC_TYPE`
-		const Ptr <NamedItem>* named_type; // `Kind::NAMED_TYPE`
+		const NamedItem* named_type; // `Kind::NAMED_TYPE`
 		Dim string_bound;                  // `Kind::STRING, Kind::WSTRING`
 		const Sequence* sequence;          // `Kind::SEQUENCE`
 		const Array* array;                // `Kind::ARRAY`
@@ -242,7 +242,7 @@ private:
 			basic_type (bt)
 		{}
 
-		U (const Ptr <NamedItem>* nt) :
+		U (const NamedItem* nt) :
 			named_type (nt)
 		{}
 

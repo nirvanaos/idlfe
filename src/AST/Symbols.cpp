@@ -32,7 +32,7 @@ std::pair <Symbols::iterator, bool> Symbols::emplace (const NamedItem& item)
 	return Base::emplace (&const_cast <NamedItem&> (item));
 }
 
-const Ptr <NamedItem>* Symbols::find (const Identifier& name) const
+const NamedItem* Symbols::find (const Identifier& name) const
 {
 	if (name.front () == '_') {
 		Identifier tmp (name);
@@ -41,7 +41,7 @@ const Ptr <NamedItem>* Symbols::find (const Identifier& name) const
 	}
 	auto f = Base::find (name);
 	if (f != end ())
-		return &*f;
+		return *f;
 	else
 		return nullptr;
 }

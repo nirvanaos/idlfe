@@ -154,10 +154,9 @@ void Builder::type_id (const ScopedName& name, const std::string& id, const Loca
 ItemWithId* Builder::lookup_rep_id (const ScopedName& name)
 {
 	ItemWithId* rep_id = nullptr;
-	const Ptr <NamedItem>* l = lookup (name);
-	if (l) {
-		NamedItem* item = *l;
-		rep_id = ItemWithId::cast (item);
+	const NamedItem* item = lookup (name);
+	if (item) {
+		rep_id = ItemWithId::cast (const_cast <NamedItem*> (item));
 		if (!rep_id) {
 			message (name, MessageType::ERROR, name.stringize () + " has not repository id");
 			see_declaration_of (*item, item->qualified_name ());
@@ -173,10 +172,9 @@ void Builder::type_prefix (const ScopedName& name, const Variant& s, const Locat
 		if (name.empty ())
 			prefix (pref, name);
 		else {
-			const Ptr <NamedItem>* l = lookup (name);
-			if (l) {
-				NamedItem* item = *l;
-				ItemScope* scope = ItemScope::cast (item);
+			const NamedItem* item = lookup (name);
+			if (item) {
+				ItemScope* scope = ItemScope::cast (const_cast <NamedItem*> (item));
 				if (scope) {
 					if (prefix_valid (pref, id_loc))
 						scope->prefix (*this, pref, name);
@@ -307,13 +305,13 @@ void Builder::see_declaration_of (const Location& loc, const std::string& name)
 	message (loc, MessageType::MESSAGE, "see declaration of " + name);
 }
 
-const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
+const NamedItem* Builder::lookup (const ScopedName& scoped_name)
 {
 	auto name = scoped_name.begin ();
 	validate_id (*name, scoped_name);
-	std::pair <bool, const Ptr <NamedItem>*> f = { false, nullptr };
+	std::pair <bool, const NamedItem*> f = { false, nullptr };
 	if (scoped_name.from_root) {
-		const Ptr <NamedItem>* p = find (*tree_, *name);
+		const NamedItem* p = find (*tree_, *name);
 		f = std::make_pair (p, p);
 	} else {
 		for (ScopeStack::const_iterator it = scope_stack_.end (); it != scope_stack_.begin ();) {
@@ -327,14 +325,14 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 		}
 
 		if (!f.first) {
-			const Ptr <NamedItem>* p = find (*tree_, *name);
+			const NamedItem* p = find (*tree_, *name);
 			f = std::make_pair (p, p);
 		}
 	}
 
 	while (f.second && scoped_name.end () != ++name) {
 		validate_id (*name, scoped_name);
-		const ItemScope* scope = ItemScope::cast (*f.second);
+		const ItemScope* scope = ItemScope::cast (f.second);
 		if (scope) {
 			f = lookup (*scope, *name, scoped_name);
 			if (!f.first)
@@ -349,7 +347,7 @@ const Ptr <NamedItem>* Builder::lookup (const ScopedName& scoped_name)
 	return f.second;
 }
 
-std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope, const Identifier& name, const Location& loc)
+std::pair <bool, const NamedItem*> Builder::lookup (const ItemScope& scope, const Identifier& name, const Location& loc)
 {
 	switch (scope.kind ()) {
 
@@ -366,7 +364,7 @@ std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const ItemScope& scope
 		} break;
 
 		default: {
-			const Ptr <NamedItem>* p = find (scope, name);
+			const NamedItem* p = find (scope, name);
 			return std::make_pair (p, p);
 		}
 	}
@@ -378,10 +376,10 @@ void Builder::validate_id (const Identifier& name, const Location& loc)
 		message (loc, Builder::MessageType::ERROR, "Identifier \'" + name + "\' is invalid.");
 }
 
-std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& containers, const Identifier& name, const Location& loc)
+std::pair <bool, const NamedItem*> Builder::lookup (const IV_Bases& containers, const Identifier& name, const Location& loc)
 {
 	std::unordered_set <const IV_Base*> unique;
-	std::unordered_set <const Ptr <NamedItem>*> found;
+	std::unordered_set <const NamedItem*> found;
 	for (const IV_Base* cont : containers) {
 		if (unique.insert (cont).second) {
 			auto p = find (*cont, name);
@@ -393,11 +391,11 @@ std::pair <bool, const Ptr <NamedItem>*> Builder::lookup (const IV_Bases& contai
 		// Ambiguous
 		message (loc, Builder::MessageType::ERROR, "ambiguous name " + name);
 		auto it = found.begin ();
-		const NamedItem* p = **it;
+		const NamedItem* p = *it;
 		message (*p, Builder::MessageType::MESSAGE, "could be " + p->qualified_name ());
 		++it;
 		for (;;) {
-			p = **it;
+			p = *it;
 			std::string msg = "or " + p->qualified_name ();
 			if (found.end () == ++it) {
 				msg += '.';
@@ -429,9 +427,9 @@ unsigned Builder::positive_int (const Variant& v, const Location& loc)
 
 Type Builder::lookup_type (const ScopedName& scoped_name)
 {
-	const Ptr <NamedItem>* item = lookup (scoped_name);
+	const NamedItem* item = lookup (scoped_name);
 	if (item) {
-		if (!(*item)->is_type ()) {
+		if (!item->is_type ()) {
 			message (scoped_name, MessageType::ERROR, scoped_name.stringize () + " is not a type");
 			item = nullptr;
 		}
@@ -551,9 +549,9 @@ bool Builder::prefix_valid (const std::string& pref, const Location& loc)
 	return valid;
 }
 
-const Ptr <NamedItem>* Builder::constr_type_end ()
+const NamedItem* Builder::constr_type_end ()
 {
-	const Ptr <NamedItem>* type = constr_type_.symbol;
+	const NamedItem* type = *constr_type_.symbol;
 	constr_type_.clear ();
 	return type;
 }
@@ -845,9 +843,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 		// Process bases
 		std::unordered_map <const Item*, Location> direct_bases;
 		for (auto base_name = bases.begin (); base_name != bases.end (); ++base_name) {
-			const Ptr <NamedItem>* pbase = lookup (*base_name);
-			if (pbase) {
-				const NamedItem* base = *pbase;
+			const NamedItem* base = lookup (*base_name);
+			if (base) {
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::INTERFACE) {
 					if (base->kind () == Item::Kind::INTERFACE_DECL)
@@ -923,9 +920,8 @@ void Builder::valuetype_bases (bool truncatable, const ScopedNames& bases)
 		std::unordered_map <const Item*, Location> direct_bases;
 		bool first = true;
 		for (auto base_name = bases.begin (); base_name != bases.end (); first = false, ++base_name) {
-			const Ptr <NamedItem>* pbase = lookup (*base_name);
-			if (pbase) {
-				const NamedItem* base = *pbase;
+			const NamedItem* base = lookup (*base_name);
+			if (base) {
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::VALUE_TYPE) {
 					if (base->kind () == Item::Kind::VALUE_TYPE_DECL)
@@ -983,9 +979,8 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 		std::unordered_map <const Item*, Location> direct_bases;
 		bool first = true;
 		for (auto base_name = interfaces.begin (); base_name != interfaces.end (); first = false, ++base_name) {
-			const Ptr <NamedItem>* pbase = lookup (*base_name);
-			if (pbase) {
-				const NamedItem* base = *pbase;
+			const NamedItem* base = lookup (*base_name);
+			if (base) {
 				const char* err = nullptr;
 				if (base->kind () != Item::Kind::INTERFACE) {
 					if (base->kind () == Item::Kind::INTERFACE_DECL)
@@ -1208,9 +1203,8 @@ Raises Builder::lookup_exceptions (const ScopedNames& names)
 	std::unordered_map <const Item*, Location> unique;
 	Raises exceptions;
 	for (auto name = names.begin (); name != names.end (); ++name) {
-		const Ptr <NamedItem>* l = lookup (*name);
-		if (l) {
-			const NamedItem* item = *l;
+		const NamedItem* item = lookup (*name);
+		if (item) {
 			switch (item->kind ()) {
 				case Item::Kind::EXCEPTION:
 				case Item::Kind::NATIVE:
@@ -1617,7 +1611,7 @@ void Builder::union_element (Type&& type, const Declarator& decl)
 	}
 }
 
-const Ptr <NamedItem>* Builder::union_end ()
+const NamedItem* Builder::union_end ()
 {
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the definition
@@ -1675,7 +1669,7 @@ const Ptr <NamedItem>* Builder::union_end ()
 	return constr_type_end ();
 }
 
-const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
+const NamedItem* Builder::enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items)
 {
 	assert (!items.empty ());
 	Symbols* scope = cur_scope ();
@@ -1700,7 +1694,7 @@ const Ptr <NamedItem>* Builder::enum_type (const SimpleDeclarator& name, const S
 					def->append (*enumerator);
 				}
 			}
-			return &*ins.first;
+			return *ins.first;
 		}
 	}
 	return nullptr;

@@ -232,7 +232,7 @@ public:
 
 	/// \brief End of the structure definition.
 	/// \returns The pointer to definition.
-	const Ptr <NamedItem>* struct_end ()
+	const NamedItem* struct_end ()
 	{
 		return constr_type_end ();
 	}
@@ -285,14 +285,14 @@ public:
 	
 	/// \brief End of the union definition.
 	/// \returns The pointer to definition.
-	const Ptr <NamedItem>* union_end ();
+	const NamedItem* union_end ();
 
 	/// \brief Create enum type.
 	/// 
 	/// \param name The enum type name.
 	/// \param items The enum items.
 	/// \returns The pointer to definition.
-	const Ptr <NamedItem>* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
+	const NamedItem* enum_type (const SimpleDeclarator& name, const SimpleDeclarators& items);
 
 	/// \brief Create valuetype forward declaration.
 	/// 
@@ -405,7 +405,7 @@ private:
 	friend class Build::Eval;
 	friend class Build::EvalEnum;
 
-	const Ptr <NamedItem>* lookup (const ScopedName& scoped_name);
+	const NamedItem* lookup (const ScopedName& scoped_name);
 	bool prefix_valid (const std::string& pref, const Location& loc);
 	void prefix (const std::string& pref, const Location& loc);
 	bool get_quoted_string (const char*& s, std::string& qs, const Location& loc);
@@ -419,14 +419,14 @@ private:
 	void scope_end ();
 	void iv_end (Item::Kind kind);
 
-	const Ptr <NamedItem>* constr_type_end ();
+	const NamedItem* constr_type_end ();
 
 	Raises lookup_exceptions (const ScopedNames& names);
 
-	std::pair <bool, const Ptr <NamedItem>*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
-	std::pair <bool, const Ptr <NamedItem>*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
+	std::pair <bool, const NamedItem*> lookup (const ItemScope& scope, const Identifier& name, const Location& loc);
+	std::pair <bool, const NamedItem*> lookup (const IV_Bases& containers, const Identifier& name, const Location& loc);
 	
-	static const Ptr <NamedItem>* find (const Symbols& symbols, const Identifier& name)
+	static const NamedItem* find (const Symbols& symbols, const Identifier& name)
 	{
 		return symbols.find (name);
 	}
