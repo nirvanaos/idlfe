@@ -37,23 +37,16 @@ class Symbols :
 	public std::set <Ptr <NamedItem>, std::less <> >
 {
 	typedef std::set <Ptr <NamedItem>, std::less <> > Base;
+
 public:
 	/// Find a symbol.
 	/// 
 	/// \param name Item name.
 	/// \returns NamedItem pointer if found, otherwise `nullptr`.
-	const Ptr <NamedItem>* find (const Identifier& name) const;
+	const NamedItem* find (const Identifier& name) const;
 
-	/// Add named item to symbols.
-	/// 
-	/// \param item A NamedItem.
-	/// \returns std::pair <iterator, bool>.
 	std::pair <iterator, bool> emplace (const NamedItem& item);
 
-	/// Add named item to symbols.
-	/// 
-	/// \param item A NamedItem.
-	/// \returns std::pair <iterator, bool>.
 	std::pair <iterator, bool> insert (const NamedItem& item)
 	{
 		return emplace (item);
