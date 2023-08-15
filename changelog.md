@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1 - 2023-08-15
+### Changed
+ - `AST::Symbols::find()` method was simplified.
+
 ## 3.2.0 - 2023-08-13
 ### Added
  - class `AST::Builder` provides possibility for the AST modification.
