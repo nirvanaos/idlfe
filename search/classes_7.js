@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['nameditem_290',['NamedItem',['../class_a_s_t_1_1_named_item.html',1,'AST']]],
-  ['native_291',['Native',['../class_a_s_t_1_1_native.html',1,'AST']]]
+  ['location_331',['Location',['../class_a_s_t_1_1_location.html',1,'AST']]]
 ];

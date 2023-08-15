@@ -117,32 +117,36 @@ $(function() {
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        std::string (s)</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {}</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a2ba524562d65ad2131f43b23a9ce8ec0">   62</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_identifier.html#a2ba524562d65ad2131f43b23a9ce8ec0">valid</a> () const noexcept;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a4acb5e20af50e925227081db5922107b">   65</a></span>&#160;    <span class="keywordtype">bool</span> operator == (const <span class="keywordtype">char</span>* s) const noexcept;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a> (const <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = default;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a> (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = default;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (const <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = default;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = default;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">// Simplified tolower. We don&#39;t need to consider the locale settings.</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    static <span class="keywordtype">char</span> tolower (<span class="keywordtype">char</span> c)</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordflow">return</span> (<span class="charliteral">&#39;A&#39;</span> &lt;= c &amp;&amp; c &lt;= <span class="charliteral">&#39;Z&#39;</span>) ? c + 32 : c;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> reserved_words_ [];</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">   83</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; l, <span class="keyword">const</span> <span class="keywordtype">char</span>* r) noexcept;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#ade1975791930725069f796334d9c05a8">   62</a></span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html#ade1975791930725069f796334d9c05a8">Identifier</a> (std::string&amp;&amp; s) noexcept :</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        std::string (std::move (s))</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a2ba524562d65ad2131f43b23a9ce8ec0">   69</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_s_t_1_1_identifier.html#a2ba524562d65ad2131f43b23a9ce8ec0">valid</a> () const noexcept;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_identifier.html#a4acb5e20af50e925227081db5922107b">   72</a></span>&#160;    <span class="keywordtype">bool</span> operator == (const <span class="keywordtype">char</span>* s) const noexcept;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a> (const <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = default;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a> (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = default;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (const <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;) = default;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; operator = (<a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp;&amp;) = default;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="comment">// Simplified tolower. We don&#39;t need to consider the locale settings.</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    static <span class="keywordtype">char</span> tolower (<span class="keywordtype">char</span> c)</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> (<span class="charliteral">&#39;A&#39;</span> &lt;= c &amp;&amp; c &lt;= <span class="charliteral">&#39;Z&#39;</span>) ? c + 32 : c;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#a001efc1ec09f88887029c8dd1f14bcef">   86</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">operator &lt; </a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* l, <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; r) noexcept;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> reserved_words_ [];</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;};</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">   90</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; l, <span class="keyword">const</span> <span class="keywordtype">char</span>* r) noexcept;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="namespace_a_s_t.html#a001efc1ec09f88887029c8dd1f14bcef">   93</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">operator &lt; </a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* l, <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; r) noexcept;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_identifier_html"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html">AST::Identifier</a></div><div class="ttdoc">An identifier.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00036">Identifier.h:37</a></div></div>
 <div class="ttc" id="anamespace_a_s_t_html_acb5fbbffcb65f81907fa71c3f964f1a5"><div class="ttname"><a href="namespace_a_s_t.html#acb5fbbffcb65f81907fa71c3f964f1a5">AST::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const Identifier &amp;l, const char *r) noexcept</div><div class="ttdoc">Case-insensitive compare.</div></div>
@@ -151,6 +155,7 @@ $(function() {
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a2adf459d331b2f614518efcafd42932f"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a2adf459d331b2f614518efcafd42932f">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00043">Identifier.h:43</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a2d49228bc6a9362623524e1f883ad453"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a2d49228bc6a9362623524e1f883ad453">AST::Identifier::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const Identifier &amp;r) const noexcept</div><div class="ttdoc">CORBA IDL identifiers are case-insensitive.</div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_identifier_html_ade1975791930725069f796334d9c05a8"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#ade1975791930725069f796334d9c05a8">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier(std::string &amp;&amp;s) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00062">Identifier.h:62</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_identifier_html_a068e9fc4f819fafe552295c497012214"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html#a068e9fc4f819fafe552295c497012214">AST::Identifier::Identifier</a></div><div class="ttdeci">Identifier(const char *s)</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00055">Identifier.h:55</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

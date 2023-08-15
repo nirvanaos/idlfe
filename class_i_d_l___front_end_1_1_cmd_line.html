@@ -85,8 +85,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3cffe0cc3ce5c797e42768c00ed50007"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a3cffe0cc3ce5c797e42768c00ed50007">end</a> () const noexcept</td></tr>
 <tr class="separator:a3cffe0cc3ce5c797e42768c00ed50007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a791efe7b57e612cb83852789a1186cc3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a791efe7b57e612cb83852789a1186cc3">next</a> () noexcept</td></tr>
+<tr class="memdesc:a791efe7b57e612cb83852789a1186cc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advances to the next argument.  <a href="class_i_d_l___front_end_1_1_cmd_line.html#a791efe7b57e612cb83852789a1186cc3">More...</a><br /></td></tr>
 <tr class="separator:a791efe7b57e612cb83852789a1186cc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17720bab48909306e049ff94f87abc9a"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a17720bab48909306e049ff94f87abc9a">parameter</a> (const char *switch_end)</td></tr>
+<tr class="memdesc:a17720bab48909306e049ff94f87abc9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the parameter followed to the switch.  <a href="class_i_d_l___front_end_1_1_cmd_line.html#a17720bab48909306e049ff94f87abc9a">More...</a><br /></td></tr>
 <tr class="separator:a17720bab48909306e049ff94f87abc9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fb52e17b58ca45679bbcb3ac1fe1ec4"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a1fb52e17b58ca45679bbcb3ac1fe1ec4">exe_file</a> () const</td></tr>
 <tr class="separator:a1fb52e17b58ca45679bbcb3ac1fe1ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -94,7 +96,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Command line argument iterator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00070">70</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00094">94</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a67f48fcb8a99981bdc8ace63e3546092"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a67f48fcb8a99981bdc8ace63e3546092">&#9670;&nbsp;</a></span>arg()</h2>
@@ -120,7 +122,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The current argument </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00075">75</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00099">99</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -148,7 +150,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>false</code> if there are no more arguments. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00082">82</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00106">106</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -174,7 +176,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Advances to the next argument.</p>
+
+<p>Advances to the next argument. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> on success, <code>false</code> if no more arguments. </dd></dl>
 
 </div>
@@ -194,7 +197,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get the parameter followed to switch.</p>
+
+<p>Get the parameter followed to the switch. </p>
 <p>The command line parameter may follow the switch immediately (-DMYDEFINE) or as the next argument (-D MYDEFINE). The parameter must not start from '-'.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -236,7 +240,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The compiler executable file name. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00103">103</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00127">127</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>

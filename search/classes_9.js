@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['parameter_294',['Parameter',['../class_a_s_t_1_1_parameter.html',1,'AST']]],
-  ['ptr_295',['Ptr',['../class_a_s_t_1_1_ptr.html',1,'AST']]],
-  ['ptr_3c_20ast_3a_3anameditem_20_3e_296',['Ptr&lt; AST::NamedItem &gt;',['../class_a_s_t_1_1_ptr.html',1,'AST']]]
+  ['nameditem_336',['NamedItem',['../class_a_s_t_1_1_named_item.html',1,'AST']]],
+  ['native_337',['Native',['../class_a_s_t_1_1_native.html',1,'AST']]]
 ];

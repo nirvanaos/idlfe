@@ -82,40 +82,28 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af41a55855d2d967013a0944a84720c34"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_ptr.html">Ptr</a>&lt; <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_symbols.html#af41a55855d2d967013a0944a84720c34">find</a> (const <a class="el" href="class_a_s_t_1_1_identifier.html">Identifier</a> &amp;name) const noexcept</td></tr>
-<tr class="separator:af41a55855d2d967013a0944a84720c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a602b6a91c098fa8f5cdde0538feb3206"><td class="memItemLeft" align="right" valign="top">std::pair&lt; iterator, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_symbols.html#a602b6a91c098fa8f5cdde0538feb3206">emplace</a> (const <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> &amp;item)</td></tr>
-<tr class="separator:a602b6a91c098fa8f5cdde0538feb3206"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a774d873e08baebe18de6a05ec7ae82"><td class="memItemLeft" align="right" valign="top">std::pair&lt; iterator, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_symbols.html#a4a774d873e08baebe18de6a05ec7ae82">insert</a> (const <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> &amp;item)</td></tr>
-<tr class="separator:a4a774d873e08baebe18de6a05ec7ae82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a729393528d2b27fe0c433ae8f65baf50"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_symbols.html#a729393528d2b27fe0c433ae8f65baf50">find</a> (const <a class="el" href="class_a_s_t_1_1_identifier.html">Identifier</a> &amp;name) const</td></tr>
+<tr class="separator:a729393528d2b27fe0c433ae8f65baf50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Set of the named items. </p>
 
 <p class="definition">Definition at line <a class="el" href="_symbols_8h_source.html#l00036">36</a> of file <a class="el" href="_symbols_8h_source.html">Symbols.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="af41a55855d2d967013a0944a84720c34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af41a55855d2d967013a0944a84720c34">&#9670;&nbsp;</a></span>find()</h2>
+<a id="a729393528d2b27fe0c433ae8f65baf50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a729393528d2b27fe0c433ae8f65baf50">&#9670;&nbsp;</a></span>find()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="class_a_s_t_1_1_ptr.html">Ptr</a>&lt;<a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a>&gt;* AST::Symbols::find </td>
+          <td class="memname">const <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a>* AST::Symbols::find </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_a_s_t_1_1_identifier.html">Identifier</a> &amp;&#160;</td>
           <td class="paramname"><em>name</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>Find a symbol.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -125,68 +113,6 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_a_s_t_1_1_named_item.html" title="A named AST item.">NamedItem</a> pointer if found, otherwise <code>nullptr</code>. </dd></dl>
-
-</div>
-</div>
-<a id="a602b6a91c098fa8f5cdde0538feb3206"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a602b6a91c098fa8f5cdde0538feb3206">&#9670;&nbsp;</a></span>emplace()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::pair&lt;iterator, bool&gt; AST::Symbols::emplace </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> &amp;&#160;</td>
-          <td class="paramname"><em>item</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Add named item to symbols.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">item</td><td>A <a class="el" href="class_a_s_t_1_1_named_item.html" title="A named AST item.">NamedItem</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>std::pair &lt;iterator, bool&gt;. </dd></dl>
-
-</div>
-</div>
-<a id="a4a774d873e08baebe18de6a05ec7ae82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a774d873e08baebe18de6a05ec7ae82">&#9670;&nbsp;</a></span>insert()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::pair&lt;iterator, bool&gt; AST::Symbols::insert </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_a_s_t_1_1_named_item.html">NamedItem</a> &amp;&#160;</td>
-          <td class="paramname"><em>item</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Add named item to symbols.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">item</td><td>A <a class="el" href="class_a_s_t_1_1_named_item.html" title="A named AST item.">NamedItem</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>std::pair &lt;iterator, bool&gt;. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="_symbols_8h_source.html#l00057">57</a> of file <a class="el" href="_symbols_8h_source.html">Symbols.h</a>.</p>
 
 </div>
 </div>

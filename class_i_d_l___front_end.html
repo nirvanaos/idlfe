@@ -65,8 +65,9 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="class_i_d_l___front_end-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">IDL_FrontEnd Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -87,32 +88,52 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d30150e84085a999e1d8726c30dff07"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a0d30150e84085a999e1d8726c30dff07">main</a> (int argc, char *argv[]) noexcept</td></tr>
+<tr class="memdesc:a0d30150e84085a999e1d8726c30dff07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call this method from the <a class="el" href="class_i_d_l___front_end.html#a0d30150e84085a999e1d8726c30dff07" title="Call this method from the main() function.">main()</a> function.  <a href="class_i_d_l___front_end.html#a0d30150e84085a999e1d8726c30dff07">More...</a><br /></td></tr>
 <tr class="separator:a0d30150e84085a999e1d8726c30dff07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7b5d636f2d0a0d47db26d9f8a50c26f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#ac7b5d636f2d0a0d47db26d9f8a50c26f">flags</a> () const noexcept</td></tr>
+<tr class="separator:ac7b5d636f2d0a0d47db26d9f8a50c26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af732fa1affdac7fa13d040cd8c65101a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#af732fa1affdac7fa13d040cd8c65101a">err_out</a> () const noexcept</td></tr>
+<tr class="separator:af732fa1affdac7fa13d040cd8c65101a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ab5c4cac33b5daf32ee7145b1d6779137"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#ab5c4cac33b5daf32ee7145b1d6779137">filename</a> (const char *path) noexcept</td></tr>
+<tr class="memdesc:ab5c4cac33b5daf32ee7145b1d6779137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get file name from path.  <a href="class_i_d_l___front_end.html#ab5c4cac33b5daf32ee7145b1d6779137">More...</a><br /></td></tr>
 <tr class="separator:ab5c4cac33b5daf32ee7145b1d6779137"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a0cd7f37e84aaf20a5e77686e9a2bcbde">IDL_FrontEnd</a> (unsigned flags=0, std::ostream &amp;<a class="el" href="class_i_d_l___front_end.html#af732fa1affdac7fa13d040cd8c65101a">err_out</a>=std::cerr)</td></tr>
-<tr class="separator:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48852b706ce523a906a9138647518bb8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">parse_command_line</a> (<a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html">CmdLine</a> &amp;args)</td></tr>
-<tr class="separator:a48852b706ce523a906a9138647518bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a254a4a366be92150108415e5f5cdbee4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a254a4a366be92150108415e5f5cdbee4">print_usage_info</a> (const char *exe_name)</td></tr>
-<tr class="separator:a254a4a366be92150108415e5f5cdbee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe271bfdf968951672734b28b0380524"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#abe271bfdf968951672734b28b0380524">generate_code</a> (const ::<a class="el" href="class_a_s_t_1_1_root.html">AST::Root</a> &amp;tree)=0</td></tr>
-<tr class="separator:abe271bfdf968951672734b28b0380524"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af732fa1affdac7fa13d040cd8c65101a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#af732fa1affdac7fa13d040cd8c65101a">err_out</a> () const noexcept</td></tr>
-<tr class="separator:af732fa1affdac7fa13d040cd8c65101a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
-Static Protected Attributes</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
 <tr class="memitem:a60bf0e97e8a9903f9540467df4a51ff0"><td class="memItemLeft" align="right" valign="top"><a id="a60bf0e97e8a9903f9540467df4a51ff0"></a>
 static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0">FLAG_DEPRECATE_ANONYMOUS_TYPES</a> = 1</td></tr>
 <tr class="memdesc:a60bf0e97e8a9903f9540467df4a51ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disallows anonymous IDL types as required by the C++11 Language Mapping Specification. <br /></td></tr>
 <tr class="separator:a60bf0e97e8a9903f9540467df4a51ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a0cd7f37e84aaf20a5e77686e9a2bcbde">IDL_FrontEnd</a> (unsigned <a class="el" href="class_i_d_l___front_end.html#ac7b5d636f2d0a0d47db26d9f8a50c26f">flags</a>=0, std::ostream &amp;<a class="el" href="class_i_d_l___front_end.html#af732fa1affdac7fa13d040cd8c65101a">err_out</a>=std::cerr)</td></tr>
+<tr class="memdesc:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_i_d_l___front_end.html#a0cd7f37e84aaf20a5e77686e9a2bcbde">More...</a><br /></td></tr>
+<tr class="separator:a0cd7f37e84aaf20a5e77686e9a2bcbde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48852b706ce523a906a9138647518bb8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">parse_command_line</a> (<a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html">CmdLine</a> &amp;args)</td></tr>
+<tr class="memdesc:a48852b706ce523a906a9138647518bb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse command line parameter.  <a href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">More...</a><br /></td></tr>
+<tr class="separator:a48852b706ce523a906a9138647518bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a254a4a366be92150108415e5f5cdbee4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a254a4a366be92150108415e5f5cdbee4">print_usage_info</a> (const char *exe_name)</td></tr>
+<tr class="memdesc:a254a4a366be92150108415e5f5cdbee4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints usage information to std::cout.  <a href="class_i_d_l___front_end.html#a254a4a366be92150108415e5f5cdbee4">More...</a><br /></td></tr>
+<tr class="separator:a254a4a366be92150108415e5f5cdbee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a203b518a4ceb0d25b0abf45481a79f15"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a203b518a4ceb0d25b0abf45481a79f15">generate_code</a> (const <a class="el" href="class_a_s_t_1_1_root.html">AST::Root</a> &amp;tree)=0</td></tr>
+<tr class="memdesc:a203b518a4ceb0d25b0abf45481a79f15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate user code from <a class="el" href="namespace_a_s_t.html" title="Abstract Syntax Tree namespace.">AST</a>.  <a href="class_i_d_l___front_end.html#a203b518a4ceb0d25b0abf45481a79f15">More...</a><br /></td></tr>
+<tr class="separator:a203b518a4ceb0d25b0abf45481a79f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6023f8ad1a9183a5ada837411f151e2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#ab6023f8ad1a9183a5ada837411f151e2">file_begin</a> (const std::filesystem::path &amp;file, <a class="el" href="class_a_s_t_1_1_builder.html">AST::Builder</a> &amp;builder)</td></tr>
+<tr class="memdesc:ab6023f8ad1a9183a5ada837411f151e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin of the file parsing.  <a href="class_i_d_l___front_end.html#ab6023f8ad1a9183a5ada837411f151e2">More...</a><br /></td></tr>
+<tr class="separator:ab6023f8ad1a9183a5ada837411f151e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9d1f3593a562b3f891974dfd250cc01"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#ae9d1f3593a562b3f891974dfd250cc01">interface_end</a> (const <a class="el" href="class_a_s_t_1_1_interface.html">AST::Interface</a> &amp;itf, <a class="el" href="class_a_s_t_1_1_builder.html">AST::Builder</a> &amp;builder)</td></tr>
+<tr class="memdesc:ae9d1f3593a562b3f891974dfd250cc01"><td class="mdescLeft">&#160;</td><td class="mdescRight">End of the interface parsing.  <a href="class_i_d_l___front_end.html#ae9d1f3593a562b3f891974dfd250cc01">More...</a><br /></td></tr>
+<tr class="separator:ae9d1f3593a562b3f891974dfd250cc01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:aa65f17d756b9945d43f2a47009bc349b"><td class="memItemLeft" align="right" valign="top"><a id="aa65f17d756b9945d43f2a47009bc349b"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td></tr>
+<tr class="separator:aa65f17d756b9945d43f2a47009bc349b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>IDL front-end. </p>
@@ -126,7 +147,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#_a0">IDL_Print.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00050">50</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00057">57</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0cd7f37e84aaf20a5e77686e9a2bcbde"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0cd7f37e84aaf20a5e77686e9a2bcbde">&#9670;&nbsp;</a></span>IDL_FrontEnd()</h2>
@@ -161,7 +182,8 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructor</p>
+
+<p>Constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">flags</td><td>The flags. Currently only <a class="el" href="class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0" title="Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.">IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES</a> is supported. </td></tr>
@@ -170,7 +192,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00129">129</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00149">149</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -208,7 +230,8 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Call this method from the <a class="el" href="class_i_d_l___front_end.html#a0d30150e84085a999e1d8726c30dff07">main()</a> function.</p>
+
+<p>Call this method from the <a class="el" href="class_i_d_l___front_end.html#a0d30150e84085a999e1d8726c30dff07" title="Call this method from the main() function.">main()</a> function. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">argc</td><td>Count of command line arguments. </td></tr>
@@ -243,7 +266,8 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Get file name from path.</p>
+
+<p>Get file name from path. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>The file path. </td></tr>
@@ -251,6 +275,62 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The file name. </dd></dl>
+
+</div>
+</div>
+<a id="ac7b5d636f2d0a0d47db26d9f8a50c26f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7b5d636f2d0a0d47db26d9f8a50c26f">&#9670;&nbsp;</a></span>flags()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned IDL_FrontEnd::flags </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Flags parameter specified in constructor. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00075">75</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+
+</div>
+</div>
+<a id="af732fa1affdac7fa13d040cd8c65101a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af732fa1affdac7fa13d040cd8c65101a">&#9670;&nbsp;</a></span>err_out()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; IDL_FrontEnd::err_out </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Compiler messages output stream. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00084">84</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -277,8 +357,9 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Parse command line parameter.</p>
-<p>User can override this method to parse additional parameters. The user method must call <a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">IDL_FrontEnd::parse_command_line</a> () first to let the <a class="el" href="class_i_d_l___front_end.html" title="IDL front-end.">IDL_FrontEnd</a> parse it's arguments. If the <a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8">IDL_FrontEnd::parse_command_line</a> () returns <code>false</code>, user method may parse it's own arguments. If the argument is recognized, args.next () must be called for advance to the next argument.</p>
+
+<p>Parse command line parameter. </p>
+<p>User can override this method to parse additional parameters. The user method must call <a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8" title="Parse command line parameter.">IDL_FrontEnd::parse_command_line</a> () first to let the <a class="el" href="class_i_d_l___front_end.html" title="IDL front-end.">IDL_FrontEnd</a> parse it's arguments. If the <a class="el" href="class_i_d_l___front_end.html#a48852b706ce523a906a9138647518bb8" title="Parse command line parameter.">IDL_FrontEnd::parse_command_line</a> () returns <code>false</code>, user method may parse it's own arguments. If the argument is recognized, args.next () must be called for advance to the next argument.</p>
 <p>Switches recognized by <a class="el" href="class_i_d_l___front_end.html" title="IDL front-end.">IDL_FrontEnd</a>:</p><ul>
 <li>-D definition Define a symbol.</li>
 <li>-U definition Undefine a sy</li>
@@ -327,7 +408,8 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Prints usage information to std::cout.</p>
+
+<p>Prints usage information to std::cout. </p>
 <p>User can override this method to print additional information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -340,8 +422,8 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 </div>
 </div>
-<a id="abe271bfdf968951672734b28b0380524"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe271bfdf968951672734b28b0380524">&#9670;&nbsp;</a></span>generate_code()</h2>
+<a id="a203b518a4ceb0d25b0abf45481a79f15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a203b518a4ceb0d25b0abf45481a79f15">&#9670;&nbsp;</a></span>generate_code()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -352,7 +434,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
         <tr>
           <td class="memname">virtual void IDL_FrontEnd::generate_code </td>
           <td>(</td>
-          <td class="paramtype">const ::<a class="el" href="class_a_s_t_1_1_root.html">AST::Root</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_a_s_t_1_1_root.html">AST::Root</a> &amp;&#160;</td>
           <td class="paramname"><em>tree</em></td><td>)</td>
           <td></td>
         </tr>
@@ -363,7 +445,9 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Generate user code from <a class="el" href="namespace_a_s_t.html" title="Abstract Syntax Tree namespace.">AST</a>.</p>
+
+<p>Generate user code from <a class="el" href="namespace_a_s_t.html" title="Abstract Syntax Tree namespace.">AST</a>. </p>
+<p>User must override this method.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tree</td><td><a class="el" href="namespace_a_s_t.html" title="Abstract Syntax Tree namespace.">AST</a>. </td></tr>
@@ -381,8 +465,8 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 </div>
 </div>
-<a id="af732fa1affdac7fa13d040cd8c65101a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af732fa1affdac7fa13d040cd8c65101a">&#9670;&nbsp;</a></span>err_out()</h2>
+<a id="ab6023f8ad1a9183a5ada837411f151e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6023f8ad1a9183a5ada837411f151e2">&#9670;&nbsp;</a></span>file_begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -391,21 +475,88 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::ostream&amp; IDL_FrontEnd::err_out </td>
+          <td class="memname">virtual void IDL_FrontEnd::file_begin </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">const std::filesystem::path &amp;&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_a_s_t_1_1_builder.html">AST::Builder</a> &amp;&#160;</td>
+          <td class="paramname"><em>builder</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Compiler messages output stream. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00170">170</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p>Begin of the file parsing. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>The IDL file path. </td></tr>
+    <tr><td class="paramname">builder</td><td>The AST builder. User can use this object to inject some initial items to the empty AST. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00196">196</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+
+</div>
+</div>
+<a id="ae9d1f3593a562b3f891974dfd250cc01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9d1f3593a562b3f891974dfd250cc01">&#9670;&nbsp;</a></span>interface_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void IDL_FrontEnd::interface_end </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_a_s_t_1_1_interface.html">AST::Interface</a> &amp;&#160;</td>
+          <td class="paramname"><em>itf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_a_s_t_1_1_builder.html">AST::Builder</a> &amp;&#160;</td>
+          <td class="paramname"><em>builder</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>End of the interface parsing. </p>
+<p>User can override this method for interface post-processing, e. g. AMI IDL generation. This method is called on the end of interface from the IDL file. It is not called on Builder::interface_end () call.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">itf</td><td>The parsed interface. </td></tr>
+    <tr><td class="paramname">builder</td><td>The AST builder. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00207">207</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>

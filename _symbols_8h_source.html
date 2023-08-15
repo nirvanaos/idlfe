@@ -107,30 +107,28 @@ $(function() {
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">public</span> std::set &lt;Ptr &lt;NamedItem&gt;, std::less &lt;&gt; &gt;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">typedef</span> std::set &lt;Ptr &lt;NamedItem&gt;, std::less &lt;&gt; &gt; Base;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_symbols.html#af41a55855d2d967013a0944a84720c34">   45</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_ptr.html">Ptr &lt;NamedItem&gt;</a>* <a class="code" href="class_a_s_t_1_1_symbols.html#af41a55855d2d967013a0944a84720c34">find</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; name) <span class="keyword">const</span> noexcept;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_symbols.html#a602b6a91c098fa8f5cdde0538feb3206">   51</a></span>&#160;    std::pair &lt;iterator, bool&gt; <a class="code" href="class_a_s_t_1_1_symbols.html#a602b6a91c098fa8f5cdde0538feb3206">emplace</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>&amp; item);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_symbols.html#a4a774d873e08baebe18de6a05ec7ae82">   57</a></span>&#160;    std::pair &lt;iterator, bool&gt; <a class="code" href="class_a_s_t_1_1_symbols.html#a4a774d873e08baebe18de6a05ec7ae82">insert</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>&amp; item)</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="class_a_s_t_1_1_symbols.html#a602b6a91c098fa8f5cdde0538feb3206">emplace</a> (item);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_a_s_t_1_1_symbols.html#a729393528d2b27fe0c433ae8f65baf50">   46</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>* <a class="code" href="class_a_s_t_1_1_symbols.html#a729393528d2b27fe0c433ae8f65baf50">find</a> (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_identifier.html">Identifier</a>&amp; name) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    std::pair &lt;iterator, bool&gt; emplace (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>&amp; item);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::pair &lt;iterator, bool&gt; insert (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a>&amp; item)</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">return</span> emplace (item);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_identifier_html"><div class="ttname"><a href="class_a_s_t_1_1_identifier.html">AST::Identifier</a></div><div class="ttdoc">An identifier.</div><div class="ttdef"><b>Definition:</b> <a href="_identifier_8h_source.html#l00036">Identifier.h:37</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_symbols_html_a602b6a91c098fa8f5cdde0538feb3206"><div class="ttname"><a href="class_a_s_t_1_1_symbols.html#a602b6a91c098fa8f5cdde0538feb3206">AST::Symbols::emplace</a></div><div class="ttdeci">std::pair&lt; iterator, bool &gt; emplace(const NamedItem &amp;item)</div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_symbols_html_a4a774d873e08baebe18de6a05ec7ae82"><div class="ttname"><a href="class_a_s_t_1_1_symbols.html#a4a774d873e08baebe18de6a05ec7ae82">AST::Symbols::insert</a></div><div class="ttdeci">std::pair&lt; iterator, bool &gt; insert(const NamedItem &amp;item)</div><div class="ttdef"><b>Definition:</b> <a href="_symbols_8h_source.html#l00057">Symbols.h:57</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_symbols_html_a729393528d2b27fe0c433ae8f65baf50"><div class="ttname"><a href="class_a_s_t_1_1_symbols.html#a729393528d2b27fe0c433ae8f65baf50">AST::Symbols::find</a></div><div class="ttdeci">const NamedItem * find(const Identifier &amp;name) const</div></div>
 <div class="ttc" id="anamespace_a_s_t_html"><div class="ttname"><a href="namespace_a_s_t.html">AST</a></div><div class="ttdoc">Abstract Syntax Tree namespace.</div><div class="ttdef"><b>Definition:</b> <a href="_array_8h_source.html#l00034">Array.h:34</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_symbols_html"><div class="ttname"><a href="class_a_s_t_1_1_symbols.html">AST::Symbols</a></div><div class="ttdoc">Set of the named items.</div><div class="ttdef"><b>Definition:</b> <a href="_symbols_8h_source.html#l00036">Symbols.h:38</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_symbols_html_af41a55855d2d967013a0944a84720c34"><div class="ttname"><a href="class_a_s_t_1_1_symbols.html#af41a55855d2d967013a0944a84720c34">AST::Symbols::find</a></div><div class="ttdeci">const Ptr&lt; NamedItem &gt; * find(const Identifier &amp;name) const noexcept</div></div>
 <div class="ttc" id="a_named_item_8h_html"><div class="ttname"><a href="_named_item_8h.html">NamedItem.h</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_named_item_html"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html">AST::NamedItem</a></div><div class="ttdoc">A named AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00044">NamedItem.h:47</a></div></div>
-<div class="ttc" id="aclass_a_s_t_1_1_ptr_html"><div class="ttname"><a href="class_a_s_t_1_1_ptr.html">AST::Ptr</a></div><div class="ttdoc">AST item smart pointer.</div><div class="ttdef"><b>Definition:</b> <a href="_item_8h_source.html#l00133">Item.h:134</a></div></div>
+<div class="ttc" id="aclass_a_s_t_1_1_named_item_html"><div class="ttname"><a href="class_a_s_t_1_1_named_item.html">AST::NamedItem</a></div><div class="ttdoc">A named AST item.</div><div class="ttdef"><b>Definition:</b> <a href="_named_item_8h_source.html#l00042">NamedItem.h:45</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

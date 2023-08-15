@@ -1,6 +1,11 @@
 var searchData=
 [
-  ['union_307',['Union',['../class_a_s_t_1_1_union.html',1,'AST']]],
-  ['uniondecl_308',['UnionDecl',['../class_a_s_t_1_1_union_decl.html',1,'AST']]],
-  ['unionelement_309',['UnionElement',['../class_a_s_t_1_1_union_element.html',1,'AST']]]
+  ['scopedname_345',['ScopedName',['../struct_a_s_t_1_1_scoped_name.html',1,'AST']]],
+  ['sequence_346',['Sequence',['../class_a_s_t_1_1_sequence.html',1,'AST']]],
+  ['simpledeclarator_347',['SimpleDeclarator',['../class_a_s_t_1_1_simple_declarator.html',1,'AST']]],
+  ['statemember_348',['StateMember',['../class_a_s_t_1_1_state_member.html',1,'AST']]],
+  ['struct_349',['Struct',['../class_a_s_t_1_1_struct.html',1,'AST']]],
+  ['structbase_350',['StructBase',['../class_a_s_t_1_1_struct_base.html',1,'AST']]],
+  ['structdecl_351',['StructDecl',['../class_a_s_t_1_1_struct_decl.html',1,'AST']]],
+  ['symbols_352',['Symbols',['../class_a_s_t_1_1_symbols.html',1,'AST']]]
 ];

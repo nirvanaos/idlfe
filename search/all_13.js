@@ -1,15 +1,19 @@
 var searchData=
 [
-  ['ulong_219',['ULONG',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2a0edad1cd854da1f522d2a35119917e84',1,'AST::Variant::ULONG()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20a0edad1cd854da1f522d2a35119917e84',1,'AST::ULONG()']]],
-  ['ulonglong_220',['ULONGLONG',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2a95e833dae5108813951d3805ab594c65',1,'AST::Variant::ULONGLONG()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20a95e833dae5108813951d3805ab594c65',1,'AST::ULONGLONG()']]],
-  ['unconstrained_221',['UNCONSTRAINED',['../class_a_s_t_1_1_interface_kind.html#a33cf8b5404baca02ee5fa3411483812ca836873ed0494316b177166d8bbd101fa',1,'AST::InterfaceKind']]],
-  ['unindent_222',['unindent',['../class_b_e_1_1_indented_out.html#ad7bf27af10fc6068c8090c59da3f8687',1,'BE::IndentedOut']]],
-  ['union_223',['Union',['../class_a_s_t_1_1_union.html',1,'AST::Union'],['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54aea931da33de8ba05c3635a51c2b25d75',1,'AST::Item::UNION()']]],
-  ['union_2eh_224',['Union.h',['../_union_8h.html',1,'']]],
-  ['union_5fdecl_225',['UNION_DECL',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a801cb380216b1d0c24832234cface666',1,'AST::Item']]],
-  ['union_5felement_226',['UNION_ELEMENT',['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54aa428b2ee3d15f14b603c562894a26694',1,'AST::Item']]],
-  ['uniondecl_227',['UnionDecl',['../class_a_s_t_1_1_union_decl.html',1,'AST']]],
-  ['unionelement_228',['UnionElement',['../class_a_s_t_1_1_union_element.html',1,'AST']]],
-  ['unionelement_2eh_229',['UnionElement.h',['../_union_element_8h.html',1,'']]],
-  ['ushort_230',['USHORT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ab8627cc5bae17ed1687bb487a4d70a3e',1,'AST::Variant::USHORT()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20ab8627cc5bae17ed1687bb487a4d70a3e',1,'AST::USHORT()']]]
+  ['ulong_251',['ULONG',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2a0edad1cd854da1f522d2a35119917e84',1,'AST::Variant::ULONG()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20a0edad1cd854da1f522d2a35119917e84',1,'AST::ULONG()']]],
+  ['ulonglong_252',['ULONGLONG',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2a95e833dae5108813951d3805ab594c65',1,'AST::Variant::ULONGLONG()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20a95e833dae5108813951d3805ab594c65',1,'AST::ULONGLONG()']]],
+  ['unconstrained_253',['UNCONSTRAINED',['../class_a_s_t_1_1_interface_kind.html#a33cf8b5404baca02ee5fa3411483812ca836873ed0494316b177166d8bbd101fa',1,'AST::InterfaceKind']]],
+  ['unindent_254',['unindent',['../class_b_e_1_1_indented_out.html#ad7bf27af10fc6068c8090c59da3f8687',1,'BE::IndentedOut']]],
+  ['union_255',['Union',['../class_a_s_t_1_1_union.html',1,'AST::Union'],['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54aea931da33de8ba05c3635a51c2b25d75',1,'AST::Item::UNION()']]],
+  ['union_2eh_256',['Union.h',['../_union_8h.html',1,'']]],
+  ['union_5fbegin_257',['union_begin',['../class_a_s_t_1_1_builder.html#ab47937091219973d65c370276bb1ee34',1,'AST::Builder']]],
+  ['union_5fdecl_258',['union_decl',['../class_a_s_t_1_1_builder.html#a51ba6bc5c79f9270fd65404452587dc5',1,'AST::Builder::union_decl()'],['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a801cb380216b1d0c24832234cface666',1,'AST::Item::UNION_DECL()']]],
+  ['union_5fdefault_259',['union_default',['../class_a_s_t_1_1_builder.html#a4c08d2dba8f4a3d978f1d9f8fd4c3497',1,'AST::Builder']]],
+  ['union_5felement_260',['union_element',['../class_a_s_t_1_1_builder.html#afd500da52cda2a9a6fe3459f29393389',1,'AST::Builder::union_element()'],['../class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54aa428b2ee3d15f14b603c562894a26694',1,'AST::Item::UNION_ELEMENT()']]],
+  ['union_5fend_261',['union_end',['../class_a_s_t_1_1_builder.html#a6fa740eabf073d2601930dd64cc9e1c3',1,'AST::Builder']]],
+  ['union_5flabel_262',['union_label',['../class_a_s_t_1_1_builder.html#a16854f62fc23fcbc28a73b3952b1531e',1,'AST::Builder']]],
+  ['uniondecl_263',['UnionDecl',['../class_a_s_t_1_1_union_decl.html',1,'AST']]],
+  ['unionelement_264',['UnionElement',['../class_a_s_t_1_1_union_element.html',1,'AST']]],
+  ['unionelement_2eh_265',['UnionElement.h',['../_union_element_8h.html',1,'']]],
+  ['ushort_266',['USHORT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ab8627cc5bae17ed1687bb487a4d70a3e',1,'AST::Variant::USHORT()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20ab8627cc5bae17ed1687bb487a4d70a3e',1,'AST::USHORT()']]]
 ];
