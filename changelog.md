@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2 - 2023-08-18
+### Fixed
+ - Bug: incimplete AST for included items.
+
 ## 3.2.1 - 2023-08-15
 ### Changed
  - `AST::Symbols::find()` method was simplified.

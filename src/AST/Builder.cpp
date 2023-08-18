@@ -1185,7 +1185,7 @@ void Builder::parameter (Parameter::Attribute att, Type&& type, const SimpleDecl
 		auto ins = operation_.params.insert (*par);
 		if (!ins.second)
 			message (name, MessageType::ERROR, "duplicated parameter " + name);
-		else if (is_main_file ())
+		else
 			op->append (*par);
 	}
 }
@@ -1615,53 +1615,50 @@ const NamedItem* Builder::union_end ()
 {
 	Union* u = static_cast <Union*> (constr_type_.obj ());
 	if (u) { // No error in the definition
-		if (is_main_file ()) {
-			assert (container_stack_.top ()->back ()->kind () == Item::Kind::UNION);
-			const Type& dt = u->discriminator_type ().dereference_type ();
-			size_t key_max = dt.key_max ();
-			if (union_.all_labels.size () > key_max) {
-				// A union type can contain a default label only where the values given in the non-default labels
-				// do not cover the entire range of the union's discriminant type.
-				if (union_.has_default)
-					message (union_.default_loc, MessageType::ERROR, "non-default labels cover the entire range of the union's discriminant type");
-			} else {
-				// Find default discriminator value
-				Variant def;
-				if (dt.tkind () == Type::Kind::BASIC_TYPE) {
-					Variant::Key max_key = std::numeric_limits <Variant::Key>::min ();
-					const Variant* max_label = nullptr;
-					for (const auto& el : *u) {
-						for (const auto& label : el->labels ()) {
-							Variant::Key key = label.dereference_const ().to_key ();
-							if (!max_label || key > max_key) {
-								max_label = &label;
-								max_key = key;
-							}
+		const Type& dt = u->discriminator_type ().dereference_type ();
+		size_t key_max = dt.key_max ();
+		if (union_.all_labels.size () > key_max) {
+			// A union type can contain a default label only where the values given in the non-default labels
+			// do not cover the entire range of the union's discriminant type.
+			if (union_.has_default)
+				message (union_.default_loc, MessageType::ERROR, "non-default labels cover the entire range of the union's discriminant type");
+		} else {
+			// Find default discriminator value
+			Variant def;
+			if (dt.tkind () == Type::Kind::BASIC_TYPE) {
+				Variant::Key max_key = std::numeric_limits <Variant::Key>::min ();
+				const Variant* max_label = nullptr;
+				for (const auto& el : *u) {
+					for (const auto& label : el->labels ()) {
+						Variant::Key key = label.dereference_const ().to_key ();
+						if (!max_label || key > max_key) {
+							max_label = &label;
+							max_key = key;
 						}
 					}
-					assert (max_label);
-					if (max_key < key_max)
-						def = eval ().expr (*max_label, '+', 1, *u);
-					else {
-						def = *max_label;
-						for (;;) {
-							def = eval ().expr (def, '-', 1, *u);
-							if (union_.all_labels.find (def.to_key ()) == union_.all_labels.end ())
-								break;
-						}
-					}
-				} else {
-					assert (dt.tkind () == Type::Kind::NAMED_TYPE);
-					assert (dt.named_type ().kind () == Item::Kind::ENUM);
-					const Enum& en = static_cast <const Enum&> (dt.named_type ());
-					for (const auto& item : en) {
-						def = *item;
+				}
+				assert (max_label);
+				if (max_key < key_max)
+					def = eval ().expr (*max_label, '+', 1, *u);
+				else {
+					def = *max_label;
+					for (;;) {
+						def = eval ().expr (def, '-', 1, *u);
 						if (union_.all_labels.find (def.to_key ()) == union_.all_labels.end ())
 							break;
 					}
 				}
-				u->default_label_ = eval ().cast (dt, std::move (def), *u);
+			} else {
+				assert (dt.tkind () == Type::Kind::NAMED_TYPE);
+				assert (dt.named_type ().kind () == Item::Kind::ENUM);
+				const Enum& en = static_cast <const Enum&> (dt.named_type ());
+				for (const auto& item : en) {
+					def = *item;
+					if (union_.all_labels.find (def.to_key ()) == union_.all_labels.end ())
+						break;
+				}
 			}
+			u->default_label_ = eval ().cast (dt, std::move (def), *u);
 		}
 		eval_pop ();
 	}
