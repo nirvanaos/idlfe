@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.3 - 2023-09-01
+### Changed
+ - Order of base interfaces in `Interface::get_all_bases()`.
+
 ## 3.2.2 - 2023-08-18
 ### Fixed
  - Bug: incimplete AST for included items.
