@@ -60,8 +60,8 @@ void Interface::get_all_bases (std::unordered_set <const Interface*>& bset, Inte
 {
 	for (const Interface* base : bases_) {
 		if (bset.insert (base).second) {
-			bvec.push_back (base);
 			base->get_all_bases (bset, bvec);
+			bvec.push_back (base);
 		}
 	}
 }
