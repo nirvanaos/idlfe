@@ -86,6 +86,15 @@ public:
 		return err_out_;
 	}
 
+	/// \returns The compiler executable file name.
+	const char* exe_file () const noexcept
+	{
+		if (exe_)
+			return filename (exe_);
+		else
+			return nullptr;
+	}
+
 protected:
 	friend class FE::Driver;
 	friend class AST::Builder;
@@ -123,20 +132,16 @@ protected:
 		/// \throws std::invalid_argument if the parameter is missing.
 		const char* parameter (const char* switch_end);
 
-		/// \returns The compiler executable file name.
-		const char* exe_file () const
-		{
-			return filename (exe_);
-		}
-
+		/// Constructor.
+		/// 
+		/// \param argc Argument count.
+		/// \param argv Argument array.
 		CmdLine (int argc, char* argv []) :
-			exe_ (*argv),
-			arg_ (argv + 1),
+			arg_ (argv),
 			end_ (argv + argc)
 		{}
 
 	private:
-		const char* exe_;
 		const char* const* arg_;
 		const char* const* end_;
 	};
@@ -211,6 +216,7 @@ private:
 	bool compile (const std::string& file);
 
 private:
+	const char* exe_;
 	unsigned flags_;
 	struct Arguments;
 	Arguments* arguments_;

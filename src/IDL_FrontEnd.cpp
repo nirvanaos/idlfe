@@ -77,9 +77,9 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 	int ret = 0;
 
 	try {
-		CmdLine cl (argc, argv);
+		CmdLine cl (argc - 1, argv + 1);
 		if (cl.end ())
-			print_usage_info (cl.exe_file ());
+			print_usage_info (exe_file ());
 		else {
 			try {
 				for (;;) {
@@ -93,7 +93,7 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				}
 			} catch (const std::invalid_argument& ex) {
 				std::cerr << ex.what () << std::endl;
-				print_usage_info (cl.exe_file ());
+				print_usage_info (exe_file ());
 				ret = -1;
 			}
 
@@ -190,7 +190,7 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 					recognized = false;
 				break;
 			case 'h':
-				print_usage_info (args.exe_file ());
+				print_usage_info (exe_file ());
 				break;
 			default:
 				recognized = false;
