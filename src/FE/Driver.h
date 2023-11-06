@@ -27,24 +27,28 @@
 #define IDLFE_FE_DRIVER_H_
 #pragma once
 
+#include <iostream>
+#include <filesystem>
+
 #ifdef _MSC_BUILD
 #pragma warning (push)
 #pragma warning (disable:4065)
 #endif
 
+#include "yacc.tab.h"
 #if !defined(yyFlexLexerOnce)
-#include "FlexLexer.h"
+#include <FlexLexer.h>
 #endif
 
 #ifdef _MSC_BUILD
 #pragma warning (pop)
 #endif
 
+#include "location.hh"
+
 #include "../include/AST/Builder.h"
 
 #include "../include/IDL_FrontEnd.h"
-#include <iostream>
-#include <filesystem>
 
 inline AST::Location::Location (const yy::location& loc) noexcept :
 	file_ (loc.begin.filename),
@@ -64,6 +68,8 @@ public:
 		Driver drv (compiler, file, yyin);
 		return drv.parse ();
 	}
+
+	yy::parser::symbol_type yylex_sym ();
 
 	yy::location location () const
 	{
@@ -122,12 +128,6 @@ public:
 	}
 
 private:
-	/// Returns reference to FlexLexer.
-	virtual Driver& driver ()
-	{
-		return *this;
-	}
-
 	Driver (IDL_FrontEnd& compiler, const std::string& file, std::istream& yyin);
 
 	AST::Ptr <AST::Root> parse ()
@@ -146,7 +146,7 @@ private:
 
 inline yy::parser::symbol_type yylex (FE::Driver& drv)
 {
-	return drv.yylex ();
+	return drv.yylex_sym ();
 }
 
 #endif
