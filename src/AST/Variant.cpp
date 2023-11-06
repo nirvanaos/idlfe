@@ -26,7 +26,7 @@
 #include "../include/AST/Variant.h"
 #include "../include/AST/Constant.h"
 #include "../include/AST/Enum.h"
-#include "Builder/SafeInt/SafeInt.hpp"
+#include <SafeInt.hpp>
 #include <stdexcept>
 #include <limits>
 #include <cfenv>
