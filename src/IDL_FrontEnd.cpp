@@ -109,7 +109,7 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 						while (inc < endi && isspace (*(endi - 1)))
 							--endi;
 						if (inc < endi)
-							arguments_->preprocessor.includePaths.emplace_back (inc, endi);
+							arguments.preprocessor.includePaths.emplace_back (inc, endi);
 						if (sem)
 							inc = sem + 1;
 						else
@@ -118,10 +118,10 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				}
 			}
 
-			for (auto& fi : arguments_->preprocessor.includes) {
+			for (auto& fi : arguments.preprocessor.includes) {
 				std::filesystem::path file (fi);
 				if (!file.is_absolute ()) {
-					for (const auto& inc : arguments_->preprocessor.includePaths) {
+					for (const auto& inc : arguments.preprocessor.includePaths) {
 						std::filesystem::path tmp (inc);
 						tmp /= file;
 						std::error_code ec;
@@ -133,7 +133,7 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				}
 			}
 
-			for (const auto& file : arguments_->files) {
+			for (const auto& file : arguments.files) {
 				std::cout << file << std::endl;
 				if (!compile (file))
 					ret = -1;
@@ -209,15 +209,14 @@ bool IDL_FrontEnd::compile (const std::string& file)
 	std::istringstream preprocessed;
 
 	{ // Perform preprocessing
-		using namespace simplecpp;
-		OutputList output_list;
+		simplecpp::OutputList output_list;
 		std::vector <std::string> files;
 		std::ifstream f (file);
 		if (!f.is_open ()) {
 			std::cerr << "Can not open file " << file << std::endl;
 			return false;
 		}
-		TokenList rawtokens (f, files, file, &output_list);
+		simplecpp::TokenList rawtokens (f, files, file, &output_list);
 
 		rawtokens.removeComments ();
 		std::map <std::string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
