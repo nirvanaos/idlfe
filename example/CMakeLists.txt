@@ -1,0 +1,5 @@
+set(src_exe main.cpp Printer.cpp IDL_Print.cpp)
+include_directories(${CMAKE_SOURCE_DIR}/src/include)
+add_executable(idlprint ${src_exe})
+target_compile_features(idlprint PUBLIC cxx_std_17)
+target_link_libraries(idlprint idlfe)
