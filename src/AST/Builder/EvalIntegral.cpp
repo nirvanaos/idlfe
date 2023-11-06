@@ -26,7 +26,7 @@
 #include "EvalIntegral.h"
 #include "../../include/AST/Builder.h"
 #include "../../include/AST/Constant.h"
-#include "SafeInt/SafeInt.hpp"
+#include <SafeInt.hpp>
 #include <stdexcept>
 
 #if defined (__GNUG__) || defined (__clang__)
