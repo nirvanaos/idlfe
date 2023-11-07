@@ -24,6 +24,9 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Builder.h"
+#include <string.h>
+#include <stdexcept>
+#include <algorithm>
 #include "../include/AST/Include.h"
 #include "../include/AST/Module.h"
 #include "../include/AST/Native.h"
@@ -46,8 +49,6 @@
 #include "Builder/EvalFixed.h"
 #include "Builder/EvalEnum.h"
 #include "../FE/Driver.h"
-#include <stdexcept>
-#include <algorithm>
 
 #if defined (__GNUG__) || defined (__clang__)
 #pragma GCC diagnostic ignored "-Wswitch"
