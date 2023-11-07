@@ -24,6 +24,7 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Identifier.h"
+#include <string.h>
 #include <algorithm>
 
 namespace AST {

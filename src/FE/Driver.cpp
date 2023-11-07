@@ -25,6 +25,7 @@
 */
 #include "Driver.h"
 #include <assert.h>
+#include <string.h>
 
 namespace FE {
 

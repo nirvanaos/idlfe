@@ -24,12 +24,13 @@
 *  popov.nirvana@gmail.com
 */
 #include "../include/AST/Variant.h"
-#include "../include/AST/Constant.h"
-#include "../include/AST/Enum.h"
-#include <SafeInt.hpp>
+#include <string.h>
 #include <stdexcept>
 #include <limits>
 #include <cfenv>
+#include "../include/AST/Constant.h"
+#include "../include/AST/Enum.h"
+#include <SafeInt.hpp>
 
 #if defined (__GNUG__) || defined (__clang__)
 #pragma GCC diagnostic ignored "-Wswitch"
