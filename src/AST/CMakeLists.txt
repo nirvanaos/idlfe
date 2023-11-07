@@ -1,5 +1,6 @@
 add_subdirectory(Builder)
 target_sources(idlfe PRIVATE
+    Builder.cpp
     Container.cpp
     Fixed.cpp
     Identifier.cpp
