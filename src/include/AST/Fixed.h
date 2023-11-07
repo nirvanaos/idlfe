@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-#if defined (__GNUG__) || defined (__clang__)
+#if defined (__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-private-field"
 #endif
@@ -86,7 +86,7 @@ private:
 
 }
 
-#if defined (__GNUG__) || defined (__clang__)
+#if defined (__clang__)
 #pragma GCC diagnostic pop
 #endif
 
