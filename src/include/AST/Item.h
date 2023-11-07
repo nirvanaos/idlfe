@@ -260,7 +260,7 @@ public:
 		return *this;
 	}
 
-	Ptr& operator = (nullptr_t) noexcept
+	Ptr& operator = (std::nullptr_t) noexcept
 	{
 		if (p_) {
 			p_->_remove_ref ();
