@@ -7,3 +7,5 @@
 /build/
 /.vscode/
 /CMakeUserPresets.json
+/.vs/
+/out/
