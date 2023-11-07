@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.27)
+project(idlfe)
+#set(CMAKE_CXX_COMPILER_ID Clang)
+#set(CMAKE_C_COMPILER_ID Clang)
+add_subdirectory(src)
+add_subdirectory(example)
