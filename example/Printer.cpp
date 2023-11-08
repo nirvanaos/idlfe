@@ -4,6 +4,10 @@
 using namespace std;
 using namespace AST;
 
+#if defined (__GNUG__) || defined (__clang__)
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+
 void Printer::end (const Root& ast)
 {
 	out_.close ();

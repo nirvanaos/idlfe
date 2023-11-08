@@ -4,7 +4,7 @@
         {
             "name": "debug",
             "displayName": "Debug",
-            "description": "Sets Ninja generator, build and install directory",
+            "description": "Sets Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
@@ -14,15 +14,59 @@
             }
         },
         {
+            "name": "debug_clang",
+            "displayName": "Debug CLang",
+            "inherits": [
+                "debug"
+            ],
+            "description": "Sets Ninja generator, build with CLang",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "debug_gcc",
+            "displayName": "Debug GCC",
+            "description": "Ninja generator, build with GCC",
+            "inherits": [
+                "debug"
+            ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
             "name": "release",
             "displayName": "Release",
-            "description": "Sets Ninja generator, build and install directory",
+            "description": "Sets Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_TOOLCHAIN_FILE": "",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+            }
+        },
+        {
+            "name": "release_clang",
+            "displayName": "Release CLang",
+            "description": "Sets Ninja generator, build with CLang",
+            "inherits": [
+                "release"
+            ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "release_gcc",
+            "displayName": "Release GCC",
+            "description": "Ninja generator, build with GCC",
+            "inherits": [
+                "release"
+            ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++"
             }
         }
     ]
