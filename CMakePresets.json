@@ -3,7 +3,7 @@
     "configurePresets": [
         {
             "name": "debug",
-            "displayName": "Debug Ninja",
+            "displayName": "Debug",
             "description": "Sets Ninja generator, build and install directory",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
@@ -15,7 +15,7 @@
         },
         {
             "name": "release",
-            "displayName": "Release Ninja",
+            "displayName": "Release",
             "description": "Sets Ninja generator, build and install directory",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
