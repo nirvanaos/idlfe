@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
+cmake_policy(SET CMP0010 NEW)
+set(CMAKE_CONFIGURATION_TYPES Debug Release)
 project(idlfe)
 #set(CMAKE_CXX_COMPILER_ID Clang)
 #set(CMAKE_C_COMPILER_ID Clang)
