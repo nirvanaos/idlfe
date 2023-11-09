@@ -312,25 +312,14 @@ void Variant::append (std::string& s, unsigned c)
 		}
 	}
 
-	char buf [5];
-	_ultoa (c, buf, 16);
-	size_t cc = strlen (buf);
-	s.reserve (s.length () + (cc + 1) / 2 * 2);
+	s.reserve (s.length () + 6);
 	s += "\\x";
-	switch (cc) {
-		case 1:
-			s += '0';
-		case 2:
-			s += buf;
-			break;
-		case 3:
-			s += '0';
-		case 4:
-			s += buf;
-			break;
-		default:
-			assert (false);
-	}
+	size_t len = s.length ();
+	do {
+		int d = c % 16;
+		c /= 16;
+		s.insert (len, 1, (d <= 9) ? '0' + d : 'a' + d);
+	} while (c);
 }
 
 }

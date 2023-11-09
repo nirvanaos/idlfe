@@ -29,20 +29,20 @@ BISON_TARGET(MyParser FE/yacc.yy ${CMAKE_CURRENT_SOURCE_DIR}/FE/yacc.tab.cpp
 FLEX_TARGET(MyScanner FE/scanner.ll ${CMAKE_CURRENT_SOURCE_DIR}/FE/scanner.flex.cpp
     COMPILE_FLAGS "--wincompat --c++")
 
-set(sources 
+ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
+
+add_library(idlfe STATIC 
     IDL_FrontEnd.cpp
-    simplecpp/simplecpp.cpp)
-add_library(idlfe STATIC ${sources})
+    simplecpp/simplecpp.cpp
+    FE/Driver.cpp
+    ${BISON_MyParser_OUTPUTS}
+    ${FLEX_MyScanner_OUTPUTS})
+
 target_compile_features(idlfe PUBLIC cxx_std_17)
 if(MSVC)
     target_compile_options(idlfe PUBLIC "/Zc:__cplusplus")
 endif()
 target_include_directories(idlfe PUBLIC include PRIVATE FE ${decNumber_SOURCE_DIR} ${safeint_SOURCE_DIR} ${FLEX_INCLUDE_DIRS})
-
-target_sources(idlfe PRIVATE
-    FE/Driver.cpp
-    FE/scanner.flex.cpp
-    FE/yacc.tab.cpp)
 
 add_subdirectory(AST)
 add_subdirectory(BE)
