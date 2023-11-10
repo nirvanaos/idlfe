@@ -10,7 +10,10 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/dcleblanc/SafeInt.git
 )
 
-FetchContent_MakeAvailable(decNumber SafeInt)
+FetchContent_MakeAvailable(decNumber)
+
+# use fetch content rather than makeavailable because safeint only includes unconditional test targets
+FetchContent_Populate(SafeInt)
 
 find_package(BISON)
 find_package(FLEX)
