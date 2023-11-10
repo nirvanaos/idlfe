@@ -37,26 +37,17 @@ See: https://www.omg.org/spec/IDL/4.2/
 * CORBA-Specific - Value Types
 * Anonimous Types (optional)
 
-## How to use
-
-Install nirvanaos.idlfe.vc.#.#.# NuGet package.
-
-## How to build
-
-### MS Visual Studio
-
-To build with MS Visual Studio use supermodule https://github.com/nirvanaos/idlfe.vc.git
-
-### Other compilers
-
-To create own compilation project you must have:
+## Build prerequisites
 
 * C++17 compilant compiler
-* Flex + Bison
+* Flex + Bison must be installed on the build system
+
+## Used libraries
+
 * Fixed point arithmetic library https://github.com/nirvanaos/decNumber
+* SafeInt library https://github.com/dcleblanc/SafeInt.git
 
 ## Used submodules
 
-Simple C/C++ preprocessor https://github.com/danmar/simplecpp
+* Danmar simple C/C++ preprocessor https://github.com/silver-popov/simplecpp
 
-SafeInt library https://github.com/dcleblanc/SafeInt.git
