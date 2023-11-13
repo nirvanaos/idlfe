@@ -26,8 +26,8 @@ foreach (_variableName ${_variableNames})
 endforeach()
 ]===]
 
-BISON_TARGET(MyParser FE/yacc.yy ${CMAKE_CURRENT_SOURCE_DIR}/FE/yacc.tab.cpp
-    DEFINES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/FE/yacc.tab.h)
+BISON_TARGET(MyParser FE/yacc.yy ${CMAKE_CURRENT_BINARY_DIR}/FE/yacc.tab.cpp
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/FE/yacc.tab.h)
 
 if(CMAKE_HOST_WIN32)
 set(FLEX_FLAGS "--wincompat")
@@ -35,7 +35,7 @@ else()
 set(FLEX_FLAGS "")
 endif()
 
-FLEX_TARGET(MyScanner FE/scanner.ll ${CMAKE_CURRENT_SOURCE_DIR}/FE/scanner.flex.cpp
+FLEX_TARGET(MyScanner FE/scanner.ll ${CMAKE_CURRENT_BINARY_DIR}/FE/scanner.flex.cpp
     COMPILE_FLAGS ${FLEX_FLAGS})
 
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
@@ -51,7 +51,12 @@ target_compile_features(idlfe PUBLIC cxx_std_17)
 if(MSVC)
     target_compile_options(idlfe PUBLIC "/Zc:__cplusplus" "-D__STDC_VERSION__=199901L")
 endif()
-target_include_directories(idlfe PUBLIC include PRIVATE FE ${decNumber_SOURCE_DIR} ${safeint_SOURCE_DIR} ${FLEX_INCLUDE_DIRS})
+target_include_directories(idlfe PUBLIC include PRIVATE
+    FE
+    ${decNumber_SOURCE_DIR}
+    ${safeint_SOURCE_DIR}
+    ${FLEX_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}/FE)
 
 add_subdirectory(AST)
 add_subdirectory(BE)

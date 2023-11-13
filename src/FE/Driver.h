@@ -35,7 +35,7 @@
 #pragma warning (disable:4065)
 #endif
 
-#include "yacc.tab.h"
+#include <yacc.tab.h>
 #if !defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
