@@ -37,10 +37,17 @@ See: https://www.omg.org/spec/IDL/4.2/
 * CORBA-Specific - Value Types
 * Anonimous Types (optional)
 
+## How to use
+
+Find nirvanaos.idlfe conan packages on https://conan.io/
+Find nirvanaos.idlfe NuGet packages on https://www.nuget.org/
+
 ## Build prerequisites
 
 * C++17 compilant compiler
 * Flex + Bison must be installed on the build system
+
+For the Microsoft Visual Studio builds you can use supermodule https://github.com/nirvanaos/idlfe.vc.git
 
 ## Used libraries
 
@@ -50,4 +57,3 @@ See: https://www.omg.org/spec/IDL/4.2/
 ## Used submodules
 
 * Danmar simple C/C++ preprocessor https://github.com/silver-popov/simplecpp
-

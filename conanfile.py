@@ -2,7 +2,7 @@ from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
 
 class idlfeRecipe(ConanFile):
-    name = "idlfe"
+    name = "nirvanaos.idlfe"
     version = "3.3.0"
 
     # Optional metadata

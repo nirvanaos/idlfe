@@ -1,8 +1,12 @@
 # Changelog
 
-## 3.3.0 - unreleased
+## 3.3.0 - 2023-11-13
 ### Added
  - CMake files.
+### Changed
+ - class `IDL_FrontEnd` improved for the convenience.
+### Fixed
+ - Error messages for the different C++ compilers.
  
 ## 3.2.3 - 2023-09-01
 ### Changed
@@ -10,7 +14,7 @@
 
 ## 3.2.2 - 2023-08-18
 ### Fixed
- - Bug: incimplete AST for included items.
+ - Bug: incomplete AST for included items.
 
 ## 3.2.1 - 2023-08-15
 ### Changed
