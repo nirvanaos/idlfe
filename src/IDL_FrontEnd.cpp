@@ -43,12 +43,6 @@
 #pragma GCC diagnostic ignored "-Wswitch"
 #endif
 
-struct IDL_FrontEnd::Arguments
-{
-	simplecpp::DUI preprocessor;
-	std::vector <std::string> files;
-};
-
 bool IDL_FrontEnd::CmdLine::next () noexcept
 {
 	if (arg_ < end_) {
@@ -70,58 +64,27 @@ const char* IDL_FrontEnd::CmdLine::parameter (const char* switch_end)
 	throw std::invalid_argument (std::string ("Missing parameter for switch ") + arg ());
 }
 
-int IDL_FrontEnd::main (int argc, char* argv []) noexcept
+int IDL_FrontEnd::run (const char* command, int argc, const char* const argv []) noexcept
 {
-	Arguments arguments;
-	arguments_ = &arguments;
+	command_ = command;
 	int ret = 0;
-
-	try {
-		CmdLine cl (argc - 1, argv + 1);
-		if (cl.end ())
-			print_usage_info (exe_file ());
-		else {
+	CmdLine cl (argc, argv);
+	if (cl.end ())
+		print_usage_info (command_);
+	else {
+		try {
 			try {
-				for (;;) {
-					const char* a = cl.arg ();
-					if (!parse_command_line (cl))
-						throw std::invalid_argument (std::string ("Invalid switch: ") + cl.arg ());
-					if (cl.end ())
-						break;
-					if (a == cl.arg ())
-						throw std::runtime_error ("args.next () must be called for advance to the next argument.");
-				}
+				parse_arguments (cl);
 			} catch (const std::invalid_argument& ex) {
 				std::cerr << ex.what () << std::endl;
-				print_usage_info (exe_file ());
-				ret = -1;
+				print_usage_info (command_);
+				return -1;
 			}
 
-			{
-				const char* inc = getenv ("INCLUDE");
-				if (inc) {
-					const char* end = inc + strlen (inc);
-					for (;;) {
-						while (isspace (*inc))
-							++inc;
-						const char* sem = strchr (inc, ';');
-						const char* endi = sem ? sem : end;
-						while (inc < endi && isspace (*(endi - 1)))
-							--endi;
-						if (inc < endi)
-							arguments.preprocessor.includePaths.emplace_back (inc, endi);
-						if (sem)
-							inc = sem + 1;
-						else
-							break;
-					}
-				}
-			}
-
-			for (auto& fi : arguments.preprocessor.includes) {
+			for (auto& fi : includes_) {
 				std::filesystem::path file (fi);
 				if (!file.is_absolute ()) {
-					for (const auto& inc : arguments.preprocessor.includePaths) {
+					for (const auto& inc : include_paths_) {
 						std::filesystem::path tmp (inc);
 						tmp /= file;
 						std::error_code ec;
@@ -133,22 +96,49 @@ int IDL_FrontEnd::main (int argc, char* argv []) noexcept
 				}
 			}
 
-			for (const auto& file : arguments.files) {
+			simplecpp::DUI prep_params;
+			for (const auto& def : defines_) {
+				prep_params.defines.push_back (def);
+			}
+			for (const auto& undef : undefines_) {
+				prep_params.undefined.insert (undef);
+			}
+			for (const auto& inc : include_paths_) {
+				prep_params.includePaths.push_back (inc);
+			}
+			for (const auto& inc : includes_) {
+				prep_params.includes.push_back (inc);
+			}
+
+			for (const auto& file : files_) {
 				std::cout << file << std::endl;
-				if (!compile (file))
+				if (!compile (prep_params, file))
 					ret = -1;
 			}
+			
+		} catch (const std::exception& ex) {
+			std::cerr << ex.what () << std::endl;
+			ret = -1;
+		} catch (...) {
+			std::cerr << "Unknown exception." << std::endl;
+			ret = -1;
 		}
-	} catch (const std::exception& ex) {
-		std::cerr << ex.what () << std::endl;
-		ret = -1;
-	} catch (...) {
-		std::cerr << "Unknown exception." << std::endl;
-		ret = -1;
 	}
 
-	arguments_ = nullptr;
 	return ret;
+}
+
+void IDL_FrontEnd::parse_arguments (CmdLine& args)
+{
+	for (;;) {
+		const char* a = args.arg ();
+		if (!parse_command_line (args))
+			throw std::invalid_argument (std::string ("Invalid switch: ") + args.arg ());
+		if (args.end ())
+			break;
+		if (a == args.arg ())
+			throw std::runtime_error ("args.next () must be called for advance to the next argument.");
+	}
 }
 
 void IDL_FrontEnd::print_usage_info (const char* exe_name)
@@ -175,28 +165,28 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 		++arg;
 		switch (*arg) {
 			case 'D': // D Define
-				arguments_->preprocessor.defines.emplace_back (args.parameter (arg + 1));
+				defines_.emplace_back (args.parameter (arg + 1));
 				break;
 			case 'U': // U Undefine
-				arguments_->preprocessor.undefined.emplace (args.parameter (arg + 1));
+				undefines_.emplace_back (args.parameter (arg + 1));
 				break;
 			case 'I': // I Include path
-				arguments_->preprocessor.includePaths.emplace_back (args.parameter (arg + 1));
+				include_paths_.emplace_back (args.parameter (arg + 1));
 				break;
 			case 'F':
 				if (arg [1] == 'I') // FI Include file
-					arguments_->preprocessor.includes.emplace_back (args.parameter (arg + 2));
+					includes_.emplace_back (args.parameter (arg + 2));
 				else
 					recognized = false;
 				break;
 			case 'h':
-				print_usage_info (exe_file ());
+				print_usage_info (command_);
 				break;
 			default:
 				recognized = false;
 		}
 	} else
-		arguments_->files.push_back (arg);
+		files_.emplace_back (arg);
 
 	if (recognized)
 		args.next ();
@@ -204,7 +194,7 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 	return recognized;
 }
 
-bool IDL_FrontEnd::compile (const std::string& file)
+bool IDL_FrontEnd::compile (const simplecpp::DUI& prep_params, const std::string& file)
 {
 	std::istringstream preprocessed;
 
@@ -219,12 +209,12 @@ bool IDL_FrontEnd::compile (const std::string& file)
 		simplecpp::TokenList rawtokens (f, files, file, &output_list);
 
 		rawtokens.removeComments ();
-		std::map <std::string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, arguments_->preprocessor, &output_list);
+		std::map <std::string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, prep_params, &output_list);
 		for (auto i = included.begin (); i != included.end (); ++i)
 			i->second->removeComments ();
 
 		simplecpp::TokenList output_tokens (files);
-		simplecpp::preprocess (output_tokens, rawtokens, files, included, arguments_->preprocessor, &output_list);
+		simplecpp::preprocess (output_tokens, rawtokens, files, included, prep_params, &output_list);
 
 		if (!output_list.empty ()) {
 			bool fatal = false;

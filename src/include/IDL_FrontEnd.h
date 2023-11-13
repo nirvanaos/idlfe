@@ -30,6 +30,7 @@
 
 #include <assert.h>
 #include <string>
+#include <vector>
 #include <iostream>
 #include <filesystem>
 
@@ -41,6 +42,10 @@ class Interface;
 
 namespace FE {
 class Driver;
+}
+
+namespace simplecpp {
+struct DUI;
 }
 
 /// \brief IDL front-end.
@@ -57,13 +62,24 @@ class Driver;
 class IDL_FrontEnd
 {
 public:
-
 	/// \brief Call this method from the main() function.
 	/// 
 	/// \param argc Count of command line arguments.
 	/// \param argv Command line arguments.
 	/// \returns The 0 if no errors, otherwise -1.
-	int main (int argc, char* argv []) noexcept;
+	int main (int argc, const char* const argv []) noexcept
+	{
+		return run (filename (argv [0]), argc - 1, argv + 1);
+	}
+
+	/// \brief The same as main (), but aruments must not include the first main() argument
+	///    (executable file name).
+	/// \param command The command name for usage info.
+	///                You can use filename (argv [0]).
+	/// \param argc Count of command line arguments.
+	/// \param argv Command line arguments.
+	/// \returns The 0 if no errors, otherwise -1.
+	int run (const char* command, int argc, const char* const argv []) noexcept;
 
 	/// \brief Get file name from path.
 	/// 
@@ -86,15 +102,6 @@ public:
 		return err_out_;
 	}
 
-	/// \returns The compiler executable file name.
-	const char* exe_file () const noexcept
-	{
-		if (exe_)
-			return filename (exe_);
-		else
-			return nullptr;
-	}
-
 protected:
 	friend class FE::Driver;
 	friend class AST::Builder;
@@ -103,7 +110,6 @@ protected:
 	class CmdLine
 	{
 	public:
-
 		/// \returns The current argument
 		const char* arg () const noexcept
 		{
@@ -136,7 +142,7 @@ protected:
 		/// 
 		/// \param argc Argument count.
 		/// \param argv Argument array.
-		CmdLine (int argc, char* argv []) :
+		CmdLine (int argc, const char* const argv []) :
 			arg_ (argv),
 			end_ (argv + argc)
 		{}
@@ -152,10 +158,18 @@ protected:
 	///              Currently only IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES is supported.
 	/// \param err_out Compiler messages output stream. Default is std::cerr.
 	IDL_FrontEnd (unsigned flags = 0, std::ostream& err_out = std::cerr) :
+		command_ (nullptr),
 		flags_ (flags),
-		arguments_ (nullptr),
 		err_out_ (err_out)
 	{}
+
+	/// \brief Parse command line parameters.
+	///
+	/// User can override this method to do some parameter fix/check.
+	/// For example, user can add include paths from the environment.
+	/// 
+	/// \param args CmdLine object.
+	virtual void parse_arguments (CmdLine& args);
 
 	/// \brief Parse command line parameter.
 	/// 
@@ -173,7 +187,7 @@ protected:
 	///   - -h Display usage information.
 	/// 
 	/// \param args CmdLine object.
-	/// \returns `true` if aommand line parameter was recognized.
+	/// \returns `true` if command line parameter was recognized.
 	/// \throw std::invalid_argument If the argument was recognized but the syntax is invalid.
 	virtual bool parse_command_line (CmdLine& args);
 
@@ -184,11 +198,41 @@ protected:
 	/// \param exe_name The name of program executable file obtained from argv[0].
 	virtual void print_usage_info (const char* exe_name);
 
-	/// \brief Generate user code from AST.
+	/// \return Macros to define.
+	std::vector <std::string>& defines () noexcept
+	{
+		return defines_;
+	}
+	
+	/// \return Macros to undefine.
+	std::vector <std::string>& undefines () noexcept
+	{
+		return undefines_;
+	}
+
+	/// \return Paths to find included files.
+	std::vector <std::string>& include_paths () noexcept
+	{
+		return include_paths_;
+	}
+
+	/// \return Files to include.
+	std::vector <std::string>& includes () noexcept
+	{
+		return includes_;
+	}
+
+	/// \return Files to compile.
+	std::vector <std::string>& files () noexcept
+	{
+		return files_;
+	}
+
+	/// \brief Generate user code from %AST.
 	/// 
 	/// User must override this method.
 	/// 
-	/// \param tree AST.
+	/// \param tree AST::Root object.
 	/// \throw std::runtime_error For displaying the error message and compile next file.
 	///                           Other exceptions will cause the compilation interruption.
 	virtual void generate_code (const AST::Root& tree) = 0;
@@ -213,13 +257,16 @@ protected:
 	{}
 
 private:
-	bool compile (const std::string& file);
+	bool compile (const simplecpp::DUI& prep_params, const std::string& file);
 
 private:
-	const char* exe_;
+	const char* command_;
 	unsigned flags_;
-	struct Arguments;
-	Arguments* arguments_;
+	std::vector <std::string> defines_;
+	std::vector <std::string> undefines_;
+	std::vector <std::string> include_paths_;
+	std::vector <std::string> includes_;
+	std::vector <std::string> files_;
 	std::ostream& err_out_;
 };
 

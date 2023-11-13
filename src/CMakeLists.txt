@@ -29,7 +29,7 @@ endforeach()
 BISON_TARGET(MyParser FE/yacc.yy ${CMAKE_CURRENT_SOURCE_DIR}/FE/yacc.tab.cpp
     DEFINES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/FE/yacc.tab.h)
 
-if(WIN32)
+if(CMAKE_HOST_WIN32)
 set(FLEX_FLAGS "--wincompat")
 else()
 set(FLEX_FLAGS "")
