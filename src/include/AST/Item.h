@@ -105,7 +105,7 @@ protected:
 private:
 	template <class T> friend class Ptr;
 
-	void* operator new (size_t cb)
+	void* operator new (std::size_t cb)
 	{
 		return ::operator new (cb);
 	}
