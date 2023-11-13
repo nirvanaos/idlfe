@@ -136,6 +136,10 @@ $(function() {
 <div class="line"><span class="keyword">using namespace </span>std;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code" href="namespace_a_s_t.html">AST</a>;</div>
 <div class="line"> </div>
+<div class="line"><span class="preprocessor">#if defined (__GNUG__) || defined (__clang__)</span></div>
+<div class="line"><span class="preprocessor">#pragma GCC diagnostic ignored &quot;-Wswitch&quot;</span></div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> Printer::end (<span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_root.html">Root</a>&amp; ast)</div>
 <div class="line">{</div>
 <div class="line">    out_.close ();</div>

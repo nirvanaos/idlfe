@@ -90,14 +90,61 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a17720bab48909306e049ff94f87abc9a"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a17720bab48909306e049ff94f87abc9a">parameter</a> (const char *switch_end)</td></tr>
 <tr class="memdesc:a17720bab48909306e049ff94f87abc9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the parameter followed to the switch.  <a href="class_i_d_l___front_end_1_1_cmd_line.html#a17720bab48909306e049ff94f87abc9a">More...</a><br /></td></tr>
 <tr class="separator:a17720bab48909306e049ff94f87abc9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fb52e17b58ca45679bbcb3ac1fe1ec4"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a1fb52e17b58ca45679bbcb3ac1fe1ec4">exe_file</a> () const</td></tr>
-<tr class="separator:a1fb52e17b58ca45679bbcb3ac1fe1ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10f56eca333014460de5f7349a80fcc3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end_1_1_cmd_line.html#a10f56eca333014460de5f7349a80fcc3">CmdLine</a> (int argc, const char *const argv[])</td></tr>
+<tr class="separator:a10f56eca333014460de5f7349a80fcc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Command line argument iterator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00094">94</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00110">110</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a10f56eca333014460de5f7349a80fcc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10f56eca333014460de5f7349a80fcc3">&#9670;&nbsp;</a></span>CmdLine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IDL_FrontEnd::CmdLine::CmdLine </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *const&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">argc</td><td>Argument count. </td></tr>
+    <tr><td class="paramname">argv</td><td>Argument array. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00145">145</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a67f48fcb8a99981bdc8ace63e3546092"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a67f48fcb8a99981bdc8ace63e3546092">&#9670;&nbsp;</a></span>arg()</h2>
 
@@ -122,7 +169,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The current argument </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00099">99</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00114">114</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -150,7 +197,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>false</code> if there are no more arguments. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00106">106</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00121">121</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -213,34 +260,6 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a1fb52e17b58ca45679bbcb3ac1fe1ec4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fb52e17b58ca45679bbcb3ac1fe1ec4">&#9670;&nbsp;</a></span>exe_file()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* IDL_FrontEnd::CmdLine::exe_file </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>The compiler executable file name. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00127">127</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
