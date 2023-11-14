@@ -6,6 +6,4 @@ project(idlfe CXX)
 add_subdirectory(src)
 add_subdirectory(example)
 
-set_target_properties(idlfe PROPERTIES PUBLIC_HEADER "src/include/IDL_FrontEnd.h")
-install(DIRECTORY "src/include/AST" "src/include/BE" TYPE INCLUDE)
 install(TARGETS idlfe decNumber)

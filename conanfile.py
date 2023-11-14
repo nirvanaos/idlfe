@@ -41,5 +41,5 @@ class idlfeRecipe(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["idlfe", "decNumber"]
+        self.cpp_info.libs = ["idlfe"]
     
