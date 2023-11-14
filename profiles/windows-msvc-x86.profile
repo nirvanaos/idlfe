@@ -6,5 +6,5 @@ compiler.cppstd=17
 compiler.runtime=dynamic
 arch=x86
 
-[conf]
-tools.cmake.cmaketoolchain:generator=Ninja
+#[conf]
+#tools.cmake.cmaketoolchain:generator=Ninja
