@@ -39,7 +39,6 @@ See: https://www.omg.org/spec/IDL/4.2/
 
 ## How to use
 
-Find nirvanaos.idlfe conan packages on https://conan.io/
 Find nirvanaos.idlfe NuGet packages on https://www.nuget.org/
 
 ## Build prerequisites
