@@ -6,14 +6,14 @@ project(idlfe CXX)
 add_subdirectory(src)
 add_subdirectory(example)
 
-install(TARGETS idlfe decNumber EXPORT idlfe_targets
-	RUNTIME_DEPENDENCIES LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+install(TARGETS idlfe decNumber LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/
     DESTINATION include
     FILES_MATCHING PATTERN "*.h*")
 
-# Generate and install *-targets.cmake 
+# Generate and install *-targets.cmake
+#[===[
 install(EXPORT idlfe_targets
         FILE idlfe-targets.cmake
         NAMESPACE idlfe::
@@ -27,3 +27,4 @@ file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/idlfe-config.cmake"
 # Install the generated config file
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/idlfe-config.cmake"
         DESTINATION share/idlfe)
+]===]
