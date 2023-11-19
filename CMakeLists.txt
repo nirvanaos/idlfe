@@ -6,7 +6,10 @@ project(idlfe CXX)
 add_subdirectory(src)
 add_subdirectory(example)
 
-install(TARGETS idlfe EXPORT idlfe_targets LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+install(TARGETS idlfe EXPORT idlfe_targets
+	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+	INCLUDES DESTINATION "${CMAKE_INSTALL_INCDIR}"
+	)
 
 #install(FILES src/include DESTINATION include)
 
