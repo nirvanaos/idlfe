@@ -51,7 +51,12 @@ target_compile_features(idlfe PUBLIC cxx_std_17)
 if(MSVC)
     target_compile_options(idlfe PUBLIC "/Zc:__cplusplus" "-D__STDC_VERSION__=199901L")
 endif()
-target_include_directories(idlfe PUBLIC include PRIVATE
+
+target_include_directories(idlfe PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
+include_directories(
     FE
     ${decNumber_SOURCE_DIR}
     ${safeint_SOURCE_DIR}
