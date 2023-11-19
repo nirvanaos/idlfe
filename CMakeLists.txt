@@ -6,12 +6,12 @@ project(idlfe CXX)
 add_subdirectory(src)
 add_subdirectory(example)
 
-install(TARGETS idlfe EXPORT idlfe_targets
-	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-	INCLUDES DESTINATION "${CMAKE_INSTALL_INCDIR}"
-	)
+install(TARGETS idlfe decNumber EXPORT idlfe_targets
+	RUNTIME_DEPENDENCIES LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
-#install(FILES src/include DESTINATION include)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h*")
 
 # Generate and install *-targets.cmake 
 install(EXPORT idlfe_targets

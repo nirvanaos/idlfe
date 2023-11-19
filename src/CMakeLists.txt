@@ -3,11 +3,13 @@ include(FetchContent)
 FetchContent_Declare(
     decNumber
     GIT_REPOSITORY https://github.com/nirvanaos/decNumber.cmake.git
+    GIT_SHALLOW true
 )
 
 FetchContent_Declare(
     SafeInt
     GIT_REPOSITORY https://github.com/dcleblanc/SafeInt.git
+    GIT_SHALLOW true
 )
 
 FetchContent_MakeAvailable(decNumber)
