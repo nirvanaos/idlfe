@@ -160,7 +160,8 @@ protected:
 	IDL_FrontEnd (unsigned flags = 0, std::ostream& err_out = std::cerr) :
 		command_ (nullptr),
 		flags_ (flags),
-		err_out_ (err_out)
+		err_out_ (err_out),
+		preprocess_to_stdout_ (false)
 	{}
 
 	/// \brief Parse command line parameters.
@@ -268,6 +269,7 @@ private:
 	std::vector <std::string> includes_;
 	std::vector <std::string> files_;
 	std::ostream& err_out_;
+	bool preprocess_to_stdout_;
 };
 
 /// \example IDL_Print.cpp

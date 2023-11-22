@@ -154,6 +154,7 @@ void IDL_FrontEnd::print_usage_info (const char* exe_name)
 		"\t-U symbol\tUndefine symbol.\n"
 		"\t-I directory\tAdd include directory.\n"
 		"\t-FI file\tInclude file.\n"
+		"\t-E\tPrint preprocessed file to stdout.\n"
 		;
 }
 
@@ -181,6 +182,9 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 				break;
 			case 'h':
 				print_usage_info (command_);
+				break;
+			case 'E':
+				preprocess_to_stdout_ = true;
 				break;
 			default:
 				recognized = false;
@@ -239,6 +243,11 @@ bool IDL_FrontEnd::compile (const simplecpp::DUI& prep_params, const std::string
 		}
 
 		preprocessed.str (output_tokens.stringify ());
+	}
+
+	if (preprocess_to_stdout_) {
+		std::cout << preprocessed.rdbuf ();
+		return true;
 	}
 
 	auto ast = FE::Driver::parse (*this, file, preprocessed);
