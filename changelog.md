@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.1 - 2023-11-22
+### Added
+ - Option -E to print preporocessor output to stdout.
+
 ## 3.3.0 - 2023-11-13
 ### Added
  - CMake files.
