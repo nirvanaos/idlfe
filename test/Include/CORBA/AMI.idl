@@ -1,0 +1,112 @@
+/// \file This file is implicitly included in each IDL compilation
+/*
+* Nirvana IDL support library.
+*
+* This is a part of the Nirvana project.
+*
+* Author: Igor Popov
+*
+* Copyright (c) 2021 Igor Popov.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Send comments and/or bug reports to:
+*  popov.nirvana@gmail.com
+*/
+#ifndef CORBA_AMI_IDL_
+#define CORBA_AMI_IDL_
+
+module Nirvana {
+native Size;
+};
+
+module CORBA {
+
+module Internal {
+
+pseudo interface IORequest;
+native _Interface;
+native ExceptionEntryPtr;
+
+};
+
+typeprefix CORBA "omg.org";
+
+local interface PollableSet;
+
+abstract valuetype Pollable
+{
+  boolean is_ready (in unsigned long timeout);
+
+  PollableSet create_pollable_set ();
+};
+
+exception WrongTransaction {};
+
+typedef sequence <octet> OctetSeq;
+
+};
+
+module Dynamic {
+
+typeprefix Dynamic "omg.org";
+
+native ExceptionList;
+
+};
+
+module Messaging {
+
+typeprefix Messaging "omg.org";
+
+typedef CORBA::OctetSeq MarshaledException;
+
+native UserExceptionBase;
+
+valuetype ExceptionHolder
+{
+	void raise_exception () raises (UserExceptionBase);
+	void raise_exception_with_list (in Dynamic::ExceptionList exc_list) raises (UserExceptionBase);
+
+	void set_user_exceptions (in CORBA::Internal::ExceptionEntryPtr exc_list, in Nirvana::Size exc_cnt);
+	CORBA::Internal::IORequest get_exception (out boolean is_system_exception,
+		out CORBA::Internal::ExceptionEntryPtr exc_list, out Nirvana::Size exc_cnt);
+
+	private boolean is_system_exception;
+	private boolean byte_order;
+	private MarshaledException marshaled_exception;
+};
+
+// For handling Routing
+interface ReplyHandler {};
+
+// Generic Poller Valuetype
+
+typedef unsigned long OperationIndex;
+
+abstract valuetype Poller : CORBA::Pollable
+{
+	typeid::Messaging::Poller "IDL:omg.org/Messaging/Poller:3.1";
+	readonly attribute Object operation_target;
+	readonly attribute string operation_name;
+	attribute ReplyHandler associated_handler;
+	readonly attribute boolean is_from_poller;
+
+	CORBA::Internal::IORequest get_reply (in unsigned long timeout,
+		in OperationIndex op) raises (CORBA::WrongTransaction);
+};
+
+};
+
+#endif

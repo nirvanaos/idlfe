@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.2 - 2023-11-24
+### Fixed
+ - Bug with forced file include.
+
 ## 3.3.1 - 2023-11-22
 ### Added
  - Option -E to print preporocessor output to stdout.

@@ -81,21 +81,6 @@ int IDL_FrontEnd::run (const char* command, int argc, const char* const argv [])
 				return -1;
 			}
 
-			for (auto& fi : includes_) {
-				std::filesystem::path file (fi);
-				if (!file.is_absolute ()) {
-					for (const auto& inc : include_paths_) {
-						std::filesystem::path tmp (inc);
-						tmp /= file;
-						std::error_code ec;
-						if (std::filesystem::exists (tmp, ec)) {
-							fi = tmp.string ();
-							break;
-						}
-					}
-				}
-			}
-
 			simplecpp::DUI prep_params;
 			for (const auto& def : defines_) {
 				prep_params.defines.push_back (def);
@@ -106,8 +91,20 @@ int IDL_FrontEnd::run (const char* command, int argc, const char* const argv [])
 			for (const auto& inc : include_paths_) {
 				prep_params.includePaths.push_back (inc);
 			}
-			for (const auto& inc : includes_) {
-				prep_params.includes.push_back (inc);
+			for (const auto& fi : includes_) {
+				std::filesystem::path file (fi);
+				if (!file.is_absolute ()) {
+					for (const auto& inc : include_paths_) {
+						std::filesystem::path tmp (inc);
+						tmp /= file;
+						std::error_code ec;
+						if (std::filesystem::exists (tmp, ec)) {
+							file = tmp;
+							break;
+						}
+					}
+				}
+				prep_params.includes.push_back (file.string ());
 			}
 
 			for (const auto& file : files_) {
