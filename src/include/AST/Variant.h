@@ -271,6 +271,12 @@ public:
 		val_ ((uint64_t)v)
 	{}
 
+	/// VT::OCTET
+	Variant (uint8_t v) noexcept :
+		type_ (VT::OCTET),
+		val_ ((uint64_t)v)
+	{}
+
 	/// VT::CHAR
 	Variant (char v) noexcept :
 		type_ (VT::CHAR),
@@ -281,6 +287,18 @@ public:
 	Variant (wchar_t v) noexcept :
 		type_ (VT::WCHAR),
 		val_ ((uint64_t)v)
+	{}
+
+	/// VT::SHORT
+	Variant (int16_t v) noexcept :
+		type_ (VT::SHORT),
+		val_ ((int64_t)v)
+	{}
+
+	/// VT::USHORT
+	Variant (uint16_t v) noexcept :
+		type_ (VT::USHORT),
+		val_ ((int64_t)v)
 	{}
 
 	/// VT::LONG
