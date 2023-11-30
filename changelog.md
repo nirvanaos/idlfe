@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.3 - 2023-11-30
+### Fixed
+ - Integer constant evaluation.
+
 ## 3.3.2 - 2023-11-24
 ### Fixed
  - Bug with forced file include.
