@@ -51,7 +51,7 @@ add_library(idlfe STATIC
 
 target_compile_features(idlfe PUBLIC cxx_std_17)
 if(MSVC)
-    target_compile_options(idlfe PUBLIC "/Zc:__cplusplus" "-D__STDC_VERSION__=199901L")
+    target_compile_options(idlfe PRIVATE "/Zc:__cplusplus" "-D__STDC_VERSION__=199901L")
 endif()
 
 target_include_directories(idlfe PUBLIC
