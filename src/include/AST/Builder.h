@@ -570,6 +570,10 @@ private:
 			bool is_default;
 			std::vector <Variant> labels;
 
+			ElementData () :
+				is_default (false)
+			{}
+
 			void clear ()
 			{
 				is_default = false;

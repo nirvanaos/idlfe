@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.4 - 2023-12-26
+### Fixed
+ - Uninitialized variable bug.
+
 ## 3.3.3 - 2023-11-30
 ### Fixed
  - Integer constant evaluation.

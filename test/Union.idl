@@ -1,0 +1,75 @@
+/*
+* Nirvana test suite.
+*
+* This is a part of the Nirvana project.
+*
+* Author: Igor Popov
+*
+* Copyright (c) 2021 Igor Popov.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Send comments and/or bug reports to:
+*  popov.nirvana@gmail.com
+*/
+
+// Test for unions
+
+module Test {
+
+interface I1;
+
+};
+
+struct S { long len; };
+interface A;
+
+// Variable length union
+union U switch (long) {
+	case 1: long x;
+	case 2: string z;
+	case 3:
+	case 4: S w;
+	default: Test::I1 obj;
+};
+
+// Union with implicit default
+// The _default () method will be generated
+union Z switch (boolean) {
+	case TRUE: short s;
+};
+
+// Fixed length union
+union UFixed switch (long) {
+	case 1: long x;
+	case 2: double d;
+};
+
+enum Tag
+{
+	First,
+	Second
+};
+
+// This region has _default ()
+union Tagged switch (Tag) {
+	case Second: short s;
+};
+
+// This region does not have _default ()
+union NoDefault switch (Tag) {
+	case First: short s;
+	case Second: long l;
+};
+
