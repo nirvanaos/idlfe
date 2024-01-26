@@ -354,8 +354,13 @@ public:
 	/// \param t The constant type.
 	/// \param name The constant name.
 	/// \param val The constant value.
-	/// \param loc The constant location.
+	/// \param loc The constant value location.
 	void constant (Type&& t, const SimpleDeclarator& name, Variant&& val, const Location& loc);
+
+	/// \brief Create interface constant definition (Nirvana extension).
+	/// \param t The constant type.
+	/// \param name The constant name.
+	void constant (Type&& t, const SimpleDeclarator& name);
 
 	/// \brief Find type by name.
 	/// 
@@ -452,6 +457,8 @@ private:
 	void check_complete (const Symbols& symbols);
 
 	static Type make_type (Type&& t, const Declarator& decl);
+
+	void check_pseudo (const SimpleDeclarator& name, InterfaceKind::Kind ik);
 
 protected:
 	IDL_FrontEnd& compiler_;
