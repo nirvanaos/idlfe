@@ -110,6 +110,14 @@ Static Public Attributes</h2></td></tr>
 static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0">FLAG_DEPRECATE_ANONYMOUS_TYPES</a> = 1</td></tr>
 <tr class="memdesc:a60bf0e97e8a9903f9540467df4a51ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disallows anonymous IDL types as required by the C++11 Language Mapping Specification. <br /></td></tr>
 <tr class="separator:a60bf0e97e8a9903f9540467df4a51ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe32c3522bc7548b076c5dc136bed1eb"><td class="memItemLeft" align="right" valign="top"><a id="afe32c3522bc7548b076c5dc136bed1eb"></a>
+static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#afe32c3522bc7548b076c5dc136bed1eb">FLAG_DEPRECATE_PSEUDO_INTERFACES</a> = 2</td></tr>
+<tr class="memdesc:afe32c3522bc7548b076c5dc136bed1eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disallows pseudo interfaces. <br /></td></tr>
+<tr class="separator:afe32c3522bc7548b076c5dc136bed1eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a336f71117d799c3328fb86de33560caa"><td class="memItemLeft" align="right" valign="top"><a id="a336f71117d799c3328fb86de33560caa"></a>
+static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_d_l___front_end.html#a336f71117d799c3328fb86de33560caa">FLAG_ENABLE_CONST_OBJREF</a> = 4</td></tr>
+<tr class="memdesc:a336f71117d799c3328fb86de33560caa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow Nirvana const interface references. <br /></td></tr>
+<tr class="separator:a336f71117d799c3328fb86de33560caa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -207,8 +215,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
   </table>
   </dd>
 </dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a1">IDL_Print.cpp</a>.</dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00160">160</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00166">166</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -401,7 +411,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Compiler messages output stream. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00100">100</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00106">106</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -486,7 +496,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a2">IDL_Print.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a4">IDL_Print.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -523,7 +533,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a1">IDL_Print.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a3">IDL_Print.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -552,7 +562,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Macros to define. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00203">203</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00209">209</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -580,7 +590,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Macros to undefine. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00209">209</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00215">215</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -608,7 +618,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Paths to find included files. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00215">215</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00221">221</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -636,7 +646,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Files to include. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00221">221</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00227">227</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +674,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Files to compile. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00227">227</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00233">233</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -706,7 +716,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a3">IDL_Print.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_i_d_l__print_8cpp-example.html#a5">IDL_Print.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -754,7 +764,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00246">246</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00252">252</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>
@@ -802,7 +812,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AST::Builder</b></td
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00257">257</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_d_l___front_end_8h_source.html#l00263">263</a> of file <a class="el" href="_i_d_l___front_end_8h_source.html">IDL_FrontEnd.h</a>.</p>
 
 </div>
 </div>

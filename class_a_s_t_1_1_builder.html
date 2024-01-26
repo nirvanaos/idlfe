@@ -240,6 +240,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:af83a121df00ac7f62562c179ee421920"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_builder.html#af83a121df00ac7f62562c179ee421920">constant</a> (<a class="el" href="class_a_s_t_1_1_type.html">Type</a> &amp;&amp;t, const <a class="el" href="class_a_s_t_1_1_simple_declarator.html">SimpleDeclarator</a> &amp;name, <a class="el" href="class_a_s_t_1_1_variant.html">Variant</a> &amp;&amp;val, const <a class="el" href="class_a_s_t_1_1_location.html">Location</a> &amp;loc)</td></tr>
 <tr class="memdesc:af83a121df00ac7f62562c179ee421920"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create constant definition.  <a href="class_a_s_t_1_1_builder.html#af83a121df00ac7f62562c179ee421920">More...</a><br /></td></tr>
 <tr class="separator:af83a121df00ac7f62562c179ee421920"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56a8022df3242693b3938d81baca8ccb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_builder.html#a56a8022df3242693b3938d81baca8ccb">constant</a> (<a class="el" href="class_a_s_t_1_1_type.html">Type</a> &amp;&amp;t, const <a class="el" href="class_a_s_t_1_1_simple_declarator.html">SimpleDeclarator</a> &amp;name)</td></tr>
+<tr class="memdesc:a56a8022df3242693b3938d81baca8ccb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create interface constant definition (Nirvana extension).  <a href="class_a_s_t_1_1_builder.html#a56a8022df3242693b3938d81baca8ccb">More...</a><br /></td></tr>
+<tr class="separator:a56a8022df3242693b3938d81baca8ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb79e40a0eff5b7edd1feb24cebc488a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_a_s_t_1_1_type.html">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_s_t_1_1_builder.html#aeb79e40a0eff5b7edd1feb24cebc488a">lookup_type</a> (const <a class="el" href="struct_a_s_t_1_1_scoped_name.html">ScopedName</a> &amp;scoped_name)</td></tr>
 <tr class="memdesc:aeb79e40a0eff5b7edd1feb24cebc488a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find type by name.  <a href="class_a_s_t_1_1_builder.html#aeb79e40a0eff5b7edd1feb24cebc488a">More...</a><br /></td></tr>
 <tr class="separator:aeb79e40a0eff5b7edd1feb24cebc488a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1627,7 +1630,7 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <a id="af83a121df00ac7f62562c179ee421920"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af83a121df00ac7f62562c179ee421920">&#9670;&nbsp;</a></span>constant()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af83a121df00ac7f62562c179ee421920">&#9670;&nbsp;</a></span>constant() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1670,7 +1673,44 @@ Additional Inherited Members</h2></td></tr>
     <tr><td class="paramname">t</td><td>The constant type. </td></tr>
     <tr><td class="paramname">name</td><td>The constant name. </td></tr>
     <tr><td class="paramname">val</td><td>The constant value. </td></tr>
-    <tr><td class="paramname">loc</td><td>The constant location. </td></tr>
+    <tr><td class="paramname">loc</td><td>The constant value location. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a56a8022df3242693b3938d81baca8ccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56a8022df3242693b3938d81baca8ccb">&#9670;&nbsp;</a></span>constant() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AST::Builder::constant </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_a_s_t_1_1_type.html">Type</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_a_s_t_1_1_simple_declarator.html">SimpleDeclarator</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create interface constant definition (Nirvana extension). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>The constant type. </td></tr>
+    <tr><td class="paramname">name</td><td>The constant name. </td></tr>
   </table>
   </dd>
 </dl>

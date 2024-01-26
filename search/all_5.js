@@ -11,9 +11,11 @@ var searchData=
   ['fixed_5fscale_94',['fixed_scale',['../class_a_s_t_1_1_type.html#aa1f6a4ea582de5d21f8e171ff7375231',1,'AST::Type']]],
   ['fixedarraysizes_95',['FixedArraySizes',['../namespace_a_s_t.html#a8381fa7dc52a0e55960c39758d9b206c',1,'AST']]],
   ['flag_5fdeprecate_5fanonymous_5ftypes_96',['FLAG_DEPRECATE_ANONYMOUS_TYPES',['../class_i_d_l___front_end.html#a60bf0e97e8a9903f9540467df4a51ff0',1,'IDL_FrontEnd']]],
-  ['flags_97',['flags',['../class_i_d_l___front_end.html#ac7b5d636f2d0a0d47db26d9f8a50c26f',1,'IDL_FrontEnd']]],
-  ['float_98',['FLOAT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ae738c26bf4ce1037fa81b039a915cbf6',1,'AST::Variant::FLOAT()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20ae738c26bf4ce1037fa81b039a915cbf6',1,'AST::FLOAT()']]],
-  ['forwarddeclarable_99',['ForwardDeclarable',['../class_a_s_t_1_1_forward_declarable.html',1,'AST']]],
-  ['forwarddeclarable_2eh_100',['ForwardDeclarable.h',['../_forward_declarable_8h.html',1,'']]],
-  ['from_5froot_101',['from_root',['../struct_a_s_t_1_1_scoped_name.html#a7907dbc7d3d9cf123779bee26ac344d8',1,'AST::ScopedName']]]
+  ['flag_5fdeprecate_5fpseudo_5finterfaces_97',['FLAG_DEPRECATE_PSEUDO_INTERFACES',['../class_i_d_l___front_end.html#afe32c3522bc7548b076c5dc136bed1eb',1,'IDL_FrontEnd']]],
+  ['flag_5fenable_5fconst_5fobjref_98',['FLAG_ENABLE_CONST_OBJREF',['../class_i_d_l___front_end.html#a336f71117d799c3328fb86de33560caa',1,'IDL_FrontEnd']]],
+  ['flags_99',['flags',['../class_i_d_l___front_end.html#ac7b5d636f2d0a0d47db26d9f8a50c26f',1,'IDL_FrontEnd']]],
+  ['float_100',['FLOAT',['../class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ae738c26bf4ce1037fa81b039a915cbf6',1,'AST::Variant::FLOAT()'],['../namespace_a_s_t.html#a7aba680bb013cb79b426cdcab41a5e20ae738c26bf4ce1037fa81b039a915cbf6',1,'AST::FLOAT()']]],
+  ['forwarddeclarable_101',['ForwardDeclarable',['../class_a_s_t_1_1_forward_declarable.html',1,'AST']]],
+  ['forwarddeclarable_2eh_102',['ForwardDeclarable.h',['../_forward_declarable_8h.html',1,'']]],
+  ['from_5froot_103',['from_root',['../struct_a_s_t_1_1_scoped_name.html#a7907dbc7d3d9cf123779bee26ac344d8',1,'AST::ScopedName']]]
 ];

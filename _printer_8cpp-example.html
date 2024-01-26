@@ -228,12 +228,15 @@ $(function() {
 <div class="line"><span class="stringliteral">{</span></div>
 <div class="line"><span class="stringliteral">    out_ &lt;&lt; &quot;const &quot;;</span></div>
 <div class="line"><span class="stringliteral">    print_type (item);</span></div>
-<div class="line"><span class="stringliteral">    out_ &lt;&lt; &#39;</span> <span class="stringliteral">&#39; &lt;&lt; item.name () &lt;&lt; &quot; = &quot;;</span></div>
-<div class="line"><span class="stringliteral">    if (item.vtype () == Variant::VT::WSTRING)</span></div>
-<div class="line"><span class="stringliteral">        out_ &lt;&lt; &#39;</span>L<span class="stringliteral">&#39;;</span></div>
-<div class="line"><span class="stringliteral">    out_ &lt;&lt; item.to_string ();</span></div>
-<div class="line"><span class="stringliteral">    if (item.vtype () == Variant::VT::FIXED)</span></div>
-<div class="line"><span class="stringliteral">        out_ &lt;&lt; &#39;</span>D<span class="stringliteral">&#39;;</span></div>
+<div class="line"><span class="stringliteral">    out_ &lt;&lt; &#39;</span> <span class="stringliteral">&#39; &lt;&lt; item.name ();</span></div>
+<div class="line"><span class="stringliteral">    if (item.vtype () != Variant::VT::EMPTY) {</span></div>
+<div class="line"><span class="stringliteral">        out_ &lt;&lt; &quot; = &quot;;</span></div>
+<div class="line"><span class="stringliteral">        if (item.vtype () == Variant::VT::WSTRING)</span></div>
+<div class="line"><span class="stringliteral">            out_ &lt;&lt; &#39;</span>L<span class="stringliteral">&#39;;</span></div>
+<div class="line"><span class="stringliteral">        out_ &lt;&lt; item.to_string ();</span></div>
+<div class="line"><span class="stringliteral">        if (item.vtype () == Variant::VT::FIXED)</span></div>
+<div class="line"><span class="stringliteral">            out_ &lt;&lt; &#39;</span>D<span class="stringliteral">&#39;;</span></div>
+<div class="line"><span class="stringliteral">    }</span></div>
 <div class="line"><span class="stringliteral">    out_ &lt;&lt;&quot;;\n&quot;;</span></div>
 <div class="line"><span class="stringliteral">}</span></div>
 <div class="line"><span class="stringliteral"></span> </div>

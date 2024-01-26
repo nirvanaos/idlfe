@@ -117,11 +117,17 @@ $(function() {
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="class_a_s_t_1_1_type.html#a45fb16e6b46941e13c6e11b834e8bdd9">Type</a> (std::move (type)),</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="class_a_s_t_1_1_variant.html#acb082935f0d1f3d413ea169d99198c1e">Variant</a> (val.vtype () == <a class="code" href="class_a_s_t_1_1_variant.html#ac7e32fb73d653f5a09822bfbda758ee2ac6e6dc18b53b4c2681394b9d8aefcec7">Variant::VT::FIXED</a> ? <a class="code" href="class_a_s_t_1_1_variant.html">Variant</a> (Fixed::normalize (val.as_Fixed ())) : std::move (val))</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    {}</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="class_a_s_t_1_1_constant.html">Constant</a> (<a class="code" href="class_a_s_t_1_1_builder.html">Builder</a>&amp; builder, <a class="code" href="class_a_s_t_1_1_type.html">Type</a>&amp;&amp; type, <span class="keyword">const</span> <a class="code" href="class_a_s_t_1_1_simple_declarator.html">SimpleDeclarator</a>&amp; <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>) :</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="class_a_s_t_1_1_named_item.html">NamedItem</a> (<a class="code" href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a8d6b5cada83510220f59e00ce86d4d92">Item::Kind::CONSTANT</a>, builder, <a class="code" href="class_a_s_t_1_1_named_item.html#abf5f13b7ca46a219c3bc12de3ac45982">name</a>),</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="class_a_s_t_1_1_type.html#a45fb16e6b46941e13c6e11b834e8bdd9">Type</a> (std::move (type))</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_a_s_t_1_1_type_html"><div class="ttname"><a href="class_a_s_t_1_1_type.html">AST::Type</a></div><div class="ttdoc">An IDL type.</div><div class="ttdef"><b>Definition:</b> <a href="_type_8h_source.html#l00046">Type.h:47</a></div></div>
 <div class="ttc" id="aclass_a_s_t_1_1_item_html_a437090ab304a7f919d9ea33feb8c2f54a8d6b5cada83510220f59e00ce86d4d92"><div class="ttname"><a href="class_a_s_t_1_1_item.html#a437090ab304a7f919d9ea33feb8c2f54a8d6b5cada83510220f59e00ce86d4d92">AST::Item::Kind::CONSTANT</a></div><div class="ttdeci">@ CONSTANT</div><div class="ttdoc">class Constant</div></div>
