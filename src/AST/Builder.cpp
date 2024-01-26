@@ -672,6 +672,8 @@ void Builder::error_valuetype_mod (const SimpleDeclarator& name, bool is_abstrac
 
 void Builder::interface_decl (const SimpleDeclarator& name, InterfaceKind ik)
 {
+	check_pseudo (name, ik.interface_kind ());
+
 	Symbols* scope = cur_scope ();
 	if (scope) {
 		Ptr <InterfaceDecl> decl = Ptr <InterfaceDecl>::make <InterfaceDecl> (std::ref (*this), name, ik);
@@ -752,6 +754,8 @@ void Builder::valuetype_decl (const SimpleDeclarator& name, bool is_abstract)
 
 void Builder::interface_begin (const SimpleDeclarator& name, InterfaceKind ik)
 {
+	check_pseudo (name, ik.interface_kind ());
+
 	Symbols* scope = scope_begin ();
 	if (scope) {
 		Ptr <Interface> itf = Ptr <Interface>::make <Interface> (std::ref (*this), std::ref (name), ik);
@@ -839,7 +843,8 @@ void Builder::interface_bases (const ScopedNames& bases)
 	Interface* itf = static_cast <Interface*> (scope_stack_.back ());
 	if (itf) {
 		assert (itf->kind () == Item::Kind::INTERFACE);
-		assert (itf->interface_kind () != InterfaceKind::PSEUDO);
+		InterfaceKind::Kind interface_kind = itf->interface_kind ();
+		assert (interface_kind != InterfaceKind::PSEUDO); // Prohibited by parser
 
 		// Process bases
 		std::unordered_map <const Item*, Location> direct_bases;
@@ -858,25 +863,20 @@ void Builder::interface_bases (const ScopedNames& bases)
 						message (*base_name, MessageType::ERROR, "may not derive from itself");
 						continue;
 					}
-					switch (itf->interface_kind ()) {
+					InterfaceKind::Kind base_kind = base_itf->interface_kind ();
+					if (InterfaceKind::PSEUDO == base_kind)
+						err = "pseudo interface may not be inherited";
+					else {
+						switch (interface_kind) {
 						case InterfaceKind::UNCONSTRAINED:
-							switch (base_itf->interface_kind ()) {
-								case InterfaceKind::LOCAL:
-									err = "the unconstrained interface may not inherit a local interface";
-									break;
-								case InterfaceKind::PSEUDO:
-									err = "the unconstrained interface may not inherit a pseudo interface";
-									break;
-							}
+							if (InterfaceKind::LOCAL == base_kind)
+								err = "the unconstrained interface may not inherit a local interface";
 							break;
 						case InterfaceKind::ABSTRACT:
-							if (InterfaceKind::ABSTRACT != base_itf->interface_kind ())
+							if (InterfaceKind::ABSTRACT != base_kind)
 								err = "the abstract interface may only inherit abstract interfaces";
 							break;
-						case InterfaceKind::PSEUDO:
-							if (InterfaceKind::PSEUDO != base_itf->interface_kind ())
-								err = "the pseudo interface may only inherit pseudo interfaces";
-							break;
+						}
 					}
 					if (!err) {
 						auto ins = direct_bases.emplace (base, *base_name);
@@ -1032,7 +1032,7 @@ void Builder::valuetype_supports (const ScopedNames& interfaces)
 			}
 			if (concrete_interfaces.size () > 1 || concrete_supports) {
 				if (!concrete_supports) {
-					message (*vt, MessageType::ERROR, "value type can not support more then one concrete interface");
+					message (*vt, MessageType::ERROR, "value type can not support more than one concrete interface");
 				} else {
 					for (const auto& itf : concrete_interfaces) {
 						if (!is_base_of (*itf.first, *concrete_supports)) {
@@ -1739,6 +1739,40 @@ void Builder::constant (Type&& t, const SimpleDeclarator& name, Variant&& val, c
 	eval_pop ();
 }
 
+void Builder::constant (Type&& t, const SimpleDeclarator& name)
+{
+	if (!(compiler_.flags () & IDL_FrontEnd::FLAG_ENABLE_CONST_OBJREF)) {
+		message (name, MessageType::ERROR, "const interface references do not allowed");
+		return;
+	}
+
+	const Type& type = t.dereference_type ();
+	assert (type.tkind () == Type::Kind::NAMED_TYPE);
+	const NamedItem& itf = type.named_type ();
+	switch (itf.kind ()) {
+	case Item::Kind::INTERFACE_DECL:
+	case Item::Kind::INTERFACE:
+	case Item::Kind::VALUE_TYPE_DECL:
+	case Item::Kind::VALUE_TYPE:
+		break;
+
+	default:
+		message (name, MessageType::ERROR, "invalid constant type");
+		return;
+	}
+
+	Symbols* scope = cur_scope ();
+	if (scope) {
+		Ptr <NamedItem> item = Ptr <NamedItem>::make <Constant> (std::ref (*this), std::move (t),
+			std::ref (name));
+		auto ins = scope->insert (*item);
+		if (!ins.second)
+			error_name_collision (name, **ins.first);
+		else if (is_main_file ())
+			container_stack_.top ()->append (*item);
+	}
+}
+
 void Builder::eval_push (const Type& t, const Location& loc)
 {
 	const Type& type = t.dereference_type ();
@@ -1856,8 +1890,15 @@ void Builder::check_anonymous (const Type& type, const SimpleDeclarator& name)
 	}
 }
 
+void Builder::check_pseudo (const SimpleDeclarator& name, InterfaceKind::Kind ik)
+{
+	if (InterfaceKind::Kind::PSEUDO == ik && (compiler_.flags () & IDL_FrontEnd::FLAG_DEPRECATE_PSEUDO_INTERFACES))
+		message (name, MessageType::ERROR, "pseudo interfaces do not allowed");
+}
+
 Location Builder::location () const
 {
 	return Location (file (), static_cast <const FE::Driver&> (*this).lineno ());
 }
+
 }

@@ -169,6 +169,7 @@ class Driver;
 %nterm <AST::Type> switch_type_spec;
 %nterm <AST::Type> enum_type;
 %nterm <AST::Type> const_type;
+%nterm <AST::Type> named_type;
 
 %nterm <AST::Variant> const_exp;
 %nterm <AST::Variant> or_expr;
@@ -213,6 +214,7 @@ definitions
 definition
 	: type_dcl T_SEMICOLON
 	| const_dcl T_SEMICOLON
+	| interface_const T_SEMICOLON
 	| except_dcl T_SEMICOLON
 	| interface T_SEMICOLON
 	| module T_SEMICOLON
@@ -387,6 +389,11 @@ init_param_dcl
 
 const_dcl
 	: T_const const_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant (std::move ($2), $3, std::move ($6), @6); }
+	| T_const named_type simple_declarator T_EQUAL { drv.eval_push ($2, @2); } const_exp { drv.constant (std::move ($2), $3, std::move ($6), @6); }
+	;
+
+interface_const
+	: T_const named_type simple_declarator { drv.constant (std::move ($2), $3); }
 	;
 
 const_type
@@ -398,9 +405,11 @@ const_type
 	| string_type
 	| wide_string_type
 	| fixed_pt_const_type { $$ = AST::Type::make_fixed (0, 0); }
-	| scoped_name { $$ = drv.lookup_type ($1); }
 	| octet_type { $$ = AST::BasicType::OCTET; }
 	;
+
+named_type
+	: scoped_name { $$ = drv.lookup_type ($1); }
 
 const_exp
 	: or_expr

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.0 - 2024-01-26
+### Added
+ - Optional support for interface constant definition (Nirvana extension).
+ - Flags to disable non-standard extensions.
+
 ## 3.3.4 - 2023-12-26
 ### Fixed
  - Uninitialized variable bug.

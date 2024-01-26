@@ -44,7 +44,7 @@ public:
 	/// Value vtype. 
 	enum class VT
 	{
-		EMPTY, ///< In the valid %AST, Variant never has this type.
+		EMPTY, ///< No value
 
 		BOOLEAN, ///< Variant::as_bool ()
 		OCTET, ///< Variant::as_octet ()

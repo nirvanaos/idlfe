@@ -96,6 +96,12 @@ public:
 	/// Disallows anonymous IDL types as required by the C++11 Language Mapping Specification.
 	static const unsigned FLAG_DEPRECATE_ANONYMOUS_TYPES = 1;
 
+	/// Disallows pseudo interfaces.
+	static const unsigned FLAG_DEPRECATE_PSEUDO_INTERFACES = 2;
+
+	/// Allow Nirvana const interface references.
+	static const unsigned FLAG_ENABLE_CONST_OBJREF = 4;
+
 	/// \returns Compiler messages output stream.
 	std::ostream& err_out () const noexcept
 	{

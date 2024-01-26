@@ -90,4 +90,6 @@ pseudo interface Memory
   UIntPtr query (in ConstPointer p, in QueryParam param);
 };
 
+const Memory g_memory;
+
 };

@@ -12,6 +12,11 @@
 // Derive the compiler class from IDL_FrontEnd.
 class IDL_Print : public IDL_FrontEnd
 {
+public:
+	IDL_Print () :
+		IDL_FrontEnd (IDL_FrontEnd::FLAG_ENABLE_CONST_OBJREF)
+	{}
+
 private:
 	// Override print_usage_info for additional usage information.
 	virtual void print_usage_info (const char* exe_name) override;

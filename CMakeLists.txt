@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 cmake_policy(SET CMP0010 NEW)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
-project(idlfe VERSION 3.3.4 LANGUAGES CXX)
+project(idlfe VERSION 3.4.0 LANGUAGES CXX)
 add_subdirectory(src)
 add_subdirectory(example)
 
