@@ -1,0 +1,8 @@
+// Empty file with #include
+
+#ifndef EMPTY_INC_IDL_
+#define EMPTY_INC_IDL_
+
+#include "Test_I1.idl"
+
+#endif
