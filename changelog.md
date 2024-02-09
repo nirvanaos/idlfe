@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.1 - 2024-02-09
+### Fixed
+ - Bug if preprocessor directive is the last token.
+
 ## 3.4.0 - 2024-01-26
 ### Added
  - Optional support for interface constant definition (Nirvana extension).
