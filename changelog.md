@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.2 - 2024-02-21
+### Fixed
+ - More informative error message.
+
 ## 3.4.1 - 2024-02-09
 ### Fixed
  - Bug if preprocessor directive is the last token.

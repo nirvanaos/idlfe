@@ -432,6 +432,7 @@ Type Builder::lookup_type (const ScopedName& scoped_name)
 	if (item) {
 		if (!item->is_type ()) {
 			message (scoped_name, MessageType::ERROR, scoped_name.stringize () + " is not a type");
+			see_declaration_of (*item, item->name ());
 			item = nullptr;
 		}
 	}
