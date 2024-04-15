@@ -3,7 +3,6 @@
 /src/FE/yacc.tab.h
 /src/FE/yacc.tab.cc
 /src/FE/location.hh
-/doc/
 /build/
 /.vscode/
 /CMakeUserPresets.json
