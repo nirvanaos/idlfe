@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.3 - 2024-07-10
+### Fixed
+ - Bug with object constant.
+
 ## 3.4.2 - 2024-02-21
 ### Fixed
  - More informative error message.
