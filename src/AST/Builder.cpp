@@ -1748,18 +1748,20 @@ void Builder::constant (Type&& t, const SimpleDeclarator& name)
 	}
 
 	const Type& type = t.dereference_type ();
-	assert (type.tkind () == Type::Kind::NAMED_TYPE);
-	const NamedItem& itf = type.named_type ();
-	switch (itf.kind ()) {
-	case Item::Kind::INTERFACE_DECL:
-	case Item::Kind::INTERFACE:
-	case Item::Kind::VALUE_TYPE_DECL:
-	case Item::Kind::VALUE_TYPE:
-		break;
+	if (type.tkind () != Type::Kind::VOID) { // No error in type
+		assert (type.tkind () == Type::Kind::NAMED_TYPE);
+		const NamedItem& itf = type.named_type ();
+		switch (itf.kind ()) {
+		case Item::Kind::INTERFACE_DECL:
+		case Item::Kind::INTERFACE:
+		case Item::Kind::VALUE_TYPE_DECL:
+		case Item::Kind::VALUE_TYPE:
+			break;
 
-	default:
-		message (name, MessageType::ERROR, "invalid constant type");
-		return;
+		default:
+			message (name, MessageType::ERROR, "invalid constant type");
+			return;
+		}
 	}
 
 	Symbols* scope = cur_scope ();
