@@ -1,24 +1,6 @@
-include(FetchContent)
-
-FetchContent_Declare(
-    decNumber
-    GIT_REPOSITORY https://github.com/nirvanaos/decNumber.cmake.git
-    GIT_SHALLOW true
-)
-
-FetchContent_Declare(
-    SafeInt
-    GIT_REPOSITORY https://github.com/dcleblanc/SafeInt.git
-    GIT_SHALLOW true
-)
-
-FetchContent_MakeAvailable(decNumber)
-
-# use fetch content rather than makeavailable because safeint only includes unconditional test targets
-FetchContent_Populate(SafeInt)
-
 find_package(BISON)
 find_package(FLEX)
+find_path(SAFEINT_INCLUDE_DIRS "SafeInt.hpp")
 
 #[===[
 get_cmake_property(_variableNames VARIABLES)
@@ -54,14 +36,18 @@ if(MSVC)
     target_compile_options(idlfe PRIVATE "/Zc:__cplusplus" "-D__STDC_VERSION__=199901L")
 endif()
 
+target_link_libraries(idlfe PUBLIC decNumber)
+
 target_include_directories(idlfe PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE ${SAFEINT_INCLUDE_DIRS}
+)
 
 include_directories(
     FE
-    ${decNumber_SOURCE_DIR}
-    ${safeint_SOURCE_DIR}
+#    ${decNumber_SOURCE_DIR}
+#    ${safeint_SOURCE_DIR}
     ${FLEX_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}/FE)
 

@@ -3,10 +3,13 @@ cmake_policy(SET CMP0010 NEW)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 project(idlfe VERSION 3.4.3 LANGUAGES CXX)
+
+find_package(decNumber CONFIG REQUIRED)
+
 add_subdirectory(src)
 add_subdirectory(example)
 
-install(TARGETS idlfe decNumber EXPORT idlfe_targets
+install(TARGETS idlfe EXPORT idlfe_targets
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/
@@ -21,7 +24,9 @@ install(EXPORT idlfe_targets
 
 # Generate the config file in the current binary dir (this ensures it's not placed directly in source)
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/idlfe-config.cmake"
-"include(\"\${CMAKE_CURRENT_LIST_DIR}/idlfe-targets.cmake\")\n"
+  "include(CMakeFindDependencyMacro)\n"
+  "find_dependency(decNumber REQUIRED)\n"
+  "include(\"\${CMAKE_CURRENT_LIST_DIR}/idlfe-targets.cmake\")\n"
 )
 
 # Install the generated config file
