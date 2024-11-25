@@ -32,7 +32,6 @@ target_include_directories(idlfe PUBLIC
     $<INSTALL_INTERFACE:include>
     PRIVATE
     ${SAFEINT_INCLUDE_DIRS}
-    ${FLEX_INCLUDE_DIRS}
     FE
     ${CMAKE_CURRENT_BINARY_DIR}/FE
 )
