@@ -1,13 +1,5 @@
 find_path(SAFEINT_INCLUDE_DIRS "SafeInt.hpp")
 
-#[===[
-get_cmake_property(_variableNames VARIABLES)
-list (SORT _variableNames)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
-]===]
-
 BISON_TARGET(MyParser FE/yacc.yy ${CMAKE_CURRENT_BINARY_DIR}/FE/yacc.tab.cpp
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/FE/yacc.tab.h)
 

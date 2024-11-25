@@ -57,8 +57,7 @@
       "name": "gc",
       "displayName": "GNU C",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "g++",
-        "CMAKE_C_COMPILER": "gcc"
+        "CMAKE_CXX_COMPILER": "g++"
       }
     },
     {
@@ -66,8 +65,7 @@
       "name": "clang",
       "displayName": "CLang",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_C_COMPILER": "clang"
+        "CMAKE_CXX_COMPILER": "clang++"
       }
     }
   ]

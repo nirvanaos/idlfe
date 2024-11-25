@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 cmake_policy(SET CMP0010 NEW)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
-project(idlfe VERSION 3.4.3 LANGUAGES CXX)
+project(idlfe VERSION 3.4.4 LANGUAGES CXX)
 
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
@@ -14,14 +14,15 @@ add_subdirectory(example)
 install(TARGETS idlfe EXPORT idlfe_targets
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h*")
+install(DIRECTORY
+  ${CMAKE_SOURCE_DIR}/src/include/
+  DESTINATION include/${PROJECT_NAME}
+  FILES_MATCHING PATTERN "*.h*"
+)
 
 # Generate and install *-targets.cmake 
 install(EXPORT idlfe_targets
         FILE idlfe-targets.cmake
-        NAMESPACE idlfe::
         DESTINATION share/idlfe)
 
 # Generate the config file in the current binary dir (this ensures it's not placed directly in source)
