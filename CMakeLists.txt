@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.28)
+set(CMAKE_CXX_SCAN_FOR_MODULES 0)
+
 cmake_policy(SET CMP0010 NEW)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
