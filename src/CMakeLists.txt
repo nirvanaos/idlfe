@@ -1,5 +1,3 @@
-find_package(BISON)
-find_package(FLEX)
 find_path(SAFEINT_INCLUDE_DIRS "SafeInt.hpp")
 
 #[===[
@@ -39,17 +37,13 @@ endif()
 target_link_libraries(idlfe PUBLIC decNumber)
 
 target_include_directories(idlfe PUBLIC
-#    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
     $<INSTALL_INTERFACE:include>
-    PRIVATE ${SAFEINT_INCLUDE_DIRS}
-)
-
-include_directories(
-    FE
-#    ${decNumber_SOURCE_DIR}
-#    ${safeint_SOURCE_DIR}
+    PRIVATE
+    ${SAFEINT_INCLUDE_DIRS}
     ${FLEX_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_BINARY_DIR}/FE)
+    FE
+    ${CMAKE_CURRENT_BINARY_DIR}/FE
+)
 
 add_subdirectory(AST)
 add_subdirectory(BE)

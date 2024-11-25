@@ -1,0 +1,72 @@
+# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: CMake on multiple platforms
+
+on:
+  push:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+
+      # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Debug, Release]
+        preset: [win-x64, win-x86, gc, clang]
+        exclude:
+          - preset: win-x64
+            os: ubuntu-latest
+          - preset: win-x86
+            os: ubuntu-latest
+          - preset: gc
+            os: windows-latest
+          - preset: clang
+            os: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        
+    - name: Setup anew (or from cache) vcpkg (and does not build any package)
+      uses: lukka/run-vcpkg@v11
+#      with:
+#        vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
+    
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+
+    - name: Setup Flex + Bison
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: sudo apt install build-essential flex bison libfl-dev
+
+    - name: Setup WinFlexBison
+      if: ${{ matrix.os == 'windows-latest' }}
+      shell: pwsh
+      run: |
+        .\winflexbison.ps1 "${{ github.workspace }}/winflexbison"
+        Add-Content $env:GITHUB_PATH "${{ github.workspace }}/winflexbison"
+
+    - name: Set reusable strings
+      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }} --preset ${{ matrix.preset }}
+        -S ${{ github.workspace }}
+  
+    - name: Build
+      # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}

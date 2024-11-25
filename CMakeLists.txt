@@ -4,6 +4,8 @@ set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 project(idlfe VERSION 3.4.3 LANGUAGES CXX)
 
+find_package(FLEX REQUIRED)
+find_package(BISON REQUIRED)
 find_package(decNumber CONFIG REQUIRED)
 
 add_subdirectory(src)

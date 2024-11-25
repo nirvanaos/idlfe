@@ -7,7 +7,7 @@
   "registries": [
     {
       "kind": "git",
-      "baseline": "ae2de5733201e9a6e03cf1b727001fcfec7f41d0",
+      "baseline": "749a414d8f3d08bb1517160b9617d8072b74b0f5",
       "repository": "https://github.com/nirvanaos/vcpkg-registry.git",
       "packages": [
         "decnumber"

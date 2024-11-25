@@ -8,23 +8,66 @@
     {
       "name": "base",
       "hidden": true,
-      "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
-      "name": "debug",
       "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+      "name": "msvs",
+      "hidden": true,
+      "generator": "Visual Studio 17 2022",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     },
     {
-      "name": "release",
       "inherits": "base",
+      "name": "ninja",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "inherits": "msvs",
+      "name": "win-x64",
+      "displayName": "Windows x64",
+      "architecture": "x64",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_GENERATOR_PLATFORM": "x64"
+      }
+    },
+    {
+      "inherits": "msvs",
+      "name": "win-x86",
+      "displayName": "Windows x86",
+      "architecture": "Win32",
+      "cacheVariables": {
+        "CMAKE_GENERATOR_PLATFORM": "Win32"
+      }
+    },
+    {
+      "inherits": "ninja",
+      "name": "gc",
+      "displayName": "GNU C",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_C_COMPILER": "gcc"
+      }
+    },
+    {
+      "inherits": "ninja",
+      "name": "clang",
+      "displayName": "CLang",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang"
       }
     }
   ]
