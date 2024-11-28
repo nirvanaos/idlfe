@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.25)
 set(CMAKE_CXX_SCAN_FOR_MODULES 0)
 
 cmake_policy(SET CMP0010 NEW)
