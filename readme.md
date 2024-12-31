@@ -39,18 +39,13 @@ See: https://www.omg.org/spec/IDL/4.2/
 
 ## How to use
 
-### NuGet
-Find nirvanaos.idlfe NuGet packages on https://www.nuget.org/.
-
-### vcpkg
-Use `idlfe` port from https://github.com/nirvanaos/vcpkg-registry.git (Flex + Bison must be installed on the build system).
+### vcpkg Package manager
+Use `idlfe` port from https://github.com/nirvanaos/vcpkg-registry.git.
 
 ## Build prerequisites
 
+* CMake
 * C++17 compilant compiler
-* Flex + Bison must be installed on the build system
-
-For the Microsoft Visual Studio builds you can use supermodule https://github.com/nirvanaos/idlfe.vc.git
 
 ## Used libraries
 
