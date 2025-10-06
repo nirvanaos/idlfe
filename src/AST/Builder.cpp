@@ -621,14 +621,15 @@ void Builder::type_def (Type&& type, const Declarators& declarators)
 				const NamedItem& item = **ins.first;
 				if (item.kind () == Item::Kind::TYPE_DEF) {
 					const TypeDef& prev = static_cast <const TypeDef&> (item);
-					if (!(static_cast <const Type&> (prev) == *def))
+					if (!(static_cast <const Type&> (prev) == *def)) {
 						error_name_collision (*decl, **ins.first);
-					else
-						prev.check_prefix (*this, *decl);
-				} else
+						continue;
+					} else if (!prev.check_prefix (*this, *decl))
+						continue;
+				} else {
 					error_name_collision (*decl, **ins.first);
-
-				continue;
+					continue;
+				}
 			}
 			
 			if (is_main_file ())

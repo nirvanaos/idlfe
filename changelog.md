@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.6 - 2025-10-06
+### Fixed
+ - Emit typedef every time, even if it is already defined.
+
 ## 3.4.3 - 2024-07-10
 ### Fixed
  - Bug with object constant.
