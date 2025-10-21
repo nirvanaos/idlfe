@@ -55,8 +55,9 @@ private:
 	void print (const AST::Parameter& p);
 	void constructed_begin (const char* type, const AST::NamedItem& item);
 	void constructed (const AST::StructBase& item);
-	void complex_end ();
+	void complex_end (const AST::ItemWithId& item);
 	void print (const AST::Raises& raises);
+	void print_typeid (const AST::ItemWithId& item);
 
 private:
 	BE::IndentedOut out_;

@@ -140,7 +140,7 @@ void IDL_FrontEnd::parse_arguments (CmdLine& args)
 
 void IDL_FrontEnd::print_usage_info (const char* exe_name)
 {
-	std::cout << "Based on the Nirvana IDL compiler front-end library. Copyright (c) 2021 Igor Popov.\n"
+	std::cout << "Based on the Nirvana IDL compiler front-end library. Copyright (c) 2025 Igor Popov.\n"
 		"Usage: " << exe_name << " {file | option}.\n"
 		"\toption = \"-\"{\"-\"}'...' [parameter].\n"
 		"\tfile = parameter.\n"

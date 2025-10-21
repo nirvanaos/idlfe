@@ -83,6 +83,7 @@ void Printer::leaf (const Include& item)
 void Printer::leaf (const Native& item)
 {
 	out_ << "native " << item.name () << ";\n";
+	print_typeid (item);
 }
 
 void Printer::leaf (const TypeDef& item)
@@ -90,6 +91,7 @@ void Printer::leaf (const TypeDef& item)
 	out_ << "typedef ";
 	print_type (item);
 	out_ << ' ' << item.name () << ";\n";
+	print_typeid (item);
 }
 
 void Printer::leaf (const Constant& item)
@@ -138,6 +140,7 @@ void Printer::leaf (const InterfaceDecl& item)
 {
 	print_interface_kind (item);
 	out_ << "interface " << item.name () << ";\n";
+	print_typeid (item);
 }
 
 void Printer::begin (const Interface& item)
@@ -164,7 +167,7 @@ void Printer::begin (const Interface& item)
 
 void Printer::end (const Interface& item)
 {
-	complex_end ();
+	complex_end (item);
 }
 
 void Printer::constructed_begin (const char* type, const NamedItem& item)
@@ -174,10 +177,12 @@ void Printer::constructed_begin (const char* type, const NamedItem& item)
 	out_.indent ();
 }
 
-void Printer::complex_end ()
+void Printer::complex_end (const AST::ItemWithId& item)
 {
 	out_.unindent ();
-	out_ << "};\n\n";
+	out_ << "};\n";
+	print_typeid (item);
+	out_ << std::endl;
 }
 
 void Printer::leaf (const Operation& item)
@@ -280,7 +285,7 @@ void Printer::constructed (const AST::StructBase& item)
 		print_type (*m);
 		out_ << ' ' << m->name () << ";\n";
 	}
-	complex_end ();
+	complex_end (item);
 }
 
 void Printer::leaf (const Exception& item)
@@ -321,7 +326,7 @@ void Printer::leaf (const Union& item)
 		out_ << ' ' << el->name () << ";\n";
 		out_.unindent ();
 	}
-	complex_end ();
+	complex_end (item);
 }
 
 void Printer::leaf (const Enum& item)
@@ -334,7 +339,7 @@ void Printer::leaf (const Enum& item)
 		out_ << (*it)->name ();
 	}
 	out_ << endl;
-	complex_end ();
+	complex_end (item);
 }
 
 void Printer::leaf (const ValueTypeDecl& item)
@@ -342,6 +347,7 @@ void Printer::leaf (const ValueTypeDecl& item)
 	if (item.is_abstract ())
 		out_ << "abstract ";
 	out_ << "valuetype " << item.name () << ";\n";
+	print_typeid (item);
 }
 
 void Printer::begin (const ValueType& item)
@@ -391,7 +397,7 @@ void Printer::begin (const ValueType& item)
 
 void Printer::end (const ValueType& item)
 {
-	complex_end ();
+	complex_end (item);
 }
 
 void Printer::leaf (const StateMember& item)
@@ -416,4 +422,10 @@ void Printer::leaf (const ValueBox& item)
 	out_ << "valuetype " << item.name () << ' ';
 	print_type (item);
 	out_ << ";\n";
+	print_typeid (item);
+}
+
+void Printer::print_typeid (const AST::ItemWithId& item)
+{
+	out_ << "typeid " << item.name () << " \"" << item.repository_id () << "\";\n";
 }
