@@ -38,6 +38,10 @@
 #include <fstream>
 #include <sstream>
 
+#define BOOST_WAVE_EMIT_PRAGMA_DIRECTIVES 1
+#define BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS 1
+#define BOOST_WAVE_SUPPORT_PRAGMA_ONCE 1
+
 #include <boost/wave.hpp>
 #include <boost/wave/cpplexer/cpp_lex_token.hpp>    // token class
 #include <boost/wave/cpplexer/cpp_lex_iterator.hpp> // lexer class
@@ -215,8 +219,6 @@ bool IDL_FrontEnd::compile (const std::string& file)
 		typedef boost::wave::context <std::string::iterator, LexIterator> Wave;
 
 		Wave wave (input.begin (), input.end (), file.c_str ());
-
-		wave.set_language (boost::wave::language_support::support_c99);
 
 		for (const auto& def : defines_) {
 			wave.add_macro_definition (def);
