@@ -1,13 +1,13 @@
 {
   "default-registry": {
     "kind": "git",
-    "baseline": "5e5d0e1cd7785623065e77eff011afdeec1a3574",
+    "baseline": "7220a4eebf20515cdd9c34721e15ca082bae9038",
     "repository": "https://github.com/microsoft/vcpkg"
   },
   "registries": [
     {
       "kind": "git",
-      "baseline": "749a414d8f3d08bb1517160b9617d8072b74b0f5",
+      "baseline": "22d4c9f2b7fed4f648d6a2f3b642147fc7ac93b1",
       "repository": "https://github.com/nirvanaos/vcpkg-registry.git",
       "packages": [
         "decnumber"

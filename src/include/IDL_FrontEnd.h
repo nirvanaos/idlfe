@@ -44,10 +44,6 @@ namespace FE {
 class Driver;
 }
 
-namespace simplecpp {
-struct DUI;
-}
-
 /// \brief IDL front-end.
 /// 
 /// Performs:
@@ -161,7 +157,6 @@ protected:
 	/// \brief Constructor
 	/// 
 	/// \param flags The flags.
-	///              Currently only IDL_FrontEnd::FLAG_DEPRECATE_ANONYMOUS_TYPES is supported.
 	/// \param err_out Compiler messages output stream. Default is std::cerr.
 	IDL_FrontEnd (unsigned flags = 0, std::ostream& err_out = std::cerr) :
 		command_ (nullptr),
@@ -192,6 +187,7 @@ protected:
 	///   - -I include_path Add directory to the include directories.
 	///   - -FI include_file Include a file.
 	///   - -h Display usage information.
+	///   - -E Print preprocessed file to stdout.
 	/// 
 	/// \param args CmdLine object.
 	/// \returns `true` if command line parameter was recognized.
@@ -264,7 +260,7 @@ protected:
 	{}
 
 private:
-	bool compile (const simplecpp::DUI& prep_params, const std::string& file);
+	bool compile (const std::string& file);
 
 private:
 	const char* command_;

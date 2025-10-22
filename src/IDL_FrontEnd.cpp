@@ -23,21 +23,26 @@
 * Send comments and/or bug reports to:
 *  popov.nirvana@gmail.com
 */
-#include "include/IDL_FrontEnd.h"
-#include "FE/Driver.h"
-#include <iostream>
-#include <stdexcept>
-#include <fstream>
-#include <sstream>
-#include <string.h>
-
 #if __cplusplus < 201103L
 #ifdef _MSC_BUILD
 #error Use MSVC option /Zc:__cplusplus.
 #endif
 #endif
 
-#include "simplecpp/simplecpp.h"
+#include "include/IDL_FrontEnd.h"
+
+#include <string.h>
+
+#include <iostream>
+#include <stdexcept>
+#include <fstream>
+#include <sstream>
+
+#include <boost/wave.hpp>
+#include <boost/wave/cpplexer/cpp_lex_token.hpp>    // token class
+#include <boost/wave/cpplexer/cpp_lex_iterator.hpp> // lexer class
+
+#include "FE/Driver.h"
 
 #if defined (__GNUG__) || defined (__clang__)
 #pragma GCC diagnostic ignored "-Wswitch"
@@ -81,35 +86,9 @@ int IDL_FrontEnd::run (const char* command, int argc, const char* const argv [])
 				return -1;
 			}
 
-			simplecpp::DUI prep_params;
-			for (const auto& def : defines_) {
-				prep_params.defines.push_back (def);
-			}
-			for (const auto& undef : undefines_) {
-				prep_params.undefined.insert (undef);
-			}
-			for (const auto& inc : include_paths_) {
-				prep_params.includePaths.push_back (inc);
-			}
-			for (const auto& fi : includes_) {
-				std::filesystem::path file (fi);
-				if (!file.is_absolute ()) {
-					for (const auto& inc : include_paths_) {
-						std::filesystem::path tmp (inc);
-						tmp /= file;
-						std::error_code ec;
-						if (std::filesystem::exists (tmp, ec)) {
-							file = tmp;
-							break;
-						}
-					}
-				}
-				prep_params.includes.push_back (file.string ());
-			}
-
 			for (const auto& file : files_) {
 				std::cout << file << std::endl;
-				if (!compile (prep_params, file))
+				if (!compile (file))
 					ret = -1;
 			}
 			
@@ -195,51 +174,85 @@ bool IDL_FrontEnd::parse_command_line (CmdLine& args)
 	return recognized;
 }
 
-bool IDL_FrontEnd::compile (const simplecpp::DUI& prep_params, const std::string& file)
+bool IDL_FrontEnd::compile (const std::string& file)
 {
-	std::istringstream preprocessed;
+	std::stringstream preprocessed;
 
 	{ // Perform preprocessing
-		simplecpp::OutputList output_list;
-		std::vector <std::string> files;
-		std::ifstream f (file);
-		if (!f.is_open ()) {
-			std::cerr << "Can not open file " << file << std::endl;
-			return false;
-		}
-		simplecpp::TokenList rawtokens (f, files, file, &output_list);
+		std::string input;
 
-		rawtokens.removeComments ();
-		std::map <std::string, simplecpp::TokenList*> included = simplecpp::load (rawtokens, files, prep_params, &output_list);
-		for (auto i = included.begin (); i != included.end (); ++i)
-			i->second->removeComments ();
-
-		simplecpp::TokenList output_tokens (files);
-		simplecpp::preprocess (output_tokens, rawtokens, files, included, prep_params, &output_list);
-
-		if (!output_list.empty ()) {
-			bool fatal = false;
-			for (const simplecpp::Output& output : output_list) {
-				std::cerr << output.location.file () << '(' << output.location.line << "): ";
-				const char* type = "warning: ";
-				switch (output.type) {
-					case simplecpp::Output::ERROR:
-					case simplecpp::Output::MISSING_HEADER:
-					case simplecpp::Output::INCLUDE_NESTED_TOO_DEEPLY:
-					case simplecpp::Output::SYNTAX_ERROR:
-					case simplecpp::Output::UNHANDLED_CHAR_ERROR:
-					case simplecpp::Output::EXPLICIT_INCLUDE_NOT_FOUND:
-						fatal = true;
-						type = "error: ";
+		for (const auto& fi : includes_) {
+			std::filesystem::path file (fi);
+			if (!file.is_absolute ()) {
+				for (const auto& inc : include_paths_) {
+					std::filesystem::path tmp (inc);
+					tmp /= file;
+					std::error_code ec;
+					if (std::filesystem::exists (tmp, ec)) {
+						file = tmp;
 						break;
+					}
 				}
-				std::cerr << type << output.msg << std::endl;
 			}
-			if (fatal)
-				return false;
+			input += "#include \"";
+			input += file.string ();
+			input += "\"\n";
 		}
 
-		preprocessed.str (output_tokens.stringify ());
+		{
+			std::ifstream f (file);
+			if (!f.is_open ()) {
+				std::cerr << "Can not open file " << file << std::endl;
+				return false;
+			}
+			input.append (std::istreambuf_iterator <char> (f.rdbuf()),
+				std::istreambuf_iterator <char> ());
+		}
+
+		typedef boost::wave::cpplexer::lex_iterator <boost::wave::cpplexer::lex_token <>>
+			LexIterator;
+
+		typedef boost::wave::context <std::string::iterator, LexIterator> Wave;
+
+		Wave wave (input.begin (), input.end (), file.c_str ());
+
+		wave.set_language (boost::wave::language_support::support_c99);
+
+		for (const auto& def : defines_) {
+			wave.add_macro_definition (def);
+		}
+
+		for (const auto& undef : undefines_) {
+			wave.remove_macro_definition (undef, true);
+		}
+
+		for (const auto& inc : include_paths_) {
+			wave.add_include_path (inc.c_str ());
+		}
+
+		bool fatal = false;
+		for (Wave::iterator_type first = wave.begin (), last = wave.end (); first != last;) {
+			try {
+				preprocessed << (*first).get_value ();
+				++first;
+			} catch (const boost::wave::cpp_exception& err) {
+				auto severity = err.get_severity ();
+				std::cerr << err.file_name () << '(' << err.line_no () << ',' << err.column_no () << "): "
+					<< boost::wave::util::get_severity (severity) << ": "
+				 	<< err.description ();
+				if (severity > boost::wave::util::severity::severity_warning)
+					fatal = true;
+				if (!err.is_recoverable ()) {
+					fatal = true;
+					break;
+				}
+			}
+		}
+
+		if (fatal)
+			return false;
+
+		preprocessed.seekg (0);
 	}
 
 	if (preprocess_to_stdout_) {
