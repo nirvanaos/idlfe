@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.7 - 2025-10-23
+### Fixed
+ - #pragma direcives were ignored
+
 ## 3.4.6 - 2025-10-06
 ### Fixed
  - Emit typedef every time, even if it is already defined.

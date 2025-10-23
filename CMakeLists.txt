@@ -4,7 +4,7 @@ set(CMAKE_CXX_SCAN_FOR_MODULES 0)
 cmake_policy(SET CMP0010 NEW)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
-project(idlfe VERSION 3.4.6 LANGUAGES CXX)
+project(idlfe VERSION 3.4.7 LANGUAGES CXX)
 
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)

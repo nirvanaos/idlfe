@@ -100,6 +100,7 @@ void Builder::pragma (const char* s, const Location& loc)
 				return;
 			}
 		} else if (pr == "prefix") {
+			s = end + 1;
 			std::string pref;
 			if (get_quoted_string (s, pref, loc)) {
 				prefix (pref, loc);
@@ -208,6 +209,7 @@ bool Builder::get_quoted_string (const char*& ps, std::string& qs, const Locatio
 			}
 		}
 		if ('"' == *p) {
+			qs = std::move (s);
 			ps = p + 1;
 			return true;
 		} else
